@@ -26,7 +26,7 @@ dfpr      	 0.250
 prule     	 0.500
 ```
 
-## :Brain: Overview
+## :brain: Overview
 `FairBench` makes use of forward-oriented programming
 to declare interoperable interfaces that are easier 
 to use. It suffices to keep only two things in mind:
