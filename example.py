@@ -1,4 +1,5 @@
 import fairbench as fb
+import pyfop as pfp
 from sklearn.linear_model import LogisticRegression
 
 
@@ -9,16 +10,39 @@ def load():
     return x, y, s
 
 
-x, y, sensitive = load()
+x, y, s = load()
+s2 = [0, 1, 1, 0, 0, 1, 0, 1]
 
-x = fb.array(x)
-y = fb.array(y)
-sensitive = fb.array(sensitive)
+x = fb.Modal(train=fb.array(x), test=fb.array(x))
+y = fb.Modal(train=fb.array(y), test=fb.array(y))
+sensitive = fb.Modal(train=fb.array(s), test=fb.array(s))
 
-classifier = fb.instance(LogisticRegression)
-classifier = fb.fit(classifier)
-yhat = classifier.predict(x)
-yhat = fb.culep(yhat, fb.accuracy(yhat)+fb.prule(yhat))
+classifier = LogisticRegression()
+classifier = fb.fit(classifier, x, y).train  # keep only training outcome
+yhat = fb.predict(classifier, x)
 
-#print(fb.prule(yhat)(sensitive=sensitive))
-print(fb.report(yhat, features=x, ground_truth=y, sensitive=sensitive))
+# example of aggregating an objective
+objective = fb.aggregate(test=fb.prule(yhat, sensitive), train=fb.accuracy(yhat, y))
+yscores = fb.predict_proba(classifier, x)
+yscores = fb.culep(yscores, y, sensitive, objective)
+
+# example of generating a report under various notions of fairness for a data mode
+print(fb.report(round(yscores), y=y, sensitive=sensitive).test())
+
+
+#predictions = fb.culep(yscores, objective, sensitive)
+
+#original_predictions = yscores()
+#predictions = yscores.aspects(sample_weight=fb.skew(original_predictions, y, sensitive).train)
+#print(predictions.train(culep_params=[0.5, -0.5, 1, 1]))
+#print(predictions.train(culep_params=[0, 0, 0, 0]))
+
+#print(predictions.train.get_input_context(culep_params=[0, 0, 0, 1]))
+#print(predictions.train.get_input_context(culep_params=[1, 1, 0, 1]))
+
+
+#yhat = fb.culep(yhat, y, objective)
+
+#print(yhat.test(sensitive=sensitive))
+
+#print(fb.report(yhat, y=y, sensitive=sensitive).test())

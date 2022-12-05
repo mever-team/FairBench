@@ -3,6 +3,13 @@ import numpy
 
 
 @framework
+def accuracy(predictions,
+             y=SHARED,
+             backend=numpy):
+    return 1-backend.mean(backend.abs(predictions-y))
+
+
+@framework
 def prule(predictions,
           sensitive=SHARED,
           max_sensitive=1,
@@ -21,20 +28,13 @@ def prule(predictions,
 
 
 @framework
-def accuracy(predictions,
-             ground_truth=SHARED,
-             backend=numpy):
-    return 1-backend.mean(backend.abs(predictions-ground_truth))
-
-
-@framework
 def dfpr(predictions,
          sensitive=SHARED,
-         ground_truth=SHARED,
+         y=SHARED,
          max_sensitive=1,
          backend=numpy):
     non_sensitive = max_sensitive-sensitive
-    error = backend.abs(predictions-ground_truth)*predictions
+    error = backend.abs(predictions-y)*predictions
     error_sensitive = error*sensitive
     error_non_sensitive = error*non_sensitive
     num_sensitive = backend.sum(sensitive*predictions)
@@ -45,13 +45,13 @@ def dfpr(predictions,
 @framework
 def dfnr(predictions,
          sensitive=SHARED,
-         ground_truth=SHARED,
+         y=SHARED,
          max_prediction=1,
          max_sensitive=1,
          backend=numpy):
     negatives = max_prediction-predictions
     non_sensitive = max_sensitive-sensitive
-    error = backend.abs(predictions-ground_truth)*negatives
+    error = backend.abs(predictions-y)*negatives
     error_sensitive = error*sensitive
     error_non_sensitive = error*non_sensitive
     num_sensitive = backend.sum(sensitive*negatives)

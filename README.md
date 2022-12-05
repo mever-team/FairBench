@@ -8,21 +8,24 @@ for fairness exploration.
 
 ```python
 import fairbench as fb
+from sklearn.linear_model import LogisticRegression
 
-# define a fairness-aware classifier
-classifier = fb.fit(fb.instance(LogisticRegression))
-yhat = classifier.predict(x)
-objective = fb.accuracy(yhat)+fb.prule(yhat)
-yhat = fb.culep(yhat, objective)
+x_train, y_train, x_test, y_test, s_train, s_test = ...
 
-# run to generate a report
-x, y, sensitive = ...
-print(fb.report(yhat, features=x, ground_truth=y, sensitive=sensitive))
+x = fb.Modal(train=fb.array(x_train), test=fb.array(x_test))
+y = fb.Modal(train=fb.array(y_train), test=fb.array(y_test))
+s = fb.Modal(train=fb.array(s_train), test=fb.array(s_test))
+
+classifier = fb.instance(LogisticRegression)
+classifier = fb.fit(classifier, x, y).train  # get the classifier to be fit on the train mode of data
+yhat = fb.predict(classifier, x)
+
+print(fb.report(yhat, y=y, sensitive=s).test())  # generate report for the test mode of predictions
 ```
 ```
-accuracy  	 0.875
-dfnr      	 0.000
-dfpr      	 0.250
+accuracy  	 0.750
+dfnr      	 0.667
+dfpr      	 0.000
 prule     	 0.500
 ```
 
@@ -48,7 +51,7 @@ compatible backend later on. But you could just
 create numpy arrays if you are more comfortable with those.
 
 ```python
-improt fairbench as fb
+import fairbench as fb
 
 
 x, y, sensitive = load()
@@ -77,7 +80,7 @@ provided by `fairbench`. Let's do this
 together with predictions:
 
 ```python
-classifier = fb.fit(classifier, features=x, ground_truth=y)
+classifier = fb.fit(classifier, x=x, y=y)
 yhat = classifier.predict(x)
 ```
 
