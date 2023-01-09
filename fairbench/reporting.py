@@ -1,20 +1,25 @@
-from fairbench import metrics
-from fairbench.utils import missing, framework
+from fairbench.modal import multimodal
 from inspect import getmembers, isfunction
-import pyfop as pfp
+import inspect
+from fairbench import metrics as metric_package
+from types import MappingProxyType
+
+_found_metrics = MappingProxyType(
+    dict(getmembers(metric_package, isfunction))
+)  # creates an immutable map
 
 
-@framework
-def report(yhat, **kwargs):
-    ret = ""
-    for name, metric in getmembers(metrics, isfunction):
-        if name == "framework":
+@multimodal
+def report(metrics=_found_metrics, **kwargs):
+    ret = dict()
+    for name, metric in metrics.items():
+        if name == "framework" or name == "multimodal":
             continue
-        eval = metric(yhat)
-        complete = {key: kwargs[key] for key in missing(eval) if key in kwargs}
-        miss = missing(eval, **complete)
-        if miss:
-            ret += f"{name.ljust(10)}\t NA (no {','.join(miss)})\n"
-        else:
-            ret += f"{name.ljust(10)}\t {eval(**complete):.3f}\n"
+        arg_names = set(inspect.getfullargspec(metric)[0])
+        try:
+            ret[name] = metric(
+                **{arg: value for arg, value in kwargs.items() if arg in arg_names}
+            )
+        except TypeError:
+            pass
     return ret
