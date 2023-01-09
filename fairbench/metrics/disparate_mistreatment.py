@@ -1,9 +1,9 @@
-from fairbench.modal import multimodal
+from fairbench.fork import parallel
 from eagerpy import Tensor
 from typing import Optional
 
 
-@multimodal
+@parallel
 def dfpr(
     predictions: Tensor,
     labels: Tensor,
@@ -23,7 +23,7 @@ def dfpr(
     )
 
 
-@multimodal
+@parallel
 def dfnr(
     predictions: Tensor,
     labels: Tensor,

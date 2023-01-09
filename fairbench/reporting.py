@@ -1,4 +1,4 @@
-from fairbench.modal import multimodal
+from fairbench.fork import parallel
 from inspect import getmembers, isfunction
 import inspect
 from fairbench import metrics as metric_package
@@ -9,11 +9,11 @@ _found_metrics = MappingProxyType(
 )  # creates an immutable map
 
 
-@multimodal
+@parallel
 def report(metrics=_found_metrics, **kwargs):
     ret = dict()
     for name, metric in metrics.items():
-        if name == "framework" or name == "multimodal":
+        if name == "framework" or name == "parallel":
             continue
         arg_names = set(inspect.getfullargspec(metric)[0])
         try:

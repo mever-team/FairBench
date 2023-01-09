@@ -15,20 +15,20 @@ def astensor(value) -> ep.Tensor:
     return ep.astensor(value).float64()
 
 
-class Modal(object):
-    def __init__(self, **modes):
-        self.modes = modes
+class Fork(object):
+    def __init__(self, **branches):
+        self.branches = branches
 
     def aspects(self, **kwargs):
-        return Modal(
-            **{mode: value.aspects(**kwargs) for mode, value in self.modes.items()}
+        return Fork(
+            **{branch: value.aspects(**kwargs) for branch, value in self.branches.items()}
         )
 
     def __getattribute__(self, name):
-        if name in ["modes"] or name in dir(Modal):
+        if name in ["branches"] or name in dir(Fork):
             return object.__getattribute__(self, name)
-        if name in self.modes:
-            return self.modes[name]
+        if name in self.branches:
+            return self.branches[name]
 
         def method(*args, **kwargs):
             return call(self, name, *args, **kwargs)
@@ -36,12 +36,12 @@ class Modal(object):
         return method
 
     def __call__(self, *args, **kwargs):
-        return Modal(
-            **{mode: value(*args, **kwargs) for mode, value in self.modes.items()}
+        return Fork(
+            **{branch: value(*args, **kwargs) for branch, value in self.branches.items()}
         )
 
     def __repr__(self):
-        return "\n".join(k + ": " + str(v) for k, v in self.modes.items())
+        return "\n".join(k + ": " + str(v) for k, v in self.branches.items())
 
     def __or__(self, other):
         return concat(self, other)
@@ -50,118 +50,118 @@ class Modal(object):
         return concat(other, self)
 
 
-def multimodal(method):
+def parallel(method):
     @wraps(method)
     def wrapper(*args, **kwargs):
-        modes = set(
+        branches = set(
             [
-                mode
+                branch
                 for arg in list(args) + list(kwargs.values())
-                if isinstance(arg, Modal)
-                for mode in arg.modes
+                if isinstance(arg, Fork)
+                for branch in arg.branches
             ]
         )
-        if not modes:
+        if not branches:
             return method(
                 *(astensor(arg) for arg in args),
                 **{key: astensor(arg) for key, arg in kwargs.items()},
             )
         args = [
-            arg if isinstance(arg, Modal) else Modal(**{mode: arg for mode in modes})
+            arg if isinstance(arg, Fork) else Fork(**{branch: arg for branch in branches})
             for arg in args
         ]
         kwargs = {
             key: arg
-            if isinstance(arg, Modal)
-            else Modal(**{mode: arg for mode in modes})
+            if isinstance(arg, Fork)
+            else Fork(**{branch: arg for branch in branches})
             for key, arg in kwargs.items()
         }
         try:
             argnames = inspect.getfullargspec(method)[0]
-            if "mode" not in kwargs and "mode" in argnames:
-                kwargs["mode"] = None
-            return Modal(
+            if "branch" not in kwargs and "branch" in argnames:
+                kwargs["branch"] = None
+            return Fork(
                 **{
-                    mode: method(
-                        *(astensor(arg.modes[mode]) for arg in args),
+                    branch: method(
+                        *(astensor(arg.branches[branch]) for arg in args),
                         **{
-                            key: mode if key == "mode" else astensor(arg.modes[mode])
+                            key: branch if key == "branch" else astensor(arg.branches[branch])
                             for key, arg in kwargs.items()
                         },
                     )
-                    for mode in modes
+                    for branch in branches
                 }
             )
         except KeyError as e:
             raise KeyError(
                 "One of the Modal inputs is missing a "
                 + str(e)
-                + " mode that other inputs have"
+                + " branch that other inputs have"
             )
 
     return wrapper
 
 
-def multimodal_primitive(method):
+def parallel_primitive(method):
     @wraps(method)
     def wrapper(*args, **kwargs):
-        modes = set(
+        branches = set(
             [
-                mode
+                branch
                 for arg in list(args) + list(kwargs.values())
-                if isinstance(arg, Modal)
-                for mode in arg.modes
+                if isinstance(arg, Fork)
+                for branch in arg.branches
             ]
         )
-        if not modes:
+        if not branches:
             return method(
                 *args,
                 **kwargs,
             )
         args = [
-            arg if isinstance(arg, Modal) else Modal(**{mode: arg for mode in modes})
+            arg if isinstance(arg, Fork) else Fork(**{branch: arg for branch in branches})
             for arg in args
         ]
         kwargs = {
             key: arg
-            if isinstance(arg, Modal)
-            else Modal(**{mode: arg for mode in modes})
+            if isinstance(arg, Fork)
+            else Fork(**{branch: arg for branch in branches})
             for key, arg in kwargs.items()
         }
         try:
             argnames = inspect.getfullargspec(method)[0]
-            if "mode" not in kwargs and "mode" in argnames:
-                kwargs["mode"] = None
-            return Modal(
+            if "branch" not in kwargs and "branch" in argnames:
+                kwargs["branch"] = None
+            return Fork(
                 **{
-                    mode: method(
-                        *((arg.modes[mode]) for arg in args),
+                    branch: method(
+                        *((arg.branches[branch]) for arg in args),
                         **{
-                            key: mode if key == "mode" else (arg.modes[mode])
+                            key: branch if key == "branch" else (arg.branches[branch])
                             for key, arg in kwargs.items()
                         },
                     )
-                    for mode in modes
+                    for branch in branches
                 }
             )
         except KeyError as e:
             raise KeyError(
                 "One of the Modal inputs is missing a "
                 + str(e)
-                + " mode that other inputs have"
+                + " branch that other inputs have"
             )
 
     return wrapper
 
 
-@multimodal_primitive
+@parallel_primitive
 def call(obj, method, *args, **kwargs):
     if callable(method):
         return method(obj, *args, **kwargs)
     return getattr(obj, method)(*args, **kwargs)
 
 
-@multimodal
+@parallel
 def concat(entry1, entry2):
     return entry1 | entry2
 
@@ -170,15 +170,15 @@ def concat(entry1, entry2):
 def compare(**kwargs):
     for modal in kwargs.values():
         assert isinstance(modal, Modal)
-    modes = set(
+    branches = set(
         [
-            mode
+            branch
             for arg in list(kwargs.values())
             if isinstance(arg, Modal)
-            for mode in arg.modes
+            for branch in arg.branches
         ]
     )
     return Modal(
-        **{mode: {key: kwargs[key].modes[mode] for key in kwargs} for mode in modes}
+        **{branch: {key: kwargs[key].branches[branch] for key in kwargs} for branch in branches}
     )
 """

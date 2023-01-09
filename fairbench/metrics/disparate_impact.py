@@ -1,9 +1,9 @@
-from fairbench.modal import multimodal
+from fairbench.fork import parallel
 from eagerpy import Tensor
 from typing import Optional
 
 
-@multimodal
+@parallel
 def prule(
     predictions: Tensor,
     sensitive: Tensor,

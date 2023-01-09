@@ -1,36 +1,41 @@
-from fairbench.modal import multimodal, Modal
+from fairbench.fork import parallel, Fork
 from matplotlib import pyplot as plt
+import json
 
 
 def _is_dict_of_dicts(report):
     return isinstance(report[next(iter(report))], dict)
 
 
-def describe(report: Modal, mode: str = None, spacing: int = 15):
-    assert isinstance(report, Modal)
-    report = report.modes
-    ret = "--- " + mode + " ---\n" if mode else ""
+def tojson(report):
+    assert isinstance(report, Fork)
+    report = report.branches
+    data = dict()
     if not _is_dict_of_dicts(report):
         report = {"": report}
-    else:
-        ret += (
-            (" " * spacing)
-            + " "
-            + " ".join(key.ljust(spacing) for key in report)
-            + "\n"
-        )
-    rets = dict()
+    data["header"] = ["Metric"]+[key for key in report]
     for value in report.values():
         for metric in value:
-            rets[metric] = (
-                rets.get(metric, "") + f"{value[metric]:.3f}".ljust(spacing) + " "
-            )
-    for key, value in rets.items():
-        ret += f"{key.ljust(spacing)} {value}\n"
+            if metric not in data:
+                data[metric] = list()
+            data[metric].append(float(f"{value[metric]}"))
+    return json.dumps(data)
+
+
+def describe(report: Fork, spacing: int = 15):
+    assert isinstance(report, Fork)
+    report = json.loads(tojson(report))
+    ret = ""
+    if report["header"]:
+        ret += " ".join([entry.ljust(spacing) for entry in report["header"]])+"\n"
+    for metric in report:
+        if metric == "header":
+            continue
+        ret += " ".join([metric.ljust(spacing)]+[f"{entry:.3f}".ljust(spacing) for entry in report[metric]])+"\n"
     print(ret)
 
 
-@multimodal
+@parallel
 def visualize(report: dict):
     for i, key in enumerate(report.keys()):
         plt.subplot(1, len(report), i + 1)

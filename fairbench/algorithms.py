@@ -1,8 +1,8 @@
-from fairbench.modal import multimodal
+from fairbench.fork import parallel
 import scipy, numpy as np
 
 
-@multimodal
+@parallel
 def multiplication(predictions, sensitive, max_sensitive=1):
     non_sensitive = max_sensitive - sensitive
     sum_sensitive = sensitive.sum()
@@ -14,7 +14,7 @@ def multiplication(predictions, sensitive, max_sensitive=1):
     return predictions * sensitive / r1 + predictions * non_sensitive / r2
 
 
-@multimodal
+@parallel
 def skew(predictions, y, sensitive, culep_params=(0, 0, 0, 0), max_sensitive=1):
     p = culep_params
     error = (y - predictions).abs()
@@ -30,7 +30,7 @@ def skew(predictions, y, sensitive, culep_params=(0, 0, 0, 0), max_sensitive=1):
     )
 
 
-@multimodal
+@parallel
 def culep(yscores, y, sensitive, objective, skew=skew):
     last_predictions = yscores()
     best_p = None
