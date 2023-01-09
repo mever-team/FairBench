@@ -13,7 +13,7 @@ def tojson(report):
     data = dict()
     if not _is_dict_of_dicts(report):
         report = {"": report}
-    data["header"] = ["Metric"]+[key for key in report]
+    data["header"] = ["Metric"] + [key for key in report]
     for value in report.values():
         for metric in value:
             if metric not in data:
@@ -27,11 +27,17 @@ def describe(report: Fork, spacing: int = 15):
     report = json.loads(tojson(report))
     ret = ""
     if report["header"]:
-        ret += " ".join([entry.ljust(spacing) for entry in report["header"]])+"\n"
+        ret += " ".join([entry.ljust(spacing) for entry in report["header"]]) + "\n"
     for metric in report:
         if metric == "header":
             continue
-        ret += " ".join([metric.ljust(spacing)]+[f"{entry:.3f}".ljust(spacing) for entry in report[metric]])+"\n"
+        ret += (
+            " ".join(
+                [metric.ljust(spacing)]
+                + [f"{entry:.3f}".ljust(spacing) for entry in report[metric]]
+            )
+            + "\n"
+        )
     print(ret)
 
 

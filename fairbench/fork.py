@@ -34,11 +34,17 @@ class Fork(object):
         return method
 
     def branches(self):
-        return {branch: value.result() if value.__class__.__name__ == "Future" else value for branch, value in self._branches.items()}
+        return {
+            branch: value.result() if value.__class__.__name__ == "Future" else value
+            for branch, value in self._branches.items()
+        }
 
     def __call__(self, *args, **kwargs):
         return Fork(
-            **{branch: value(*args, **kwargs) for branch, value in self._branches.items()}
+            **{
+                branch: value(*args, **kwargs)
+                for branch, value in self._branches.items()
+            }
         )
 
     def __repr__(self):
@@ -52,7 +58,15 @@ class Fork(object):
 
 
 class _NoClient:  # emulates dask.distributed.Client
-    def submit(self, method, *args, workers=None, allow_other_workers=True, pure=False, **kwargs):
+    def submit(
+        self,
+        method,
+        *args,
+        workers=None,
+        allow_other_workers=True,
+        pure=False,
+        **kwargs
+    ):
         assert allow_other_workers
         assert not pure
         return method(*args, **kwargs)
@@ -64,6 +78,7 @@ _client = _NoClient()
 def distributed(*args, **kwargs):
     global _client
     from dask.distributed import Client
+
     _client = Client(*args, **kwargs)
 
 
@@ -89,7 +104,9 @@ def parallel(method):
                 **{key: astensor(arg) for key, arg in kwargs.items()},
             )
         args = [
-            arg if isinstance(arg, Fork) else Fork(**{branch: arg for branch in branches})
+            arg
+            if isinstance(arg, Fork)
+            else Fork(**{branch: arg for branch in branches})
             for arg in args
         ]
         kwargs = {
@@ -105,14 +122,16 @@ def parallel(method):
             submitted = {
                 branch: _client.submit(
                     method,
-                    *(astensor(arg._branches[branch]) for arg in args),
+                    *(_client.submit(astensor, arg._branches[branch]) for arg in args),
                     **{
-                        key: branch if key == "branch" else astensor(arg._branches[branch])
+                        key: branch
+                        if key == "branch"
+                        else _client.submit(astensor, arg._branches[branch])
                         for key, arg in kwargs.items()
                     },
                     workers=branch,
                     allow_other_workers=True,
-                    pure=False
+                    pure=False,
                 )
                 for branch in branches
             }
@@ -141,11 +160,13 @@ def parallel_primitive(method):
         )
         if not branches:
             return method(
-                *args,
-                **kwargs,
+                *((arg) for arg in args),
+                **{key: (arg) for key, arg in kwargs.items()},
             )
         args = [
-            arg if isinstance(arg, Fork) else Fork(**{branch: arg for branch in branches})
+            arg
+            if isinstance(arg, Fork)
+            else Fork(**{branch: arg for branch in branches})
             for arg in args
         ]
         kwargs = {
@@ -158,18 +179,24 @@ def parallel_primitive(method):
             argnames = inspect.getfullargspec(method)[0]
             if "branch" not in kwargs and "branch" in argnames:
                 kwargs["branch"] = None
-            return Fork(
-                **{
-                    branch: method(
-                        *((arg._branches[branch]) for arg in args),
-                        **{
-                            key: branch if key == "branch" else (arg._branches[branch])
-                            for key, arg in kwargs.items()
-                        },
-                    )
-                    for branch in branches
-                }
-            )
+            submitted = {
+                branch: _client.submit(
+                    method,
+                    *((arg._branches[branch]) for arg in args),
+                    **{
+                        key: branch
+                        if key == "branch"
+                        else (arg._branches[branch])
+                        for key, arg in kwargs.items()
+                    },
+                    workers=branch,
+                    allow_other_workers=True,
+                    pure=False,
+                )
+                for branch in branches
+            }
+            submitted = {branch: value for branch, value in submitted.items()}
+            return Fork(**submitted)
         except KeyError as e:
             raise KeyError(
                 "One of the Modal inputs is missing a "
