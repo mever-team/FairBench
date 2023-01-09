@@ -1,7 +1,8 @@
 import fairbench as fb
 import numpy as np
-from sklearn.linear_branchl import LogisticRegression
+from sklearn.linear_model import LogisticRegression
 from sklearn.neural_network import MLPClassifier
+from timeit import default_timer as time
 
 
 def load():
@@ -11,15 +12,20 @@ def load():
     return x, y, s
 
 
-x, y, s = load()
-x, y, s = np.array(x), np.array(y), np.array(s)
-s2 = [0, 1, 1, 0, 0, 1, 0, 1]
-s2 = np.array(s2)
+if __name__ == '__main__':  # this is necessary to instantiate the distributed environment
+    tic = time()
+    fb.distributed()
 
-sensitive = fb.Fork(case1=s, case2=s2)
-classifier = fb.Fork(case1=LogisticRegression(), case2=MLPClassifier())
-classifier = classifier.fit(x, y)
-yhat = classifier.predict(x)
-yhat = (yhat.case1+yhat.case2)/2
+    x, y, s = load()
+    x, y, s = np.array(x), np.array(y), np.array(s)
+    s2 = [0, 1, 1, 0, 0, 1, 0, 1]
+    s2 = np.array(s2)
 
-fb.describe(fb.report(predictions=yhat, labels=y, sensitive=sensitive))
+    sensitive = fb.Fork(case1=s, case2=s2)
+    classifier = fb.Fork(case1=LogisticRegression(), case2=MLPClassifier())
+    classifier = classifier.fit(x, y)
+    yhat = classifier.predict(x)
+    yhat = (yhat.case1+yhat.case2)/2
+
+    fb.describe(fb.report(predictions=yhat, labels=y, sensitive=sensitive))
+    print('ETA', time()-tic)

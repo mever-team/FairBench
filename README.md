@@ -5,7 +5,7 @@ Bringing together existing and new frameworks for fairness exploration.
 
 **This project is in its pre-alpha phase.**
 
-**Dependencies:** `numpy`,`eagerpy`
+**Dependencies:** `numpy`,`eagerpy`, `dask.distributed` (optional)
 
 ## :rocket: Quickstart
 

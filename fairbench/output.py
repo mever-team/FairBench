@@ -9,7 +9,7 @@ def _is_dict_of_dicts(report):
 
 def tojson(report):
     assert isinstance(report, Fork)
-    report = report.branches
+    report = report.branches()
     data = dict()
     if not _is_dict_of_dicts(report):
         report = {"": report}
