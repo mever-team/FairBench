@@ -5,7 +5,7 @@ Bringing together existing and new frameworks for fairness exploration.
 
 **This project is in its pre-alpha phase.**
 
-**Dependencies:** `numpy`,`eagerpy`, `dask.distributed` (optional)
+**Dependencies:** `numpy`, `eagerpy`, `dask.distributed`, `makefun`, `matplotlib`
 
 
 ## Features
@@ -17,8 +17,9 @@ Bringing together existing and new frameworks for fairness exploration.
 :satellite: Parallel/distributed
 
 ## :rocket: Quickstart
+First, install the framework with: `pip install --upgrade fairbench`
 
-First, let's train a binary classification algorithm:
+Create some binary classification algorithm like the following:
 
 ```python
 import fairbench as fb
@@ -31,7 +32,10 @@ classifier = classifier.fit(x, y)
 yhat = classifier.predict(x)
 ```
 
-Let us now declare some sensitive attribute. We can either use
+The fairness assessment framework can also be used with other 
+machine learning setups: `tensorflow`, `pytorch`, `jax`
+
+We now declare a binary sensitive attribute. We can either use
 a single `sensitive` array or consider multiple such attributes,
 which we se as a variable fork per:
 
@@ -68,5 +72,5 @@ prevent some measure from being evaluated.
 
 
 ## Docs
-[Data branches](docs/branches.md)
+[Data branches](docs/branches.md)<br>
 [Add your own metrics](CONTRIBUTING.md)
