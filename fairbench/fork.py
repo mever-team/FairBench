@@ -19,7 +19,9 @@ class Fork(object):
     def __init__(self, *args, **branches):
         for arg in args:
             if not isinstance(arg, dict):
-                raise TypeError("Forks can only support dicts of branches as positional arguments")
+                raise TypeError(
+                    "Forks can only support dicts of branches as positional arguments"
+                )
             for k, v in arg.items():
                 if k in branches:
                     raise TypeError(f"Branch {k} provided multiple times")
@@ -72,7 +74,7 @@ class _NoClient:  # emulates dask.distributed.Client
         workers=None,
         allow_other_workers=True,
         pure=False,
-        **kwargs
+        **kwargs,
     ):
         assert allow_other_workers
         assert not pure
@@ -145,9 +147,7 @@ def parallel(method):
             submitted = {branch: value for branch, value in submitted.items()}
             return Fork(**submitted)
         except KeyError as e:
-            raise KeyError(
-                str(e)+" not provided for an input"
-            )
+            raise KeyError(str(e) + " not provided for an input")
 
     return wrapper
 
@@ -189,9 +189,7 @@ def parallel_primitive(method):
                     method,
                     *((arg._branches[branch]) for arg in args),
                     **{
-                        key: branch
-                        if key == "branch"
-                        else (arg._branches[branch])
+                        key: branch if key == "branch" else (arg._branches[branch])
                         for key, arg in kwargs.items()
                     },
                     workers=branch,

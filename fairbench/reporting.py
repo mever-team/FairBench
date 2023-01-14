@@ -13,7 +13,9 @@ _found_metrics = MappingProxyType(
 def report(*args, metrics=_found_metrics, **kwargs):
     for arg in args:
         if not isinstance(arg, dict):
-            raise TypeError("Report can only support dicts of arguments as positional arguments")
+            raise TypeError(
+                "Report can only support dicts of arguments as positional arguments"
+            )
         for k, v in arg.items():
             if k in kwargs:
                 raise TypeError(f"Report argument {k} provided multiple times")

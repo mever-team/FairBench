@@ -47,7 +47,7 @@ def visualize(report: Fork):
     i = 1
     for metric in report:
         if metric != "header":
-            plt.subplot(2, len(report)//2, i)
+            plt.subplot(2, len(report) // 2, i)
             for j, case in enumerate(report["header"][1:]):
                 plt.bar(j, report[metric][j])
             plt.xticks(list(range(len(report["header"][1:]))), report["header"][1:])
