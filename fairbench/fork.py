@@ -15,6 +15,14 @@ def astensor(value) -> ep.Tensor:
     return ep.astensor(value).float64()
 
 
+def fromtensor(value):
+    # TODO: maybe applying this as a wrapper to methods instead of submitting to dask can be faster
+    if isinstance(value, ep.Tensor):
+        return value.raw
+
+    return value
+
+
 class Fork(object):
     def __init__(self, *args, **branches):
         for arg in args:
@@ -48,6 +56,45 @@ class Fork(object):
             for branch, value in self._branches.items()
         }
 
+    def __getitem__(self, name):
+        return call(self, "__getitem__", name)
+
+    def __setitem__(self, name, value):
+        return call(self, "__setitem__", name, value)
+
+    def __abs__(self):
+        return call(self, "__abs__")
+
+    def __add__(self, other):
+        return call(self, "__add__", other)
+
+    def __radd__(self, other):
+        return call(self, "__add__", other)
+
+    def __sub__(self, other):
+        return call(self, "__sub__", other)
+
+    def __rsub__(self, other):
+        return call(self, "__rsub__", other)
+
+    def __mul__(self, other):
+        return call(self, "__mul__", other)
+
+    def __rmul__(self, other):
+        return call(self, "__rmul__", other)
+
+    def __truediv__(self, other):
+        return call(self, "__truediv__", other)
+
+    def __rtruediv__(self, other):
+        return call(self, "__rtruediv__", other)
+
+    def __floordiv__(self, other):
+        return call(self, "__floordiv__", other)
+
+    def __rfloordiv__(self, other):
+        return call(self, "__rfloordiv__", other)
+
     def __call__(self, *args, **kwargs):
         return Fork(
             **{
@@ -57,13 +104,9 @@ class Fork(object):
         )
 
     def __repr__(self):
-        return "\n".join(k + ": " + str(v) for k, v in self.branches().items())
-
-    def __or__(self, other):
-        return concat(self, other)
-
-    def __ror__(self, other):
-        return concat(other, self)
+        return "\n".join(
+            k + ": " + str(fromtensor(v)) for k, v in self.branches().items()
+        )
 
 
 class _NoClient:  # emulates dask.distributed.Client
@@ -108,9 +151,11 @@ def parallel(method):
             ]
         )
         if not branches:
-            return method(
-                *(astensor(arg) for arg in args),
-                **{key: astensor(arg) for key, arg in kwargs.items()},
+            return fromtensor(
+                method(
+                    *(astensor(arg) for arg in args),
+                    **{key: astensor(arg) for key, arg in kwargs.items()},
+                )
             )
         args = [
             arg
@@ -130,14 +175,35 @@ def parallel(method):
                 kwargs["branch"] = None
             submitted = {
                 branch: _client.submit(
-                    method,
-                    *(_client.submit(astensor, arg._branches[branch]) for arg in args),
-                    **{
-                        key: branch
-                        if key == "branch"
-                        else _client.submit(astensor, arg._branches[branch])
-                        for key, arg in kwargs.items()
-                    },
+                    fromtensor,
+                    _client.submit(
+                        method,
+                        *(
+                            _client.submit(
+                                astensor,
+                                arg._branches[branch],
+                                workers=branch,
+                                allow_other_workers=True,
+                                pure=False,
+                            )
+                            for arg in args
+                        ),
+                        **{
+                            key: branch
+                            if key == "branch"
+                            else _client.submit(
+                                astensor,
+                                arg._branches[branch],
+                                workers=branch,
+                                allow_other_workers=True,
+                                pure=False,
+                            )
+                            for key, arg in kwargs.items()
+                        },
+                        workers=branch,
+                        allow_other_workers=True,
+                        pure=False,
+                    ),
                     workers=branch,
                     allow_other_workers=True,
                     pure=False,
@@ -208,6 +274,12 @@ def parallel_primitive(method):
             )
 
     return wrapper
+
+
+def combine(fork1: Fork, fork2: Fork):
+    assert isinstance(fork1, Fork)
+    assert isinstance(fork2, Fork)
+    return Fork(fork1._branches | fork2._branches)
 
 
 @parallel_primitive

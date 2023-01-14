@@ -29,7 +29,11 @@ if __name__ == '__main__':  # this is necessary to instantiate the distributed e
 
     vals = None
     vals = fb.concatenate(vals, fb.kwargs(predictions=yhat, labels=y, sensitive=sensitive))
-
-    fb.describe(fb.report(vals))
-    fb.visualize(fb.report(vals))
+    report = fb.report(vals)
+    report = fb.combine(report, fb.reduce(report, fb.max, fb.abs))
+    report["mistreatment"] = report["dfpr"] + report["dfnr"]
+    report.pop("dfpr")
+    report.pop("dfnr")
+    fb.describe(report)
     print('ETA', time()-tic)
+    fb.visualize(report)
