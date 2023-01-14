@@ -16,7 +16,14 @@ def astensor(value) -> ep.Tensor:
 
 
 class Fork(object):
-    def __init__(self, **branches):
+    def __init__(self, *args, **branches):
+        for arg in args:
+            if not isinstance(arg, dict):
+                raise TypeError("Forks can only support dicts of branches as positional arguments")
+            for k, v in arg.items():
+                if k in branches:
+                    raise TypeError(f"Branch {k} provided multiple times")
+                branches[k] = v
         self._branches = branches
 
     def __getattribute__(self, name):
@@ -48,7 +55,7 @@ class Fork(object):
         )
 
     def __repr__(self):
-        return "\n".join(k + ": " + str(v) for k, v in self.branches.items())
+        return "\n".join(k + ": " + str(v) for k, v in self.branches().items())
 
     def __or__(self, other):
         return concat(self, other)
@@ -139,9 +146,7 @@ def parallel(method):
             return Fork(**submitted)
         except KeyError as e:
             raise KeyError(
-                "One of the Modal inputs is missing a "
-                + str(e)
-                + " branch that other inputs have"
+                str(e)+" not provided for an input"
             )
 
     return wrapper
@@ -212,11 +217,6 @@ def call(obj, method, *args, **kwargs):
     if callable(method):
         return method(obj, *args, **kwargs)
     return getattr(obj, method)(*args, **kwargs)
-
-
-@parallel
-def concat(entry1, entry2):
-    return entry1 | entry2
 
 
 """

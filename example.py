@@ -14,11 +14,11 @@ def load():
 
 if __name__ == '__main__':  # this is necessary to instantiate the distributed environment
     tic = time()
-    fb.distributed()
+    #fb.distributed()
 
     x, y, s = load()
     x, y, s = np.array(x), np.array(y), np.array(s)
-    s2 = [0, 1, 1, 0, 0, 1, 0, 1]
+    s2 = [0, 1, 1, 0, 1, 1, 1, 1]
     s2 = np.array(s2)
 
     sensitive = fb.Fork(case1=s, case2=s2)
@@ -27,5 +27,9 @@ if __name__ == '__main__':  # this is necessary to instantiate the distributed e
     yhat = classifier.predict(x)
     yhat = (yhat.case1+yhat.case2)/2
 
-    fb.describe(fb.report(predictions=yhat, labels=y, sensitive=sensitive))
+    vals = None
+    vals = fb.concatenate(vals, fb.kwargs(predictions=yhat, labels=y, sensitive=sensitive))
+    vals = fb.concatenate(vals, fb.kwargs(predictions=yhat, labels=y, sensitive=sensitive))
+
+    fb.describe(fb.report(vals))
     print('ETA', time()-tic)
