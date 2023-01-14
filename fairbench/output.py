@@ -7,7 +7,7 @@ def _is_dict_of_dicts(report):
     return isinstance(report[next(iter(report))], dict)
 
 
-def tojson(report):
+def tojson(report: Fork):
     assert isinstance(report, Fork)
     report = report.branches()
     data = dict()
@@ -29,21 +29,29 @@ def describe(report: Fork, spacing: int = 15):
     if report["header"]:
         ret += " ".join([entry.ljust(spacing) for entry in report["header"]]) + "\n"
     for metric in report:
-        if metric == "header":
-            continue
-        ret += (
-            " ".join(
-                [metric.ljust(spacing)]
-                + [f"{entry:.3f}".ljust(spacing) for entry in report[metric]]
+        if metric != "header":
+            ret += (
+                " ".join(
+                    [metric.ljust(spacing)]
+                    + [f"{entry:.3f}".ljust(spacing) for entry in report[metric]]
+                )
+                + "\n"
             )
-            + "\n"
-        )
     print(ret)
 
 
-@parallel
-def visualize(report: dict):
-    for i, key in enumerate(report.keys()):
-        plt.subplot(1, len(report), i + 1)
-        plt.bar([key], [report[key]])
+def visualize(report: Fork):
+    assert isinstance(report, Fork)
+    report = json.loads(tojson(report))
+
+    i = 1
+    for metric in report:
+        if metric != "header":
+            plt.subplot(2, len(report)//2, i)
+            for j, case in enumerate(report["header"][1:]):
+                plt.bar(j, report[metric][j])
+            plt.xticks(list(range(len(report["header"][1:]))), report["header"][1:])
+            plt.title(metric)
+            i += 1
+    plt.tight_layout()
     plt.show()

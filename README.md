@@ -13,7 +13,7 @@ Bringing together existing and new frameworks for fairness exploration.
 :blue_heart: Fairness-aware metrics <br>
 :checkered_flag: Multi-modal and multi-objective <br>
 :chart_with_upwards_trend: Reporting<br>
-:wrench: Backpropagatable <br>
+:wrench: Backpropagateable <br>
 :satellite: Parallel/distributed
 
 ## :rocket: Quickstart
@@ -22,7 +22,6 @@ First, install the framework with: `pip install --upgrade fairbench`
 Create some binary classification algorithm like the following:
 
 ```python
-import fairbench as fb
 from sklearn.linear_model import LogisticRegression
 
 x, y = ...
@@ -37,9 +36,11 @@ machine learning setups: `tensorflow`, `pytorch`, `jax`
 
 We now declare a binary sensitive attribute. We can either use
 a single `sensitive` array or consider multiple such attributes,
-which we se as a variable fork per:
+which we se as a data fork per:
 
 ```python
+import fairbench as fb
+
 sensitive1, sensitive2 = ...
 sensitive = fb.Fork(case1=sensitive1, case2=sensitive2)
 ```
@@ -47,7 +48,8 @@ sensitive = fb.Fork(case1=sensitive1, case2=sensitive2)
 Variable forks create branches of calculations that are computed
 in parallel. Non-forked variables (i.e., of normal Python)
 are used by all branches of computations, but forked variables
-retain different values per branch.
+retain different values per branch. More details on forks and branches, 
+including generation from dicts, can be found [here](docs/branches.md).
 
 After declaring the protected attribute, we generate a
 report on the branch's fairness and print it per:
@@ -67,10 +69,19 @@ dfpr            0.071           -0.100
 prule           0.571           0.833    
 ```
 
-:warning: Omitting some arguments from the report will 
-prevent some measure from being evaluated.
+Omitting some arguments from the report will 
+prevent some measures that depend on them 
+from being evaluated. The generated report can also 
+be visualized, exported as *json*,
+or be constrained to specific metrics. These functionalities
+are described [here](docs/reports.md). You can also 
+compute standalone [metrics](docs/metrics.md),
+for instance to use them as backpropagateable 
+machine learning regularization terms.
 
 
 ## Docs
-[Data branches](docs/branches.md)<br>
+[Variable branches](docs/branches.md)<br>
+[Working with reports](docs/reports.md)<br>
+[Available metrics](docs/metrics.md)<br>
 [Add your own metrics](CONTRIBUTING.md)

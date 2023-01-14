@@ -19,8 +19,6 @@ def report(*args, metrics=_found_metrics, **kwargs):
                 raise TypeError(f"Report argument {k} provided multiple times")
             kwargs[k] = v
 
-    print(kwargs)
-
     ret = dict()
     for name, metric in metrics.items():
         if name == "framework" or name == "parallel":
