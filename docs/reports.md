@@ -10,16 +10,14 @@ of the `fairbench.report(...)` function:
 
 You can use variable [forks](branches.md)
 to handle multi-attribute values.
-
 :warning: For the time being, you need
 to create a different branch for each
 sensitive and predictive attribute
-combination, but this will likely change
-in the future.
-
+combination, but this will likely be
+automated in the future.
 As an example, let's create a simple report
-based on binary predictions `yhat`, binary
-ideal predictions `y` and multiclass
+based on binary predictions, binary
+ideal predictions and multiclass
 sensitive attribute `sensitive`, which is
 declared to be a fork with two branches
 *case1,case2*, each of which is a binary
@@ -28,16 +26,13 @@ feature value per:
 ```python
 import fairbench as fb
 
-yhat = ...
-y = ...
 sensitive = fb.Fork(case1=..., case2=...)
-
-report = fb.report(predictions=yhat, labels=y, sensitive=sensitive)
+report = fb.report(predictions=..., labels=..., sensitive=sensitive)
 ```
 
 The report is actually a fork for each data branch
 (for case1 and case2) that holds a dictionary of
-metrics. `FairBench` provides several methods to
+metric results. Several methods are provided to
 work with this data format. First, you can print 
 the report on the *stdout* console:
 
