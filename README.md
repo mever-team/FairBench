@@ -92,6 +92,6 @@ documentation metnioned above.
 
 ## Docs
 [Variable branches](docs/branches.md)<br>
-[Working with reports](docs/reports.md)<br>
+[Reports](docs/reports.md)<br>
 [Available metrics](docs/metrics.md)<br>
 [Add your own metrics](CONTRIBUTING.md)

@@ -1,4 +1,4 @@
-from fairbench.fork import parallel
+from fairbench.forks.fork import parallel, parallel_primitive
 import eagerpy as ep
 
 
@@ -8,20 +8,21 @@ and use the final output in one report at the end.
 """
 
 
-@parallel
+@parallel_primitive
 def kwargs(**kwargs):
     if not kwargs:
         return None
     return kwargs
 
 
-@parallel
-def concatenate(data1, data2):
-    if data1 is None:
-        return data2
-    if data2 is None:
-        return data1
-    assert isinstance(data1, dict) == isinstance(data2, dict)
-    if isinstance(data1, dict):
-        return {k: ep.concatenate([data1[k], data2[k]]) for k in data1}
-    return ep.concatenate([data1, data2])
+@parallel_primitive
+def concatenate(*data):
+    data = [d for d in data if d is not None]
+    if len(data) == 1:
+        return data[0]
+    isdict = isinstance(data[0], dict)
+    for d in data:
+        assert isinstance(d, dict) == isdict
+    if isdict:
+        return {k: ep.concatenate([d[k] for d in data]) for k in data[0]}
+    return ep.concatenate(data)

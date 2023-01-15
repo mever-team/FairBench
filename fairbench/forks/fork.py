@@ -4,7 +4,9 @@ import numpy as np
 import inspect
 
 
-def astensor(value) -> ep.Tensor:
+def astensor(value, _allow_explanation=False) -> ep.Tensor:
+    if value.__class__.__name__ == "Explainable" and not _allow_explanation:
+        value = value.value
     if (
         "tensor" not in value.__class__.__name__.lower()
         and "array" not in value.__class__.__name__.lower()
@@ -12,7 +14,7 @@ def astensor(value) -> ep.Tensor:
         return value
     if isinstance(value, list):
         value = np.array(value, dtype=np.float)
-    return ep.astensor(value).float64()
+    return ep.astensor(value).flatten().float64()
 
 
 def fromtensor(value):
@@ -50,11 +52,65 @@ class Fork(object):
 
         return method
 
-    def branches(self):
+    def branches(self, branch_names=None, zero_mask=False):
         return {
-            branch: value.result() if value.__class__.__name__ == "Future" else value
+            branch: (value.result() if value.__class__.__name__ == "Future" else value)
+            if branch_names is None or not zero_mask or branch in branch_names
+            else (value.result() if value.__class__.__name__ == "Future" else value) * 0
             for branch, value in self._branches.items()
+            if branch_names is None or zero_mask or branch in branch_names
         }
+
+    def withcomplements(self):
+        # find missing branch complements
+        branches = self.branches()
+        new_branches = dict()
+        for branch in branches:
+            has_complement = False
+            for branch2 in branches:
+                if (
+                    astensor(branches[branch]).abs()
+                    - 1
+                    + astensor(branches[branch2]).abs()
+                ).abs().sum() == 0:
+                    has_complement = True
+                    break
+            if not has_complement:
+                new_branches[branch + "'"] = 1 - branches[branch]
+        return Fork(branches | new_branches)
+
+    def intersections(self):
+        # get branches
+        branches = self.branches()
+        ids2names = dict(enumerate(branches))
+        vec = [0] * len(branches)
+        while True:
+            # iterate through all different combinations
+            vec[-1] += 1
+            j = len(vec) - 1
+            while j > 0 and vec[j] > 1:
+                vec[j] = 0
+                vec[j - 1] += 1
+                j -= 1
+            if j == 0 and vec[0] > 1:
+                break
+            candidates = [ids2names[i] for i in range(len(vec)) if vec[i] != 0]
+            yield candidates
+
+    def intersectional(self):
+        # get branches
+        branches = self.branches()
+        new_branches = dict()
+        for candidates in self.intersections():
+            new_mask = 1
+            for branch in candidates:
+                new_mask = branches[branch] * new_mask
+            if astensor(new_mask).abs().sum() == 0:
+                continue
+            new_branches[
+                ("&".join(candidates)) if len(candidates) > 1 else candidates[0]
+            ] = new_mask
+        return Fork(new_branches)
 
     def __getitem__(self, name):
         return call(self, "__getitem__", name)
@@ -94,6 +150,12 @@ class Fork(object):
 
     def __rfloordiv__(self, other):
         return call(self, "__rfloordiv__", other)
+
+    def __or__(self, other):
+        return call(self, "__or__", other)
+
+    def __ror__(self, other):
+        return call(self, "__ror__", other)
 
     def __call__(self, *args, **kwargs):
         return Fork(

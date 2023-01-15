@@ -1,4 +1,4 @@
-from fairbench.fork import parallel
+from fairbench.forks.fork import parallel
 import scipy, numpy as np
 
 

@@ -1,4 +1,4 @@
-from fairbench.fork import parallel, Fork
+from fairbench.forks.fork import Fork
 from matplotlib import pyplot as plt
 import json
 
@@ -12,7 +12,7 @@ def tojson(report: Fork):
     report = report.branches()
     data = dict()
     if not _is_dict_of_dicts(report):
-        report = {"": report}
+        report = {k: {"": v} for k, v in report.items()}
     data["header"] = ["Metric"] + [key for key in report]
     for value in report.values():
         for metric in value:
