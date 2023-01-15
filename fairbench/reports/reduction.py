@@ -28,6 +28,18 @@ def mean(values: Iterable[ep.Tensor]) -> ep.Tensor:
     return sum(values) / len(values)
 
 
+def gm(values: Iterable[ep.Tensor]) -> ep.Tensor:
+    if not isinstance(values, list):
+        raise TypeError(
+            "Can only reduce lists with fairbench.mean. Maybe you meant to use eagerpy.mean?"
+        )
+
+    ret = 1
+    for value in values:
+        ret = ret * value
+    return ret ** (1.0 / len(values))
+
+
 def max(values: Iterable[ep.Tensor]) -> ep.Tensor:
     if not isinstance(values, list):
         raise TypeError(
@@ -38,6 +50,16 @@ def max(values: Iterable[ep.Tensor]) -> ep.Tensor:
         if value > ret:
             ret = value
     return ret
+
+
+def budget(values: Iterable[ep.Tensor]) -> ep.Tensor:
+    if not isinstance(values, list):
+        raise TypeError(
+            "Can only reduce lists with fairbench.min. Maybe you meant to use eagerpy.min?"
+        )
+    from math import log  # TODO: make this compatible with backpropagation
+
+    return log(float(max(values)))
 
 
 def min(values: Iterable[ep.Tensor]) -> ep.Tensor:
@@ -52,9 +74,23 @@ def min(values: Iterable[ep.Tensor]) -> ep.Tensor:
     return ret
 
 
-def reduce(fork: Fork, method=mean, transform=None, branches=None, name=None):
+def ratio(values: Iterable[ep.Tensor]) -> Iterable[ep.Tensor]:
+    if not isinstance(values, list):
+        raise TypeError("Can only reduce lists with fairbench.ratio.")
+    return [value1 / value2 for value1 in values for value2 in values if value2 != 0]
+
+
+def diff(values: Iterable[ep.Tensor]) -> Iterable[ep.Tensor]:
+    if not isinstance(values, list):
+        raise TypeError("Can only reduce lists with fairbench.diff.")
+    return [abs(value1 - value2) for value1 in values for value2 in values]
+
+
+def reduce(fork: Fork, method, expand=None, transform=None, branches=None, name=None):
     if name is None:
         name = method.__name__
+        if expand is not None:
+            name += expand.__name__
         if transform is not None:
             name += transform.__name__
         if branches is not None:
@@ -70,6 +106,12 @@ def reduce(fork: Fork, method=mean, transform=None, branches=None, name=None):
                 fields[f].append((v[f]) if transform is None else transform((v[f])))
         else:
             fields.append((v) if transform is None else transform((v[v])))
+    if expand is not None:
+        fields = (
+            {k: expand(v) for k, v in fields.items()}
+            if isinstance(fields, dict)
+            else expand(fields)
+        )
     result = (
         {k: (method(v)) for k, v in fields.items()}
         if isinstance(fields, dict)

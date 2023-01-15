@@ -276,10 +276,12 @@ def parallel_primitive(method):
     return wrapper
 
 
-def combine(fork1: Fork, fork2: Fork):
-    assert isinstance(fork1, Fork)
-    assert isinstance(fork2, Fork)
-    return Fork(fork1._branches | fork2._branches)
+def combine(*args):
+    ret = {}
+    for arg in args:
+        assert isinstance(arg, Fork)
+        ret |= arg._branches
+    return Fork(ret)
 
 
 @parallel_primitive

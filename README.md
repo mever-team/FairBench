@@ -3,7 +3,7 @@
 
 Bringing together existing and new frameworks for fairness exploration.
 
-**This project is in its pre-alpha phase.**
+**This project is in its alpha phase.**
 
 **Dependencies:** `numpy`, `eagerpy`, `dask.distributed`, `makefun`, `matplotlib`
 
@@ -52,10 +52,11 @@ retain different values per branch. More details on forks and branches,
 including generation from dicts, can be found [here](docs/branches.md).
 
 After declaring the protected attribute, we generate a
-report on the branch's fairness and print it per:
+binary assessment on each branch's fairness 
+and print it per:
 
 ```python
-report = fb.report(predictions=yhat, labels=y, sensitive=sensitive)
+report = fb.binreport(predictions=yhat, labels=y, sensitive=sensitive)
 fb.describe(report)
 ```
 
@@ -63,21 +64,30 @@ A different value is printed per branch:
 
 ```
                 case1           case2          
-accuracy        0.938           0.938           
-dfnr            0.500           -0.167          
-dfpr            0.071           -0.100          
-prule           0.571           0.833    
+accuracy        0.938           0.938          
+prule           0.571           0.571          
+dfpr            -0.071          0.071          
+dfnr            -0.500          0.500  
 ```
 
 Omitting some arguments from the report will 
 prevent some measures that depend on them 
 from being evaluated. The generated report can also 
 be visualized, exported as *json*,
-or be constrained to specific metrics. These functionalities
-are described [here](docs/reports.md). You can also 
-compute standalone [metrics](docs/metrics.md),
+or be constrained to specific metrics. These 
+functionalities, alongside true multi-attribute
+fairness and customized reports
+are described [here](docs/reports.md). 
+You can also compute standalone [metrics](docs/metrics.md),
 for instance to use them as backpropagateable 
 machine learning regularization terms.
+
+:warning: Prefer calling `fairbench.multireport` for
+fairness reporting that does **NOT treat branches independently**.
+That reporting hides original branches, performs reductions
+to summarize performance and notions of fairness,
+and compares branches between themselves. See the report
+documentation metnioned above.
 
 
 ## Docs

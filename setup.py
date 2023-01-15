@@ -12,7 +12,7 @@ long_description = "For tutorials, documentation, and contribution guidelines, p
 
 setuptools.setup(
     name='fairbench',
-    version='0.0.4',
+    version='0.1.0',
     author="Emmanouil (Manios) Krasanakis",
     author_email="maniospas@hotmail.com",
     description="Fairness model assessment framework",

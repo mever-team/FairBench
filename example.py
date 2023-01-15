@@ -29,11 +29,20 @@ if __name__ == '__main__':  # this is necessary to instantiate the distributed e
 
     vals = None
     vals = fb.concatenate(vals, fb.kwargs(predictions=yhat, labels=y, sensitive=sensitive))
-    report = fb.report(vals)
-    report = fb.combine(report, fb.reduce(report, fb.max, fb.abs))
-    report["mistreatment"] = report["dfpr"] + report["dfnr"]
-    report.pop("dfpr")
-    report.pop("dfnr")
+
+    """
+    report = fb.multireport(vals)
+    print(fb.tojson(report))
     fb.describe(report)
     print('ETA', time()-tic)
     fb.visualize(report)
+    """
+
+    report = fb.accreport(vals)
+
+    mean_across_branches = fb.reduce(report, fb.mean, name="avg")
+    max_abs_across_branches = fb.reduce(report, fb.budget, expand=fb.ratio, transform=fb.abs)
+    new_report = fb.combine(report, mean_across_branches, max_abs_across_branches)
+
+    fb.describe(new_report)
+

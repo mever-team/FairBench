@@ -1,16 +1,10 @@
 from fairbench.fork import parallel
-from inspect import getmembers, isfunction
 import inspect
-from fairbench import metrics as metric_package
-from types import MappingProxyType
-
-_found_metrics = MappingProxyType(
-    dict(getmembers(metric_package, isfunction))
-)  # creates an immutable map
+from typing import Union, Iterable
 
 
 @parallel
-def report(*args, metrics=_found_metrics, **kwargs):
+def report(*args, metrics: Union[Iterable, dict] = None, **kwargs):
     for arg in args:
         if not isinstance(arg, dict):
             raise TypeError(
@@ -20,7 +14,12 @@ def report(*args, metrics=_found_metrics, **kwargs):
             if k in kwargs:
                 raise TypeError(f"Report argument {k} provided multiple times")
             kwargs[k] = v
-
+    if metrics is None:
+        raise Exception(
+            "Cannot use fairbench.report() without explicitly declared metrics.\nUse fairbench.binreport or fairbench.multireport as ad-hoc report generation mechanisms."
+        )
+    if not isinstance(metrics, dict):
+        metrics = {metric.__name__: metric for metric in metrics}
     ret = dict()
     for name, metric in metrics.items():
         if name == "framework" or name == "parallel":
