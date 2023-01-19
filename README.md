@@ -16,7 +16,7 @@ Bringing together existing and new frameworks for fairness exploration.
 :wrench: Backpropagateable <br>
 :satellite: Parallel/distributed
 
-## :rocket: Quickstart
+## Quickstart
 First, install the framework with: `pip install --upgrade fairbench`
 
 Create some binary classification algorithm like the following:
@@ -36,7 +36,7 @@ machine learning setups: `tensorflow`, `pytorch`, `jax`
 
 We now declare a binary sensitive attribute. We can either use
 a single `sensitive` array or consider multiple such attributes,
-which we se as a data fork per:
+which we set as a data fork per:
 
 ```python
 import fairbench as fb

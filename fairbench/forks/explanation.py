@@ -1,4 +1,11 @@
 from typing import Any
+import eagerpy as ep
+
+
+def tofloat(value):
+    if isinstance(value, ep.Tensor):
+        return float(value.raw)
+    return float(value)
 
 
 class Explainable:
@@ -18,7 +25,7 @@ class Explainable:
             raise Exception("Cannot create explainable with both kwargs and a Fork")
 
     def __float__(self):
-        return float(self.value)
+        return tofloat(self.value)
 
     def numpy(self):
         return self.value.numpy()

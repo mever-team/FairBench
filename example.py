@@ -1,8 +1,12 @@
+import fairbench
 import fairbench as fb
 import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.neural_network import MLPClassifier
 from timeit import default_timer as time
+import torch
+
+fairbench.setbackend("torch")
 
 
 def load():
@@ -17,7 +21,7 @@ if __name__ == '__main__':  # this is necessary to instantiate the distributed e
     #fb.distributed()
 
     x, y, s = load()
-    x, y, s = np.array(x), np.array(y), np.array(s)
+    x, y, s = torch.from_numpy(np.array(x)), torch.from_numpy(np.array(y)), torch.from_numpy(np.array(s))
     s2 = [0, 1, 1, 1, 1, 1, 1, 1]
     s2 = np.array(s2)
 
@@ -29,9 +33,14 @@ if __name__ == '__main__':  # this is necessary to instantiate the distributed e
     vals = None
     vals = fb.concatenate(vals, fb.kwargs(predictions=yhat, labels=y, sensitive=sensitive))
 
-    report = fb.isecreport(vals)
-    fb.describe(report)
     print('ETA', time()-tic)
+
+    #report = fb.isecreport(vals)
+    #fb.visualize(report)
+    #fb.visualize(report.bayesian["minprule"].explain)
+
+    report = fb.multireport(vals)
+    fb.describe(report)
     fb.visualize(report)
-    fb.visualize(report.bayesian["minprule"].explain)
+    fb.visualize(report.mean["accuracy"].explain)
 

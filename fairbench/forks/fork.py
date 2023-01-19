@@ -2,6 +2,39 @@ from makefun import wraps
 import eagerpy as ep
 import numpy as np
 import inspect
+import sys
+
+_backend = "numpy"
+
+
+def setbackend(backend_name: str):
+    assert backend_name in ["torch", "tensorflow", "jax", "numpy"]
+    global _backend
+    _backend = backend_name
+
+
+def tobackend(value):
+    global _backend
+    name = type(value.raw if isinstance(value, ep.Tensor) else value).__module__.split(".")[0]
+    m = sys.modules
+    if name != _backend:
+        value = value.raw if isinstance(value, ep.Tensor) else value
+        if name == "torch" and isinstance(value, m[name].Tensor):  # type: ignore
+            value = value.detach().numpy()
+        elif name == "tensorflow" and isinstance(value, m[name].Tensor):  # type: ignore
+            value = value.numpy()
+        if (name == "jax" or name == "jaxlib") and isinstance(value, m["jax"].numpy.ndarray):  # type: ignore
+            value = np.array(value)
+        if _backend == "torch":
+            import torch
+            value = torch.from_numpy(value)
+        elif _backend == "tensorflow":
+            import tensorflow
+            value = tensorflow.convert_to_tensor(value)
+        elif _backend == "jax":
+            import jax.numpy as jnp
+            value = jnp.array(value)
+    return ep.astensor(value)
 
 
 def astensor(value, _allow_explanation=False) -> ep.Tensor:
@@ -14,8 +47,10 @@ def astensor(value, _allow_explanation=False) -> ep.Tensor:
         return value
     if isinstance(value, list):
         value = np.array(value, dtype=np.float)
-    return ep.astensor(value).flatten().float64()
-
+    value = tobackend(value)
+    if value.ndim != 0:
+        value = value.flatten()
+    return value.float64()
 
 def fromtensor(value):
     # TODO: maybe applying this as a wrapper to methods instead of submitting to dask can be faster

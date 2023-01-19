@@ -1,6 +1,7 @@
 from fairbench.forks.fork import Fork
 from matplotlib import pyplot as plt
 import json
+from fairbench.forks.explanation import tofloat
 
 
 def _is_dict_of_dicts(report):
@@ -18,7 +19,7 @@ def tojson(report: Fork):
         for metric in value:
             if metric not in data:
                 data[metric] = list()
-            data[metric].append(float(f"{value[metric]}"))
+            data[metric].append(tofloat(value[metric]))
     return json.dumps(data)
 
 
