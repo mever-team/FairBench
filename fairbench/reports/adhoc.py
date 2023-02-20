@@ -6,28 +6,19 @@ from fairbench.reports.surrogate import surrogate_positives
 from fairbench import metrics
 
 
-def accreport(*args, **kwargs):
-    return report(
-        *args,
-        metrics=(metrics.accuracy, metrics.pr, metrics.tpr, metrics.tnr),
-        **kwargs
-    )
+common_metrics = (metrics.accuracy, metrics.prule, metrics.dfpr, metrics.dfnr)
 
 
-def binreport(*args, **kwargs):
-    return report(
-        *args,
-        metrics=(metrics.accuracy, metrics.prule, metrics.dfpr, metrics.dfnr),
-        **kwargs
-    )
+def accreport(*args, metrics=common_metrics, **kwargs):
+    return report(*args, metrics=metrics, **kwargs)
 
 
-def multireport(*args, **kwargs):
-    base = report(
-        *args,
-        metrics=(metrics.accuracy, metrics.pr, metrics.tpr, metrics.tnr),
-        **kwargs
-    )
+def binreport(*args, metrics=common_metrics, **kwargs):
+    return report(*args, metrics=metrics, **kwargs)
+
+
+def multireport(*args, metrics=common_metrics, **kwargs):
+    base = report(*args, metrics=metrics, **kwargs)
     return combine(
         fb.reduce(base, fb.mean),
         fb.reduce(base, fb.min, expand=fb.ratio),
@@ -36,10 +27,13 @@ def multireport(*args, **kwargs):
 
 
 def isecreport(*args, **kwargs):
-    params = dict()
-    for arg in args:
-        params = params | arg
-    params = params | kwargs
+    if len(args) == 0:
+        params = tokwargs(**kwargs)
+    else:
+        params = dict()
+        for arg in args:
+            params = params | arg
+        params = params | kwargs
 
     bayesian = fb.reduce(
         surrogate_positives(params["predictions"], params["sensitive"]),

@@ -40,6 +40,37 @@ without good reason, as it reduces computational equivalence
 between environments.
 
 :bulb: If your metric should behave differently for different 
-data branches, add a `branch=None` default argument in its
-definition to get that branch.
+data branches, add a `branch: str = None` default argument in its
+definition to get the branch name.
 
+## Create new reduction strategies
+Reduction strategies follow three steps: transformation,
+expansion, and reduction. To see how to orchestrate
+these components, read [here](docs/reports.md) .
+
+
+Expansion methods can be found
+in the `fairbench.reports.reduction.expanders` module
+and should transform a list into a (typically longer)
+new list that stores the outcome of comparing the elements
+of the original list, for instance pairwise. Start
+by enriching the following expander definition:
+
+```python
+def expander(values: Iterable[ep.Tensor]) -> Iterable[ep.Tensor]:
+    assert isinstance(values, list)
+    return ... # a symmetric transformation of the first list here
+```
+
+Reducers take lists of values, such as lists produced by
+and expander, and perform an aggregation strategy to summarize
+it into one float value. Take care for your computations
+to be backpropagateable. Add reducers in the 
+`fairbench.reports.reduction.reducers` module and start
+by enriching the following definition:
+
+```python
+def reducer(values: Iterable[ep.Tensor]) -> ep.Tensor:
+    assert isinstance(values, list)
+    return ... # float value that aggregates the list's elements
+```

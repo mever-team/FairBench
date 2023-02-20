@@ -17,6 +17,7 @@ class Explainable:
         self.desc = desc
         if (
             not isinstance(value, float)
+            and not isinstance(value, int)
             and "tensor" not in value.__class__.__name__.lower()
             and "array" not in value.__class__.__name__
         ):

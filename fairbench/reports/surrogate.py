@@ -1,11 +1,11 @@
 from fairbench.reports import reduce, todata, identical
-from fairbench.forks.fork import Fork
+from fairbench.forks.fork import Fork, multibranch_tensors
 from sklearn.linear_model import LogisticRegression
 import numpy as np
 
 
+@multibranch_tensors
 def surrogate_positives(predictions, sensitive, surrogate_model=LogisticRegression()):
-    assert isinstance(sensitive, Fork)
     predictions = np.round(reduce(predictions, identical, name=None).numpy())
     X = reduce(sensitive, todata, name=None).numpy()
     surrogate_model = surrogate_model.fit(X, predictions)

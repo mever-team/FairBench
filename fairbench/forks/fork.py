@@ -42,6 +42,17 @@ def tobackend(value):
     return ep.astensor(value)
 
 
+def istensor(value, _allow_explanation=False) -> bool:
+    if value.__class__.__name__ == "Explainable" and not _allow_explanation:
+        value = value.value
+    if (
+        "tensor" not in value.__class__.__name__.lower()
+        and "array" not in value.__class__.__name__.lower()
+    ):
+        return False
+    return True
+
+
 def astensor(value, _allow_explanation=False) -> ep.Tensor:
     if value.__class__.__name__ == "Explainable" and not _allow_explanation:
         value = value.value
@@ -71,7 +82,7 @@ class Fork(object):
         for arg in args:
             if not isinstance(arg, dict):
                 raise TypeError(
-                    "Forks can only support dicts of branches as positional arguments"
+                    "Forks can only support dicts (holding branch values) as positional arguments"
                 )
             for k, v in arg.items():
                 if k in branches:
@@ -375,6 +386,38 @@ def parallel_primitive(method):
                 + str(e)
                 + " branch that other inputs have"
             )
+
+    return wrapper
+
+
+def multibranch_tensors(method):
+    @wraps(method)
+    def wrapper(*args, **kwargs):
+        branches = set(
+            [
+                branch
+                for arg in list(args) + list(kwargs.values())
+                if isinstance(arg, Fork)
+                for branch in arg._branches
+            ]
+        )
+        if not branches:
+            raise Exception(
+                f"Method {method} annotated as @multibranch_tensors and requires at least one Fork input"
+            )
+        args = [
+            arg
+            if isinstance(arg, Fork) or not istensor(arg, True)
+            else Fork(**{branch: astensor(arg) for branch in branches})
+            for arg in args
+        ]
+        kwargs = {
+            key: arg
+            if isinstance(arg, Fork) or not istensor(arg)
+            else Fork(**{branch: astensor(arg) for branch in branches})
+            for key, arg in kwargs.items()
+        }
+        return method(*args, **kwargs)
 
     return wrapper
 

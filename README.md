@@ -5,7 +5,7 @@ Bringing together existing and new frameworks for fairness exploration.
 
 **This project is in its alpha phase.**
 
-**Dependencies:** `numpy`, `eagerpy`, `dask.distributed`, `makefun`, `matplotlib`
+**Dependencies:** `numpy`,`eagerpy`,`dask.distributed`,`makefun`,`matplotlib`
 
 
 ## Features
@@ -19,7 +19,8 @@ Bringing together existing and new frameworks for fairness exploration.
 ## Quickstart
 First, install the framework with: `pip install --upgrade fairbench`
 
-Create some binary classification algorithm like the following:
+Let's investigate the fairness of a binary classification algorithm,
+like the following:
 
 ```python
 from sklearn.linear_model import LogisticRegression
@@ -31,12 +32,12 @@ classifier = classifier.fit(x, y)
 yhat = classifier.predict(x)
 ```
 
-The fairness assessment framework can also be used with other 
+The framework can also be used with other 
 machine learning setups: `tensorflow`, `pytorch`, `jax`
 
-We now declare a binary sensitive attribute. We can either use
+Declare a binary sensitive attribute; either use
 a single `sensitive` array or consider multiple such attributes,
-which we set as a data fork per:
+which should be set as a data fork per:
 
 ```python
 import fairbench as fb
@@ -51,7 +52,7 @@ are used by all branches of computations, but forked variables
 retain different values per branch. More details on forks and branches, 
 including generation from dicts, can be found [here](docs/branches.md).
 
-After declaring the protected attribute, we generate a
+After declaring the protected attribute, generate a
 binary assessment on each branch's fairness 
 and print it per:
 
@@ -87,7 +88,7 @@ fairness reporting that does **NOT treat branches independently**.
 That reporting hides original branches, performs reductions
 to summarize performance and notions of fairness,
 and compares branches between themselves. See the report
-documentation metnioned above.
+documentation mentioned above.
 
 
 ## Docs
