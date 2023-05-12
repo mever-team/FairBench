@@ -4,6 +4,7 @@
 2. [Viewing reports](#viewing-reports)
 3. [Editing reports](#editing-reports)
 4. [Explaining report values](#explaining-report-values)
+5. [Buffering batch predictions](#buffering-batch-predictions)
 
 ## Generating reports
 
@@ -212,4 +213,25 @@ minprule        0.857           0.853
 
 Metric          case1           case2           case2,case1    
                 0.729           0.706           0.827     
+```
+
+
+## Buffering batch predictions
+When training machine learning algorithms, you may want
+to concatenate the same variable generated across 
+several batches. This can be used by calling
+`fairbench.kwargs` to convert a set of keyword arguments
+to a fork of dictionaries. Entries of such forks (e.g.,
+`predictions` in the example below) can be concatenated
+via a namesake method. Concatenate such dictionaries
+with previous concatenation outcomes to generate a
+dictionary of keyword arguments to pass to reports like so:
+
+
+```python
+data = None
+for batch in range(batches):
+    yhat, y, sensitive = ...  # compute for the batch
+    data = fb.concatenate(data, fb.kwargs(predictions=yhat, labels=y, sensitive=sensitive))
+report = fb.binreport(data)
 ```

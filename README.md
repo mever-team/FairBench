@@ -49,7 +49,9 @@ sensitive = fb.Fork(case1=sensitive1, case2=sensitive2)
 Variable forks create branches of calculations that are computed
 in parallel. Non-forked variables (i.e., of normal Python)
 are used by all branches of computations, but forked variables
-retain different values per branch. More details on forks and branches, 
+retain different values per branch. You can use any names (instead
+of `case1` and `case2`) for branches, and you can have as many
+as you want. More details on forks and branches, 
 including generation from dicts, can be found [here](docs/branches.md).
 
 After declaring the protected attribute, generate a
