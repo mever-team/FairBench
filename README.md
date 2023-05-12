@@ -96,3 +96,4 @@ documentation mentioned above.
 [Reports](docs/reports.md)<br>
 [Available metrics](docs/metrics.md)<br>
 [Add your own metrics](CONTRIBUTING.md)
+[Distributed execution](docs/distributed.md)
