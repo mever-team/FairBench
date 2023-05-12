@@ -95,5 +95,5 @@ documentation mentioned above.
 [Variable branches](docs/branches.md)<br>
 [Reports](docs/reports.md)<br>
 [Available metrics](docs/metrics.md)<br>
-[Add your own metrics](CONTRIBUTING.md)
+[Add your own metrics](CONTRIBUTING.md)<br>
 [Distributed execution](docs/distributed.md)
