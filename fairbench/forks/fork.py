@@ -156,7 +156,7 @@ class Fork(object):
         for candidates in self.intersections():
             new_mask = 1
             for branch in candidates:
-                new_mask = branches[branch] * new_mask
+                new_mask = tobackend(branches[branch]) * new_mask
             if astensor(new_mask).abs().sum() == 0:
                 continue
             new_branches[

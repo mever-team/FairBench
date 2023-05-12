@@ -1,5 +1,10 @@
 # :chart_with_upwards_trend: Reports
 
+1. [Generating reports](#generating-reports)
+2. [Viewing reports](#viewing-reports)
+3. [Editing reports](#editing-reports)
+4. [Explaining report values](#explaining-report-values)
+
 ## Generating reports
 
 You can generate 
@@ -28,7 +33,7 @@ automated in the future.
 Out-of-the box, you can use one of the following three
 report generation methods, which wrap the base
 report generation:
-- `fairbench.accreport` provides popular performance evaluation measures to be viewed between branches.
+- `fairbench.accreport` provides popular performance evaluation measures to be viewed between branches (accuracy, positives, true positive rates, true negative rates). These values are useful to use as input to reductions when [generating reports](#generating-reports).
 - `fairbench.binreport` conducts a suit of popular binary fairness assessments on each variable branch and should be preferred when branches do *not* correspond to mult-attribute fairness.
 - `fairbench.multireport` is ideal for multi-fairness approaches, where the `sensitive` argument is a fork. This report generator performs a lot of the [report editing](#editing-reports) described below to summarize the findings of multi-attribute fairness.
 - `fairbench.isecreport` tackles mult-fairness with many intersectional groups. Its output approximates *multireport* with a Bayesian framework that is applicable even when protected group intersections are too small to yield meaningful predictions.
@@ -149,6 +154,11 @@ report = fb.accreport(predictions=..., labels=..., sensitive=sensitive)
 mean_across_branches = fb.reduce(report, fb.mean, name="avg")
 max_abs_across_branches = fb.reduce(report, fb.budget, expand=fb.ratio, transform=fb.abs)
 ```
+
+:warning: You will typically want to perform custom reductions on
+an *accreport* or a manually generated report for some non-fairness-related
+evaluation measures. You can then combine the outcome of reduction
+with some other report, such as other reduction reports.
  
 Recuction creates new reports that comprise only one branch.
 The branch's name is dynamically derived by parameters 

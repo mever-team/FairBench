@@ -6,7 +6,7 @@ from sklearn.neural_network import MLPClassifier
 from timeit import default_timer as time
 import torch
 
-fairbench.setbackend("torch")
+#fairbench.setbackend("torch")
 
 
 def load():
@@ -23,10 +23,14 @@ if __name__ == '__main__':  # this is necessary to instantiate the distributed e
     x, y, s = load()
     x, y, s = torch.from_numpy(np.array(x)), torch.from_numpy(np.array(y)), torch.from_numpy(np.array(s))
     s2 = [0, 1, 1, 1, 1, 1, 1, 1]
-    s2 = np.array(s2)
+    s3 = np.array(s2)
     #s = 1-s2  # really hard imbalance in the sensitive (isecreport handles this)
     s2 = 1-s
-    sensitive = fb.Fork(males=s, females=s2)
+    sensitive = fb.Fork(gender=s, ehtnicity=s2, ethinicity2=s3)
+
+    print(fb.Fork(gender=s, ehtnicity=s3).intersectional())
+    exit(0)
+
     classifier = LogisticRegression()
     classifier = classifier.fit(x, y)
     yhat = classifier.predict(x)
@@ -42,7 +46,6 @@ if __name__ == '__main__':  # this is necessary to instantiate the distributed e
     fb.visualize(report)
     fb.visualize(report.mean["accuracy"].explain)
 
-    #report = fb.isecreport(vals)
-    #fb.visualize(report)
-    #fb.visualize(report.bayesian["minprule"].explain)
-
+    report = fb.isecreport(vals)
+    fb.visualize(report)
+    fb.visualize(report.bayesian["minprule"].explain)

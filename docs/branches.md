@@ -5,6 +5,9 @@ values, each of which should be treated differently.
 For example, in multi-attribute fairness each fairness
 attribute value can be a different branch.
 
+1. [Fork definition](#fork-definition)
+2. [Working with multiple forked variables](#working-with-multiple-forked-variables)
+
 ## Fork definition
 
 The easiest way to generate forks is by passing keyword
@@ -16,6 +19,20 @@ import fairbench as fb
 sensitive1, sensitive2 = ...
 sensitive = fb.Fork(case1=sensitive1, case2=sensitive2)
 ```
+
+The branch names `case1`, `case2`, etc can be anything you 
+want. You can also have more than two branches that consider
+multiple attribute values. 
+For instance, this is a valid fork that considers three
+gender attribute values and one binary sensitive attribute 
+value:
+
+```python
+sensitive = fb.Fork(Men=..., Women=..., Nonbin=..., IsOld=...)
+```
+
+You can create all positive branch combinations
+
 
 Some or all branches of forks can be provided in 
 the form of dictionaries passed as positional arguments.
