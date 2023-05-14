@@ -5,7 +5,7 @@ Bringing together existing and new frameworks for fairness exploration.
 
 **This project is in its alpha phase.**
 
-**Dependencies:** `numpy`,`eagerpy`,`dask.distributed`,`makefun`,`matplotlib`
+**Dependencies:** `numpy`,`eagerpy`,`dask.distributed`,`makefun`,`matplotlib`, `pandas`, '`scikit-learn`, `wget`
 
 
 ## Features
@@ -20,7 +20,10 @@ Bringing together existing and new frameworks for fairness exploration.
 First, install the framework with: `pip install --upgrade fairbench`
 
 Let's investigate the fairness of a binary classification algorithm,
-like the following:
+like the following. In practice, you will want to separate training 
+from test or validation data, as is done in the 
+[showcase example](!examples/showcase.ipynb). For a quick start,
+let's keep things simple:
 
 ```python
 from sklearn.linear_model import LogisticRegression
@@ -49,10 +52,13 @@ sensitive = fb.Fork(case1=sensitive1, case2=sensitive2)
 Variable forks create branches of calculations that are computed
 in parallel. Non-forked variables (i.e., of normal Python)
 are used by all branches of computations, but forked variables
-retain different values per branch. You can use any names (instead
-of `case1` and `case2`) for branches, and you can have as many
-as you want. More details on forks and branches, 
-including generation from dicts, can be found [here](docs/branches.md).
+retain different values per branch. You can use any names 
+for branches, and you can have as many
+as you want (e.g., `fb.Fork(Men=...,Women=...,Other=...)` instead
+of `fb.Fork(case1=..., case=...)`. More details on forks and branches, 
+including generation from dicts, intersectionality, 
+and the preferred format of multi-attribute multi-value forks 
+can be found [here](docs/branches.md).
 
 After declaring the protected attribute, generate a
 binary assessment on each branch's fairness 
@@ -85,7 +91,7 @@ You can also compute standalone [metrics](docs/metrics.md),
 for instance to use them as backpropagateable 
 machine learning regularization terms.
 
-:warning: Prefer calling `fairbench.multireport` for
+:bulb: Prefer calling `fairbench.multireport` for
 fairness reporting that does **NOT treat branches independently**.
 That reporting hides original branches, performs reductions
 to summarize performance and notions of fairness,

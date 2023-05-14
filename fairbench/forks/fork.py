@@ -19,6 +19,8 @@ def tobackend(value):
         "."
     )[0]
     m = sys.modules
+    if isinstance(value, list):
+        value = np.array(value)
     if name != _backend:
         value = value.raw if isinstance(value, ep.Tensor) else value
         if name == "torch" and isinstance(value, m[name].Tensor):  # type: ignore
@@ -78,7 +80,7 @@ def fromtensor(value):
 
 
 class Fork(object):
-    def __init__(self, *args, **branches):
+    def __init__(self, *args, _prefix=True, **branches):
         for arg in args:
             if not isinstance(arg, dict):
                 raise TypeError(
@@ -88,11 +90,19 @@ class Fork(object):
                 if k in branches:
                     raise TypeError(f"Branch {k} provided multiple times")
                 branches[k] = v
-        self._branches = branches
+        self._branches = dict()
+        for k, v in branches.items():
+            if isinstance(v, dict) and v.__class__.__name__ == "Categorical":
+                for k2, v2 in v.items():
+                    self._branches[k+"="+k2 if _prefix else k2] = v2
+            else:
+                self._branches[k] = v
 
     def __getattribute__(self, name):
-        if name in ["_branches"] or name in dir(Fork):
+        if name in ["_branches", "_repr_html_"] or name in dir(Fork):
             return object.__getattribute__(self, name)
+        if name.startswith('_'):
+            raise AttributeError(name)
         if name in self._branches:
             ret = self._branches[name]
             if ret.__class__.__name__ == "Future":
@@ -149,7 +159,7 @@ class Fork(object):
             candidates = [ids2names[i] for i in range(len(vec)) if vec[i] != 0]
             yield candidates
 
-    def intersectional(self):
+    def intersectional(self, delimiter="&"):
         # get branches
         branches = self.branches()
         new_branches = dict()
@@ -160,7 +170,7 @@ class Fork(object):
             if astensor(new_mask).abs().sum() == 0:
                 continue
             new_branches[
-                ("&".join(candidates)) if len(candidates) > 1 else candidates[0]
+                (delimiter.join(candidates)) if len(candidates) > 1 else candidates[0]
             ] = new_mask
         return Fork(new_branches)
 
@@ -217,10 +227,44 @@ class Fork(object):
             }
         )
 
-    def __repr__(self):
+    def __str__(self):
         return "\n".join(
             k + ": " + str(fromtensor(v)) for k, v in self.branches().items()
         )
+
+    def __repr__(self):
+        #from IPython.display import display_html, HTML
+        #display_html(HTML(self.__repr_html__()))
+        return super().__repr__()
+
+    def _repr_html_(self):
+        return self.__repr_html__()
+
+    def __repr_html__(self, override=None):
+        if override is not None and not isinstance(override, dict) and not isinstance(override, Fork):
+            return override
+
+        complex_contents = any(isinstance(v, dict) for k, v in (self.branches() if override is None else override).items())
+        if complex_contents:
+            html = ""
+            for k, v in (self.branches() if override is None else override).items():
+                html += "<div style=\"display: inline-block; float: left;\">"
+                html += "<h3>{}</h3>".format(k)
+                html += "{}".format(self.__repr_html__(v))
+                html += "</div>"
+            return html
+
+        html = "<table>"
+        for k, v in (self.branches() if override is None else override).items():
+            html += "<tr>"
+            html += "<td><strong>{}</strong></td>".format(k)
+            if isinstance(v, dict):
+                html += "<td>{}</td>".format(self.__repr_html__(v))
+            else:
+                html += "<td>{}</td>".format(fromtensor(v))
+            html += "</tr>"
+        html += "</table>"
+        return html
 
 
 class _NoClient:  # emulates dask.distributed.Client

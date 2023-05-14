@@ -5,7 +5,7 @@ import numpy as np
 
 
 @multibranch_tensors
-def surrogate_positives(predictions, sensitive, surrogate_model=LogisticRegression()):
+def surrogate_positives(predictions, sensitive, surrogate_model=LogisticRegression(max_iter=1000)):
     predictions = np.round(reduce(predictions, identical, name=None).numpy())
     X = reduce(sensitive, todata, name=None).numpy()
     surrogate_model = surrogate_model.fit(X, predictions)
