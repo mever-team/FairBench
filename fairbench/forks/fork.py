@@ -3,6 +3,7 @@ import eagerpy as ep
 import numpy as np
 import inspect
 import sys
+from collections.abc import Mapping
 
 _backend = "numpy"
 
@@ -79,7 +80,7 @@ def fromtensor(value):
     return value
 
 
-class Fork(object):
+class Fork(Mapping):
     def __init__(self, *args, _prefix=True, **branches):
         for arg in args:
             if not isinstance(arg, dict):
@@ -173,6 +174,30 @@ class Fork(object):
                 (delimiter.join(candidates)) if len(candidates) > 1 else candidates[0]
             ] = new_mask
         return Fork(new_branches)
+
+    def __len__(self):
+        keys = None
+        for k, v in self.branches().items():
+            assert isinstance(v, dict)
+            v_keys = set(v.keys())
+            if keys is None:
+                keys = v_keys
+            else:
+                assert len(v_keys-keys) == 0
+                assert len(keys-v_keys) == 0
+        return len(keys)
+
+    def __iter__(self):
+        keys = None
+        for k, v in self.branches().items():
+            assert isinstance(v, dict)
+            v_keys = set(v.keys())
+            if keys is None:
+                keys = v_keys
+            else:
+                assert len(v_keys-keys) == 0
+                assert len(keys-v_keys) == 0
+        return keys.__iter__()
 
     def __getitem__(self, name):
         return call(self, "__getitem__", name)

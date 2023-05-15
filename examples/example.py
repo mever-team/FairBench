@@ -28,9 +28,6 @@ if __name__ == '__main__':  # this is necessary to instantiate the distributed e
     s2 = 1-s
     sensitive = fb.Fork(gender=s, ehtnicity=s2, ethinicity2=s3)
 
-    print(fb.Fork(gender=s, ehtnicity=s3).intersectional())
-    exit(0)
-
     classifier = LogisticRegression()
     classifier = classifier.fit(x, y)
     yhat = classifier.predict(x)

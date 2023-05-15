@@ -1,4 +1,4 @@
-from fairbench.forks.fork import parallel, parallel_primitive
+from fairbench.forks.fork import parallel, parallel_primitive, astensor
 import eagerpy as ep
 
 
@@ -24,5 +24,5 @@ def concatenate(*data):
     for d in data:
         assert isinstance(d, dict) == isdict
     if isdict:
-        return {k: ep.concatenate([d[k] for d in data]) for k in data[0]}
-    return ep.concatenate(data)
+        return {k: ep.concatenate([astensor(d[k]) for d in data]) for k in data[0]}
+    return ep.concatenate([astensor(d) for d in data])
