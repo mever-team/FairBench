@@ -1,7 +1,7 @@
-from fairbench.forks.fork import parallel_primitive
+from fairbench.forks.fork import parallel_primitive, comparator
 from fairbench.forks.explanation import Explainable
 import inspect
-from typing import Union, Iterable
+from typing import Union, Iterable, Callable
 
 
 def reportargsparse(*args, **kwargs):
@@ -17,13 +17,16 @@ def reportargsparse(*args, **kwargs):
     return kwargs
 
 
+@comparator
 @parallel_primitive
-def report(*args, metrics: Union[Iterable, dict] = None, **kwargs):
+def report(*args, metrics: Union[Callable, Iterable, dict] = None, **kwargs):
     kwargs = reportargsparse(*args, **kwargs)
     if metrics is None:
         raise Exception(
             "Cannot use fairbench.report() without explicitly declared metrics.\nUse accreport, binreport, multireport, or isecreport as ad-hoc report generation mechanisms."
         )
+    if not isinstance(metrics, Iterable):
+        metrics = [metrics]
     if not isinstance(metrics, dict):
         metrics = {metric.__name__: metric for metric in metrics}
     ret = dict()
@@ -37,3 +40,15 @@ def report(*args, metrics: Union[Iterable, dict] = None, **kwargs):
             }
         )
     return ret
+
+
+def areport(*args, metrics: Union[Callable, Iterable, dict] = None, **kwargs):
+    if metrics is None:
+        raise Exception(
+            "Cannot use fairbench.report() without explicitly declared metrics.\nUse accreport, binreport, multireport, or isecreport as ad-hoc report generation mechanisms."
+        )
+    if not isinstance(metrics, Iterable):
+        return getattr(report(*args, metrics=[metrics], **kwargs), metrics.__name__)
+    if not isinstance(metrics, dict):
+        return [getattr(report(*args, metrics=[metric], **kwargs), metric.__name__) for metric in metrics]
+    return {name: getattr(report(*args, metrics=[metric], **kwargs), name) for name, metric in metrics.items()}

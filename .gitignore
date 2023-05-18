@@ -1,5 +1,7 @@
 data/
 .ipynb_checkpoints/
+colour_mnist.py
+flac.py
 
 # =================== PYCHARM ===================
 # idea

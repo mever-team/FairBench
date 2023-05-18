@@ -96,7 +96,7 @@ def fromtensor(value):
 
 
 class Fork(Mapping):
-    def __init__(self, *args, _prefix=True, **branches):
+    def __init__(self, *args, _prefix="", **branches):
         for arg in args:
             if not isinstance(arg, dict):
                 raise TypeError(
@@ -110,7 +110,7 @@ class Fork(Mapping):
         for k, v in branches.items():
             if isinstance(v, dict) and v.__class__.__name__ == "Categorical":
                 for k2, v2 in v.items():
-                    self._branches[k + "=" + k2 if _prefix else k2] = v2
+                    self._branches[str(k2) if _prefix is None else k + _prefix + str(k2)] = v2
             else:
                 self._branches[k] = v
 
@@ -233,6 +233,27 @@ class Fork(Mapping):
     def __abs__(self):
         return call(self, "__abs__")
 
+    def __eq__(self, other):
+        return call(self, "__eq__", other)
+
+    def __lt__(self, other):
+        return call(self, "__lt__", other)
+
+    def __gt__(self, other):
+        return call(self, "__gt__", other)
+
+    def __le__(self, other):
+        return call(self, "__le__", other)
+
+    def __ge__(self, other):
+        return call(self, "__ge__", other)
+
+    def __ne__(self, other):
+        return call(self, "__ne__", other)
+
+    def __neg__(self, other):
+        return call(self, "__neg__", other)
+
     def __add__(self, other):
         return call(self, "__add__", other)
 
@@ -265,6 +286,9 @@ class Fork(Mapping):
 
     def __or__(self, other):
         return call(self, "__or__", other)
+
+    def __and__(self, other):
+        return call(self, "__and__", other)
 
     def __ror__(self, other):
         return call(self, "__ror__", other)
@@ -354,9 +378,19 @@ def serial():
     _client = _NoClient()
 
 
-def parallel(method):
-    @wraps(method)
+def parallel(_wrapped_method):
+    if len(inspect.getfullargspec(_wrapped_method)[0]) <= 1:
+        raise Exception("To avoid ambiguity, the @parallel decorator can be applied only to methods with at least"
+                        "two arguments.")
+
+    @wraps(_wrapped_method)
     def wrapper(*args, **kwargs):
+        if len(args) == 1 and not kwargs:
+            argnames = inspect.getfullargspec(_wrapped_method)[0]
+            arg = args[0]
+            kwargs = {k: getattr(arg, k) for k in argnames if hasattr(arg, k)}
+            args = []
+
         branches = set(
             [
                 branch
@@ -367,7 +401,7 @@ def parallel(method):
         )
         if not branches:
             return fromtensor(
-                method(
+                _wrapped_method(
                     *(astensor(arg) for arg in args),
                     **{key: astensor(arg) for key, arg in kwargs.items()},
                 )
@@ -385,14 +419,14 @@ def parallel(method):
             for key, arg in kwargs.items()
         }
         try:
-            argnames = inspect.getfullargspec(method)[0]
+            argnames = inspect.getfullargspec(_wrapped_method)[0]
             if "branch" not in kwargs and "branch" in argnames:
                 kwargs["branch"] = None
             submitted = {
                 branch: _client.submit(
                     fromtensor,
                     _client.submit(
-                        method,
+                        _wrapped_method,
                         *(
                             _client.submit(
                                 astensor,
@@ -433,8 +467,22 @@ def parallel(method):
     return wrapper
 
 
-def forks(method):
+def comparator(_wrapped_method):
     def wrapper(*args, **kwargs):
+        has_fork_of_forks = False
+        for arg in args:
+            if isinstance(arg, Fork):
+                for k, v in arg._branches.items():
+                    if isinstance(v, Fork):
+                        has_fork_of_forks = True
+        for arg in kwargs.values():
+            if isinstance(arg, Fork):
+                for k, v in arg._branches.items():
+                    if isinstance(v, Fork):
+                        has_fork_of_forks = True
+        if not has_fork_of_forks:
+            return _wrapped_method(*args, **kwargs)
+
         branches = set(
             [
                 branch
@@ -445,7 +493,7 @@ def forks(method):
         )
         if not branches:
             return fromtensor(
-                method(
+                _wrapped_method(
                     *(astensor(arg) for arg in args),
                     **{key: astensor(arg) for key, arg in kwargs.items()},
                 )
@@ -463,14 +511,14 @@ def forks(method):
             for key, arg in kwargs.items()
         }
         try:
-            argnames = inspect.getfullargspec(method)[0]
+            argnames = inspect.getfullargspec(_wrapped_method)[0]
             if "branch" not in kwargs and "branch" in argnames:
                 kwargs["branch"] = None
             submitted = {
                 branch: _client.submit(
                     fromtensor,
                     _client.submit(
-                        method,
+                        _wrapped_method,
                         *(
                             _client.submit(
                                 astensor,
@@ -511,8 +559,8 @@ def forks(method):
     return wrapper
 
 
-def parallel_primitive(method):
-    @wraps(method)
+def parallel_primitive(_wrapped_method):
+    @wraps(_wrapped_method)
     def wrapper(*args, **kwargs):
         branches = set(
             [
@@ -523,7 +571,7 @@ def parallel_primitive(method):
             ]
         )
         if not branches:
-            return method(
+            return _wrapped_method(
                 *((arg) for arg in args),
                 **{key: (arg) for key, arg in kwargs.items()},
             )
@@ -540,12 +588,12 @@ def parallel_primitive(method):
             for key, arg in kwargs.items()
         }
         try:
-            argnames = inspect.getfullargspec(method)[0]
+            argnames = inspect.getfullargspec(_wrapped_method)[0]
             if "branch" not in kwargs and "branch" in argnames:
                 kwargs["branch"] = None
             submitted = {
                 branch: _client.submit(
-                    method,
+                    _wrapped_method,
                     *((arg._branches[branch]) for arg in args),
                     **{
                         key: branch if key == "branch" else (arg._branches[branch])
@@ -569,8 +617,8 @@ def parallel_primitive(method):
     return wrapper
 
 
-def multibranch_tensors(method):
-    @wraps(method)
+def multibranch_tensors(_wrapped_method):
+    @wraps(_wrapped_method)
     def wrapper(*args, **kwargs):
         branches = set(
             [
@@ -582,7 +630,7 @@ def multibranch_tensors(method):
         )
         if not branches:
             raise Exception(
-                f"Method {method} annotated as @multibranch_tensors and requires at least one Fork input"
+                f"Method {_wrapped_method} annotated as @multibranch_tensors and requires at least one Fork input"
             )
         args = [
             arg
@@ -596,11 +644,12 @@ def multibranch_tensors(method):
             else Fork(**{branch: astensor(arg) for branch in branches})
             for key, arg in kwargs.items()
         }
-        return method(*args, **kwargs)
+        return _wrapped_method(*args, **kwargs)
 
     return wrapper
 
 
+@comparator
 def combine(*args):
     ret = {}
     for arg in args:

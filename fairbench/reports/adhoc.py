@@ -21,7 +21,7 @@ def binreport(*args, metrics=common_metrics, **kwargs):
 def multireport(*args, metrics=acc_metrics, **kwargs):
     base = report(*args, metrics=metrics, **kwargs)
     return combine(
-        fb.reduce(base, fb.mean),
+        fb.reduce(base, fb.min),
         fb.reduce(base, fb.min, expand=fb.ratio),
         fb.reduce(base, fb.max, expand=fb.diff),
     )

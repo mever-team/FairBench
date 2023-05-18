@@ -17,7 +17,6 @@ def load():
 
 
 if __name__ == '__main__':  # this is necessary to instantiate the distributed environment
-    tic = time()
     #fb.distributed()
 
     x, y, s = load()
@@ -31,12 +30,9 @@ if __name__ == '__main__':  # this is necessary to instantiate the distributed e
     classifier = LogisticRegression()
     classifier = classifier.fit(x, y)
     yhat = classifier.predict(x)
-    print(yhat)
 
     vals = None
     vals = fb.concatenate(vals, fb.todict(predictions=yhat, labels=y, sensitive=sensitive))
-
-    print('ETA', time()-tic)
 
     report = fb.multireport(vals)
     fb.describe(report)

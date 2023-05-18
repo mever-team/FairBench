@@ -1,5 +1,5 @@
 from fairbench.forks.fork import tobackend, istensor
-from typing import Iterable
+from typing import Iterable, Mapping
 
 
 class Categorical(dict):
@@ -49,6 +49,8 @@ def binary(x):
 @Transform
 def categories(x):
     assert isinstance(x, Iterable)
+    if isinstance(x, Mapping):
+        return Categorical(x)
     vals = list(set(x))
     return {
         str(val.numpy())

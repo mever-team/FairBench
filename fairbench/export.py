@@ -4,15 +4,15 @@ import json
 from fairbench.forks.explanation import tofloat
 
 
-def _is_dict_of_dicts(report):
+def _is_fork_of_dicts(report):
     return isinstance(report[next(iter(report))], dict)
 
 
 def tojson(report: Fork):
     assert isinstance(report, Fork)
-    report = report.branches()
+    report = {k: v.branches() if isinstance(v, Fork) else v for k, v in report.branches().items()}
     data = dict()
-    if not _is_dict_of_dicts(report):
+    if not _is_fork_of_dicts(report):
         report = {k: {"": v} for k, v in report.items()}
     data["header"] = ["Metric"] + [key for key in report]
     for value in report.values():

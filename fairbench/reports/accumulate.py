@@ -1,4 +1,4 @@
-from fairbench.forks.fork import parallel, parallel_primitive, astensor
+from fairbench.forks.fork import comparator, parallel_primitive, astensor
 import eagerpy as ep
 
 
@@ -15,6 +15,7 @@ def todict(**kwargs):
     return kwargs
 
 
+@comparator
 @parallel_primitive
 def concatenate(*data):
     data = [d for d in data if d is not None]

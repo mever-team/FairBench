@@ -1,12 +1,18 @@
-from fairbench.forks.fork import Fork, astensor
+from fairbench.forks.fork import Fork, astensor, comparator
 from fairbench.forks.explanation import Explainable
+from typing import Optional
 
 # from fairbench.reports.accumulate import todict as tokwargs
 
 
-def reduce(fork: Fork, method, expand=None, transform=None, branches=None, name=""):
+def areduce(fork: Fork, reducer, expand=None, transform=None, branches=None):
+    return reduce(fork, reducer, expand, transform, branches, name=None)
+
+
+@comparator
+def reduce(fork: Fork, reducer, expand=None, transform=None, branches=None, name: Optional[str] = ""):
     if name == "":
-        name = method.__name__
+        name = reducer.__name__
         if expand is not None:
             name += expand.__name__
         if transform is not None:
@@ -35,8 +41,8 @@ def reduce(fork: Fork, method, expand=None, transform=None, branches=None, name=
             else expand(fields)
         )
     result = (
-        {k: Explainable(method(v), fork[k], desc=name) for k, v in fields.items()}
+        {k: Explainable(reducer(v), fork[k], desc=name) for k, v in fields.items()}
         if isinstance(fields, dict)
-        else Explainable(method(fields), fork, desc=name)
+        else Explainable(reducer(fields), fork, desc=name)
     )
     return result if name is None else Fork({name: result})

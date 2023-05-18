@@ -5,7 +5,7 @@ Bringing together existing and new frameworks for fairness exploration.
 
 **This project is in its alpha phase.**
 
-**Dependencies:** `numpy`,`eagerpy`,`dask.distributed`,`makefun`,`matplotlib`, `pandas`, '`scikit-learn`, `wget`
+**Dependencies:** `numpy`,`eagerpy`,`dask.distributed`,`makefun`,`matplotlib`, `pandas`, `scikit-learn`, `wget`
 
 
 ## Features
