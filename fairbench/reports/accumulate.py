@@ -9,7 +9,7 @@ and use the final output in one report at the end.
 
 
 @parallel_primitive
-def kwargs(**kwargs):
+def todict(**kwargs):
     if not kwargs:
         return None
     return kwargs
@@ -26,3 +26,19 @@ def concatenate(*data):
     if isdict:
         return {k: ep.concatenate([astensor(d[k]) for d in data]) for k in data[0]}
     return ep.concatenate([astensor(d) for d in data])
+
+
+def extract(**kwargs):
+    ret = dict()
+    for k, v in kwargs.items():
+        try:
+            if callable(v):
+                v = v()  # TODO: this is a hack to supplement the fact that object members are returns as functions by getattr on Forks
+        except TypeError:
+            pass
+        try:
+            v = v[k]
+        except AttributeError:
+            pass
+        ret = ret | todict(**{k: v})
+    return ret

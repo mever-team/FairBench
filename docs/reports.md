@@ -3,8 +3,10 @@
 1. [Generating reports](#generating-reports)
 2. [Viewing reports](#viewing-reports)
 3. [Editing reports](#editing-reports)
-4. [Explaining report values](#explaining-report-values)
-5. [Buffering batch predictions](#buffering-batch-predictions)
+4. [Reducing reports](#reducing-reports)
+5. [Combining reports](#combining-reports)
+6. [Explaining report values](#explaining-report-values)
+7. [Buffering batch predictions](#buffering-batch-predictions)
 
 ## Generating reports
 
@@ -100,7 +102,7 @@ objects). For instance, you can use the following code
 to calculate a notion of total disparate mistreatment as the sum
 of *dfnr* and *dfpr* of a binary report in all brnaches
 and remove these entries from all branch
-dictionaries using Python's `dict.pop` method:
+dictionaries using Python's dictionary entry deletion:
 
 ```python
 import fairbench as fb
@@ -110,8 +112,8 @@ report = fb.binreport(predictions=..., labels=..., sensitive=sensitive)
 fb.describe(report)
 
 report["mistreatment"] = abs(report["dfpr"]) + abs(report["dfnr"])
-report.pop("dfpr")
-report.pop("dfnr")
+del report["dfpr"]
+del report["dfnr"]
 fb.describe(report)
 ```
 
@@ -129,13 +131,15 @@ prule           0.667           0.571
 mistreatment    0.222           0.571
 ```
 
-In addition to transforming results in this manner, reports
-can also be reduced or combined alongside branches. Again,
+
+## Reducing reports
+
+Reports can also be reduced alongside branches. Again,
 this operation is applicable to all variable forks,
 although this time usage is discouraged outside of 
 report manipulation, as reduction creates new -and therefore potentially 
-unforeseen- data branches. Still, it constitutes the main mechanism
-for handling multi-attribute reports.
+unforeseen- data branches, but constitutes the main mechanism
+for summarizing multi-attribute reports into one measure.
 Reduction internally runs three types of functions obtained
 from its arguments:
 - `transform` values found in the report for each metric, which can be either *None* or *abs*.
@@ -168,8 +172,10 @@ argument to set a specific name instead. Set `name=None`
 to directly retrieve report outputs instead of putting them
 to a Fork.
 
-Reports, including reduced ones, can be combined alongside 
-branches, as demonstrated in the following snippet:
+# Combining reports
+Reports, including reduced ones, can be combined to
+create a super-report with all sub-branches. This 
+is demonstrated in the following snippet:
 
 ```python
 new_report = fb.combine(report, mean_across_branches, max_abs_across_branches)
@@ -182,6 +188,32 @@ accuracy        0.938           0.938           0.938           0.000
 fpr             0.056           0.071           0.063           0.251          
 fnr             0.167           0.500           0.333           1.099    
 ```
+
+Sometimes, you may want to compare the same report
+generated for multiple algorithms. To do this, you
+need to generate a fork where each branch holds
+a respective algorithm's default. Then, you can 
+extract and combine values for each metric as
+shown in the following snipper:
+
+```python
+reports = fb.Fork(ppr=report, lfpro=fair_report)
+rep = fb.extract(acc=reports.mean.accuracy, prule=reports.minratio.pr)
+fb.describe(rep)
+```
+
+```
+Metric          ppr             lfpro          
+acc             0.819           0.826          
+prule           0.261           0.957    
+```
+
+When extracting values from reports, you can optionally
+omit the final value getter as long as is the same as the
+new name. For example, `fb.extract(accuracy=reports.mean)`
+is equivalent to `fb.extract(accuracy=reports.mean.accuracy)`
+given that `reports.mean` also returns a fork.
+
 
 ## Explaining report values
 
@@ -215,23 +247,26 @@ Metric          case1           case2           case2,case1
                 0.729           0.706           0.827     
 ```
 
+Similarly, you can obtain explanations about the values
+contributing to report combinations, for instance
+when comparing two algorithms.
+
 
 ## Buffering batch predictions
 When training machine learning algorithms, you may want
 to concatenate the same variable generated across 
 several batches. This can be used by calling
-`fairbench.kwargs` to convert a set of keyword arguments
+`fairbench.todict` to convert a set of keyword arguments
 to a fork of dictionaries. Entries of such forks (e.g.,
 `predictions` in the example below) can be concatenated
 via a namesake method. Concatenate such dictionaries
 with previous concatenation outcomes to generate a
 dictionary of keyword arguments to pass to reports like so:
 
-
 ```python
 data = None
 for batch in range(batches):
     yhat, y, sensitive = ...  # compute for the batch
-    data = fb.concatenate(data, fb.kwargs(predictions=yhat, labels=y, sensitive=sensitive))
+    data = fb.concatenate(data, fb.todict(predictions=yhat, labels=y, sensitive=sensitive))
 report = fb.binreport(data)
 ```

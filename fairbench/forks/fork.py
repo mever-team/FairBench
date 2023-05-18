@@ -8,6 +8,21 @@ from collections.abc import Mapping
 _backend = "numpy"
 
 
+class Forklike(dict):
+    def __getattribute__(self, name):
+        if name in dir(Fork):
+            return object.__getattribute__(self, name)
+        return self[name]
+
+
+def _result(ret):
+    if ret.__class__.__name__ == "Future":
+        ret = ret.result()
+    if isinstance(ret, dict):
+        return Forklike(ret)
+    return ret
+
+
 def setbackend(backend_name: str):
     assert backend_name in ["torch", "tensorflow", "jax", "numpy"]
     global _backend
@@ -106,20 +121,27 @@ class Fork(Mapping):
             raise AttributeError(name)
         if name in self._branches:
             ret = self._branches[name]
-            if ret.__class__.__name__ == "Future":
-                ret = ret.result()
-            return ret
+            return _result(ret)
 
-        def method(*args, **kwargs):
-            return call(self, name, *args, **kwargs)
+        #def method(*args, **kwargs):
+        #    return call(self, name, *args, **kwargs)
+        #return method
 
-        return method
+        return Fork({k: v.__getattribute__(name) if isinstance(v, Fork) else call(v, "__getattribute__", name) for k, v in self._branches.items()})
+
+
+    def extract(self, *args):
+        import fairbench as fb
+        ret = dict()
+        for arg in args:
+            ret = ret | fb.todict(**{arg: self[arg]})
+        return ret
 
     def branches(self, branch_names=None, zero_mask=False):
         return {
-            branch: (value.result() if value.__class__.__name__ == "Future" else value)
+            branch: _result(value)
             if branch_names is None or not zero_mask or branch in branch_names
-            else (value.result() if value.__class__.__name__ == "Future" else value) * 0
+            else _result(value) * 0
             for branch, value in self._branches.items()
             if branch_names is None or zero_mask or branch in branch_names
         }
@@ -198,6 +220,9 @@ class Fork(Mapping):
                 assert len(v_keys-keys) == 0
                 assert len(keys-v_keys) == 0
         return keys.__iter__()
+
+    def __delitem__(self, name):
+        return call(self, "__delitem__", name)
 
     def __getitem__(self, name):
         return call(self, "__getitem__", name)
@@ -408,6 +433,84 @@ def parallel(method):
     return wrapper
 
 
+def forks(method):
+    def wrapper(*args, **kwargs):
+        branches = set(
+            [
+                branch
+                for arg in list(args) + list(kwargs.values())
+                if isinstance(arg, Fork)
+                for branch in arg._branches
+            ]
+        )
+        if not branches:
+            return fromtensor(
+                method(
+                    *(astensor(arg) for arg in args),
+                    **{key: astensor(arg) for key, arg in kwargs.items()},
+                )
+            )
+        args = [
+            arg
+            if isinstance(arg, Fork)
+            else Fork(**{branch: arg for branch in branches})
+            for arg in args
+        ]
+        kwargs = {
+            key: arg
+            if isinstance(arg, Fork)
+            else Fork(**{branch: arg for branch in branches})
+            for key, arg in kwargs.items()
+        }
+        try:
+            argnames = inspect.getfullargspec(method)[0]
+            if "branch" not in kwargs and "branch" in argnames:
+                kwargs["branch"] = None
+            submitted = {
+                branch: _client.submit(
+                    fromtensor,
+                    _client.submit(
+                        method,
+                        *(
+                            _client.submit(
+                                astensor,
+                                arg._branches[branch],
+                                workers=branch,
+                                allow_other_workers=True,
+                                pure=False,
+                            )
+                            for arg in args
+                        ),
+                        **{
+                            key: branch
+                            if key == "branch"
+                            else _client.submit(
+                                astensor,
+                                arg._branches[branch],
+                                workers=branch,
+                                allow_other_workers=True,
+                                pure=False,
+                            )
+                            for key, arg in kwargs.items()
+                        },
+                        workers=branch,
+                        allow_other_workers=True,
+                        pure=False,
+                    ),
+                    workers=branch,
+                    allow_other_workers=True,
+                    pure=False,
+                )
+                for branch in branches
+            }
+            submitted = {branch: value for branch, value in submitted.items()}
+            return Fork(**submitted)
+        except KeyError as e:
+            raise KeyError(str(e) + " not provided for an input")
+
+    return wrapper
+
+
 def parallel_primitive(method):
     @wraps(method)
     def wrapper(*args, **kwargs):
@@ -508,24 +611,30 @@ def combine(*args):
 
 @parallel_primitive
 def call(obj, method, *args, **kwargs):
+    if method == "__getattribute__" and isinstance(obj, dict) and len(args) == 1 and len(kwargs) == 0:
+        return obj[args[0]]
     if callable(method):
         return method(obj, *args, **kwargs)
-    return getattr(obj, method)(*args, **kwargs)
+    attr = getattr(obj, method)
+    if not callable(attr):
+        return attr
+    return attr(*args, **kwargs)
+
 
 
 """
-def compare(**kwargs):
-    for modal in kwargs.values():
+def compare(**todict):
+    for modal in todict.values():
         assert isinstance(modal, Modal)
     branches = set(
         [
             branch
-            for arg in list(kwargs.values())
+            for arg in list(todict.values())
             if isinstance(arg, Modal)
             for branch in arg.branches
         ]
     )
     return Modal(
-        **{branch: {key: kwargs[key].branches[branch] for key in kwargs} for branch in branches}
+        **{branch: {key: todict[key].branches[branch] for key in todict} for branch in branches}
     )
 """

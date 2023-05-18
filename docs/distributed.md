@@ -9,7 +9,7 @@ This capability can be enabled per:
 ```python
 import fairbench as fb
 
-fb.distributed(*args, **kwargs)
+fb.distributed(*args, **todict)
 ```
 
 where the arguments and keyword arguments are those

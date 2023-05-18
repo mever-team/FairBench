@@ -1,6 +1,6 @@
 from fairbench.reports.base import report, reportargsparse
 from fairbench.reports import reduction as fb
-from fairbench.reports.accumulate import kwargs as tokwargs
+from fairbench.reports.accumulate import todict as tokwargs
 from fairbench.forks.fork import combine
 from fairbench.reports.surrogate import surrogate_positives
 from fairbench import metrics

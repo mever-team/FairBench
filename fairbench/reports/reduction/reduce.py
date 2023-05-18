@@ -1,7 +1,7 @@
 from fairbench.forks.fork import Fork, astensor
 from fairbench.forks.explanation import Explainable
 
-# from fairbench.reports.accumulate import kwargs as tokwargs
+# from fairbench.reports.accumulate import todict as tokwargs
 
 
 def reduce(fork: Fork, method, expand=None, transform=None, branches=None, name=""):

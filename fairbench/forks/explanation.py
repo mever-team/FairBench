@@ -15,6 +15,8 @@ class Explainable:
         self.value = value
         self.explain = Fork(kwargs) if explain is None else explain
         self.desc = desc
+        if value.__class__.__name__ == "Future":
+            value = value.result()
         if (
             not isinstance(value, float)
             and not isinstance(value, int)
@@ -23,7 +25,7 @@ class Explainable:
         ):
             raise Exception("Can not set non-numeric as explainable", value)
         if explain is not None and kwargs:
-            raise Exception("Cannot create explainable with both kwargs and a Fork")
+            raise Exception("Cannot create explainable with both todict and a Fork")
 
     def __float__(self):
         return tofloat(self.value)

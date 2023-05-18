@@ -34,7 +34,7 @@ if __name__ == '__main__':  # this is necessary to instantiate the distributed e
     print(yhat)
 
     vals = None
-    vals = fb.concatenate(vals, fb.kwargs(predictions=yhat, labels=y, sensitive=sensitive))
+    vals = fb.concatenate(vals, fb.todict(predictions=yhat, labels=y, sensitive=sensitive))
 
     print('ETA', time()-tic)
 
