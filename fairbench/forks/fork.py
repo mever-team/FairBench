@@ -96,7 +96,7 @@ def fromtensor(value):
 
 
 class Fork(Mapping):
-    def __init__(self, *args, _prefix="", **branches):
+    def __init__(self, *args, _separator="", **branches):
         for arg in args:
             if not isinstance(arg, dict):
                 raise TypeError(
@@ -110,7 +110,7 @@ class Fork(Mapping):
         for k, v in branches.items():
             if isinstance(v, dict) and v.__class__.__name__ == "Categorical":
                 for k2, v2 in v.items():
-                    self._branches[str(k2) if _prefix is None else k + _prefix + str(k2)] = v2
+                    self._branches[str(k2) if _separator is None else k + _separator + str(k2)] = v2
             else:
                 self._branches[k] = v
 

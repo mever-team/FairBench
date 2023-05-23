@@ -1,4 +1,4 @@
-from fairbench.forks.fork import tobackend, istensor
+from fairbench.forks.fork import tobackend, istensor, Fork
 from typing import Iterable, Mapping
 
 
@@ -44,6 +44,19 @@ class Transform:
 def binary(x):
     x = tobackend(x)
     return {"1": x, "0": 1 - x}
+
+
+class Categories:
+    def __init__(self, values: Iterable, generator=lambda data, category: data == category):
+        self.categories = list(values)
+        self.generator = generator
+
+    def __call__(self, other):
+        return self.__matmul__(other)
+
+    def __matmul__(self, other):
+        assert not isinstance(other, Fork)
+        return Categorical({str(category): self.generator(other, category) for category in self.categories})
 
 
 @Transform
