@@ -34,7 +34,9 @@ def extract(**kwargs):
     for k, v in kwargs.items():
         try:
             if callable(v):
-                v = v()  # TODO: this is a hack to supplement the fact that object members are returns as functions by getattr on Forks
+                v = (
+                    v()
+                )  # TODO: this is a hack to supplement the fact that object members are returns as functions by getattr on Forks
         except TypeError:
             pass
         try:

@@ -1,5 +1,6 @@
 data/
 .ipynb_checkpoints/
+.pytest_cache/
 colour_mnist.py
 flac.py
 

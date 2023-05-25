@@ -10,7 +10,10 @@ def _is_fork_of_dicts(report):
 
 def tojson(report: Fork):
     assert isinstance(report, Fork)
-    report = {k: v.branches() if isinstance(v, Fork) else v for k, v in report.branches().items()}
+    report = {
+        k: v.branches() if isinstance(v, Fork) else v
+        for k, v in report.branches().items()
+    }
     data = dict()
     if not _is_fork_of_dicts(report):
         report = {k: {"": v} for k, v in report.items()}

@@ -10,7 +10,14 @@ def areduce(fork: Fork, reducer, expand=None, transform=None, branches=None):
 
 
 @comparator
-def reduce(fork: Fork, reducer, expand=None, transform=None, branches=None, name: Optional[str] = ""):
+def reduce(
+    fork: Fork,
+    reducer,
+    expand=None,
+    transform=None,
+    branches=None,
+    name: Optional[str] = "",
+):
     if name == "":
         name = reducer.__name__
         if expand is not None:

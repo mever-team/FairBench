@@ -25,7 +25,8 @@ or a list of metric functions, where
 in the last case their names are inferred
 from the function names.
 You can use variable [forks](branches.md)
-to handle multi-attribute values. 
+to handle multi-value attributes or multiple
+sensitive attribute values. 
 For the time being, you need
 to create a different branch for each
 sensitive and predictive attribute
@@ -111,7 +112,7 @@ sensitive = fb.Fork(case1=..., case2=...)
 report = fb.binreport(predictions=..., labels=..., sensitive=sensitive)
 fb.describe(report)
 
-report["mistreatment"] = abs(report["dfpr"]) + abs(report["dfnr"])
+report["mistreatment"] = abs(report.dfpr) + abs(report.dfnr)
 del report["dfpr"]
 del report["dfnr"]
 fb.describe(report)
@@ -161,9 +162,9 @@ max_abs_across_branches = fb.reduce(report, fb.budget, expand=fb.ratio, transfor
 ```
 
 :warning: You will typically want to perform custom reductions on
-an *accreport* or a manually generated report for some non-fairness-related
-evaluation measures. You can then combine the outcome of reduction
-with some other report, such as other reduction reports.
+an *accreport* or on manually generated reports for some non-fairness-related
+evaluation measures. You can then combine the outcome of some reductions
+to provide a holistic view.
  
 Recuction creates new reports that comprise only one branch.
 The branch's name is dynamically derived by parameters 
@@ -237,7 +238,7 @@ metric in the *isecreport*:
 ```python
 report = fb.isecreport(vals)
 fb.describe(report)
-fb.describe(report.bayesian["minprule"].explain)
+fb.describe(report.bayesian.minprule.explain)
 ```
 ```
 Metric          empirical       bayesian       

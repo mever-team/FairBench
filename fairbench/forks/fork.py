@@ -110,7 +110,9 @@ class Fork(Mapping):
         for k, v in branches.items():
             if isinstance(v, dict) and v.__class__.__name__ == "Categorical":
                 for k2, v2 in v.items():
-                    self._branches[str(k2) if _separator is None else k + _separator + str(k2)] = v2
+                    self._branches[
+                        str(k2) if _separator is None else k + _separator + str(k2)
+                    ] = v2
             else:
                 self._branches[k] = v
 
@@ -123,15 +125,22 @@ class Fork(Mapping):
             ret = self._branches[name]
             return _result(ret)
 
-        #def method(*args, **kwargs):
+        # def method(*args, **kwargs):
         #    return call(self, name, *args, **kwargs)
-        #return method
+        # return method
 
-        return Fork({k: v.__getattribute__(name) if isinstance(v, Fork) else call(v, "__getattribute__", name) for k, v in self._branches.items()})
-
+        return Fork(
+            {
+                k: v.__getattribute__(name)
+                if isinstance(v, Fork)
+                else call(v, "__getattribute__", name)
+                for k, v in self._branches.items()
+            }
+        )
 
     def extract(self, *args):
         import fairbench as fb
+
         ret = dict()
         for arg in args:
             ret = ret | fb.todict(**{arg: self[arg]})
@@ -205,8 +214,8 @@ class Fork(Mapping):
             if keys is None:
                 keys = v_keys
             else:
-                assert len(v_keys-keys) == 0
-                assert len(keys-v_keys) == 0
+                assert len(v_keys - keys) == 0
+                assert len(keys - v_keys) == 0
         return len(keys)
 
     def __iter__(self):
@@ -217,8 +226,8 @@ class Fork(Mapping):
             if keys is None:
                 keys = v_keys
             else:
-                assert len(v_keys-keys) == 0
-                assert len(keys-v_keys) == 0
+                assert len(v_keys - keys) == 0
+                assert len(keys - v_keys) == 0
         return keys.__iter__()
 
     def __delitem__(self, name):
@@ -380,8 +389,10 @@ def serial():
 
 def parallel(_wrapped_method):
     if len(inspect.getfullargspec(_wrapped_method)[0]) <= 1:
-        raise Exception("To avoid ambiguity, the @parallel decorator can be applied only to methods with at least"
-                        "two arguments.")
+        raise Exception(
+            "To avoid ambiguity, the @parallel decorator can be applied only to methods with at least"
+            "two arguments."
+        )
 
     @wraps(_wrapped_method)
     def wrapper(*args, **kwargs):
@@ -660,7 +671,12 @@ def combine(*args):
 
 @parallel_primitive
 def call(obj, method, *args, **kwargs):
-    if method == "__getattribute__" and isinstance(obj, dict) and len(args) == 1 and len(kwargs) == 0:
+    if (
+        method == "__getattribute__"
+        and isinstance(obj, dict)
+        and len(args) == 1
+        and len(kwargs) == 0
+    ):
         return obj[args[0]]
     if callable(method):
         return method(obj, *args, **kwargs)
@@ -668,7 +684,6 @@ def call(obj, method, *args, **kwargs):
     if not callable(attr):
         return attr
     return attr(*args, **kwargs)
-
 
 
 """

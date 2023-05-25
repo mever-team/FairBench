@@ -47,7 +47,9 @@ def binary(x):
 
 
 class Categories:
-    def __init__(self, values: Iterable, generator=lambda data, category: data == category):
+    def __init__(
+        self, values: Iterable, generator=lambda data, category: data == category
+    ):
         self.categories = list(values)
         self.generator = generator
 
@@ -56,7 +58,12 @@ class Categories:
 
     def __matmul__(self, other):
         assert not isinstance(other, Fork)
-        return Categorical({str(category): self.generator(other, category) for category in self.categories})
+        return Categorical(
+            {
+                str(category): self.generator(other, category)
+                for category in self.categories
+            }
+        )
 
 
 @Transform

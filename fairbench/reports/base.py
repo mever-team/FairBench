@@ -50,5 +50,11 @@ def areport(*args, metrics: Union[Callable, Iterable, dict] = None, **kwargs):
     if not isinstance(metrics, Iterable):
         return getattr(report(*args, metrics=[metrics], **kwargs), metrics.__name__)
     if not isinstance(metrics, dict):
-        return [getattr(report(*args, metrics=[metric], **kwargs), metric.__name__) for metric in metrics]
-    return {name: getattr(report(*args, metrics=[metric], **kwargs), name) for name, metric in metrics.items()}
+        return [
+            getattr(report(*args, metrics=[metric], **kwargs), metric.__name__)
+            for metric in metrics
+        ]
+    return {
+        name: getattr(report(*args, metrics=[metric], **kwargs), name)
+        for name, metric in metrics.items()
+    }
