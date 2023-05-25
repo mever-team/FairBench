@@ -671,6 +671,8 @@ def combine(*args):
 
 @parallel_primitive
 def call(obj, method, *args, **kwargs):
+    if method == "__getattribute__":
+        obj = _result(obj)
     if (
         method == "__getattribute__"
         and isinstance(obj, dict)
@@ -680,6 +682,14 @@ def call(obj, method, *args, **kwargs):
         return obj[args[0]]
     if callable(method):
         return method(obj, *args, **kwargs)
+    """
+    def run(obj, method, *args, **kwargs):
+        attr = getattr(obj, method)
+        if not callable(attr):
+            return attr
+        return attr(*args, **kwargs)
+    return _client.submit(run, obj, method, *args, **kwargs, pure=False)
+    """
     attr = getattr(obj, method)
     if not callable(attr):
         return attr

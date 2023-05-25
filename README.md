@@ -1,7 +1,9 @@
 # FairBench
+[![codecov](https://codecov.io/gh/mever-team/FairBench/branch/main/graph/badge.svg?token=qeiNv3DN0W)](https://codecov.io/gh/mever-team/FairBench)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-Bringing together existing and new frameworks for fairness exploration.
+Bringing together existing and new practices for
+comprehensive fairness exploration.
 
 **This project is in its alpha phase.**
 
