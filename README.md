@@ -54,8 +54,9 @@ in parallel. Non-forked variables (i.e., of normal Python)
 are used by all branches of computations, but forked variables
 retain different values per branch. You can use any names 
 for branches, and you can have as many
-as you want (e.g., `fb.Fork(Men=...,Women=...,Other=...)` instead
-of `fb.Fork(case1=..., case=...)`. More details on forks and branches, 
+as you want. For example, you
+can create a fork `fb.Fork(Men=...,Women=...,Other=...)`. 
+More details on forks and branches, 
 including generation from dicts, intersectionality, 
 and the preferred format of multi-attribute multi-value forks 
 can be found [here](docs/branches.md).

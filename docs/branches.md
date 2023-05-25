@@ -2,15 +2,16 @@
 
 Variable forks declare different versions (branches) of variable
 values, each of which should be treated differently.
-For example, in multi-attribute fairness each fairness
-attribute value can be a different branch.
+For example, for multi-valued sensitive attributes,
+each value has a different branch that stores a binary
+array indicating which samples exhibit the corresponding value.
 
 1. [Fork definition](#fork-definition)
-2. [Working with multiple forked variables](#working-with-multiple-forked-variables)
+3. [Working with multiple forked variables](#working-with-multiple-forked-variables)
 
 ## Fork definition
 
-The easiest way to generate forks is by passing keyword
+The easiest way to generate forks is via passing keyword
 arguments to their class constructor, for instance per:
 
 ```python
@@ -22,17 +23,33 @@ sensitive = fb.Fork(case1=sensitive1, case2=sensitive2)
 
 The branch names `case1`, `case2`, etc can be anything you 
 want. You can also have more than two branches that consider
-multiple attribute values. 
+multiple attribute values. If you have more than one sensitive
+attribute, just add the branches you would declare for
+every attribute as a fork branch.
 For instance, this is a valid fork that considers three
 gender attribute values and one binary sensitive attribute 
 value:
 
 ```python
-sensitive = fb.Fork(Men=..., Women=..., Nonbin=..., IsOld=...)
+import numpy as np
+
+sensitive = fb.Fork(Men=
+                    np.array([1, 1, 0, 0, 0]), 
+                    Women=np.array([0, 0, 1, 1, 0]), 
+                    Nonbin=np.array([0, 0, 0, 0, 1]), 
+                    IsOld=np.array([0, 1, 0, 1, 0]))
 ```
 
-You can create all positive branch combinations
+If you have more than one sensitive attribute,
+fork branches that correspond to values of different attributes
+will have overlapping non-zeroes.
+In this case, you might want to consider intersectional fairness
+by creating all branch combinations with at least
+one member per:
 
+```python 
+sensitive = sensitive.intersectional()
+```
 
 Some or all branches of forks can be provided in 
 the form of dictionaries passed as positional arguments.
@@ -43,8 +60,47 @@ case1name = "case1"
 sensitive = fb.Fork({case1name: sensitive1}, case2=sensitive2)
 ```
 
+You can also define forks of binary arrays 
+by analysing categorical values found in iterables.
+This can be done with the following pattern, which
+creates two branches `Man,Woman` and stores binary
+membership to each of those:
+
+```python
+fork fb,Fork(fb.categories@["Man", "Woman", "Man", "Woman"])
+print(fork)
+# Man: [1, 0, 1, 0]
+# Woman: [0, 1, 0, 1]
+```
+
+If you want to prepend a prefix, add this categorical
+analysis as a keyword argument with the keyword being
+the prefix:
+
+```python
+fork = fb.Fork(gender=fb.categories@["Man", "Woman", "Man", "Woman"])
+print(fork)
+# genderMan: [1, 0, 1, 0]
+# genderWoman: [0, 1, 0, 1]
+```
+
+Any Python iterable can be analysed, including arrays:
+
+```python
+men = np.array([1, 0, 1, 0])
+fork = fb.Fork(gender=fb.categories@men)
+print(fork)
+# gender1.0: [1, 0, 1, 0]
+# gender0.0: [0, 1, 0, 1]
+```
+
+
+
+
 
 ## Working with multiple forked variables
+*These are advanced capabilities that are not needed to generate fairness report.*
+
 If you have multiple forked variables,
 they should all have the same branches.
 Each branch will execute independently 
