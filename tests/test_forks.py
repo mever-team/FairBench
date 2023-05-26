@@ -19,6 +19,33 @@ def test_fork_generation():
         assert fork.c == 3
 
 
+def test_categories():
+    for _ in environment():
+        branches = fb.Fork(fb.categories@["Man", "Woman", "Man", "Woman"]).branches()
+        assert "Man" in branches
+        assert "Woman" in branches
+
+        branches = fb.Fork(gender=fb.categories@{"Man": [0, 1], "Woman": [0, 1]}).branches()
+        assert "genderMan" in branches
+        assert "genderWoman" in branches
+
+        branches = fb.Fork({"Man": [0, 1], "Woman": [0, 1]}).branches()
+        assert "Man" in branches
+        assert "Woman" in branches
+
+        branches = fb.Fork(attr=fb.Categories(range(4))@[0, 1, 2, 0, 1]).branches()
+        assert "attr0" in branches
+        assert "attr1" in branches
+        assert "attr2" in branches
+        assert "attr3" in branches
+
+        branches = fb.Fork(attr=fb.Categories(range(4))([0, 1, 2, 0, 1])).branches()
+        assert "attr0" in branches
+        assert "attr1" in branches
+        assert "attr2" in branches
+        assert "attr3" in branches
+
+
 def test_fork_operations():
     for _ in environment():
         fork = fb.Fork(a=1)
@@ -29,9 +56,12 @@ def test_fork_operations():
         assert not (fork < 0).a
         assert not (fork < 1).a
         assert not (fork > 1).a
+        assert (fork+2).a == 3
+        assert (2+fork).a == 3
         assert (fork-2).a == -1
         assert (2-fork).a == 1
         assert (fork/2).a == 0.5
+        assert (2/fork).a == 2
         assert (fork//2).a == 0
         assert (2//fork).a == 2
         assert (fork*2).a == 2
