@@ -13,7 +13,7 @@ Comprehensive AI fairness exploration.
 ## Features
 
 :blue_heart: Fairness metrics <br>
-:flags: Multimodal & multiattribute <br>
+:flags: Multivalue multiattribute analysis <br>
 :chart_with_upwards_trend: Reporting<br>
 :wrench: ML integration
 
