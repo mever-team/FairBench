@@ -2,21 +2,20 @@
 [![codecov](https://codecov.io/gh/mever-team/FairBench/branch/main/graph/badge.svg?token=qeiNv3DN0W)](https://codecov.io/gh/mever-team/FairBench)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-Bringing together existing and new practices for
-comprehensive fairness exploration.
+Comprehensive AI fairness exploration.
 
-**This project is in its alpha phase.**
+**Author:** Emmanouil (Manios) Krasanakis<br>
+**License:**  Apache Software License 2<br>
+**Dependencies:** `numpy`,`eagerpy`,`dask.distributed`,`makefun`,`matplotlib`, `pandas`, `scikit-learn`, `wget`<br>
 
-**Dependencies:** `numpy`,`eagerpy`,`dask.distributed`,`makefun`,`matplotlib`, `pandas`, `scikit-learn`, `wget`
-
+*This project is in its alpha phase of development.*
 
 ## Features
 
-:blue_heart: Fairness-aware metrics <br>
-:checkered_flag: Multi-modal and multi-objective <br>
+:blue_heart: Fairness metrics <br>
+:flags: Multimodal & multiattribute <br>
 :chart_with_upwards_trend: Reporting<br>
-:wrench: Backpropagateable <br>
-:satellite: Parallel/distributed
+:wrench: ML integration
 
 ## Quickstart
 First, install the framework with: `pip install --upgrade fairbench`
@@ -25,7 +24,7 @@ Let's investigate the fairness of a binary classification algorithm,
 like the following. In practice, you will want to separate training 
 from test or validation data, as is done in the 
 [showcase example](!examples/showcase.ipynb). For a quick start,
-let's keep things simple:
+let's keep things simple by making predictions over training data:
 
 ```python
 from sklearn.linear_model import LogisticRegression
@@ -40,9 +39,17 @@ yhat = classifier.predict(x)
 The framework can also be used with other 
 machine learning setups: `tensorflow`, `pytorch`, `jax`
 
-Declare a binary sensitive attribute; either use
-a single `sensitive` array or consider multiple such attributes,
-which should be set as a data fork per:
+Declare a binary sensitive attribute. Either use
+a single `sensitive` array,
+or consider multiple such attributes, 
+which should be set as branches of what
+the library calls forks. Forks are
+collections of different
+variable values for which calculations, such as
+fairness assessment, are independently computed
+(e.g., in parallel if the distributed mode of
+computations is enabled).
+Declaring a fork can be done as:
 
 ```python
 import fairbench as fb
@@ -51,20 +58,20 @@ sensitive1, sensitive2 = ...
 sensitive = fb.Fork(case1=sensitive1, case2=sensitive2)
 ```
 
-Variable forks create branches of calculations that are computed
-in parallel. Non-forked variables (i.e., of normal Python)
+Non-forked variables (i.e., of normal Python)
 are used by all branches of computations, but forked variables
 retain different values per branch. You can use any names 
 for branches, and you can have as many
 as you want. For example, you
 can create a fork `fb.Fork(Men=...,Women=...,Other=...)`. 
 More details on forks and branches, 
-including generation from dicts, intersectionality, 
-and the preferred format of multi-attribute multi-value forks 
+including generation from dicts, intersectionality for
+multiattribute fairness, 
+and the preferred way of think about multiattribute multivalue forks 
 can be found [here](docs/branches.md).
 
 After declaring the protected attribute, generate a
-binary assessment on each branch's fairness 
+binary fairness assessment for each branch 
 and print it per:
 
 ```python
@@ -87,7 +94,7 @@ prevent some measures that depend on them
 from being evaluated. The generated report can also 
 be visualized, exported as *json*,
 or be constrained to specific metrics. These 
-functionalities, alongside true multi-attribute
+functionalities, alongside true multiattribute
 fairness and customized reports
 are described [here](docs/reports.md). 
 You can also compute standalone [metrics](docs/metrics.md),
@@ -103,7 +110,7 @@ documentation mentioned above.
 
 
 ## Docs
-[Variable branches](docs/branches.md)<br>
+[Forks and branches](docs/branches.md)<br>
 [Reports](docs/reports.md)<br>
 [Available metrics](docs/metrics.md)<br>
 [Add your own metrics](CONTRIBUTING.md)<br>
