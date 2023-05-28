@@ -23,7 +23,7 @@ First, install the framework with: `pip install --upgrade fairbench`
 Let's investigate the fairness of a binary classification algorithm,
 like the following. In practice, you will want to separate training 
 from test or validation data, as is done in the 
-[showcase example](!examples/showcase.ipynb). For a quick start,
+[showcase example](examples/showcase.ipynb). For a quick start,
 let's keep things simple by making predictions over training data:
 
 ```python

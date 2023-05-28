@@ -55,6 +55,6 @@ def areport(*args, metrics: Union[Callable, Iterable, dict] = None, **kwargs):
             for metric in metrics
         ]
     return {
-        name: getattr(report(*args, metrics=[metric], **kwargs), name)
+        name: getattr(report(*args, metrics={name: metric}, **kwargs), name)
         for name, metric in metrics.items()
     }
