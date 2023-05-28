@@ -9,7 +9,9 @@ def abs(value):
 
 
 def sum(values: Iterable[ep.Tensor]) -> ep.Tensor:
-    assert isinstance(values, list), "Can only reduce lists with fairbench.sum. Maybe you meant to use eagerpy.sum?"
+    assert isinstance(
+        values, list
+    ), "Can only reduce lists with fairbench.sum. Maybe you meant to use eagerpy.sum?"
     ret = 0
     for value in values:
         ret = ret + value
@@ -25,14 +27,20 @@ def mean(values: Iterable[ep.Tensor]) -> ep.Tensor:
 
 
 def identical(values: Iterable[ep.Tensor]) -> ep.Tensor:
-    assert isinstance(values, list), "Can only reduce lists with fairbench.mean. Maybe you meant to use eagerpy.identical?"
+    assert isinstance(
+        values, list
+    ), "Can only reduce lists with fairbench.mean. Maybe you meant to use eagerpy.identical?"
     for value in values:
-        assert (value - values[0]).abs().sum() == 0, "eagerpy.identical requires that the exact same tensor is placed on all branches"
+        assert (
+            value - values[0]
+        ).abs().sum() == 0, "eagerpy.identical requires that the exact same tensor is placed on all branches"
     return values[0]
 
 
 def gm(values: Iterable[ep.Tensor]) -> ep.Tensor:
-    assert isinstance(values, list), "Can only reduce lists with fairbench.mean. Maybe you meant to use eagerpy.mean?"
+    assert isinstance(
+        values, list
+    ), "Can only reduce lists with fairbench.mean. Maybe you meant to use eagerpy.mean?"
     ret = 1
     for value in values:
         ret = ret * value
@@ -40,7 +48,9 @@ def gm(values: Iterable[ep.Tensor]) -> ep.Tensor:
 
 
 def max(values: Iterable[ep.Tensor]) -> ep.Tensor:
-    assert isinstance(values, list), "Can only reduce lists with fairbench.max. Maybe you meant to use eagerpy.maximum?"
+    assert isinstance(
+        values, list
+    ), "Can only reduce lists with fairbench.max. Maybe you meant to use eagerpy.maximum?"
     ret = float("-inf")
     for value in values:
         if value > ret:
@@ -49,7 +59,9 @@ def max(values: Iterable[ep.Tensor]) -> ep.Tensor:
 
 
 def budget(values: Iterable[ep.Tensor]) -> ep.Tensor:
-    assert isinstance(values, list), "Can only reduce lists with fairbench.budget. Maybe you meant to use an eagerpy method?"
+    assert isinstance(
+        values, list
+    ), "Can only reduce lists with fairbench.budget. Maybe you meant to use an eagerpy method?"
     from math import log  # TODO: make this compatible with backpropagation
 
     # "An Intersectional Definition of Fairness"
@@ -57,7 +69,9 @@ def budget(values: Iterable[ep.Tensor]) -> ep.Tensor:
 
 
 def min(values: Iterable[ep.Tensor]) -> ep.Tensor:
-    assert isinstance(values, list), "Can only reduce lists with fairbench.min. Maybe you meant to use eagerpy.minimum?"
+    assert isinstance(
+        values, list
+    ), "Can only reduce lists with fairbench.min. Maybe you meant to use eagerpy.minimum?"
     ret = float("inf")
     for value in values:
         if value < ret:

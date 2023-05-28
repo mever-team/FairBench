@@ -21,10 +21,9 @@ def reportargsparse(*args, **kwargs):
 @parallel_primitive
 def report(*args, metrics: Union[Callable, Iterable, dict] = None, **kwargs):
     kwargs = reportargsparse(*args, **kwargs)
-    if metrics is None:
-        raise Exception(
-            "Cannot use fairbench.report() without explicitly declared metrics.\nUse accreport, binreport, multireport, or isecreport as ad-hoc report generation mechanisms."
-        )
+    assert (
+        metrics is not None
+    ), "Cannot use fairbench.report() without explicitly declared metrics.\nUse accreport, binreport, multireport, or isecreport as ad-hoc report generation mechanisms."
     if not isinstance(metrics, Iterable):
         metrics = [metrics]
     if not isinstance(metrics, dict):
@@ -43,10 +42,9 @@ def report(*args, metrics: Union[Callable, Iterable, dict] = None, **kwargs):
 
 
 def areport(*args, metrics: Union[Callable, Iterable, dict] = None, **kwargs):
-    if metrics is None:
-        raise Exception(
-            "Cannot use fairbench.report() without explicitly declared metrics.\nUse accreport, binreport, multireport, or isecreport as ad-hoc report generation mechanisms."
-        )
+    assert (
+        metrics is not None
+    ), "Cannot use fairbench.report() without explicitly declared metrics.\nUse accreport, binreport, multireport, or isecreport as ad-hoc report generation mechanisms."
     if not isinstance(metrics, Iterable):
         return getattr(report(*args, metrics=[metrics], **kwargs), metrics.__name__)
     if not isinstance(metrics, dict):
