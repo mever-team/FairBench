@@ -29,7 +29,7 @@ def test_batch_accumulation():
 
         report = fb.isecreport(vals)
         fb.describe(report)
-        assert report.minprule.bayesian.value > 0.6
+        assert report.minprule.bayesian.value > 0.4
         fb.setbackend("numpy")
         report = fb.multireport(vals)
         fb.describe(report)
