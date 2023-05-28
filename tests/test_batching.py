@@ -25,6 +25,7 @@ def test_batch_accumulation():
 
         vals = None
         vals = fb.concatenate(vals, fb.todict(predictions=yhat, labels=y, sensitive=sensitive))
+        vals = fb.concatenate(vals, fb.todict(predictions=yhat, labels=y, sensitive=sensitive))
 
         report = fb.isecreport(vals)
         fb.describe(report)

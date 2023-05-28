@@ -46,3 +46,61 @@ def test_binreport():
         assert report.nonbin.prule == 0
         assert report.accuracy.men == 1
         assert report.prule.nonbin == 0
+
+
+def test_accreport():
+    for _ in environment():
+        men = np.array([1, 1, 1, 0, 0, 0, 0, 0])
+        women = np.array([0, 0, 0, 1, 1, 1, 0, 0])
+        nonbin = np.array([0, 0, 0, 0, 0, 0, 1, 1])
+        sensitive = fb.Fork(men=men, women=women, nonbin=nonbin)
+        predictions = np.array([1, 0, 1, 1, 0, 1, 0, 0])
+        labels = np.array([1, 0, 1, 0, 1, 0, 1, 0])
+        report = fb.accreport(predictions=predictions, labels=labels, sensitive=sensitive)
+        assert report.men.accuracy == 1
+        assert report.nonbin.pr == 0
+
+
+def test_report_combination():
+    for _ in environment():
+        men = np.array([1, 1, 1, 0, 0, 0, 0, 0])
+        women = np.array([0, 0, 0, 1, 1, 1, 0, 0])
+        nonbin = np.array([0, 0, 0, 0, 0, 0, 1, 1])
+        sensitive = fb.Fork(men=men, women=women, nonbin=nonbin)
+        predictions = np.array([1, 0, 1, 1, 0, 1, 0, 0])
+        labels = np.array([1, 0, 1, 0, 1, 0, 1, 0])
+        report1 = fb.binreport(predictions=predictions, labels=labels, sensitive=sensitive)
+        report2 = fb.multireport(predictions=predictions, labels=labels, sensitive=sensitive)
+        report = fb.combine(report1, report2)
+        assert "min" in report.branches()
+        assert "women" in report.branches()
+
+
+def test_extract():
+    for _ in environment():
+        men = np.array([1, 1, 1, 0, 0, 0, 0, 0])
+        women = np.array([0, 0, 0, 1, 1, 1, 0, 0])
+        nonbin = np.array([0, 0, 0, 0, 0, 0, 1, 1])
+        sensitive = fb.Fork(men=men, women=women, nonbin=nonbin)
+        predictions = np.array([1, 0, 1, 1, 0, 1, 0, 0])
+        labels = np.array([1, 0, 1, 0, 1, 0, 1, 0])
+        report = fb.multireport(predictions=predictions, labels=labels, sensitive=sensitive)
+        extracted = fb.Fork(acc=report.min.accuracy, prule=report.pr.minratio)
+        assert report.min.accuracy == extracted.acc
+        assert report.minratio.pr == extracted.prule
+
+
+def test_extract_comparison():
+    #for _ in environment():  # TODO: fix extract for distributed environment
+    men = np.array([1, 1, 1, 0, 0, 0, 0, 0])
+    women = np.array([0, 0, 0, 1, 1, 1, 0, 0])
+    nonbin = np.array([0, 0, 0, 0, 0, 0, 1, 1])
+    sensitive = fb.Fork(men=men, women=women, nonbin=nonbin)
+    predictions = np.array([1, 0, 1, 1, 0, 1, 0, 0])
+    labels = np.array([1, 0, 1, 0, 1, 0, 1, 0])
+    report1 = fb.multireport(predictions=predictions, labels=labels, sensitive=sensitive)
+    report2 = fb.multireport(predictions=predictions, labels=labels, sensitive=fb.Fork(men=men, women=1-men))
+    report = fb.Fork(report1=report1, report2=report2)
+    extracted = fb.extract(acc=report.min.accuracy, prule=report.pr.minratio)
+    assert report1.min.accuracy.value == extracted.acc.report1.value
+    assert report2.minratio.pr.value == extracted.prule.report2.value
