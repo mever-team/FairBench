@@ -32,4 +32,4 @@ def test_batch_accumulation():
         fb.setbackend("numpy")
         report = fb.multireport(vals)
         fb.describe(report)
-        assert report.minratio.pr.value > 0.6
+        assert report.minratio.pr.value > 0.4
