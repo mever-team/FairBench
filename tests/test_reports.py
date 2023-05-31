@@ -107,12 +107,29 @@ def test_extract_comparison():
 
 
 def test_disparity_metrics():
-    men = np.array([1, 1, 1, 0, 0, 0, 0, 0])
-    women = np.array([0, 0, 0, 1, 1, 1, 0, 0])
-    nonbin = np.array([0, 0, 0, 0, 0, 0, 1, 1])
-    sensitive = fb.Fork(men=men, women=women, nonbin=nonbin)
-    predictions = np.array([1, 0, 1, 1, 0, 1, 0, 0])
-    report = fb.report(predictions=predictions, sensitive=sensitive, metrics=[fb.cvdisparity, fb.eqrep])
-    assert report.men.eqrep <= 1
-    assert report.men.cvdisparity >= 0
+    for _ in environment():
+        men = np.array([1, 1, 1, 0, 0, 0, 0, 0])
+        women = np.array([0, 0, 0, 1, 1, 1, 0, 0])
+        nonbin = np.array([0, 0, 0, 0, 0, 0, 1, 1])
+        sensitive = fb.Fork(men=men, women=women, nonbin=nonbin)
+        predictions = np.array([1, 0, 1, 1, 0, 1, 0, 0])
+        report = fb.report(predictions=predictions, sensitive=sensitive, metrics=[fb.cvdisparity, fb.eqrep])
+        assert report.men.eqrep <= 1
+        assert report.men.cvdisparity >= 0
+
+
+def test_rates():
+    for _ in environment():
+        men = np.array([1, 1, 1, 0, 0, 0, 0, 0])
+        women = np.array([0, 0, 0, 1, 1, 1, 0, 0])
+        nonbin = np.array([0, 0, 0, 0, 0, 0, 1, 1])
+        sensitive = fb.Fork(men=men, women=women, nonbin=nonbin)
+        predictions = np.array([1, 0, 1, 1, 0, 1, 0, 0])
+        labels = np.array([1, 0, 1, 1, 0, 1, 0, 0])
+        report = fb.report(predictions=predictions, labels=labels, sensitive=sensitive, metrics=[fb.tpr, fb.tnr, fb.fpr, fb.fnr])
+        assert report.men.tpr == 1
+        assert report.men.tnr == 1
+        assert report.men.fpr == 0
+        assert report.men.fnr == 0
+
 
