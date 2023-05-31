@@ -15,7 +15,7 @@ def test_reduce():
         reduction = fb.reduce(report, reducer=fb.min, expand=fb.ratio)
         assert reduction.minratio.accuracy.value == 0.6666666666666667
         assert reduction.minratio.dfnr.value == -2
-        assert fb.areduce(report.accuracy, reducer=fb.min, expand=fb.ratio).value == 0.6666666666666667
-        assert fb.areduce(report.accuracy, reducer=fb.max, expand=fb.diff).value == 0.33333333333333326
-        assert fb.areduce(report.accuracy, reducer=fb.mean, expand=fb.diff).value == 0.1481481481481481
-        assert fb.areduce(report.accuracy, reducer=fb.budget, expand=fb.diff).value == -1.09861228866811
+        assert fb.areduce(report.accuracy, reducer=fb.min, expand=fb.ratio) == 0.6666666666666667
+        assert fb.areduce(report.accuracy, reducer=fb.max, expand=fb.diff) == 0.33333333333333326
+        assert fb.areduce(report.accuracy, reducer=fb.mean, expand=fb.diff) == 0.1481481481481481
+        assert fb.areduce(report.accuracy, reducer=fb.budget, expand=fb.diff) == -1.09861228866811

@@ -104,3 +104,15 @@ def test_extract_comparison():
     extracted = fb.extract(acc=report.min.accuracy, prule=report.pr.minratio)
     assert report1.min.accuracy.value == extracted.acc.report1.value
     assert report2.minratio.pr.value == extracted.prule.report2.value
+
+
+def test_disparity_metrics():
+    men = np.array([1, 1, 1, 0, 0, 0, 0, 0])
+    women = np.array([0, 0, 0, 1, 1, 1, 0, 0])
+    nonbin = np.array([0, 0, 0, 0, 0, 0, 1, 1])
+    sensitive = fb.Fork(men=men, women=women, nonbin=nonbin)
+    predictions = np.array([1, 0, 1, 1, 0, 1, 0, 0])
+    report = fb.report(predictions=predictions, sensitive=sensitive, metrics=[fb.cvdisparity, fb.eqrep])
+    assert report.men.eqrep <= 1
+    assert report.men.cvdisparity >= 0
+
