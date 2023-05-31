@@ -6,7 +6,7 @@ from typing import Optional
 
 
 def areduce(fork: Fork, reducer, expand=None, transform=None, branches=None):
-    return reduce(fork, reducer, expand, transform, branches, name=None)
+    return reduce(fork, reducer, expand, transform, branches, name=None).value
 
 
 @comparator

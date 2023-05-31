@@ -1,44 +1,30 @@
-import fairbench
 import fairbench as fb
 import numpy as np
+import sklearn
 from sklearn.linear_model import LogisticRegression
-from sklearn.neural_network import MLPClassifier
-from timeit import default_timer as time
-import torch
-
-#fairbench.setbackend("torch")
 
 
-def load():
-    x = [[0, 0.1], [0.9, 0], [0, 0.1], [1.1, -0.1], [0.1, 0.1], [0.9, 0.1], [0.4, 0.5], [0.6, 0.3]]
-    y = [0, 1, 0, 1, 0, 1, 1, 1]
-    s = [0, 0, 0, 0, 1, 1, 1, 1]
-    return x, y, s
+train = fb.read_csv("adult/adult.data", header=None, skipinitialspace=True)
+test = fb.read_csv("adult/adult.test", header=None, skipinitialspace=True, skiprows=[0])
+numeric = [0, 4, 11, 12]
+categorical = [1, 3, 5, 6]
+x_train = fb.features(train, numeric, categorical)
+y_train = (train[14]==">50K").values
+x_test = fb.features(test, numeric, categorical)
+y_test = (test[14]==">50K.").values
 
 
-if __name__ == '__main__':  # this is necessary to instantiate the distributed environment
-    #fb.distributed()
+x_train_scaled = sklearn.preprocessing.MinMaxScaler().fit_transform(x_train)
+x_test_scaled = sklearn.preprocessing.MinMaxScaler().fit_transform(x_test)
 
-    x, y, s = load()
-    x, y, s = torch.from_numpy(np.array(x)), torch.from_numpy(np.array(y)), torch.from_numpy(np.array(s))
-    s2 = [0, 1, 1, 1, 1, 1, 1, 1]
-    s3 = np.array(s2)
-    #s = 1-s2  # really hard imbalance in the sensitive (isecreport handles this)
-    s2 = 1-s
-    sensitive = fb.Fork(gender=s, ehtnicity=s2, ethinicity2=s3)
+classifier = LogisticRegression(max_iter=1000)
+classifier = classifier.fit(x_train_scaled, y_train)
+predictions = classifier.predict(x_test_scaled)
+sensitive = fb.Fork(gender=fb.categories@test[9])
 
-    classifier = LogisticRegression()
-    classifier = classifier.fit(x, y)
-    yhat = classifier.predict(x)
+fair_predictions = fb.algorithms.multiplication(predictions, sensitive)
+reduced_predictions = fb.areduce(fair_predictions, fb.mean)
+reduced_predictions = reduced_predictions/reduced_predictions.max()
 
-    vals = None
-    vals = fb.concatenate(vals, fb.todict(predictions=yhat, labels=y, sensitive=sensitive))
-
-    report = fb.multireport(vals)
-    fb.describe(report)
-    fb.visualize(report)
-    fb.visualize(report.mean["accuracy"].explain)
-
-    report = fb.isecreport(vals)
-    fb.visualize(report)
-    fb.visualize(report.bayesian["minprule"].explain)
+fb.describe(fb.multireport(predictions=predictions, labels=y_test, sensitive=sensitive))
+fb.describe(fb.multireport(predictions=reduced_predictions, labels=y_test, sensitive=sensitive))

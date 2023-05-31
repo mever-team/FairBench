@@ -1,9 +1,10 @@
-from fairbench.forks.fork import parallel
+from fairbench.forks.fork import parallel, unit_bounded
 from eagerpy import Tensor
 from typing import Optional
 
 
 @parallel
+@unit_bounded
 def prule(
     predictions: Tensor,
     sensitive: Tensor,
@@ -27,6 +28,7 @@ def prule(
 
 
 @parallel
+@unit_bounded
 def cvdisparity(
     predictions: Tensor,
     sensitive: Tensor,
@@ -47,6 +49,7 @@ def cvdisparity(
 
 
 @parallel
+@unit_bounded
 def eqrep(
     predictions: Tensor,
     sensitive: Tensor,

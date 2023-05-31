@@ -1,9 +1,10 @@
-from fairbench.forks.fork import parallel
+from fairbench.forks.fork import parallel, unit_bounded
 from eagerpy import Tensor
 from typing import Optional
 
 
 @parallel
+@unit_bounded
 def dfpr(
     predictions: Tensor,
     labels: Tensor,
@@ -24,6 +25,7 @@ def dfpr(
 
 
 @parallel
+@unit_bounded
 def dfnr(
     predictions: Tensor,
     labels: Tensor,

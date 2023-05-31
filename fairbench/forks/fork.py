@@ -669,6 +669,20 @@ def combine(*args):
     return Fork(ret)
 
 
+def unit_bounded(method):
+    @wraps(method)
+    def wrapper(*args, **kwargs):
+        for iter in [args, kwargs.values()]:
+            for arg in iter:
+                if isinstance(arg, ep.Tensor):
+                    assert (
+                        arg.min() >= 0 and arg.max() <= 1
+                    ), f"{method.__name__} inputs should lie in the range [0,1]. Maybe use fairbench.categories to transform categorical data."
+        return method(*args, **kwargs)
+
+    return wrapper
+
+
 @parallel_primitive
 def call(obj, method, *args, **kwargs):
     if method == "__getattribute__":
