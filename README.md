@@ -67,7 +67,7 @@ can create a fork `fb.Fork(Men=...,Women=...,Other=...)`.
 More details on forks and branches, 
 including generation from dicts, intersectionality for
 multiattribute fairness, 
-and the preferred way of think about multiattribute multivalue forks 
+and the preferred way of thinking about multiattribute multivalue forks 
 can be found [here](docs/branches.md).
 
 After declaring the protected attribute, generate a

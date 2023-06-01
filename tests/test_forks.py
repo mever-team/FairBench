@@ -46,6 +46,22 @@ def test_categories():
         assert "attr3" in branches
 
 
+def test_intersectional():
+    branches = fb.Fork(gender=fb.binary(np.array([0, 1, 0, 1])),  # same notation as bellow
+                       race=fb.binary@np.array([1, 1, 0, 0])).intersectional().branches()
+    assert len(branches) == 8
+
+    branches = fb.Fork(gender=fb.binary(np.array([0, 1, 0, 1])),  # same notation as bellow
+                       race=fb.binary@np.array([0, 1, 0, 1])).intersectional().branches()
+    assert len(branches) == 6
+
+    branches = fb.Fork(sensitive=fb.binary@np.array([0, 1, 0, 1]) & fb.binary@np.array([0, 1, 0, 1])).branches()
+    assert len(branches) == 4
+
+    branches = fb.Fork(sensitive=fb.binary@[0, 1, 0, 1] | fb.categories@["Man", "Woman", "Man", "Woman"]).branches()
+    assert len(branches) == 4
+
+
 def test_fork_operations():
     for _ in environment():
         fork = fb.Fork(a=1)

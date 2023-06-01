@@ -35,11 +35,11 @@ def describe(report: Fork, spacing: int = 15):
     for metric in report:
         if metric != "header":
             ret += (
-                    " ".join(
-                        [metric.ljust(spacing)]
-                        + [f"{entry:.3f}".ljust(spacing) for entry in report[metric]]
-                    )
-                    + "\n"
+                " ".join(
+                    [metric.ljust(spacing)]
+                    + [f"{entry:.3f}".ljust(spacing) for entry in report[metric]]
+                )
+                + "\n"
             )
     print(ret)
 
