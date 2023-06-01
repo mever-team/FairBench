@@ -22,7 +22,7 @@ classifier = classifier.fit(x_train_scaled, y_train)
 predictions = classifier.predict(x_test_scaled)
 sensitive = fb.Fork(gender=fb.categories@test[9])
 
-fair_predictions = fb.algorithms.multiplication(predictions, sensitive)
+fair_predictions = fb.mitigation.multiplication(predictions, sensitive)
 reduced_predictions = fb.areduce(fair_predictions, fb.mean)
 reduced_predictions = reduced_predictions/reduced_predictions.max()
 

@@ -35,16 +35,16 @@ def describe(report: Fork, spacing: int = 15):
     for metric in report:
         if metric != "header":
             ret += (
-                " ".join(
-                    [metric.ljust(spacing)]
-                    + [f"{entry:.3f}".ljust(spacing) for entry in report[metric]]
-                )
-                + "\n"
+                    " ".join(
+                        [metric.ljust(spacing)]
+                        + [f"{entry:.3f}".ljust(spacing) for entry in report[metric]]
+                    )
+                    + "\n"
             )
     print(ret)
 
 
-def visualize(report: Fork):
+def visualize(report: Fork, hold: bool = False):
     assert isinstance(report, Fork)
     report = json.loads(tojson(report))
 
@@ -58,4 +58,5 @@ def visualize(report: Fork):
             plt.title(metric)
             i += 1
     plt.tight_layout()
-    plt.show()
+    if not hold:
+        plt.show()
