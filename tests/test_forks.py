@@ -65,6 +65,10 @@ def test_intersectional():
 def test_fork_operations():
     for _ in environment():
         fork = fb.Fork(a=1)
+        assert (fork == 1).a
+        assert not (fork == 0).a
+        assert not (fork != 1).a
+        assert (fork != 0).a
         assert (fork >= 1).a
         assert (fork >= 0).a
         assert not (fork <= 0).a
@@ -82,6 +86,7 @@ def test_fork_operations():
         assert (2//fork).a == 2
         assert (fork*2).a == 2
         assert (2*fork).a == 2
+        assert (abs(-fork) == 1).a
 
 
 def test_fork_getattr():
@@ -103,6 +108,19 @@ def test_fork_of_dicts():
     assert len(fork.b) == 1
     assert fork.a["z"] == 3
     assert fork.b["z"] == 6
+
+
+def test_fork_of_iterable():
+    for _ in environment():
+        fork = fb.Fork(a={"1": 1, "2": 2, "3": 3}, b={"1": 3, "2": 4, "3": 5})
+        a = dict()
+        b = dict()
+        for i, element in enumerate(fork.items()):
+            assert element[0] in ["1", "2", "3"]
+            a[element[0]] = element[1].a
+            b[element[0]] = element[1].b
+        assert b["3"] == 5
+        assert a["1"] == 1
 
 
 def test_fork_of_forks():

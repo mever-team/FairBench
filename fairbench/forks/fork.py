@@ -260,8 +260,8 @@ class Fork(Mapping):
     def __ne__(self, other):
         return call(self, "__ne__", other)
 
-    def __neg__(self, other):
-        return call(self, "__neg__", other)
+    def __neg__(self):
+        return call(self, "__neg__")
 
     def __add__(self, other):
         return call(self, "__add__", other)
