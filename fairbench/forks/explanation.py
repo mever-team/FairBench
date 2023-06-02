@@ -12,6 +12,7 @@ def tofloat(value):
 class Explainable(Wrapper):
     def __init__(self, value, explain: Any = None, desc: str = None, **kwargs):
         from fairbench.forks import Fork
+
         if value.__class__.__name__ == "Future":
             value = value.result()
         if (

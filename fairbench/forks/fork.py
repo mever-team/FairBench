@@ -304,9 +304,12 @@ class Fork(Mapping):
 
     def __call__(self, *args, **kwargs):
         from fairbench import Explainable
+
         return Fork(
             **{
-                branch: value(*args, **kwargs) if not isinstance(value, Explainable) else value
+                branch: value(*args, **kwargs)
+                if not isinstance(value, Explainable)
+                else value
                 for branch, value in self._branches.items()
             }
         )
