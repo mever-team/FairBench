@@ -1,4 +1,5 @@
 from fairbench.forks.fork import comparator, parallel_primitive, astensor
+from fairbench.forks.explanation import Explainable
 import eagerpy as ep
 
 
@@ -36,12 +37,14 @@ def extract(**kwargs):
             if callable(v):
                 v = (
                     v()
-                )  # TODO: this is a hack to supplement the fact that object members are returns as functions by getattr on Forks
+                )  # TODO: this is a hack to supplement the fact that object members are returned as functions by getattr on Forks
         except TypeError:
             pass
         try:
             v = v[k]
         except AttributeError:
             pass
+        except IndexError:
+            pass  # for IndexError: invalid index to scalar variable. (explainables within forks)
         ret = ret | todict(**{k: v})
     return ret
