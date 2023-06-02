@@ -15,15 +15,9 @@ class Explainable(Wrapper):
 
         if value.__class__.__name__ == "Future":
             value = value.result()
-        if (
-            not isinstance(value, float)
-            and not isinstance(value, int)
-            and "tensor" not in value.__class__.__name__.lower()
-            and "array" not in value.__class__.__name__
-        ):
-            raise Exception("Can not set non-numeric as explainable", value)
-        if explain is not None and kwargs:
-            raise Exception("Cannot create explainable with both todict and a Fork")
+
+        assert isinstance(value, float) or isinstance(value, int) or "tensor" in value.__class__.__name__.lower() or "array" in value.__class__.__name__, "Can not set non-numeric as explainable"
+        assert explain is None or not kwargs, "Cannot create explainable with both todict and a Fork"
         super().__init__(value)
         self.explain = Fork(kwargs) if explain is None else explain
         self.desc = desc
