@@ -1,4 +1,4 @@
-from fairbench.forks.fork import comparator, parallel_primitive, astensor
+from fairbench.forks.fork import comparator, parallel_primitive, astensor, merge
 from fairbench.forks.explanation import Explainable
 import eagerpy as ep
 
@@ -46,5 +46,5 @@ def extract(**kwargs):
             pass
         except IndexError:
             pass  # for IndexError: invalid index to scalar variable. (explainables within forks)
-        ret = ret | todict(**{k: v})
+        ret = merge(ret, todict(**{k: v}))
     return ret

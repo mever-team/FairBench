@@ -143,7 +143,7 @@ class Fork(Mapping):
 
         ret = dict()
         for arg in args:
-            ret = ret | fb.todict(**{arg: self[arg]})
+            ret = fb.merge(ret, fb.todict(**{arg: self[arg]}))
         return ret
 
     def branches(self, branch_names=None, zero_mask=False):
@@ -171,7 +171,7 @@ class Fork(Mapping):
                     break
             if not has_complement:
                 new_branches[branch + "'"] = 1 - branches[branch]
-        return Fork(branches | new_branches)
+        return Fork({**branches, **new_branches})
 
     def intersections(self):
         # get branches
@@ -664,12 +664,17 @@ def multibranch_tensors(_wrapped_method):
     return wrapper
 
 
+@parallel_primitive
+def merge(dict1, dict2):
+    return Forklike({**dict1, **dict2})
+
+
 @comparator
 def combine(*args):
     ret = {}
     for arg in args:
         assert isinstance(arg, Fork)
-        ret |= arg._branches
+        ret = merge(ret, arg._branches)
     return Fork(ret)
 
 

@@ -134,3 +134,15 @@ def test_fork_of_forks():
         assert fork.x.b == fork.b.x
         assert fork.y.a == fork.a.y
         assert fork.y.b == fork.b.y
+
+
+def test_fork_to_array():
+    import fairbench as fb
+    import numpy as np
+
+    sensitive = fb.Fork(gender=fb.categories@np.array([1, 0, 0, 1]),
+                        race=fb.categories@np.array([0, 1, 2, 3]),
+                        age=fb.categories@np.array([3, 1, 2, 0]))
+
+    report = fb.multireport(predictions=np.array([0, 0, 1, 1]), labels=np.array([0, 1, 1, 0]), sensitive=sensitive)
+    print(report)

@@ -1,7 +1,7 @@
 from fairbench.reports.base import report, reportargsparse
 from fairbench.reports import reduction as fb
 from fairbench.reports.accumulate import todict as tokwargs
-from fairbench.forks.fork import combine
+from fairbench.forks.fork import combine, merge
 from fairbench.reports.surrogate import surrogate_positives
 from fairbench import metrics
 
@@ -33,8 +33,8 @@ def isecreport(*args, **kwargs):
     else:
         params = dict()
         for arg in args:
-            params = params | arg
-        params = params | kwargs
+            params = merge(params, arg)
+        params = merge(params, kwargs)
 
     bayesian = fb.reduce(
         surrogate_positives(params["predictions"], params["sensitive"]),

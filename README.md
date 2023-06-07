@@ -6,7 +6,7 @@ Comprehensive AI fairness exploration.
 
 **Author:** Emmanouil (Manios) Krasanakis<br>
 **License:**  Apache Software License 2<br>
-**Dependencies:** `numpy`,`eagerpy`,`dask.distributed`,`makefun`,`matplotlib`, `pandas`, `scikit-learn`, `wget`<br>
+**Dependencies:** `numpy`,`eagerpy`,`dask.distributed`,`makefun`,`matplotlib`,`pandas`,`scikit-learn`,`wget`,`objwrap`<br>
 
 *This project is in its alpha phase of development.*
 
