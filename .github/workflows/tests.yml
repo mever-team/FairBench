@@ -26,6 +26,7 @@ jobs:
         run: pytest -x --cov=fairbench --cov-report=xml
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2
+        if: ${{ matrix.python-version == '3.10' }}
         with:
           fail_ci_if_error: true
           verbose: true
