@@ -12,7 +12,7 @@ long_description = "For tutorials, documentation, and contribution guidelines, p
 
 setuptools.setup(
     name='fairbench',
-    version='0.2.3',
+    version='0.2.5',
     author="Emmanouil (Manios) Krasanakis",
     author_email="maniospas@hotmail.com",
     description="Fairness model assessment framework",
@@ -26,7 +26,6 @@ setuptools.setup(
          "Operating System :: OS Independent",
      ],
     install_requires=[
-        'python_version >"3.2.0"',
         'numpy', 'eagerpy', 'distributed', 'makefun', 'matplotlib', 'wget', 'scikit-learn', 'pandas', 'objwrap'
     ],
  )
