@@ -65,7 +65,7 @@ def budget(values: Iterable[ep.Tensor]) -> ep.Tensor:
     from math import log  # TODO: make this compatible with backpropagation
 
     # "An Intersectional Definition of Fairness"
-    return log(float(max(values)))
+    return max(values).log()
 
 
 def min(values: Iterable[ep.Tensor]) -> ep.Tensor:
