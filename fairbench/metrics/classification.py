@@ -1,4 +1,5 @@
 from fairbench.forks import parallel, unit_bounded
+from fairbench.forks.explanation import Explainable
 from eagerpy import Tensor
 
 
@@ -8,9 +9,12 @@ def accuracy(predictions: Tensor, labels: Tensor, sensitive: Tensor = None):
     if sensitive is None:
         sensitive = predictions.ones_like()
     num_sensitive = sensitive.sum()
-    if num_sensitive == 0:
-        return 0
-    return 1 - ((predictions - labels) * sensitive).abs().sum() / num_sensitive
+    true = ((predictions - labels) * sensitive).abs().sum()
+    return Explainable(
+        0 if num_sensitive == 0 else 1 - true / num_sensitive,
+        samples=num_sensitive,
+        true=true,
+    )
 
 
 @parallel
@@ -19,9 +23,12 @@ def pr(predictions: Tensor, sensitive: Tensor = None):
     if sensitive is None:
         sensitive = predictions.ones_like()
     sum_sensitive = sensitive.sum()
-    if sum_sensitive == 0:
-        return sum_sensitive
-    return (predictions * sensitive).sum() / sum_sensitive
+    sum_positives = (predictions * sensitive).sum()
+    return Explainable(
+        0 if sum_sensitive == 0 else (sum_positives / sum_sensitive),
+        samples=sum_sensitive,
+        positives=sum_positives,
+    )
 
 
 @parallel
@@ -43,9 +50,11 @@ def tpr(
     error = (max_prediction - (predictions - labels).abs()) * predictions
     error_sensitive = error * sensitive
     num_sensitive = (sensitive * predictions).sum()
-    if num_sensitive == 0:
-        return 0
-    return error_sensitive.sum() / num_sensitive
+    return Explainable(
+        0 if num_sensitive == 0 else (error_sensitive.sum() / num_sensitive),
+        positives=num_sensitive,
+        true_positives=error_sensitive.sum(),
+    )
 
 
 @parallel
@@ -62,7 +71,11 @@ def fpr(
     num_sensitive = (sensitive * predictions).sum()
     if num_sensitive == 0:
         return 0
-    return error_sensitive.sum() / num_sensitive
+    return Explainable(
+        0 if num_sensitive == 0 else (error_sensitive.sum() / num_sensitive),
+        positives=num_sensitive,
+        false_positives=error_sensitive.sum(),
+    )
 
 
 @parallel
@@ -79,9 +92,11 @@ def tnr(
     error = (max_prediction - (predictions - labels).abs()) * negatives
     error_sensitive = error * sensitive
     num_sensitive = (sensitive * negatives).sum()
-    if num_sensitive == 0:
-        return 0
-    return error_sensitive.sum() / num_sensitive
+    return Explainable(
+        0 if num_sensitive == 0 else (error_sensitive.sum() / num_sensitive),
+        negatives=num_sensitive,
+        true_negatives=error_sensitive.sum(),
+    )
 
 
 @parallel
@@ -98,6 +113,8 @@ def fnr(
     error = (predictions - labels).abs() * negatives
     error_sensitive = error * sensitive
     num_sensitive = (sensitive * negatives).sum()
-    if num_sensitive == 0:
-        return 0
-    return error_sensitive.sum() / num_sensitive
+    return Explainable(
+        0 if num_sensitive == 0 else (error_sensitive.sum() / num_sensitive),
+        negatives=num_sensitive,
+        false_negatives=error_sensitive.sum(),
+    )

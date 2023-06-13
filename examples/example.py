@@ -1,5 +1,4 @@
 import fairbench as fb
-import numpy as np
 import sklearn
 from sklearn.linear_model import LogisticRegression
 
@@ -10,21 +9,18 @@ numeric = [0, 4, 11, 12]
 categorical = [1, 3, 5, 6]
 x_train = fb.features(train, numeric, categorical)
 y_train = (train[14]==">50K").values
-x_test = fb.features(test, numeric, categorical)
-y_test = (test[14]==">50K.").values
+x = fb.features(test, numeric, categorical)
+y = (test[14]==">50K.").values
 
 
-x_train_scaled = sklearn.preprocessing.MinMaxScaler().fit_transform(x_train)
-x_test_scaled = sklearn.preprocessing.MinMaxScaler().fit_transform(x_test)
+x_train = sklearn.preprocessing.MinMaxScaler().fit_transform(x_train)
+x = sklearn.preprocessing.MinMaxScaler().fit_transform(x)
 
 classifier = LogisticRegression(max_iter=1000)
-classifier = classifier.fit(x_train_scaled, y_train)
-predictions = classifier.predict(x_test_scaled)
-sensitive = fb.Fork(gender=fb.categories@test[9])
+classifier = classifier.fit(x_train, y_train)
+yhat = classifier.predict(x)
+s = fb.Fork(fb.categories@test[9], fb.categories@test[8])
+#print(s.sum())
 
-fair_predictions = fb.mitigation.multiplication(predictions, sensitive)
-reduced_predictions = fb.areduce(fair_predictions, fb.mean)
-reduced_predictions = reduced_predictions/reduced_predictions.max()
-
-fb.describe(fb.multireport(predictions=predictions, labels=y_test, sensitive=sensitive))
-fb.describe(fb.multireport(predictions=reduced_predictions, labels=y_test, sensitive=sensitive))
+report = fb.multireport(predictions=yhat, labels=y, sensitive=s)
+print(report.min.tpr.explain.explain.true_positives)

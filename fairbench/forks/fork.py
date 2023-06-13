@@ -8,6 +8,27 @@ from collections.abc import Mapping
 _backend = "numpy"
 
 
+def _str_foreign(v, tabs=0):
+    if isinstance(v, Fork):
+        v = v.branches()
+    if isinstance(v, dict):
+        complicated = False
+        for val in v.values():
+            if isinstance(val, Fork) or isinstance(val, dict):
+                complicated = True
+        return "\n".join(
+            "   " * tabs
+            + k
+            + ": "
+            + ("\n" if complicated else "")
+            + _str_foreign(fromtensor(v), tabs + 1)
+            for k, v in v.items()
+        )
+    if isinstance(v, float):
+        return f"{v:.3f}"
+    return str(v)
+
+
 class Forklike(dict):
     def __getattribute__(self, name):
         if name in dir(Fork):
@@ -30,6 +51,10 @@ def setbackend(backend_name: str):
 
 
 def tobackend(value):
+    if isinstance(value, ep.Tensor) and isinstance(
+        value.raw, np.float64
+    ):  # TODO: investigate why this is need for distributed mode
+        return value
     global _backend
     name = type(value.raw if isinstance(value, ep.Tensor) else value).__module__.split(
         "."
@@ -74,6 +99,8 @@ def istensor(value, _allow_explanation=False) -> bool:
 def astensor(value, _allow_explanation=False) -> ep.Tensor:
     if value.__class__.__name__ == "Explainable" and not _allow_explanation:
         value = value.value
+    elif value.__class__.__name__ == "Explainable":
+        value = value.value
     if (
         "tensor" not in value.__class__.__name__.lower()
         and "array" not in value.__class__.__name__.lower()
@@ -81,7 +108,8 @@ def astensor(value, _allow_explanation=False) -> ep.Tensor:
         return value
     if isinstance(value, list):
         value = np.array(value, dtype=np.float)
-    value = tobackend(value)
+    if not isinstance(value, np.float64):
+        value = tobackend(value)
     if value.ndim != 0:
         value = value.flatten()
     return value.float64()
@@ -315,9 +343,7 @@ class Fork(Mapping):
         )
 
     def __str__(self):
-        return "\n".join(
-            k + ": " + str(fromtensor(v)) for k, v in self.branches().items()
-        )
+        return _str_foreign(self)
 
     def __repr__(self):
         # from IPython.display import display_html, HTML

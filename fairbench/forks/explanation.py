@@ -32,6 +32,12 @@ class Explainable(Wrapper):
     def __float__(self):
         return tofloat(self.__value__())
 
+    def __int__(self):
+        return int(self.__float__())
+
+    def __str__(self):
+        return f"{self.__float__():.3f}"
+
     @property
     def value(self):
         return self.__value__()
