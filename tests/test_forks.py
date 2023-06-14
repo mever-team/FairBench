@@ -3,10 +3,25 @@ import numpy as np
 
 
 def environment():
-    fb.distributed()
-    yield "distributed"
-    fb.serial()
-    yield "serial"
+    for _ in ["torch", "numpy"]:
+        fb.distributed()
+        yield "distributed"
+        fb.serial()
+        yield "serial"
+
+
+def test_conversion_number():
+    for _ in environment():
+        x = np.float64(2)
+        y = fb.astensor(x).log()
+        x2 = fb.fromtensor(y)
+        assert isinstance(x2, np.float64)
+
+
+def test_explainble():
+    x = fb.Explainable(fb.astensor(1))
+    y = fb.Explainable(fb.astensor(np.float32(2)))
+    assert x/y == 0.5
 
 
 def test_fork_generation():
@@ -134,6 +149,7 @@ def test_fork_of_forks():
         assert fork.x.b == fork.b.x
         assert fork.y.a == fork.a.y
         assert fork.y.b == fork.b.y
+        assert isinstance(fork.y.b, int)
 
 
 def test_fork_to_array():

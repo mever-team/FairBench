@@ -1,6 +1,7 @@
 from typing import Any
 import eagerpy as ep
-from objwrap import Wrapper
+from objwrap import ClosedWrapper
+import numpy as np
 
 
 def tofloat(value):
@@ -9,19 +10,21 @@ def tofloat(value):
     return float(value)
 
 
-class Explainable(Wrapper):
+class Explainable(ClosedWrapper):
     def __init__(self, value, explain: Any = None, desc: str = None, **kwargs):
         from fairbench.forks import Fork
 
         if value.__class__.__name__ == "Future":
             value = value.result()
-
+        if isinstance(value, int) or isinstance(value, float):
+            value = np.float64(value)
         assert (
             isinstance(value, float)
             or isinstance(value, int)
+            or isinstance(value, np.floating)
             or "tensor" in value.__class__.__name__.lower()
             or "array" in value.__class__.__name__
-        ), "Can not set non-numeric as explainable"
+        ), f"Can not set data type as explainable: {type(value)}"
         assert (
             explain is None or not kwargs
         ), "Cannot create explainable with both todict and a Fork"
@@ -44,3 +47,6 @@ class Explainable(Wrapper):
 
     def numpy(self):
         return self.value.numpy()
+
+    def __after__(self, obj):
+        return obj

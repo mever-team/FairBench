@@ -24,7 +24,7 @@ def _str_foreign(v, tabs=0):
             + _str_foreign(fromtensor(v), tabs + 1)
             for k, v in v.items()
         )
-    if isinstance(v, float):
+    if isinstance(v, float) or isinstance(v, np.float64):
         return f"{v:.3f}"
     return str(v)
 
@@ -53,7 +53,7 @@ def setbackend(backend_name: str):
 def tobackend(value):
     if isinstance(value, ep.Tensor) and isinstance(
         value.raw, np.float64
-    ):  # TODO: investigate why this is need for distributed mode
+    ):  # TODO: investigate why this is needed for distributed mode
         return value
     global _backend
     name = type(value.raw if isinstance(value, ep.Tensor) else value).__module__.split(
@@ -96,26 +96,43 @@ def istensor(value, _allow_explanation=False) -> bool:
     return True
 
 
-def astensor(value, _allow_explanation=False) -> ep.Tensor:
+def astensor(value, _allow_explanation=True) -> ep.Tensor:
     if value.__class__.__name__ == "Explainable" and not _allow_explanation:
         value = value.value
     elif value.__class__.__name__ == "Explainable":
-        value = value.value
+        from fairbench import Explainable
+
+        return Explainable(
+            astensor(value.value), explain=value.explain, desc=value.desc
+        )
+    if isinstance(value, int) or isinstance(value, float):
+        value = np.float64(value)
     if (
         "tensor" not in value.__class__.__name__.lower()
         and "array" not in value.__class__.__name__.lower()
+        and not isinstance(value, np.float64)
     ):
         return value
     if isinstance(value, list):
         value = np.array(value, dtype=np.float)
-    if not isinstance(value, np.float64):
+    if isinstance(value, np.float64):
+        value = ep.NumPyTensor(value)
+    else:
         value = tobackend(value)
     if value.ndim != 0:
         value = value.flatten()
     return value.float64()
 
 
-def fromtensor(value):
+def fromtensor(value, _allow_explanation=True):
+    if value.__class__.__name__ == "Explainable" and not _allow_explanation:
+        value = value.value
+    elif value.__class__.__name__ == "Explainable":
+        from fairbench import Explainable
+
+        return Explainable(
+            fromtensor(value.value), explain=value.explain, desc=value.desc
+        )
     # TODO: maybe applying this as a wrapper to methods instead of submitting to dask can be faster
     if isinstance(value, ep.Tensor):
         return value.raw
@@ -409,11 +426,17 @@ def distributed(*args, **kwargs):
     global _client
     from dask.distributed import Client
 
+    if isinstance(_client, Client):
+        _client.close()
     _client = Client(*args, **kwargs)
 
 
 def serial():
     global _client
+    from dask.distributed import Client
+
+    if isinstance(_client, Client):
+        _client.close()
     _client = _NoClient()
 
 

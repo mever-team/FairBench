@@ -1,5 +1,6 @@
 import eagerpy as ep
 from typing import Iterable
+from fairbench.forks import Explainable
 
 
 def abs(value):
@@ -11,7 +12,7 @@ def abs(value):
 def sum(values: Iterable[ep.Tensor]) -> ep.Tensor:
     assert isinstance(
         values, list
-    ), "Can only reduce lists with fairbench.sum. Maybe you meant to use eagerpy.sum?"
+    ), "fairbench.sum can only reduce lists. Maybe you meant to use eagerpy.sum?"
     ret = 0
     for value in values:
         ret = ret + value
@@ -19,21 +20,29 @@ def sum(values: Iterable[ep.Tensor]) -> ep.Tensor:
 
 
 def mean(values: Iterable[ep.Tensor]) -> ep.Tensor:
-    if not isinstance(values, list):
-        raise TypeError(
-            "Can only reduce lists with fairbench.mean. Maybe you meant to use eagerpy.mean?"
-        )
+    assert isinstance(
+        values, list
+    ), "fairbench.mean can only reduce lists. Maybe you meant to use eagerpy.mean?"
     return sum(values) / len(values)
+
+
+def wmean(values: Iterable[ep.Tensor]) -> ep.Tensor:
+    assert isinstance(values, list), "fairbench.wmean can only reduce lists."
+    for value in values:
+        assert isinstance(value, Explainable)
+    nom = sum([value * value.explain.samples for value in values])
+    denom = sum([value.explain.samples for value in values])
+    return nom if denom == 0 else nom / denom
 
 
 def identical(values: Iterable[ep.Tensor]) -> ep.Tensor:
     assert isinstance(
         values, list
-    ), "Can only reduce lists with fairbench.mean. Maybe you meant to use eagerpy.identical?"
+    ), "Can only reduce lists with fairbench.identical. Maybe you meant to use an eagerpy method?"
     for value in values:
         assert (
             value - values[0]
-        ).abs().sum() == 0, "eagerpy.identical requires that the exact same tensor is placed on all branches"
+        ).abs().sum() == 0, "fairbench.identical requires that the exact same tensor is placed on all branches"
     return values[0]
 
 
@@ -72,7 +81,7 @@ def min(values: Iterable[ep.Tensor]) -> ep.Tensor:
     assert isinstance(
         values, list
     ), "Can only reduce lists with fairbench.min. Maybe you meant to use eagerpy.minimum?"
-    ret = float("inf")
+    ret = Explainable(float("inf"))
     for value in values:
         if value < ret:
             ret = value

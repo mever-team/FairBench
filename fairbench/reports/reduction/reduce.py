@@ -1,4 +1,4 @@
-from fairbench.forks.fork import Fork, astensor, comparator
+from fairbench.forks.fork import Fork, astensor, comparator, fromtensor
 from fairbench.forks.explanation import Explainable
 from typing import Optional
 
@@ -41,6 +41,7 @@ def reduce(
             fields.append(
                 astensor(v) if transform is None else transform(astensor(v[v]))
             )
+    before_expand = fields
     if expand is not None:
         fields = (
             {k: expand(v) for k, v in fields.items()}
@@ -48,8 +49,11 @@ def reduce(
             else expand(fields)
         )
     result = (
-        {k: Explainable(reducer(v), fork[k], desc=name) for k, v in fields.items()}
+        {
+            k: Explainable(fromtensor(reducer(v), False), fork[k], desc=name)
+            for k, v in fields.items()
+        }
         if isinstance(fields, dict)
-        else Explainable(reducer(fields), fork, desc=name)
+        else Explainable(fromtensor(reducer(fields), False), fork, desc=name)
     )
     return result if name is None else Fork({name: result})

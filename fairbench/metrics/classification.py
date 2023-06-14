@@ -34,7 +34,7 @@ def pr(predictions: Tensor, sensitive: Tensor = None):
 @parallel
 @unit_bounded
 def positives(predictions: Tensor, sensitive: Tensor):
-    return (predictions * sensitive).mean()
+    return (predictions * sensitive).sum()
 
 
 @parallel
@@ -54,6 +54,7 @@ def tpr(
         0 if num_sensitive == 0 else (error_sensitive.sum() / num_sensitive),
         positives=num_sensitive,
         true_positives=error_sensitive.sum(),
+        samples=sensitive.sum(),
     )
 
 
@@ -75,6 +76,7 @@ def fpr(
         0 if num_sensitive == 0 else (error_sensitive.sum() / num_sensitive),
         positives=num_sensitive,
         false_positives=error_sensitive.sum(),
+        samples=sensitive.sum(),
     )
 
 
@@ -96,6 +98,7 @@ def tnr(
         0 if num_sensitive == 0 else (error_sensitive.sum() / num_sensitive),
         negatives=num_sensitive,
         true_negatives=error_sensitive.sum(),
+        samples=sensitive.sum(),
     )
 
 
@@ -117,4 +120,5 @@ def fnr(
         0 if num_sensitive == 0 else (error_sensitive.sum() / num_sensitive),
         negatives=num_sensitive,
         false_negatives=error_sensitive.sum(),
+        samples=sensitive.sum(),
     )

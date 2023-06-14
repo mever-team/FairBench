@@ -31,13 +31,18 @@ def report(*args, metrics: Union[Callable, Iterable, dict] = None, **kwargs):
     ret = dict()
     for name, metric in metrics.items():
         arg_names = set(inspect.getfullargspec(metric)[0])
-        ret[name] = metric(
-            **{
-                arg: Explainable(value, desc=arg)
-                for arg, value in kwargs.items()
-                if arg in arg_names
-            }
-        )
+        parsed_kwargs = {
+            arg: value  # TODO: find a way to add this Explainable(value, desc=arg) - this makes measures compute on explainable objects, which throws an error
+            for arg, value in kwargs.items()
+            if arg in arg_names
+            and (
+                not isinstance(value, str) or arg != value
+            )  # last statement for yamlres support
+        }
+        # try:
+        ret[name] = metric(**parsed_kwargs)
+        # except TypeError:
+        #    pass
     return ret
 
 
