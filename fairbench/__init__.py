@@ -11,3 +11,4 @@ from fairbench import reports
 from fairbench import export
 from fairbench import mitigation
 from fairbench import bench
+from fairbench.bench import demos

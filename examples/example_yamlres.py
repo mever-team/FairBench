@@ -22,8 +22,6 @@ classifier = classifier.fit(x_train, y_train)
 yhat = classifier.predict(x)
 s = fb.Fork(fb.categories@test[9], fb.categories@test[8])
 
-fb.report
-
 report = reporter(predictions=yhat, labels=y, sensitive=s)
 
 print(report)
