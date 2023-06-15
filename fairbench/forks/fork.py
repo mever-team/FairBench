@@ -4,6 +4,7 @@ import numpy as np
 import inspect
 import sys
 from collections.abc import Mapping
+from objwrap import ClosedWrapper
 
 _backend = "numpy"
 
@@ -31,9 +32,17 @@ def _str_foreign(v, tabs=0):
 
 class Forklike(dict):
     def __getattribute__(self, name):
-        if name in dir(Fork):
+        if name in dir(Forklike):
             return object.__getattribute__(self, name)
         return self[name]
+
+    def __getitem__(self, item):
+        if item in self:
+            return super().__getitem__(item)
+        return Forklike({k: getattr(v, item) for k, v in self.items()})
+
+    def __str__(self):
+        return _str_foreign(self)
 
 
 def _result(ret):

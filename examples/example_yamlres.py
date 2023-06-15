@@ -7,8 +7,8 @@ resource = "yamlres/reports.yaml"
 reporter = Loader().load(resource)
 reporter = Runner().init(reporter)
 
-train = fb.read_csv("adult/adult.data", header=None, skipinitialspace=True)
-test = fb.read_csv("adult/adult.test", header=None, skipinitialspace=True, skiprows=[0])
+train = fb.read_csv("https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data", header=None, skipinitialspace=True)
+test = fb.read_csv("https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.test", header=None, skipinitialspace=True, skiprows=[0])
 numeric = [0, 4, 11, 12]
 categorical = [1, 3, 5, 6]
 x_train = fb.features(train, numeric, categorical)

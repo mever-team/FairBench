@@ -162,3 +162,14 @@ def test_fork_to_array():
 
     report = fb.multireport(predictions=np.array([0, 0, 1, 1]), labels=np.array([0, 1, 1, 0]), sensitive=sensitive)
     print(report)
+
+
+def test_fork_direct_explain():
+    import fairbench as fb
+    import numpy as np
+    sensitive = fb.Fork(gender=fb.categories@np.array([1, 0, 0, 1]),
+                        race=fb.categories@np.array([0, 1, 2, 3]),
+                        age=fb.categories@np.array([3, 1, 2, 0]))
+    report = fb.multireport(predictions=np.array([0, 0, 1, 1]), labels=np.array([0, 1, 1, 0]), sensitive=sensitive)
+    explanation = report.explain
+    assert "min" in explanation.branches()
