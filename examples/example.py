@@ -5,4 +5,4 @@ s = fb.Fork(fb.categories@test[8])
 report = fb.multireport(predictions=yhat, labels=y, sensitive=s)
 
 fb.visualize(report)
-fb.visualize(report.min.explain)
+fb.visualize(report.wmean.explain)
