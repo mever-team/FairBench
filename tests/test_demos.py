@@ -9,4 +9,8 @@ def test_settings(monkeypatch):
         for setting, protected in [(fb.demos.adult, 8), (fb.demos.bank, "marital")]:
             test, y, yhat = setting()
             sensitive = fb.Fork(fb.categories@test[protected])
-            fb.visualize(fb.multireport(predictions=yhat, labels=y, sensitive=sensitive))
+            report = fb.multireport(predictions=yhat, labels=y, sensitive=sensitive)
+            fb.visualize(report)
+            fb.visualize(report.min.accuracy.explain.explain)
+            fb.visualize(report.min.accuracy.explain)
+            fb.visualize(report.min.explain)

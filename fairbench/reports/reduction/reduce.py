@@ -1,5 +1,5 @@
 from fairbench.forks.fork import Fork, astensor, comparator, fromtensor
-from fairbench.forks.explanation import Explainable
+from fairbench.forks.explanation import Explainable, ExplainableError
 from typing import Optional
 
 # from fairbench.reports.accumulate import todict as tokwargs
@@ -7,6 +7,19 @@ from typing import Optional
 
 def areduce(fork: Fork, reducer, expand=None, transform=None, branches=None):
     return reduce(fork, reducer, expand, transform, branches, name=None)
+
+
+def _tryorexplainable(method, *args, **kwargs):
+    for arg in args:
+        if isinstance(arg, ExplainableError):
+            return arg
+    for arg in kwargs.values():
+        if isinstance(arg, ExplainableError):
+            return arg
+    try:
+        return method(*args, **kwargs)
+    except ExplainableError as e:
+        return e
 
 
 @comparator
@@ -41,19 +54,28 @@ def reduce(
             fields.append(
                 astensor(v) if transform is None else transform(astensor(v[v]))
             )
-    before_expand = fields
     if expand is not None:
         fields = (
-            {k: expand(v) for k, v in fields.items()}
+            {k: _tryorexplainable(expand, v) for k, v in fields.items()}
             if isinstance(fields, dict)
-            else expand(fields)
+            else _tryorexplainable(expand, fields)
         )
     result = (
         {
-            k: Explainable(fromtensor(reducer(v), False), fork[k], desc=name)
+            k: _tryorexplainable(
+                Explainable,
+                _tryorexplainable(fromtensor, _tryorexplainable(reducer, v), False),
+                fork[k],
+                desc=name,
+            )
             for k, v in fields.items()
         }
         if isinstance(fields, dict)
-        else Explainable(fromtensor(reducer(fields), False), fork, desc=name)
+        else _tryorexplainable(
+            Explainable,
+            _tryorexplainable(fromtensor, _tryorexplainable(reducer, fields), False),
+            fork,
+            desc=name,
+        )
     )
     return result if name is None else Fork({name: result})

@@ -4,10 +4,17 @@ from fairbench.reports.accumulate import todict as tokwargs
 from fairbench.forks.fork import combine, merge
 from fairbench.reports.surrogate import surrogate_positives
 from fairbench import metrics
+from fairbench.reports import reduction
 
 
 common_metrics = (metrics.accuracy, metrics.prule, metrics.dfpr, metrics.dfnr)
 acc_metrics = (metrics.accuracy, metrics.pr, metrics.tpr, metrics.tnr)
+common_reduction = (
+    {"reducer": reduction.min},
+    {"reducer": reduction.wmean},
+    {"reducer": reduction.min, "expand": reduction.ratio},
+    {"reducer": reduction.max, "expand": reduction.diff},
+)
 
 
 def accreport(*args, metrics=acc_metrics, **kwargs):
@@ -18,13 +25,11 @@ def binreport(*args, metrics=common_metrics, **kwargs):
     return report(*args, metrics=metrics, **kwargs)
 
 
-def multireport(*args, metrics=acc_metrics, **kwargs):
+def multireport(
+    *args, metrics=acc_metrics, reduction_schemes=common_reduction, **kwargs
+):
     base = report(*args, metrics=metrics, **kwargs)
-    return combine(
-        fb.reduce(base, fb.min),
-        fb.reduce(base, fb.min, expand=fb.ratio),
-        fb.reduce(base, fb.max, expand=fb.diff),
-    )
+    return combine(*[fb.reduce(base, **scheme) for scheme in reduction_schemes])
 
 
 def isecreport(*args, **kwargs):

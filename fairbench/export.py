@@ -1,4 +1,5 @@
-from fairbench.forks.fork import Fork
+from fairbench.forks.fork import Fork, Forklike
+from fairbench.reports.accumulate import todict
 from matplotlib import pyplot as plt
 import json
 from fairbench.forks.explanation import tofloat
@@ -9,6 +10,10 @@ def _is_fork_of_dicts(report):
 
 
 def tojson(report: Fork):
+    if isinstance(report, dict):  # includes Forklike
+        report = todict(**report)
+    if isinstance(report, dict):  # if it's still a Forklike
+        report = Fork(report)
     assert isinstance(report, Fork)
     report = {
         k: v.branches() if isinstance(v, Fork) else v
@@ -27,7 +32,6 @@ def tojson(report: Fork):
 
 
 def describe(report: Fork, spacing: int = 15):
-    assert isinstance(report, Fork)
     report = json.loads(tojson(report))
     ret = ""
     if report["header"]:
@@ -45,7 +49,6 @@ def describe(report: Fork, spacing: int = 15):
 
 
 def visualize(report: Fork, hold: bool = False):
-    assert isinstance(report, Fork)
     report = json.loads(tojson(report))
 
     i = 1

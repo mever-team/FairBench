@@ -1,6 +1,6 @@
 import eagerpy as ep
 from typing import Iterable
-from fairbench.forks import Explainable
+from fairbench.forks import Explainable, ExplainableError
 
 
 def abs(value):
@@ -29,7 +29,8 @@ def mean(values: Iterable[ep.Tensor]) -> ep.Tensor:
 def wmean(values: Iterable[ep.Tensor]) -> ep.Tensor:
     assert isinstance(values, list), "fairbench.wmean can only reduce lists."
     for value in values:
-        assert isinstance(value, Explainable)
+        if not isinstance(value, Explainable):
+            raise ExplainableError("Measure explanation does not store `samples`")
     nom = sum([value * value.explain.samples for value in values])
     denom = sum([value.explain.samples for value in values])
     return nom if denom == 0 else nom / denom
@@ -47,9 +48,7 @@ def identical(values: Iterable[ep.Tensor]) -> ep.Tensor:
 
 
 def gm(values: Iterable[ep.Tensor]) -> ep.Tensor:
-    assert isinstance(
-        values, list
-    ), "Can only reduce lists with fairbench.mean. Maybe you meant to use eagerpy.mean?"
+    assert isinstance(values, list), "fairbench.gm can only reduce lists."
     ret = 1
     for value in values:
         ret = ret * value
@@ -59,7 +58,7 @@ def gm(values: Iterable[ep.Tensor]) -> ep.Tensor:
 def max(values: Iterable[ep.Tensor]) -> ep.Tensor:
     assert isinstance(
         values, list
-    ), "Can only reduce lists with fairbench.max. Maybe you meant to use eagerpy.maximum?"
+    ), "fairbench.max can only reduce lists. Maybe you meant to use eagerpy.maximum?"
     ret = float("-inf")
     for value in values:
         if value > ret:
@@ -68,9 +67,7 @@ def max(values: Iterable[ep.Tensor]) -> ep.Tensor:
 
 
 def budget(values: Iterable[ep.Tensor]) -> ep.Tensor:
-    assert isinstance(
-        values, list
-    ), "Can only reduce lists with fairbench.budget. Maybe you meant to use an eagerpy method?"
+    assert isinstance(values, list), "fairbench.budget can only reduce lists."
     from math import log  # TODO: make this compatible with backpropagation
 
     # "An Intersectional Definition of Fairness"
@@ -80,8 +77,8 @@ def budget(values: Iterable[ep.Tensor]) -> ep.Tensor:
 def min(values: Iterable[ep.Tensor]) -> ep.Tensor:
     assert isinstance(
         values, list
-    ), "Can only reduce lists with fairbench.min. Maybe you meant to use eagerpy.minimum?"
-    ret = Explainable(float("inf"))
+    ), "fairbench.min can only reduce lists. Maybe you meant to use eagerpy.minimum?"
+    ret = float("inf")
     for value in values:
         if value < ret:
             ret = value

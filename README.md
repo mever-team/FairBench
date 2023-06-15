@@ -5,7 +5,7 @@
 Comprehensive AI fairness exploration.
 
 **Author:** Emmanouil (Manios) Krasanakis<br>
-**License:**  Apache Software License 2<br>
+**License:** Apache Software License 2<br>
 **Dependencies:** `numpy`,`eagerpy`,`dask.distributed`,`makefun`,`matplotlib`,`pandas`,`scikit-learn`,`wget`,`objwrap`<br>
 
 *This project is in its alpha phase of development.*
@@ -14,11 +14,11 @@ Comprehensive AI fairness exploration.
 
 :blue_heart: Fairness metrics <br>
 :flags: Multivalue multiattribute <br>
-:chart_with_upwards_trend: Reporting<br>
+:chart_with_upwards_trend: Reporting <br>
 :wrench: ML integration
 
 ## Quickstart
-First, install the framework with: `pip install --upgrade fairbench`
+Install the framework with: `pip install --upgrade fairbench`
 
 Let's investigate the fairness of a binary classification algorithm,
 like the following. In practice, you will want to separate training 
@@ -36,12 +36,12 @@ classifier = classifier.fit(x, y)
 yhat = classifier.predict(x)
 ```
 
-The framework can also be used with other 
+The framework also supports other 
 machine learning setups: `tensorflow`, `pytorch`, `jax`
 
-Declare a binary sensitive attribute. Either use
-a single `sensitive` array,
-or consider multiple such attributes, 
+Declare sensitive attributes with binary columns. 
+Either use a single `sensitive` array,
+or consider multiple such arrays, 
 which should be set as branches of what
 the library calls forks. Forks are
 collections of different
@@ -59,15 +59,13 @@ sensitive = fb.Fork(case1=sensitive1, case2=sensitive2)
 ```
 
 Non-forked variables (i.e., of normal Python)
-are used by all branches of computations, but forked variables
-retain different values per branch. You can use any names 
-for branches, and you can have as many
-as you want. For example, you
-can create a fork `fb.Fork(Men=...,Women=...,Other=...)`. 
+are used by all branches of computations, but forks
+retain different values per branch. Use any names 
+for branches. You can have as many branches
+as you want. For example, 
+create a fork `fb.Fork(Men=...,Women=...,Other=...)`. 
 More details on forks and branches, 
-including generation from dicts, intersectionality for
-multiattribute fairness, 
-and the preferred way of thinking about multiattribute multivalue forks 
+including generation of multiattribute multivalue forks 
 can be found [here](docs/branches.md).
 
 After declaring the protected attribute, generate a
@@ -90,16 +88,15 @@ dfnr            -0.500          0.500
 ```
 
 Omitting some arguments from the report will 
-prevent some measures that depend on them 
-from being evaluated. The generated report can also 
-be visualized, exported as *json*,
-or be constrained to specific metrics. These 
-functionalities, alongside true multiattribute
+prevent some measures from being evaluated. 
+Generated reports can be visualized, exported as *json*,
+or be constrained to specific [metrics](docs/metrics.md). 
+These functionalities, alongside true multiattribute
 fairness and customized reports
 are described [here](docs/reports.md). 
-You can also compute standalone [metrics](docs/metrics.md),
-for instance to use them as backpropagateable 
-machine learning regularization terms.
+Reports and values are explainable and
+backpropagateable, for example to use for
+machine learning regularization.
 
 :bulb: Prefer calling `fairbench.multireport` for
 fairness reporting that does **NOT treat branches independently**.
