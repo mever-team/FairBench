@@ -89,6 +89,6 @@ Advanced topics
 
 Usage on example data (notebooks)
 
-[<img alt="branches" width="20%" src="docs/images/tabular.png" />](examples/demo.md)
-[<img alt="branches" width="20%" src="docs/images/graphs.png" />](examples/graphs.md)
-[<img alt="branches" width="20%" src="docs/images/vision.png" />](examples/vision.md)
+[<img alt="branches" width="20%" src="docs/images/tabular.png" />](examples/demo.ipynb])
+[<img alt="branches" width="20%" src="docs/images/graphs.png" />](examples/graphs.ipynb)
+[<img alt="branches" width="20%" src="docs/images/vision.png" />](examples/vision.ipynb)
