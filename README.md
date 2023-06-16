@@ -50,11 +50,11 @@ sensitive1, sensitive2 = ...
 sensitive = fb.Fork(case1=sensitive1, case2=sensitive2)
 ```
 
-4. Generate a binary fairness assessment and print it:
+4. Generate a report (more advanced reports have the same interface) and show it:
 
 ```python
 report = fb.binreport(predictions=yhat, labels=y, sensitive=sensitive)
-fb.describe(report)
+fb.describe(report)  # or print(report) or fb.visualize(report)
 ```
 
 The output will display the assessment for each branch:
