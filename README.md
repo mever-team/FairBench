@@ -76,7 +76,8 @@ Refer to the documentation below for more details.
 
 
 ## Docs
-[<figure><img alt="reports" width="30%" src="docs/reports.png" /><figcaption>Reports<small> - combine, explain, export, visualize</small></figcaption></figure>](docs/reports.md) [<figure><img alt="branches" width="30%" src="docs/reports.png" /><figcaption>Forks and branches<small> - multiattribute multivalue</small></figcaption></figure>](docs/branches.md) 
+[<img alt="reports" width="30%" src="docs/reports.png" />](docs/reports.md) 
+[<img alt="branches" width="30%" src="docs/forks.png" />](docs/forks.md) 
 
 Advanced topics:
 - [Available metrics](docs/metrics.md)
