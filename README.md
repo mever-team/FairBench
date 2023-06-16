@@ -75,11 +75,11 @@ branches with each other, and performs reductions.
 Refer to the documentation below for more details.
 
 
-## Docs
+## Docs 
 
-| Reports                                                                      | Forks and branches                                                           |
-|------------------------------------------------------------------------------|------------------------------------------------------------------------------|
-| [<img alt="reports" width="100%" src="docs/reports.png" />](docs/reports.md) | [<img alt="branches" width="100%" src="docs/forks.png" />](docs/branches.md) |
+[<img alt="reports" width="30%" src="docs/report.png" />](docs/reports.md)
+[<img alt="branches" width="30%" src="docs/forks.png" />](docs/branches.md)
+
 
 Advanced topics:
 - [Available metrics](docs/metrics.md)
