@@ -85,3 +85,8 @@ Advanced topics:
 - [Available metrics](docs/metrics.md)
 - [Add your own metrics](CONTRIBUTING.md)
 - [Distributed execution](docs/distributed.md)
+
+Example usage:
+- [Graphs](examples/graphs.ipynb) <small>- node recommendation, algorithm comparison</small>
+- [Tabular](examples/demo.ipynb) <small>- classification, intersectionality</small>
+- [Vision](examples/vision.ipynb) <small>- multiclass</small>
