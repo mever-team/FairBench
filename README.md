@@ -76,8 +76,10 @@ Refer to the documentation below for more details.
 
 
 ## Docs
-[<img alt="reports" width="30%" src="docs/reports.png" />](docs/reports.md) 
-[<img alt="branches" width="30%" src="docs/forks.png" />](docs/forks.md) 
+
+| Reports                                                                     | Forks and branches                                                          |
+|-----------------------------------------------------------------------------|-----------------------------------------------------------------------------|
+| [<img alt="reports" width="30%" src="docs/reports.png" />](docs/reports.md) | [<img alt="branches" width="30%" src="docs/forks.png" />](docs/branches.md) |
 
 Advanced topics:
 - [Available metrics](docs/metrics.md)
