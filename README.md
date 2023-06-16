@@ -77,16 +77,18 @@ Refer to the documentation below for more details.
 
 ## Docs 
 
-[<img alt="reports" width="30%" src="docs/report.png" />](docs/reports.md)
-[<img alt="branches" width="30%" src="docs/forks.png" />](docs/branches.md)
+[<img alt="reports" width="30%" src="docs/images/report.png" />](docs/reports.md)
+[<img alt="branches" width="30%" src="docs/images/forks.png" />](docs/branches.md)
 
 
-Advanced topics:
+Advanced topics
+
 - [Available metrics](docs/metrics.md)
 - [Add your own metrics](CONTRIBUTING.md)
 - [Distributed execution](docs/distributed.md)
 
-Example usage:
-- [Graphs](examples/graphs.ipynb) <small>- node recommendation, algorithm comparison</small>
-- [Tabular](examples/demo.ipynb) <small>- classification, intersectionality</small>
-- [Vision](examples/vision.ipynb) <small>- multiclass</small>
+Usage on example data (notebooks)
+
+[<img alt="branches" width="30%" src="docs/images/tabular.png" />](examples/demo.md)
+[<img alt="branches" width="30%" src="docs/images/graphs.png" />](examples/graphs.md)
+[<img alt="branches" width="30%" src="docs/images/vision.png" />](examples/vision.md)
