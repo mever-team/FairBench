@@ -76,10 +76,8 @@ Refer to the documentation below for more details.
 
 
 ## Docs
-More information:
-
-- [Reports](docs/reports.md) <small>- combine, explain, export, visualize</small>
-- [Forks and branches](docs/branches.md) <small>- multiattribute multivalue sensitive attributes</small>
+[<figure><img alt="alt_text" width="30%" src="docs/reports.png" /><figcaption>Reports<small> - combine, explain, export, visualize</small></figcaption>](docs/reports.md)
+[<figure><img alt="alt_text" width="30%" src="docs/reports.png" /><figcaption>Forks and branches<small> - multiattribute multivalue</small></figcaption>](docs/branches.md) 
 
 Advanced topics:
 - [Available metrics](docs/metrics.md)
