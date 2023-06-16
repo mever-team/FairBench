@@ -39,10 +39,10 @@ def report(*args, metrics: Union[Callable, Iterable, dict] = None, **kwargs):
                 not isinstance(value, str) or arg != value
             )  # last statement for yamlres support
         }
-        # try:
-        ret[name] = metric(**parsed_kwargs)
-        # except TypeError:
-        #    pass
+        try:
+            ret[name] = metric(**parsed_kwargs)
+        except TypeError:
+            pass
     return ret
 
 

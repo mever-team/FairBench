@@ -30,7 +30,7 @@ def adult(
     if predict == "predict":
         yhat = classifier.predict(x)
     elif predict == "probabilities":
-        yhat = classifier.predict_proba(x)[:, 0]
+        yhat = classifier.predict_proba(x)[:, 1]
     else:
         raise NotImplementedError()
     return test, y, yhat

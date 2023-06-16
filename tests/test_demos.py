@@ -14,3 +14,13 @@ def test_settings(monkeypatch):
             fb.visualize(report.min.accuracy.explain.explain)
             fb.visualize(report.min.accuracy.explain)
             fb.visualize(report.min.explain)
+
+
+def test_curve_visualization(monkeypatch):
+    from matplotlib import pyplot as plt
+    for _ in environment():
+        monkeypatch.setattr(plt, 'show', lambda: None)
+        test, y, yhat = fb.demos.adult(predict="probabilities")
+        s = fb.Fork(fb.categories @ test[9])
+        report = fb.multireport(scores=yhat, labels=y, sensitive=s)
+        fb.visualize(report.min.auc.explain.explain)

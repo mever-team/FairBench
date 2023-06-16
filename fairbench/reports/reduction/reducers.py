@@ -34,8 +34,8 @@ def wmean(values: Iterable[ep.Tensor]) -> ep.Tensor:
             or "samples" not in value.explain.branches()
         ):
             raise ExplainableError("Explanation absent or does not store `samples`")
-    nom = sum([value / value.explain.samples for value in values])
-    denom = sum([1.0 / value.explain.samples for value in values])
+    nom = sum([value * value.explain.samples for value in values])
+    denom = sum([value.explain.samples for value in values])
     return nom if denom == 0 else nom / denom
 
 

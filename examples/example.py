@@ -1,8 +1,10 @@
 import fairbench as fb
 
-test, y, yhat = fb.demos.adult()
-s = fb.Fork(fb.categories@test[8])
-report = fb.multireport(predictions=yhat, labels=y, sensitive=s)
+test, y, yhat = fb.demos.adult(predict="probabilities")
+s = fb.Fork(fb.categories@test[9])
+report = fb.multireport(scores=yhat, labels=y, sensitive=s)
 
-fb.visualize(report)
-fb.visualize(report.wmean.explain)
+print(report.min.auc.explain.explain)
+
+fb.visualize(report.min.auc.explain.explain)
+#fb.visualize(report.wmean.explain)
