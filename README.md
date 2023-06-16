@@ -10,10 +10,10 @@ A comprehensive AI fairness exploration framework.
 
 ## Features
 
-- :blue_heart: Fairness metrics
+- :chart_with_upwards_trend: Fairness reports
 - :flags: Multivalue multiattribute
-- :chart_with_upwards_trend: Reporting
-- :wrench: ML integration (`numpy`,`torch`,`tensorflow`,`jax`)
+- :hammer_and_wrench: Measure building blocks
+- :gear: ML integration (`numpy`,`torch`,`tensorflow`,`jax`)
 
 ## Quickstart
 
@@ -89,6 +89,6 @@ Advanced topics
 
 Usage on example data (notebooks)
 
-[<img alt="branches" width="30%" src="docs/images/tabular.png" />](examples/demo.md)
-[<img alt="branches" width="30%" src="docs/images/graphs.png" />](examples/graphs.md)
-[<img alt="branches" width="30%" src="docs/images/vision.png" />](examples/vision.md)
+[<img alt="branches" width="20%" src="docs/images/tabular.png" />](examples/demo.md)
+[<img alt="branches" width="20%" src="docs/images/graphs.png" />](examples/graphs.md)
+[<img alt="branches" width="20%" src="docs/images/vision.png" />](examples/vision.md)
