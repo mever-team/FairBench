@@ -39,9 +39,38 @@ provided by those working with your method, but try not to do so
 without good reason, as it reduces computational equivalence
 between environments.
 
-:bulb: If your metric should behave differently for different 
+If your metric should behave differently for different 
 data branches, add a `branch: str = None` default argument in its
 definition to get the branch name.
+
+4. Prefer returning output values as `Explainable` objects.
+
+These wrap simple numbers with additional metadata to be viewed for
+explanation. Some reductions or expansions look at specific
+metadata to be computed (e.g., `cmean` requires a *"samples"* 
+numbers that stores the group size, `barea` requres a *"curve"*
+of the type `Curve` storing x-axis and y-axis plots of some
+curve that the metric summarizes). As a prototype to start from, 
+this is how `tpr` constructs its explainable output:
+
+```python
+return Explainable(
+    value,  # this is a positional argument
+    samples=...,
+    positives=...,
+)
+```
+
+:bulb: Explainable objects wrap all operations of their
+stored value, and can be used for new arithmetics (the
+result will be normal numbers).
+
+Try to avoid invalid arithmetic operations, 
+but if there are specific cases for which the 
+output cannot be computed (not when inputs are invalide)
+you can return `ExplainableError(message)`. This will
+be viewed as *"---"* in reports but will still have
+a *.explain* field, which will be storing the given message.
 
 ## Create new reduction strategies
 Reduction strategies follow three steps: transformation,
@@ -63,7 +92,7 @@ def expander(values: Iterable[ep.Tensor]) -> Iterable[ep.Tensor]:
 ```
 
 Reducers take lists of values, such as lists produced by
-and expander, and perform an aggregation strategy to summarize
+an expander, and perform an aggregation strategy to summarize
 it into one float value. Take care for your computations
 to be backpropagateable. Add reducers in the 
 `fairbench.reports.reduction.reducers` module and start
@@ -74,3 +103,19 @@ def reducer(values: Iterable[ep.Tensor]) -> ep.Tensor:
     assert isinstance(values, list)
     return ... # float value that aggregates the list's elements
 ```
+
+Inputs to expanders or reducers could be `Explainable`,
+and you can check for this.
+The outcome of expanders could also be explainable, though
+reducer outcome will be automatically assigned explanations
+based on base measure values.
+
+If an invalid condition is encountered in some expander
+or reducer raise an explainable error via
+`raise ExplainableError(message)`. This is the same error
+used to indicate uncomputable base measures, though here
+it needs to be an exception. Adopt this functionality
+when creating reducers that explicitly account for metadata;
+in this case, raise the explainable error exception if
+inputs are not explainable or the needed computational
+branch is missing from the explanation.

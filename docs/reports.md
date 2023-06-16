@@ -1,12 +1,13 @@
 # :chart_with_upwards_trend: Reports
 
 1. [Generating reports](#generating-reports)
-2. [Viewing reports](#viewing-reports)
-3. [Editing reports](#editing-reports)
-4. [Reducing reports](#reducing-reports)
-5. [Combining reports](#combining-reports)
-6. [Explaining report values](#explaining-report-values)
-7. [Buffering batch predictions](#buffering-batch-predictions)
+2. [Report types](#report-types)
+3. [Viewing reports](#viewing-reports)
+4. [Editing reports](#editing-reports)
+5. [Reducing reports](#reducing-reports)
+6. [Combining reports](#combining-reports)
+7. [Explaining report values](#explaining-report-values)
+8. [Buffering batch predictions](#buffering-batch-predictions)
 
 ## Generating reports
 
@@ -33,6 +34,7 @@ sensitive and predictive attribute
 combination, but this will likely be
 automated in the future.
 
+## Report types
 
 Out-of-the box, you can use one of the following three
 report generation methods, which wrap the base
