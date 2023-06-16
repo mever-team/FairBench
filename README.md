@@ -15,7 +15,7 @@ A comprehensive AI fairness exploration framework.
 - :hammer_and_wrench: Measure building blocks
 - :gear: ML integration (`numpy`,`torch`,`tensorflow`,`jax`)
 
-## Get started
+## Get started 
 
 [<img alt="reports" width="30%" src="docs/images/quickstart.png" />](docs/quickstart.md)
 [<img alt="reports" width="30%" src="docs/images/report.png" />](docs/reports.md)
