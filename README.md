@@ -5,7 +5,7 @@
 
 A comprehensive AI fairness exploration framework.
 
-**Author:** Emmanouil (Manios) Krasanakis
+**Author:** Emmanouil (Manios) Krasanakis <br>
 **License:** Apache Software License 2
 
 ## Features
@@ -13,7 +13,7 @@ A comprehensive AI fairness exploration framework.
 - :blue_heart: Fairness metrics
 - :flags: Multivalue multiattribute
 - :chart_with_upwards_trend: Reporting
-- :wrench: ML integration
+- :wrench: ML integration (`numpy`,`torch`,`tensorflow`,`jax`)
 
 ## Quickstart
 
@@ -29,16 +29,17 @@ To investigate the fairness of a binary classification algorithm, follow these s
 
 ```python
 import fairbench as fb
-from sklearn.linear_model import LogisticRegression
 
-x, y = ...
+trainx, trainy, x, y = ...
 ```
 
-2. Train a binary classification model:
+2. Create some predictions, for example after training a model:
 
 ```python
+from sklearn.linear_model import LogisticRegression
+
 classifier = LogisticRegression()
-classifier.fit(x, y)
+classifier.fit(trainx, trainy)
 yhat = classifier.predict(x)
 ```
 
@@ -69,10 +70,9 @@ dfnr        -0.500          0.500
 :bulb: For fairness reporting that does 
 **NOT treat branches independently**, 
 it is recommended to use `fairbench.multireport`. 
-This reporting hides original branches, performs reductions 
-to summarize performance and notions of fairness, and compares 
-branches with each other. Refer to the report documentation 
-mentioned above for more details.
+This reporting hides original branches, compares 
+branches with each other, and performs reductions. 
+Refer to the documentation below for more details.
 
 
 ## Docs
@@ -85,4 +85,3 @@ Advanced topics:
 - [Available metrics](docs/metrics.md)
 - [Add your own metrics](CONTRIBUTING.md)
 - [Distributed execution](docs/distributed.md)
-
