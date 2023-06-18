@@ -90,12 +90,24 @@ print(fb.tojson(report))
 {"header": ["Metric", "mean", "minratio", "maxdiff"], "accuracy": [0.9375, 1.0, 0.0], "pr": [0.8125, 0.8571428571428571, 0.125], "fpr": [0.06349206349206349, 0.7777777777777778, 0.015873015873015872], "fnr": [0.3333333333333333, 0.3333333333333333, 0.33333333333333337]}
 ```
 
-Finally, reports can be visualized by calling:
+Reports can be visualized by calling:
 ```python
 fb.visualize(report)
 ```
 
+This will use `matplotlib` to produce the following output: 
+
 ![report example](reports.png)
+
+:warning: Reports are limited to forks of metrics. You can print any
+fork, not matter how complicated, but  `fb.visualize`
+and `fb.display` are only applicable to this simplistic 
+assumption. For example you cannot visualize a fork of reports,
+though you can of course obtain a sub-view of it and work
+with that. 
+
+:bulb: To visualize complicated forks, use `fb.interactive`.
+Read more [here](interactive.md).
 
 ## Editing reports
 Since reports are forks of dictionaries, you can use normal

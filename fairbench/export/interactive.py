@@ -1,7 +1,19 @@
 from fairbench.forks.fork import Fork, Forklike
 from fairbench.forks.explanation import tofloat, ExplainableError
 import sys
-from bokeh.transform import dodge
+
+
+def _in_ipynb():
+    try:
+        shell = get_ipython().__class__.__name__
+        if shell == "ZMQInteractiveShell":
+            return True  # Jupyter notebook or qtconsole
+        elif shell == "TerminalInteractiveShell":
+            return False  # Terminal running IPython
+        else:
+            return False  # Other type (?)
+    except NameError:
+        return False  # Probably standard Python interpreter
 
 
 def interactive(report):  # pragma: no cover
@@ -10,7 +22,15 @@ def interactive(report):  # pragma: no cover
     except ImportError:
         sys.stderr.write("install bokeh for interactive visualization in the browser.")
         return
-    from bokeh.models import ColumnDataSource, Select, Range1d, Button, Div, FactorRange, RadioButtonGroup
+    from bokeh.models import (
+        ColumnDataSource,
+        Select,
+        Range1d,
+        Button,
+        Div,
+        FactorRange,
+        RadioButtonGroup,
+    )
     from bokeh.plotting import figure
     from bokeh.layouts import column, row
     from bokeh.server.server import Server
@@ -21,15 +41,17 @@ def interactive(report):  # pragma: no cover
     from bokeh.palettes import Category20
     from bokeh.core.validation import silence
     from bokeh.core.validation.warnings import MISSING_RENDERERS
+
     silence(MISSING_RENDERERS, True)
 
     def modify_doc(doc):
 
         plot = figure(x_range=["1", "2"], width=1200)
-        select_branch = RadioButtonGroup(labels=["ALL"] + list(report.branches().keys()), active=0)
+        select_branch = RadioButtonGroup(
+            labels=["ALL"] + list(report.branches().keys()), active=0
+        )
         select_view = Select(
-            value="Branches", options=["Branches", "Entries"], width=100,
-            height=30
+            value="Branches", options=["Branches", "Entries"], width=100, height=30
         )
         explain = Button(label="Explain", width=100, button_type="success")
         back = Button(label="Back", button_type="danger")
@@ -43,7 +65,11 @@ def interactive(report):  # pragma: no cover
             if isinstance(obj, Fork):
                 obj = obj.branches()
             if isinstance(obj, dict):
-                obj = {k: v for k, v in obj.items() if not isinstance(v, ExplainableError) and not isinstance(v, str)}
+                obj = {
+                    k: v
+                    for k, v in obj.items()
+                    if not isinstance(v, ExplainableError) and not isinstance(v, str)
+                }
             return obj
 
         def _depth(obj):
@@ -135,11 +161,12 @@ def interactive(report):  # pragma: no cover
                 select_view.disabled = not True
             else:
                 select_view.disabled = not False
-                label.text = (
-                    f"<h1>{'.'.join(previous_title)}.<em>{selected_branch}</em></h1>Select ALL to switch between branch and entry views."
+                label.text = f"<h1>{'.'.join(previous_title)}.<em>{selected_branch}</em></h1>Select ALL to switch between branch and entry views."
+                plot_data = (
+                    branches[selected_branch]
+                    if selected_branch in branches
+                    else getattr(previous[-1], selected_branch)
                 )
-                plot_data = branches[selected_branch] if selected_branch in branches else getattr(previous[-1],
-                                                                                                  selected_branch)
                 explain.visible = hasattr(plot_data, "explain")
                 plot_data = _asdict(plot_data)
                 keys = list(plot_data.keys())
@@ -160,7 +187,9 @@ def interactive(report):  # pragma: no cover
                     source=source,
                     # legend_field='keys',
                     line_color="white",
-                    fill_color=factor_cmap("keys", palette=Category20[20], factors=keys),
+                    fill_color=factor_cmap(
+                        "keys", palette=Category20[20], factors=keys
+                    ),
                 )
 
         def explain_button(doc):
@@ -169,8 +198,11 @@ def interactive(report):  # pragma: no cover
             previous_title.append("explain")
             branches = _asdict(previous[-1])
             selected_branch = select_branch.labels[select_branch.active]
-            branch = branches[selected_branch] if selected_branch in branches else getattr(previous[-1],
-                                                                                           selected_branch)
+            branch = (
+                branches[selected_branch]
+                if selected_branch in branches
+                else getattr(previous[-1], selected_branch)
+            )
             previous.append(branch.explain)
             # branches = _asdict(previous[-1])
             # select_branch.labels = ["ALL"] + list(branches.keys())
@@ -202,12 +234,21 @@ def interactive(report):  # pragma: no cover
         def update_value(doc):
             branches = _asdict(previous[-1])
             selected_branch = select_branch.labels[select_branch.active]
-            if selected_branch != "ALL" and _depth(
-                    branches[selected_branch] if selected_branch in branches else getattr(previous[-1],
-                                                                                          selected_branch)) > 1:
+            if (
+                selected_branch != "ALL"
+                and _depth(
+                    branches[selected_branch]
+                    if selected_branch in branches
+                    else getattr(previous[-1], selected_branch)
+                )
+                > 1
+            ):
                 previous_title.append(selected_branch)
-                branch = branches[selected_branch] if selected_branch in branches else getattr(previous[-1],
-                                                                                               selected_branch)
+                branch = (
+                    branches[selected_branch]
+                    if selected_branch in branches
+                    else getattr(previous[-1], selected_branch)
+                )
                 previous.append(branch)
                 _update_branches()
                 select_branch.active = 0
@@ -228,6 +269,13 @@ def interactive(report):  # pragma: no cover
         doc.add_root(column(label, controls, plot))
 
     app = Application(FunctionHandler(modify_doc))
+    if _in_ipynb():
+        from bokeh.io import show
+        from bokeh.plotting import output_notebook
+
+        output_notebook()
+        show(app)
+        return
     server = Server({"/": app}, num_procs=1)
     server.start()
     address = server.address.split(":")[0] if server.address else "localhost"

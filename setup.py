@@ -26,6 +26,6 @@ setuptools.setup(
          "Operating System :: OS Independent",
      ],
     install_requires=[
-        'numpy', 'eagerpy', 'distributed', 'makefun', 'matplotlib', 'wget', 'scikit-learn', 'pandas', 'objwrap'
+        'numpy', 'eagerpy', 'distributed', 'makefun', 'matplotlib', 'wget', 'scikit-learn', 'pandas', 'objwrap', 'bokeh'
     ],
  )
