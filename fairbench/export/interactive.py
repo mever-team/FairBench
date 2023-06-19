@@ -34,12 +34,7 @@ def _in_ipynb():
         return False  # Probably standard Python interpreter
 
 
-def interactive(report):  # pragma: no cover
-    try:
-        import bokeh
-    except ImportError:
-        sys.stderr.write("install bokeh for interactive visualization in the browser.")
-        return
+def interactive(report, name="report", width=1200):  # pragma: no cover
     from bokeh.models import (
         ColumnDataSource,
         Select,
@@ -64,9 +59,8 @@ def interactive(report):  # pragma: no cover
     silence(MISSING_RENDERERS, True)
 
     def modify_doc(doc):
-
-        plot = figure(x_range=["1", "2"], width=1200)
-        plot.add_tools(HoverTool(tooltips=[("Value", "@values")]))
+        plot = figure(x_range=["1", "2"], width=width)
+        plot.add_tools(HoverTool(tooltips=[("Name", "@keys"), ("Value", "@values")]))
         select_branch = RadioButtonGroup(
             labels=["ALL"] + list(report.branches().keys()), active=0
         )
@@ -78,7 +72,7 @@ def interactive(report):  # pragma: no cover
         explain.sizing_mode = "stretch_width"
         back.sizing_mode = "stretch_width"
         previous = [report]
-        previous_title = ["report"]
+        previous_title = [name]
         label = Div()
 
         def _asdict(obj):
@@ -131,6 +125,8 @@ def interactive(report):  # pragma: no cover
             selected_branch = select_branch.labels[select_branch.active]
             plot.x_range.factors = []
             select_view.disabled = not True
+            plot.title.text = "" if selected_branch == "ALL" else selected_branch
+            plot.title_location = "above"
             if selected_branch == "ALL":
                 plot.xgrid.grid_line_color = None
                 explain.visible = False
