@@ -6,7 +6,7 @@ forks of forks of measure values (these can compare
 the same reports across multiple algorithms).
 
 1. [Start](#start)
-2. [Interafce](#interface)
+2. [Interface](#interface)
 
 
 # Start

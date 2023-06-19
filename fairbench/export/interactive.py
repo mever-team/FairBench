@@ -3,6 +3,24 @@ from fairbench.forks.explanation import tofloat, ExplainableError
 import sys
 
 
+def clean(fork):
+    if isinstance(fork, Fork):
+        branches = {k: clean(v) for k, v in fork.branches().items()}
+        branches = {k: v for k, v in branches.items() if v is not None}
+        if not branches:
+            return None
+        return Fork(branches)
+    if isinstance(fork, Forklike):
+        branches = {k: clean(v) for k, v in fork.items()}
+        branches = {k: v for k, v in branches.items() if v is not None}
+        if not branches:
+            return None
+        return Forklike(branches)
+    if isinstance(fork, ExplainableError):
+        return None
+    return fork
+
+
 def _in_ipynb():
     try:
         shell = get_ipython().__class__.__name__
@@ -29,6 +47,7 @@ def interactive(report):  # pragma: no cover
         Button,
         Div,
         FactorRange,
+        HoverTool,
         RadioButtonGroup,
     )
     from bokeh.plotting import figure
@@ -47,6 +66,7 @@ def interactive(report):  # pragma: no cover
     def modify_doc(doc):
 
         plot = figure(x_range=["1", "2"], width=1200)
+        plot.add_tools(HoverTool(tooltips=[("Value", "@values")]))
         select_branch = RadioButtonGroup(
             labels=["ALL"] + list(report.branches().keys()), active=0
         )
@@ -72,11 +92,20 @@ def interactive(report):  # pragma: no cover
                 }
             return obj
 
+        def _branch(selected_branch):
+            branches = _asdict(previous[-1])
+            if selected_branch in branches:
+                return branches[selected_branch]
+            return getattr(Forklike(branches), selected_branch)
+
         def _depth(obj):
+            if obj is None:
+                return 0
             if isinstance(obj, Fork):
                 return max(_depth(x) for x in obj.branches().values()) + 1
             if isinstance(obj, dict):
-                return max(_depth(x) for x in obj.values()) + 1
+                if obj.values():
+                    return max(_depth(x) for x in obj.values()) + 1
             return 0
 
         def _update_branches():
@@ -105,7 +134,7 @@ def interactive(report):  # pragma: no cover
             if selected_branch == "ALL":
                 plot.xgrid.grid_line_color = None
                 explain.visible = False
-                label.text = f"<h1>{'.'.join(previous_title)}</h1>Select a branch or entry to focus and explain it."
+                label.text = f"<h1>{'.'.join([t for t in previous_title if t!='ALL'])}</h1>Select a branch or entry to focus and explain it."
                 _source = dict()
                 if (select_view.value == "Branches") != isinstance(previous[-1], Fork):
                     for branch in branches.keys():
@@ -161,12 +190,8 @@ def interactive(report):  # pragma: no cover
                 select_view.disabled = not True
             else:
                 select_view.disabled = not False
-                label.text = f"<h1>{'.'.join(previous_title)}.<em>{selected_branch}</em></h1>Select ALL to switch between branch and entry views."
-                plot_data = (
-                    branches[selected_branch]
-                    if selected_branch in branches
-                    else getattr(previous[-1], selected_branch)
-                )
+                label.text = f"<h1>{'.'.join([t for t in previous_title if t!='ALL'])}.<em>{selected_branch}</em></h1>Select ALL to switch between branch and entry views."
+                plot_data = _branch(selected_branch)
                 explain.visible = hasattr(plot_data, "explain")
                 plot_data = _asdict(plot_data)
                 keys = list(plot_data.keys())
@@ -196,16 +221,11 @@ def interactive(report):  # pragma: no cover
             selected_branch = select_branch.labels[select_branch.active]
             previous_title.append(selected_branch)
             previous_title.append("explain")
-            branches = _asdict(previous[-1])
             selected_branch = select_branch.labels[select_branch.active]
             branch = (
-                branches[selected_branch]
-                if selected_branch in branches
-                else getattr(previous[-1], selected_branch)
+                previous[-1] if selected_branch == "ALL" else _branch(selected_branch)
             )
-            previous.append(branch.explain)
-            # branches = _asdict(previous[-1])
-            # select_branch.labels = ["ALL"] + list(branches.keys())
+            previous.append(clean(branch.explain))
             _update_branches()
             select_branch.active = 0
             update_plot(doc)
@@ -224,32 +244,29 @@ def interactive(report):  # pragma: no cover
                 previous_title.pop()
             previous.pop()
             _update_branches()
+            select_branch.active = 0
             for i, label in enumerate(select_branch.labels):
                 if label == branch_name:
                     select_branch.active = i
+            if select_branch.active == 0:
+                if select_view.value == "Branches":
+                    select_view.value = "Entries"
+                else:
+                    select_view.value = "Branches"
+                _update_branches()
+                for i, label in enumerate(select_branch.labels):
+                    if label == branch_name:
+                        select_branch.active = i
             # if select_branch.active in branches and _depth(branches[select_branch.active ]) > 1:
             #    previous_title.pop()
             update_plot(doc)
 
         def update_value(doc):
-            branches = _asdict(previous[-1])
             selected_branch = select_branch.labels[select_branch.active]
-            if (
-                selected_branch != "ALL"
-                and _depth(
-                    branches[selected_branch]
-                    if selected_branch in branches
-                    else getattr(previous[-1], selected_branch)
-                )
-                > 1
-            ):
+            if selected_branch != "ALL" and _depth(_branch(selected_branch)) > 1:
                 previous_title.append(selected_branch)
-                branch = (
-                    branches[selected_branch]
-                    if selected_branch in branches
-                    else getattr(previous[-1], selected_branch)
-                )
-                previous.append(branch)
+                branch = _branch(selected_branch)
+                previous.append(clean(branch))
                 _update_branches()
                 select_branch.active = 0
             update_plot(doc)

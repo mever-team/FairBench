@@ -4,7 +4,6 @@ import numpy as np
 import inspect
 import sys
 from collections.abc import Mapping
-from objwrap import ClosedWrapper
 
 _backend = "numpy"
 
