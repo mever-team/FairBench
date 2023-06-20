@@ -1,4 +1,4 @@
-from fairbench.forks.fork import Fork, astensor, comparator, fromtensor
+from fairbench.forks.fork import Fork, astensor, comparator, fromtensor, role
 from fairbench.forks.explanation import Explainable, ExplainableError
 from typing import Optional
 
@@ -22,6 +22,7 @@ def _tryorexplainable(method, *args, **kwargs):
         return e
 
 
+@role("reduction")
 @comparator
 def reduce(
     fork: Fork,
@@ -29,7 +30,7 @@ def reduce(
     expand=None,
     transform=None,
     branches=None,
-    name: Optional[str] = "",
+    name: Optional[str] = ""
 ):
     if name == "":
         name = reducer.__name__

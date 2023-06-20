@@ -1,6 +1,5 @@
 from fairbench.forks.fork import Fork, Forklike
 from fairbench.forks.explanation import tofloat, ExplainableError
-import sys
 
 
 def clean(fork):
@@ -104,11 +103,19 @@ def interactive(report, name="report", width=1200):  # pragma: no cover
 
         def _update_branches():
             branches = _asdict(previous[-1])
+            if isinstance(previous[-1], Forklike) or isinstance(previous[-1], Fork):
+                val = list(branches.values())[0].role()
+                prev_selection = select_view.value
+                options = ["Branch", "Entries" if val is None else val]
+                select_view.options = options
+                if prev_selection not in options:
+                    select_view.value = options[0]
+
             if _depth(previous[-1]) <= 1:
                 select_branch.labels = ["ALL"] + list(branches.keys())
                 return
             _source = dict()
-            if (select_view.value == "Branches") != isinstance(previous[-1], Fork):
+            if (select_view.value == select_view.options[0]) != isinstance(previous[-1], Fork):
                 for branch in branches.keys():
                     for k, v in _asdict(branches[branch]).items():
                         if k not in _source:
@@ -132,7 +139,7 @@ def interactive(report, name="report", width=1200):  # pragma: no cover
                 explain.visible = False
                 label.text = f"<h1>{'.'.join([t for t in previous_title if t!='ALL'])}</h1>Select a branch or entry to focus and explain it."
                 _source = dict()
-                if (select_view.value == "Branches") != isinstance(previous[-1], Fork):
+                if (select_view.value == select_view.options[0]) != isinstance(previous[-1], Fork):
                     for branch in branches.keys():
                         for k, v in _asdict(branches[branch]).items():
                             if k not in _source:
@@ -245,10 +252,10 @@ def interactive(report, name="report", width=1200):  # pragma: no cover
                 if label == branch_name:
                     select_branch.active = i
             if select_branch.active == 0:
-                if select_view.value == "Branches":
-                    select_view.value = "Entries"
+                if select_view.value == select_view.options[0]:
+                    select_view.value = select_view.options[1]
                 else:
-                    select_view.value = "Branches"
+                    select_view.value = select_view.options[0]
                 _update_branches()
                 for i, label in enumerate(select_branch.labels):
                     if label == branch_name:

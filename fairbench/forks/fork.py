@@ -30,6 +30,13 @@ def _str_foreign(v, tabs=0):
 
 
 class Forklike(dict):
+    def __init__(self, *args, _role=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._role = _role
+
+    def role(self, _role=None):
+        return object.__getattribute__(self, "_role")
+
     def __getattribute__(self, name):
         if name in dir(Forklike):
             return object.__getattribute__(self, name)
@@ -119,6 +126,7 @@ def astensor(value, _allow_explanation=True) -> ep.Tensor:
         "tensor" not in value.__class__.__name__.lower()
         and "array" not in value.__class__.__name__.lower()
         and not isinstance(value, np.float64)
+        and not isinstance(value, list)
     ):
         return value
     if isinstance(value, list):
@@ -149,7 +157,8 @@ def fromtensor(value, _allow_explanation=True):
 
 
 class Fork(Mapping):
-    def __init__(self, *args, _separator="", **branches):
+    def __init__(self, *args, _separator="", _role=None, **branches):
+        self._role = _role
         for arg in args:
             if not isinstance(arg, dict):
                 raise TypeError(
@@ -168,6 +177,9 @@ class Fork(Mapping):
                     ] = v2
             else:
                 self._branches[k] = v
+
+    def role(self):
+        return object.__getattribute__(self, "_role")
 
     def __getattribute__(self, name):
         if name in ["_branches", "_repr_html_"] or name in dir(Fork):
@@ -539,7 +551,20 @@ def parallel(_wrapped_method):
     return wrapper
 
 
+def role(rolename):
+    def decorator(_wrapped_method):
+        @wraps(_wrapped_method)
+        def wrapper(*args, **kwargs):
+            ret = _wrapped_method(*args, **kwargs)
+            if isinstance(ret, Forklike) or isinstance(ret, Fork):
+                object.__setattr__(ret, "_role", rolename)
+            return ret
+        return wrapper
+    return decorator
+
+
 def comparator(_wrapped_method):
+    @wraps(_wrapped_method)
     def wrapper(*args, **kwargs):
         has_fork_of_forks = False
         for arg in args:
@@ -727,7 +752,7 @@ def merge(dict1, dict2):
 
 
 @comparator
-def combine(*args):
+def combine(*args, _role=None):
     ret = {}
     for arg in args:
         assert isinstance(arg, Fork)

@@ -1,4 +1,4 @@
-from fairbench.forks.fork import parallel_primitive, comparator
+from fairbench.forks.fork import parallel_primitive, comparator, role
 from fairbench.forks.explanation import Explainable
 import inspect
 from typing import Union, Iterable, Callable
@@ -17,6 +17,7 @@ def reportargsparse(*args, **kwargs):
     return kwargs
 
 
+@role("report")
 @comparator
 @parallel_primitive
 def report(*args, metrics: Union[Callable, Iterable, dict] = None, **kwargs):
