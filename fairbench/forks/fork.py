@@ -130,7 +130,7 @@ def astensor(value, _allow_explanation=True) -> ep.Tensor:
     ):
         return value
     if isinstance(value, list):
-        value = np.array(value, dtype=np.float)
+        value = np.array(value, dtype=np.float64)
     if isinstance(value, np.float64):
         value = ep.NumPyTensor(value)
     else:
@@ -559,7 +559,9 @@ def role(rolename):
             if isinstance(ret, Forklike) or isinstance(ret, Fork):
                 object.__setattr__(ret, "_role", rolename)
             return ret
+
         return wrapper
+
     return decorator
 
 

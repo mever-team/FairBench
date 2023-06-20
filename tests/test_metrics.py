@@ -1,5 +1,4 @@
 import fairbench as fb
-import numpy as np
 from .test_forks import environment
 
 

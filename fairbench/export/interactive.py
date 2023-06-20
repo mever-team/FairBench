@@ -115,7 +115,9 @@ def interactive(report, name="report", width=1200):  # pragma: no cover
                 select_branch.labels = ["ALL"] + list(branches.keys())
                 return
             _source = dict()
-            if (select_view.value == select_view.options[0]) != isinstance(previous[-1], Fork):
+            if (select_view.value == select_view.options[0]) != isinstance(
+                previous[-1], Fork
+            ):
                 for branch in branches.keys():
                     for k, v in _asdict(branches[branch]).items():
                         if k not in _source:
@@ -139,7 +141,9 @@ def interactive(report, name="report", width=1200):  # pragma: no cover
                 explain.visible = False
                 label.text = f"<h1>{'.'.join([t for t in previous_title if t!='ALL'])}</h1>Select a branch or entry to focus and explain it."
                 _source = dict()
-                if (select_view.value == select_view.options[0]) != isinstance(previous[-1], Fork):
+                if (select_view.value == select_view.options[0]) != isinstance(
+                    previous[-1], Fork
+                ):
                     for branch in branches.keys():
                         for k, v in _asdict(branches[branch]).items():
                             if k not in _source:

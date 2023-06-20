@@ -30,7 +30,7 @@ def reduce(
     expand=None,
     transform=None,
     branches=None,
-    name: Optional[str] = ""
+    name: Optional[str] = "",
 ):
     if name == "":
         name = reducer.__name__
