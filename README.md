@@ -17,9 +17,10 @@ A comprehensive AI fairness exploration framework.
 
 ## Get started 
 
-[<img alt="reports" width="30%" src="docs/images/quickstart.png" />](docs/quickstart.md)
-[<img alt="reports" width="30%" src="docs/images/report.png" />](docs/reports.md)
-[<img alt="branches" width="30%" src="docs/images/forks.png" />](docs/branches.md)
+[<img alt="reports" width="45%" src="docs/images/quickstart.png" />](docs/quickstart.md)
+[<img alt="reports" width="45%" src="docs/images/report.png" />](docs/reports.md)
+[<img alt="branches" width="45%" src="docs/images/forks.png" />](docs/branches.md)
+[<img alt="branches" width="45%" src="docs/images/modelcards.png" />](docs/modelcards.md)
 
 
 Advanced topics
