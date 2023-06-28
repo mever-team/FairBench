@@ -37,7 +37,7 @@ def tomarkdown(report, _=None, table=True, file=None):
         if table:
             caveats.extend(row["caveats"])
             if not prepend:
-                prepend += "\n\n## Evaluation results\n"
+                prepend += "\n\n## Evaluation Results\n"
                 prepend += "| Metric | Value |\n"
                 prepend += "| ------ | ----- |\n"
             prepend += f'| {row["name"]} | {results} |\n'

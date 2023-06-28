@@ -31,7 +31,7 @@ a stamp per:
 ```python
 import fairbench as fb
 report = ...
-stamp = fb.stamps.three_fourths(report)
+stamp = fb.stamps.four_fifths_rule(report)
 print(stamp)
 # 3/4ths ratio: False
 ```
@@ -45,7 +45,7 @@ like so:
 stamps = fb.combine(
     fb.stamps.prule(report),
     fb.stamps.accuracy(report),
-    fb.stamps.eighty_rule(report)
+    fb.stamps.four_fifths_rule(report)
 )
 print(stamps)
 ```
@@ -55,7 +55,7 @@ This will create a fork like the following:
 ```
 prule: 0.212
 worst accuracy: 0.799
-80% rule: False
+4/5 rule: False
 ```
 
 Notice that some stamps have numeric values.

@@ -10,8 +10,8 @@ stamp = fb.combine(
     fb.stamps.prule(report),
     fb.stamps.accuracy(report),
     #fb.stamps.three_fourths(report),
-    fb.stamps.eighty_rule(report)
+    fb.stamps.four_fifths_rule(report)
 )
-print(fb.modelcards.tohtml(stamp, show=True))
+fb.modelcards.tohtml(stamp, show=True)
 
 # fb.interactive(report)

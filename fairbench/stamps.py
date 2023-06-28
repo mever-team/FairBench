@@ -90,24 +90,12 @@ class Stamp:
         )
 
 
-three_fourths = Stamp(
-    "3/4ths ratio",
+four_fifths_rule = Stamp(
+    "4/5 rule",
     ("minratio.pr", "prule"),
     minimum=0.8,
     desc="Checks whether the fraction of positive predictions for each protected group "
-    "is at worst 3/4ths that of any other group.",
-    caveats=[
-        "Disparate impact may not always be an appropriate fairness consideration.",
-        "Consider input from affected stakeholders to determine whether "
-        "the 3/4ths ratio is an appropriate fairness criterion.",
-    ],
-)
-eighty_rule = Stamp(
-    "80% rule",
-    ("minratio.pr", "prule"),
-    minimum=0.8,
-    desc="Checks whether the fraction of positive predictions for each protected group "
-    "is at worst 80% that of any other group.",
+    "is at worst four fifths that of any other group (i.e., the p-rule is 0.8 or greater).",
     caveats=[
         "Disparate impact may not always be an appropriate fairness consideration.",
         "Consider input from affected stakeholders to determine whether "
@@ -125,12 +113,38 @@ accuracy = Stamp(
     ],
 )
 prule = Stamp(
-    "prule",
+    "p-rule",
     ("minratio.pr", "prule"),
-    desc="Compares the fraction of positive predictions between protected groups. "
-    "The worst ratio between the groups is reported, so that value of 0 indicates "
-    "indicates disparate impact, and value of 1 disparate impact mitigation.",
+    desc="Compares the fraction of positive predictions between groups. "
+    "The worst ratio is reported, so that value of 0 indicates "
+    "disparate impact, and value of 1 disparate impact mitigation.",
     caveats=[
         "Disparate impact may not always be an appropriate fairness consideration."
     ],
+)
+
+dfpr = Stamp(
+   "dfpr",
+    ("maxdiff.tnr", "dfpr"),
+    desc="Compares the false positive rates between groups. "
+         "The maximum difference is reported, so that value of 1 indicates "
+         "disparate mistreatment, and value of 0 disparate mistreatment mitigation.",
+    caveats=[
+        "Disparate mistreatment may not always be an appropriate fairness consideration.",
+        "Consider input from affected stakeholders to determine whether dfpr is "
+        "an appropriate fairness measure."
+    ]
+)
+
+dfnr = Stamp(
+   "dfnr",
+    ("maxdiff.tpr", "dfnr"),
+    desc="Compares the false negative rates between groups. "
+         "The maximum difference is reported, so that value of 1 indicates "
+         "disparate mistreatment, and value of 0 disparate mistreatment mitigation.",
+    caveats=[
+        "Disparate mistreatment may not always be an appropriate fairness consideration.",
+        "Consider input from affected stakeholders to determine whether dfnr is "
+        "an appropriate fairness measure."
+    ]
 )

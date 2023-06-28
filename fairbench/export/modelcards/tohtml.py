@@ -38,7 +38,7 @@ def tohtml(report, _=None, table=True, file=None, show=False):
         if table:
             caveats.extend(row["caveats"])
             if not prepend:
-                prepend += "\n<h2>Evaluation results</h2>\n<table>\n"
+                prepend += "\n<h2>Evaluation Results</h2>\n<table>\n"
                 prepend += "<tr><th>Metric</th><th>Value</th></tr>\n"
             prepend += f'<tr><td>{row["name"]}</td><td>{results}</td></tr>\n'
             ret += f"The <em>{row['name']}</em> {desc[0].lower()}{desc[1:]} "
