@@ -33,3 +33,7 @@ Usage on example data (notebooks)
 [<img alt="branches" width="20%" src="docs/images/tabular.png" />](examples/demos/demo.ipynb)
 [<img alt="branches" width="20%" src="docs/images/graphs.png" />](examples/demos/graphs.ipynb)
 [<img alt="branches" width="20%" src="docs/images/vision.png" />](examples/demos/vision.ipynb)
+
+Recipes
+
+[Binary Classification](examples/recipes/classification_binary.ipynb)

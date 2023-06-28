@@ -1,4 +1,4 @@
-from fairbench.reports.base import report, reportargsparse
+from fairbench.reports.base import report
 from fairbench.reports import reduction as fb
 from fairbench.reports.accumulate import todict as tokwargs
 from fairbench.forks.fork import combine, merge, role

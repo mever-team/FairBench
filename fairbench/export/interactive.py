@@ -33,7 +33,7 @@ def _in_ipynb():
         return False  # Probably standard Python interpreter
 
 
-def interactive(report, name="report", width=1200):  # pragma: no cover
+def interactive(report, name="report", width=800, height=400, spacing=None, horizontal=True):  # pragma: no cover
     from bokeh.models import (
         ColumnDataSource,
         Select,
@@ -55,10 +55,16 @@ def interactive(report, name="report", width=1200):  # pragma: no cover
     from bokeh.core.validation import silence
     from bokeh.core.validation.warnings import MISSING_RENDERERS
 
+    if spacing is None:
+        spacing = 50 if horizontal else 100
+
     silence(MISSING_RENDERERS, True)
 
     def modify_doc(doc):
-        plot = figure(x_range=["1", "2"], width=width)
+        if horizontal:
+            plot = figure(y_range=["1", "2"], width=width, height=height)
+        else:
+            plot = figure(x_range=["1", "2"], width=width, height=height)
         plot.add_tools(HoverTool(tooltips=[("Name", "@keys"), ("Value", "@values")]))
         select_branch = RadioButtonGroup(
             labels=["ALL"] + list(report.branches().keys()), active=0
@@ -132,12 +138,18 @@ def interactive(report, name="report", width=1200):  # pragma: no cover
             back.visible = len(previous) > 1 or select_branch.active != 0
             plot.renderers = []  # clear plot
             selected_branch = select_branch.labels[select_branch.active]
-            plot.x_range.factors = []
+            if horizontal:
+                plot.y_range.factors = []
+            else:
+                plot.x_range.factors = []
             select_view.disabled = not True
             plot.title.text = "" if selected_branch == "ALL" else selected_branch
             plot.title_location = "above"
             if selected_branch == "ALL":
-                plot.xgrid.grid_line_color = None
+                if horizontal:
+                    plot.ygrid.grid_line_color = None
+                else:
+                    plot.xgrid.grid_line_color = None
                 explain.visible = False
                 label.text = f"<h1>{'.'.join([t for t in previous_title if t!='ALL'])}</h1>Select a branch or entry to focus and explain it."
                 _source = dict()
@@ -174,26 +186,51 @@ def interactive(report, name="report", width=1200):  # pragma: no cover
                 keys = [
                     (metric, branch) for metric in _source for branch in _source[metric]
                 ]
-                plot.x_range.factors = keys
+                if horizontal:
+                    plot.height = max(height, spacing*len(keys))
+                    plot.y_range.factors = keys
+                    plot.y_range.range_padding = 0.1
+                else:
+                    plot.width = max(width, spacing*len(keys))
+                    plot.x_range.factors = keys
+                    plot.x_range.range_padding = 0.1
                 source = ColumnDataSource(data=dict(keys=keys, values=values))
-                plot.x_range.range_padding = 0.1
-                plot.vbar(
-                    x="keys",
-                    top="values",
-                    width=0.9,
-                    source=source,
-                    # legend_field='keys',
-                    line_color="white",
-                    fill_color=factor_cmap(
-                        "keys",
-                        palette=[
-                            Category20[20][i]
-                            for metric in _source
-                            for i, branch in enumerate(_source[metric])
-                        ],
-                        factors=keys,
-                    ),
-                )
+                if horizontal:
+                    plot.hbar(
+                        y="keys",
+                        right="values",
+                        height=0.9,
+                        source=source,
+                        # legend_field='keys',
+                        line_color="white",
+                        fill_color=factor_cmap(
+                            "keys",
+                            palette=[
+                                Category20[20][i]
+                                for metric in _source
+                                for i, branch in enumerate(_source[metric])
+                            ],
+                            factors=keys,
+                        ),
+                    )
+                else:
+                    plot.vbar(
+                        x="keys",
+                        top="values",
+                        width=0.9,
+                        source=source,
+                        # legend_field='keys',
+                        line_color="white",
+                        fill_color=factor_cmap(
+                            "keys",
+                            palette=[
+                                Category20[20][i]
+                                for metric in _source
+                                for i, branch in enumerate(_source[metric])
+                            ],
+                            factors=keys,
+                        ),
+                    )
                 select_view.disabled = not True
             else:
                 select_view.disabled = not False
@@ -202,7 +239,12 @@ def interactive(report, name="report", width=1200):  # pragma: no cover
                 explain.visible = hasattr(plot_data, "explain")
                 plot_data = _asdict(plot_data)
                 keys = list(plot_data.keys())
-                plot.x_range.factors = keys
+                if horizontal:
+                    plot.height = max(height, spacing*len(keys))
+                    plot.y_range.factors = keys
+                else:
+                    plot.width = max(width, spacing*len(keys))
+                    plot.x_range.factors = keys
                 if isinstance(plot_data, Fork):
                     plot_data = plot_data.branches()
                 try:
@@ -210,19 +252,33 @@ def interactive(report, name="report", width=1200):  # pragma: no cover
                 except TypeError:
                     return
                 source = ColumnDataSource(data=dict(keys=keys, values=values))
-                plot.xgrid.grid_line_color = None
+                if horizontal:
+                    plot.ygrid.grid_line_color = None
+                    plot.hbar(
+                        y="keys",
+                        right="values",
+                        height=0.6,
+                        source=source,
+                        # legend_field='keys',
+                        line_color="white",
+                        fill_color=factor_cmap(
+                            "keys", palette=Category20[20], factors=keys
+                        ),
+                    )
+                else:
+                    plot.xgrid.grid_line_color = None
+                    plot.vbar(
+                        x="keys",
+                        top="values",
+                        width=0.6,
+                        source=source,
+                        # legend_field='keys',
+                        line_color="white",
+                        fill_color=factor_cmap(
+                            "keys", palette=Category20[20], factors=keys
+                        ),
+                    )
                 # plot.y_range.update(start=0, end=max(1, max(values)), bounds=(0, None))
-                plot.vbar(
-                    x="keys",
-                    top="values",
-                    width=0.6,
-                    source=source,
-                    # legend_field='keys',
-                    line_color="white",
-                    fill_color=factor_cmap(
-                        "keys", palette=Category20[20], factors=keys
-                    ),
-                )
 
         def explain_button(doc):
             selected_branch = select_branch.labels[select_branch.active]

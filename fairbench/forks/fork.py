@@ -16,6 +16,7 @@ def _str_foreign(v, tabs=0):
         for val in v.values():
             if isinstance(val, Fork) or isinstance(val, dict):
                 complicated = True
+        tmp = list(v.values())[0]
         return "\n".join(
             "   " * tabs
             + k
@@ -118,7 +119,7 @@ def astensor(value, _allow_explanation=True) -> ep.Tensor:
         from fairbench import Explainable
 
         return Explainable(
-            astensor(value.value), explain=value.explain, desc=value.desc
+            astensor(value.value), explain=value.explain, desc=value.desc, units=value.units
         )
     if isinstance(value, int) or isinstance(value, float):
         value = np.float64(value)
@@ -147,7 +148,7 @@ def fromtensor(value, _allow_explanation=True):
         from fairbench import Explainable
 
         return Explainable(
-            fromtensor(value.value), explain=value.explain, desc=value.desc
+            fromtensor(value.value), explain=value.explain, desc=value.desc, units=value.units
         )
     # TODO: maybe applying this as a wrapper to methods instead of submitting to dask can be faster
     if isinstance(value, ep.Tensor):
@@ -754,12 +755,12 @@ def merge(dict1, dict2):
 
 
 @comparator
-def combine(*args, _role=None):
+def combine(*args, _role=None, _cast=Fork):
     ret = {}
     for arg in args:
-        assert isinstance(arg, Fork)
-        ret = merge(ret, arg._branches)
-    return Fork(ret)
+        assert isinstance(arg, Fork) or isinstance(arg, Forklike)
+        ret = merge(ret, arg._branches if isinstance(arg, Fork) else arg)
+    return _cast(ret)
 
 
 def unit_bounded(method):
