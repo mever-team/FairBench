@@ -1,4 +1,3 @@
-
 ## Factors
 - The groups that are considered for fairness assessment are Female, Male.
 
@@ -11,7 +10,8 @@
 | prule | 0.212 |
 | worst accuracy | 0.799 |
 | 80% rule | :x: |
+
 ## Caveats and Recommendations
-Consider input from affected stakeholders to determine whether the 80% rule is an appropriate fairness criterion.
--Disparate impact may not always be an appropriate fairness consideration.
--The worst accuracy is a lower bound but not an estimation of overall accuracy. There may be different distributions of benefits that could be protected.
+- Consider input from affected stakeholders to determine whether the 80% rule is an appropriate fairness criterion.
+- Disparate impact may not always be an appropriate fairness consideration.
+- The worst accuracy is a lower bound but not an estimation of overall accuracy. There may be different distributions of benefits that could be protected.

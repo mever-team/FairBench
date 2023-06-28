@@ -33,7 +33,9 @@ def _in_ipynb():
         return False  # Probably standard Python interpreter
 
 
-def interactive(report, name="report", width=800, height=400, spacing=None, horizontal=True):  # pragma: no cover
+def interactive(
+    report, name="report", width=800, height=400, spacing=None, horizontal=True
+):  # pragma: no cover
     from bokeh.models import (
         ColumnDataSource,
         Select,
@@ -187,11 +189,11 @@ def interactive(report, name="report", width=800, height=400, spacing=None, hori
                     (metric, branch) for metric in _source for branch in _source[metric]
                 ]
                 if horizontal:
-                    plot.height = max(height, spacing*len(keys))
+                    plot.height = max(height, spacing * len(keys))
                     plot.y_range.factors = keys
                     plot.y_range.range_padding = 0.1
                 else:
-                    plot.width = max(width, spacing*len(keys))
+                    plot.width = max(width, spacing * len(keys))
                     plot.x_range.factors = keys
                     plot.x_range.range_padding = 0.1
                 source = ColumnDataSource(data=dict(keys=keys, values=values))
@@ -240,10 +242,10 @@ def interactive(report, name="report", width=800, height=400, spacing=None, hori
                 plot_data = _asdict(plot_data)
                 keys = list(plot_data.keys())
                 if horizontal:
-                    plot.height = max(height, spacing*len(keys))
+                    plot.height = max(height, spacing * len(keys))
                     plot.y_range.factors = keys
                 else:
-                    plot.width = max(width, spacing*len(keys))
+                    plot.width = max(width, spacing * len(keys))
                     plot.x_range.factors = keys
                 if isinstance(plot_data, Fork):
                     plot_data = plot_data.branches()

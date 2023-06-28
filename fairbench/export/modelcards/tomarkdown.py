@@ -5,9 +5,9 @@ from fairbench.forks import Fork, Explainable
 
 
 def _resulttomarkdown(value, inline=False):
-    if value == 'False':
-        return ':x:'
-    if value == 'True':
+    if value == "False":
+        return ":x:"
+    if value == "True":
         return ":heavy_check_mark:"
     if inline:
         return f"`{value}`"
@@ -23,8 +23,12 @@ def tomarkdown(report, _=None, table=True, file=None):
     factors = list()
     caveats = list()
     for row in toyamlprimitives(report):
-        results = _resulttomarkdown(row['results'], inline=not table)
-        metric_fork = report[row["name"]] if not isinstance(report, Fork) else getattr(report, row["name"])
+        results = _resulttomarkdown(row["results"], inline=not table)
+        metric_fork = (
+            report[row["name"]]
+            if not isinstance(report, Fork)
+            else getattr(report, row["name"])
+        )
         while isinstance(metric_fork, Explainable):
             metric_fork = metric_fork.explain
         if isinstance(metric_fork, Fork):
@@ -34,8 +38,8 @@ def tomarkdown(report, _=None, table=True, file=None):
             caveats.extend(row["caveats"])
             if not prepend:
                 prepend += "\n\n## Evaluation results\n"
-                prepend += '| Metric | Value |\n'
-                prepend += '| ------ | ----- |\n'
+                prepend += "| Metric | Value |\n"
+                prepend += "| ------ | ----- |\n"
             prepend += f'| {row["name"]} | {results} |\n'
             ret += f"The *{row['name']}* {row['description'][0].lower()}{row['description'][1:]} "
         else:
@@ -43,20 +47,23 @@ def tomarkdown(report, _=None, table=True, file=None):
     if factors:
         factors = sorted(set(factors))
         factor_text = "## Factors\n"
-        factor_text += "- The groups that are considered for fairness assessment are "+(", ".join(factors))+"."
+        factor_text += (
+            "- The groups that are considered for fairness assessment are "
+            + (", ".join(factors))
+            + "."
+        )
         factor_text += "\n\n"
     else:
         factor_text = ""
     if caveats:
         caveats = sorted(set(caveats))
-        caveats_text = "## Caveats and Recommendations\n"
-        caveats_text += "\n-".join(caveats)
+        caveats_text = "\n## Caveats and Recommendations\n- "
+        caveats_text += "\n- ".join(caveats)
         caveats_text += "\n\n"
     else:
         caveats_text = ""
     ret = factor_text + ret + prepend + caveats_text
     if file is not None:
-        with open(file, 'w') as file:
+        with open(file, "w") as file:
             file.write(ret)
     return ret
-

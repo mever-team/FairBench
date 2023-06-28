@@ -12,6 +12,6 @@ stamp = fb.combine(
     #fb.stamps.three_fourths(report),
     fb.stamps.eighty_rule(report)
 )
-print(fb.modelcards.tomarkdown(stamp))
+print(fb.modelcards.tohtml(stamp, show=True))
 
 # fb.interactive(report)

@@ -119,7 +119,10 @@ def astensor(value, _allow_explanation=True) -> ep.Tensor:
         from fairbench import Explainable
 
         return Explainable(
-            astensor(value.value), explain=value.explain, desc=value.desc, units=value.units
+            astensor(value.value),
+            explain=value.explain,
+            desc=value.desc,
+            units=value.units,
         )
     if isinstance(value, int) or isinstance(value, float):
         value = np.float64(value)
@@ -148,7 +151,10 @@ def fromtensor(value, _allow_explanation=True):
         from fairbench import Explainable
 
         return Explainable(
-            fromtensor(value.value), explain=value.explain, desc=value.desc, units=value.units
+            fromtensor(value.value),
+            explain=value.explain,
+            desc=value.desc,
+            units=value.units,
         )
     # TODO: maybe applying this as a wrapper to methods instead of submitting to dask can be faster
     if isinstance(value, ep.Tensor):

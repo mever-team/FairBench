@@ -52,7 +52,9 @@ class ExplanationCurve:
 
 
 class Explainable(ClosedWrapper):
-    def __init__(self, value, explain: Any = None, desc: str = None, units: Any = None, **kwargs):
+    def __init__(
+        self, value, explain: Any = None, desc: str = None, units: Any = None, **kwargs
+    ):
         from fairbench.forks import Fork
 
         if value.__class__.__name__ == "Future":
@@ -89,7 +91,6 @@ class Explainable(ClosedWrapper):
         if self.units is not None:
             return f"{value:.3f} {self.units}"
         return f"{value:.3f}"
-
 
     @property
     def value(self):

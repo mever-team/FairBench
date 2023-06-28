@@ -5,10 +5,10 @@ from fairbench.forks import Fork, Explainable
 
 
 def _resulttohtml(value, inline=False):
-    if value == 'False':
-        return '&#10060;'
-    if value == 'True':
-        return '&#9989;'
+    if value == "False":
+        return "&#10060;"
+    if value == "True":
+        return "&#9989;"
     if inline:
         return value
     return value
@@ -23,9 +23,13 @@ def tohtml(report, _=None, table=True, file=None, show=False):
     if table:
         ret += "<ul><li>Fairness-aware metrics are computed. "
     for row in toyamlprimitives(report):
-        results = _resulttohtml(row['results'], inline=not table)
-        desc = row['description']
-        metric_fork = report[row["name"]] if not isinstance(report, Fork) else getattr(report, row["name"])
+        results = _resulttohtml(row["results"], inline=not table)
+        desc = row["description"]
+        metric_fork = (
+            report[row["name"]]
+            if not isinstance(report, Fork)
+            else getattr(report, row["name"])
+        )
         while isinstance(metric_fork, Explainable):
             metric_fork = metric_fork.explain
         if isinstance(metric_fork, Fork):
@@ -35,7 +39,7 @@ def tohtml(report, _=None, table=True, file=None, show=False):
             caveats.extend(row["caveats"])
             if not prepend:
                 prepend += "\n<h2>Evaluation results</h2>\n<table>\n"
-                prepend += '<tr><th>Metric</th><th>Value</th></tr>\n'
+                prepend += "<tr><th>Metric</th><th>Value</th></tr>\n"
             prepend += f'<tr><td>{row["name"]}</td><td>{results}</td></tr>\n'
             ret += f"The <em>{row['name']}</em> {desc[0].lower()}{desc[1:]} "
         else:
@@ -46,7 +50,11 @@ def tohtml(report, _=None, table=True, file=None, show=False):
     if factors:
         factors = sorted(set(factors))
         factor_text = "<h2>Factors</h2>"
-        factor_text += "<ul><li>The groups that are considered for fairness assessment are "+(", ".join(factors))+"."
+        factor_text += (
+            "<ul><li>The groups that are considered for fairness assessment are "
+            + (", ".join(factors))
+            + "."
+        )
         factor_text += "</li></ul>"
     else:
         factor_text = ""
@@ -55,19 +63,19 @@ def tohtml(report, _=None, table=True, file=None, show=False):
         caveats_text = "<h2>Caveats and Recommendations</h2>"
         caveats_text += "<ul>"
         for caveat in caveats:
-            caveats_text += "<li>"+caveat+"</li>"
+            caveats_text += "<li>" + caveat + "</li>"
         caveats_text += "</ul>"
     else:
         caveats_text = ""
     ret = factor_text + ret + prepend + caveats_text
     if file is not None:
-        with open(file, 'w') as wfile:
+        with open(file, "w") as wfile:
             wfile.write(ret)
         if show:
             webbrowser.open_new(file)
     elif show:
-        with tempfile.NamedTemporaryFile('w', delete=False, suffix='.html') as wfile:
-            url = 'file://' + wfile.name
+        with tempfile.NamedTemporaryFile("w", delete=False, suffix=".html") as wfile:
+            url = "file://" + wfile.name
             wfile.write(ret)
         webbrowser.open(url)
     return ret

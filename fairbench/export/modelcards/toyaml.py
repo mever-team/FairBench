@@ -10,10 +10,10 @@ def toyamlprimitives(report):
     result = list()
     for metric, value in report.items():
         metric_dict = {
-            'name': metric,
-            'description': value.desc.desc,
-            'results': str(value),
-            'caveats': value.desc.caveats
+            "name": metric,
+            "description": value.desc.desc,
+            "results": str(value),
+            "caveats": value.desc.caveats,
         }
         result.append(metric_dict)
     return result
