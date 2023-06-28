@@ -124,27 +124,27 @@ prule = Stamp(
 )
 
 dfpr = Stamp(
-   "dfpr",
+    "dfpr",
     ("maxdiff.tnr", "dfpr"),
     desc="Compares the false positive rates between groups. "
-         "The maximum difference is reported, so that value of 1 indicates "
-         "disparate mistreatment, and value of 0 disparate mistreatment mitigation.",
+    "The maximum difference is reported, so that value of 1 indicates "
+    "disparate mistreatment, and value of 0 disparate mistreatment mitigation.",
     caveats=[
         "Disparate mistreatment may not always be an appropriate fairness consideration.",
         "Consider input from affected stakeholders to determine whether dfpr is "
-        "an appropriate fairness measure."
-    ]
+        "an appropriate fairness measure.",
+    ],
 )
 
 dfnr = Stamp(
-   "dfnr",
+    "dfnr",
     ("maxdiff.tpr", "dfnr"),
     desc="Compares the false negative rates between groups. "
-         "The maximum difference is reported, so that value of 1 indicates "
-         "disparate mistreatment, and value of 0 disparate mistreatment mitigation.",
+    "The maximum difference is reported, so that value of 1 indicates "
+    "disparate mistreatment, and value of 0 disparate mistreatment mitigation.",
     caveats=[
         "Disparate mistreatment may not always be an appropriate fairness consideration.",
         "Consider input from affected stakeholders to determine whether dfnr is "
-        "an appropriate fairness measure."
-    ]
+        "an appropriate fairness measure.",
+    ],
 )
