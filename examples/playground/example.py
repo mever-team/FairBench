@@ -9,7 +9,6 @@ report = fb.multireport(predictions=yhat, labels=y, sensitive=s)
 stamp = fb.combine(
     fb.stamps.prule(report),
     fb.stamps.accuracy(report),
-    #fb.stamps.three_fourths(report),
     fb.stamps.four_fifths_rule(report)
 )
 fb.modelcards.tohtml(stamp, show=True)
