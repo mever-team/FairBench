@@ -2,7 +2,7 @@ from fairbench.forks.fork import Fork, Forklike
 from fairbench.forks.explanation import tofloat, ExplainableError
 
 
-def clean(fork):
+def clean(fork):  # pragma: no cover
     if isinstance(fork, Fork):
         branches = {k: clean(v) for k, v in fork.branches().items()}
         branches = {k: v for k, v in branches.items() if v is not None}
@@ -20,7 +20,7 @@ def clean(fork):
     return fork
 
 
-def _in_ipynb():
+def _in_ipynb():  # pragma: no cover
     try:
         shell = get_ipython().__class__.__name__
         if shell == "ZMQInteractiveShell":
