@@ -75,7 +75,7 @@ a *.explain* field, which will be storing the given message.
 ## Create new reduction strategies
 Reduction strategies follow three steps: transformation,
 expansion, and reduction. To see how to orchestrate
-these components, read [here](docs/topics/reports.md) .
+these components, read [here](docs/basics/reports.md) .
 
 
 Expansion methods can be found

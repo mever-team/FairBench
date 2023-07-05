@@ -4,13 +4,14 @@ site_author: Emmanouil (Manios) Krasanakis
 nav:
     - Home: 'index.md'
     - 'quickstart.md'
-    - Topics:
-        - 'topics/reports.md'
-        - 'topics/interactive.md'
-        - 'topics/modelcards.md'
+    - Basics:
+        - 'basics/forks.md'
+        - 'basics/reports.md'
+        - 'basics/interactive.md'
+        - 'basics/modelcards.md'
     - Advanced:
         - 'advanced/metrics.md'
-        - 'advanced/branches.md'
+        - 'advanced/manipulation.md'
         - 'advanced/distributed.md'
 
 markdown_extensions:

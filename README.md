@@ -12,14 +12,14 @@ A comprehensive AI fairness exploration framework.
 
 ## Features
 
-- :chart_with_upwards_trend: Fairness reports
+- :chart_with_upwards_trend: Fairness reports and stamps
 - :flags: Multivalue multiattribute
 - :hammer_and_wrench: Measure building blocks
 - :gear: ML integration (`numpy`,`torch`,`tensorflow`,`jax`)
 
 For details, visit the project's [documentation](https://fairbench.readthedocs.io/).
 
-## Quick recipes
+## Recipes
 
 [<img alt="branches" width="20%" src="docs/images/tabular.png" />](examples/demos/demo.ipynb)
 [<img alt="branches" width="20%" src="docs/images/graphs.png" />](examples/demos/graphs.ipynb)
