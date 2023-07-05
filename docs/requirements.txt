@@ -1,2 +1,5 @@
 mkdocs >= 1.2.2
 mkautodoc
+pymdown-extensions
+mkdocs-material-extensions
+mkdocs-material
