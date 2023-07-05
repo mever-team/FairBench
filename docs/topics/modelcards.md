@@ -60,7 +60,7 @@ worst accuracy: 0.799
 
 Notice that some stamps have numeric values.
 Although each value is an `Explainable` object
-under the hood, they very too different data,
+under the hood, they contain too different data,
 and it is recommended to avoid mass-explanations.
 
 Instead, export stamps to model cards (see below)
