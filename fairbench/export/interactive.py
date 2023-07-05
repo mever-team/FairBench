@@ -38,7 +38,7 @@ def _in_jupyter():  # pragma: no cover
 
 
 def interactive(
-    report, name='report', width=800, height=400, spacing=None, horizontal=True
+    report, name="report", width=800, height=400, spacing=None, horizontal=True
 ):  # pragma: no cover
     """
     Creates an interactive visualization over a fairness report.
