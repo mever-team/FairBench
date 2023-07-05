@@ -1,5 +1,2 @@
 mkdocs >= 1.2.2
 mkautodoc
-mkdocs-exclude
-mkdocs-material-extensions
-mkdocs-material

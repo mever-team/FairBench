@@ -15,6 +15,7 @@ You can generate
 fairness-aware reports by providing some
 (preferably all) of the following arguments
 of the `fairbench.report(...)` function:
+
 * binary `predictions`
 * ideal binary prediction `labels`
 * binary `sensitive` attribute
@@ -25,7 +26,7 @@ a dictionary mapping metric names to metric functions
 or a list of metric functions, where
 in the last case their names are inferred
 from the function names.
-You can use variable [forks](branches.md)
+You can use variable [forks](../advanced/branches.md)
 to handle multi-value attributes or multiple
 sensitive attribute values. 
 For the time being, you need
@@ -58,6 +59,7 @@ import fairbench as fb
 sensitive = fb.Fork(case1=..., case2=...)
 report = fb.multireport(predictions=..., labels=..., sensitive=sensitive)
 ```
+
 
 ## Viewing reports
 
@@ -99,17 +101,18 @@ This will use `matplotlib` to produce the following output:
 
 ![report example](reports.png)
 
-:warning: Reports are limited to forks of metrics. You can print any
-fork, not matter how complicated, but  `fb.visualize`
-and `fb.display` are only applicable to this simplistic 
-assumption. For example you cannot visualize a fork of reports,
-though you can of course obtain a sub-view of it and work
-with that. 
+!!! warning 
+    Reports are limited to forks of metrics. You can print any
+    fork, but  `fb.visualize` and `fb.display` are only applicable 
+    to this assumption. For example, you cannot visualize a fork 
+    of reports, though you can obtain a sub-view of it and visualize that.
 
-:bulb: To visualize complicated forks, use `fb.interactive`.
-Read more [here](interactive.md).
+!!! tip 
+    To explore complicated forks, use [interactive visualization](interactive.md).
+
 
 ## Editing reports
+
 Since reports are forks of dictionaries, you can use normal
 dictionary methods to access and edit their elements (given
 that forks provide access to any possible methods of internal
@@ -133,6 +136,7 @@ fb.describe(report)
 ```
 
 This will print the following to the console:
+
 ```
 Metric          case2           case1          
 accuracy        0.938           0.938          
@@ -157,6 +161,7 @@ unforeseen- data branches, but constitutes the main mechanism
 for summarizing multi-attribute reports into one measure.
 Reduction internally runs three types of functions obtained
 from its arguments:
+
 - `transform` values found in the report for each metric, which can be either *None* or *abs*.
 - `expand` the list of branch values for each metric, namely *None*, a pairwise *ratio* between values, or absolute *diff*erences between branch values.
 - `reducer` method that takes a list of all branch values for each metric and summarizes them into one value. These can be *mean,max,min,sum,budget*, where the last one is the logarithm of the maximum declared in differential fairness formulations.
@@ -175,10 +180,12 @@ mean_across_branches = fb.reduce(report, fb.mean, name="avg")
 max_abs_across_branches = fb.reduce(report, fb.budget, expand=fb.ratio, transform=fb.abs)
 ```
 
-:warning: You will typically want to perform custom reductions on
-an *accreport* or on manually generated reports for some non-fairness-related
-evaluation measures. You can then combine the outcome of some reductions
-to provide a holistic view.
+
+!!! tip
+    You will typically want to perform custom reductions on
+    an *accreport* or on manually generated reports for 
+    some base evaluation measures. Combine the 
+    outcome of several reductions for better understanding.
  
 Recuction creates new reports that comprise only one branch.
 The branch's name is dynamically derived by parameters 
@@ -188,6 +195,7 @@ to directly retrieve report outputs instead of putting them
 to a Fork.
 
 # Combining reports
+
 Reports, including reduced ones, can be combined to
 create a super-report with all sub-branches. This 
 is demonstrated in the following snippet:
@@ -268,6 +276,7 @@ when comparing two algorithms.
 
 
 ## Buffering batch predictions
+
 When training machine learning algorithms, you may want
 to concatenate the same variable generated across 
 several batches. This can be used by calling

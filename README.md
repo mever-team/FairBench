@@ -20,15 +20,15 @@ A comprehensive AI fairness exploration framework.
 
 [<img alt="reports" width="45%" src="docs/images/quickstart.png" />](docs/quickstart.md)
 [<img alt="reports" width="45%" src="docs/images/report.png" />](docs/topics/reports.md)
-[<img alt="branches" width="45%" src="docs/images/forks.png" />](docs/topics/branches.md)
+[<img alt="branches" width="45%" src="docs/images/forks.png" />](docs/advanced/branches.md)
 [<img alt="branches" width="45%" src="docs/images/modelcards.png" />](docs/topics/modelcards.md)
 
 
 Advanced topics
 
-- [Available metrics](docs/topics/metrics.md)
+- [Available metrics](docs/advanced/metrics.md)
 - [Add your own metrics](CONTRIBUTING.md)
-- [Distributed execution](docs/topics/distributed.md)
+- [Distributed execution](docs/advanced/distributed.md)
 
 Usage on example data (notebooks)
 

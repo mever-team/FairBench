@@ -1,20 +1,30 @@
 site_name: FairBench
 site_author: Emmanouil (Manios) Krasanakis
 
+nav:
+    - Home: 'index.md'
+    - 'quickstart.md'
+    - Topics:
+        - 'topics/reports.md'
+        - 'topics/interactive.md'
+        - 'topics/modelcards.md'
+    - Advanced:
+        - 'advanced/metrics.md'
+        - 'advanced/branches.md'
+        - 'advanced/distributed.md'
+
 markdown_extensions:
   - admonition
   - codehilite
   - mkautodoc
   - attr_list
-  - pymdownx.critic:
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.smartsymbols
+  - pymdownx.inlinehilite
   - pymdownx.emoji:
       emoji_index: !!python/name:pymdownx.emoji.gemoji
-      emoji_generator: !!python/name:pymdownx.emoji.to_png
-
-plugins:
-  - exclude:
-      glob:
-        - images/*
+      emoji_generator: !!python/name:pymdownx.emoji.to_svg
 
 theme:
   name: readthedocs
@@ -33,3 +43,6 @@ theme:
   features:
     - navigation.instant
     - navigation.instant.prefetch
+
+extra_css:
+  - theme_extend.css

@@ -5,11 +5,11 @@ complex objects generated with  `FairBench`, such as
 forks of forks of measure values (these can compare
 the same reports across multiple algorithms).
 
-1. [Start](#start)
+1. [Start visualization](#start-visualization)
 2. [Interface](#interface)
 
 
-# Start
+## Start visualization
 
 To start interactive visualization, call 
 `fairbench.interactive(obj)` on an object
@@ -22,7 +22,7 @@ the process to stop the server). From a
 Jupyter environment, a bokeh application will
 run on the next output cell instead.
 
-# Interface
+## Interface
 TODO
 
 

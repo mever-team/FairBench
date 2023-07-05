@@ -164,16 +164,16 @@ print((yhat.case1+yhat.case2)/2)
 # [0.  1.  0.  1.  0.5 1.  1.  1. ]
 ```
 
-:warning: Accessing branch values or printing
-forks when
-[distributed computing](distributed.md)
-is enabled waits until remote computations
-conclude and retrieves data back.
+!!! warning
+    Accessing branch values (this includes report generation 
+    and visualization) under
+    [distributed computing](distributed.md)
+    waits for dependent remote computations to conclude.
 
 Here is a visual view of how data 
 are organized between branches:
 
 ![branches](branches.png)
 
-:bulb: You can use branches to run several computations
-pipelines concurrently.
+!!! tip
+    Use branches to run several computation pipelines concurrently.

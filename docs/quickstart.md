@@ -50,9 +50,7 @@ dfpr        -0.071          0.071
 dfnr        -0.500          0.500
 ```
 
-:bulb: For fairness reporting that does 
-**NOT treat branches independently**, 
-it is recommended to use `fairbench.multireport`. 
-This reporting hides original branches, compares 
-branches with each other, and performs reductions. 
-Refer to the documentation below for more details.
+!!! tips
+    For fairness reporting that does 
+    NOT treat branches independently, 
+    use `fairbench.multireport`.

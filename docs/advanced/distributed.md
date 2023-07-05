@@ -21,6 +21,6 @@ server. If the server's workers have been instantiated with the same
 names as some branches, those branches will be executed
 there.
 
-:warning: If computations are too simple, parallelization
-will be slower that non-parallelization,
-because a significant overhead is needed to transfer data to workers.
+!!! warning 
+    If computations are too simple, parallelization
+    will be slower, due to data transfer overheads.
