@@ -2,15 +2,15 @@ from fairbench.forks.fork import Fork, Forklike
 from fairbench.forks.explanation import tofloat, ExplainableError
 
 
-def clean(fork):  # pragma: no cover
+def _clean(fork):  # pragma: no cover
     if isinstance(fork, Fork):
-        branches = {k: clean(v) for k, v in fork.branches().items()}
+        branches = {k: _clean(v) for k, v in fork.branches().items()}
         branches = {k: v for k, v in branches.items() if v is not None}
         if not branches:
             return None
         return Fork(branches)
     if isinstance(fork, Forklike):
-        branches = {k: clean(v) for k, v in fork.items()}
+        branches = {k: _clean(v) for k, v in fork.items()}
         branches = {k: v for k, v in branches.items() if v is not None}
         if not branches:
             return None
@@ -20,7 +20,11 @@ def clean(fork):  # pragma: no cover
     return fork
 
 
-def _in_ipynb():  # pragma: no cover
+def _in_jupyter():  # pragma: no cover
+    """
+    Checks whether current code runs within a Jupyter notebook.
+    :return: True if within Jupyter, False otherwise
+    """
     try:
         shell = get_ipython().__class__.__name__
         if shell == "ZMQInteractiveShell":
@@ -34,15 +38,22 @@ def _in_ipynb():  # pragma: no cover
 
 
 def interactive(
-    report, name="report", width=800, height=400, spacing=None, horizontal=True
+    report, name='report', width=800, height=400, spacing=None, horizontal=True
 ):  # pragma: no cover
+    """
+    Creates an interactive visualization over a fairness report.
+    :param report: A fairness report.
+    :param name: Default is 'report'.
+    :param width: The minimum width of interactive plot screens.
+    :param height: The minimum height of interactive plot screens.
+    :param spacing: The minimum spacing between bars of bar plots. If None, internally set to 50 for horizontal mode and 100 otherwise.
+    :param horizontal: Whether bar plots should be horizontally or vertically aligned.
+    """
     from bokeh.models import (
         ColumnDataSource,
         Select,
-        Range1d,
         Button,
         Div,
-        FactorRange,
         HoverTool,
         RadioButtonGroup,
     )
@@ -290,7 +301,7 @@ def interactive(
             branch = (
                 previous[-1] if selected_branch == "ALL" else _branch(selected_branch)
             )
-            previous.append(clean(branch.explain))
+            previous.append(_clean(branch.explain))
             _update_branches()
             select_branch.active = 0
             update_plot(doc)
@@ -331,7 +342,7 @@ def interactive(
             if selected_branch != "ALL" and _depth(_branch(selected_branch)) > 1:
                 previous_title.append(selected_branch)
                 branch = _branch(selected_branch)
-                previous.append(clean(branch))
+                previous.append(_clean(branch))
                 _update_branches()
                 select_branch.active = 0
             update_plot(doc)
@@ -351,7 +362,7 @@ def interactive(
         doc.add_root(column(label, controls, plot))
 
     app = Application(FunctionHandler(modify_doc))
-    if _in_ipynb():
+    if _in_jupyter():
         from bokeh.io import show
         from bokeh.plotting import output_notebook
 

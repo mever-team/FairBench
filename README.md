@@ -17,23 +17,23 @@ A comprehensive AI fairness exploration framework.
 
 ## Get started 
 
-[<img alt="reports" width="45%" src="docs/images/quickstart.png" />](docs/quickstart.md)
-[<img alt="reports" width="45%" src="docs/images/report.png" />](docs/reports.md)
-[<img alt="branches" width="45%" src="docs/images/forks.png" />](docs/branches.md)
-[<img alt="branches" width="45%" src="docs/images/modelcards.png" />](docs/modelcards.md)
+[<img alt="reports" width="45%" src="docsmd/images/quickstart.png" />](docsmd/quickstart.md)
+[<img alt="reports" width="45%" src="docsmd/images/report.png" />](docsmd/reports.md)
+[<img alt="branches" width="45%" src="docsmd/images/forks.png" />](docsmd/branches.md)
+[<img alt="branches" width="45%" src="docsmd/images/modelcards.png" />](docsmd/modelcards.md)
 
 
 Advanced topics
 
-- [Available metrics](docs/metrics.md)
+- [Available metrics](docsmd/metrics.md)
 - [Add your own metrics](CONTRIBUTING.md)
-- [Distributed execution](docs/distributed.md)
+- [Distributed execution](docsmd/distributed.md)
 
 Usage on example data (notebooks)
 
-[<img alt="branches" width="20%" src="docs/images/tabular.png" />](examples/demos/demo.ipynb)
-[<img alt="branches" width="20%" src="docs/images/graphs.png" />](examples/demos/graphs.ipynb)
-[<img alt="branches" width="20%" src="docs/images/vision.png" />](examples/demos/vision.ipynb)
+[<img alt="branches" width="20%" src="docsmd/images/tabular.png" />](examples/demos/demo.ipynb)
+[<img alt="branches" width="20%" src="docsmd/images/graphs.png" />](examples/demos/graphs.ipynb)
+[<img alt="branches" width="20%" src="docsmd/images/vision.png" />](examples/demos/vision.ipynb)
 
 Recipes
 

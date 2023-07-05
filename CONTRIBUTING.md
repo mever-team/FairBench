@@ -7,8 +7,8 @@ codebase is welcome. :smile:
 For a timely processing of a new pull request,
 it is preferred (but not mandatory) to have a discussion
 in the repository's issues first. You can also e-mail
-the project's current maintainer: Manios Krasanakis
-at maniospas@hotmail.com .
+the project's current maintainer: *Manios Krasanakis*
+at *maniospas@hotmail.com* .
 
 ## Pull checklist
 1. Fork the repository.
@@ -75,7 +75,7 @@ a *.explain* field, which will be storing the given message.
 ## Create new reduction strategies
 Reduction strategies follow three steps: transformation,
 expansion, and reduction. To see how to orchestrate
-these components, read [here](docs/reports.md) .
+these components, read [here](docsmd/reports.md) .
 
 
 Expansion methods can be found
