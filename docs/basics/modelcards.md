@@ -95,5 +95,5 @@ the generated html in your browser (without necessarily
 creating a file) like so:
 
 ```python
-print(fb.modelcards.tohtml(stamps, show=True))
+fb.modelcards.tohtml(stamps, show=True)
 ```

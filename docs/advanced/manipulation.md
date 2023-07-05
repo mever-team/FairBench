@@ -7,7 +7,7 @@
 !!! info
     If you want to extract specific well-known measures
     from reports, please look at 
-    [stamps](../basics/modelcards.md) instead.
+    [stamps](../basics/modelcards.md#stamps) instead.
 
 ## Manipulating metrics
 

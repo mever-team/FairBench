@@ -3,11 +3,8 @@
 1. [Generating reports](#generating-reports)
 2. [Report types](#report-types)
 3. [Viewing reports](#viewing-reports)
-4. [Editing reports](#editing-reports)
-5. [Reducing reports](#reducing-reports)
-6. [Combining reports](#combining-reports)
-7. [Explaining report values](#explaining-report-values)
-8. [Buffering batch predictions](#buffering-batch-predictions)
+4. [Explaining report values](#explaining-report-values)
+5. [Buffering batch predictions](#buffering-batch-predictions)
 
 ## Generating reports
 
@@ -40,6 +37,7 @@ automated in the future.
 Out-of-the box, you can use one of the following three
 report generation methods, which wrap the base
 report generation:
+
 - `fairbench.accreport` provides popular performance evaluation measures to be viewed between branches (accuracy, positives, true positive rates, true negative rates).
 - `fairbench.binreport` conducts a suit of popular binary fairness assessments on each variable branch and should be preferred when branches do *not* correspond to mult-attribute fairness.
 - `fairbench.multireport` is ideal for multi-fairness approaches, where the `sensitive` argument is a fork. This report generator performs a lot of [editing](../advanced/manipulation.md) to summarize the findings of multi-attribute fairness analysis.
@@ -59,6 +57,12 @@ import fairbench as fb
 sensitive = fb.Fork(case1=..., case2=...)
 report = fb.multireport(predictions=..., labels=..., sensitive=sensitive)
 ```
+
+!!! tip
+    Instead of ad-hoc computations,
+    prefer generating reports, like multireports,
+    and extracting [stamps](modelcards.md#stamps) 
+    from these.
 
 
 ## Viewing reports

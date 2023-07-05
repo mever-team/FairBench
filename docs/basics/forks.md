@@ -7,8 +7,7 @@ When analysing fairness, each branch corresponds to an
 array corresponding to some attribute value - see below for examples.
 
 1. [Fork definition](#fork-definition)
-2. [Multivalue multiattribute considerations](#multivalue-multiattribute-considerations)
-3. [Working with multiple forked variables](#working-with-multiple-forked-variables)
+2. [Intersectional analysis](#intersectional-analysis)
 
 ## Fork definition
 
