@@ -1,4 +1,4 @@
-# :flags: Forks and branches
+# Forks and branches
 
 Forks declare different versions (branches) of variable
 values, each of which should be treated differently.

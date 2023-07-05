@@ -1,6 +1,6 @@
-# Quickstart with FairBench
+# Quickstart
 
-Install the framework with:
+Install FairBench with:
 
 ```shell
 pip install --upgrade fairbench

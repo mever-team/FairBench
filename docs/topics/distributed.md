@@ -1,4 +1,4 @@
-# :satellite: Parallel/distributed computing
+# Parallel/distributed computing
 
 `FairBench` supports parallel or distributed computing
 of computationally intensive operations that are separated

@@ -1,4 +1,4 @@
-# Interactive Visualization
+# Interactive visualization
 
 Interactive visualization explores
 complex objects generated with  `FairBench`, such as

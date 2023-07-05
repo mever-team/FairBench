@@ -1,4 +1,4 @@
-# Stamps and Model Cards
+# Stamps and model cards
 
 When disseminating models, it is often important to summarize
 evaluations under specific fairness perspectives, and whether
@@ -85,7 +85,7 @@ create markdown:
 print(fb.modelcards.tomarkdown(stamps))  # or toyaml or tohtml
 ```
 
-The output will be [this markdown](images/example_modelcard.md).
+The output will be [this markdown](../images/example_modelcard.md).
 Notice that the original stamp outputs keep track of factors,
 descriptions, and recommendations to add at respective report 
 fields.

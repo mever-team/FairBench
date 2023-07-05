@@ -1,4 +1,4 @@
-# :chart_with_upwards_trend: Reports
+# Reports
 
 1. [Generating reports](#generating-reports)
 2. [Report types](#report-types)
