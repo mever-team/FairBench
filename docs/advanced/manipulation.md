@@ -1,4 +1,4 @@
-# Report operations
+# Report manipulation
 
 1. [Manipulating metrics](#manipulating-metrics)
 2. [Reduction](#reduction)
@@ -9,7 +9,7 @@
     from reports, please look at 
     [stamps](../basics/modelcards.md#stamps) instead.
 
-## Manipulating metrics
+## Editing metrics
 
 Reports are forks of dictionaries and you can use normal
 dictionary methods to access and edit their elements (given
@@ -87,10 +87,12 @@ max_abs_across_branches = fb.reduce(report, fb.budget, expand=fb.ratio, transfor
  
 Recuction creates new reports that comprise only one branch.
 The branch's name is dynamically derived by parameters 
-(e.g., *"budgetratioabs"*), but you can also use the `name` 
-argument to set a specific name instead. Set `name=None` 
-to directly retrieve report outputs instead of putting them
-to a Fork.
+(e.g., *"budgetratioabs"*), but you can also set 
+a specific one with the argument `name="ReductionName"`. 
+
+!!! info
+    Call `areduce` with the same arguments to 
+    obtain the reduction's numeric output instead of a fork.
 
 # Combining and comparing reports
 

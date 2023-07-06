@@ -1,12 +1,13 @@
 from fairbench.forks import parallel, unit_bounded, role
 from fairbench.forks.explanation import Explainable
 from eagerpy import Tensor
+from typing import Optional
 
 
 @role("metric")
 @parallel
 @unit_bounded
-def accuracy(predictions: Tensor, labels: Tensor, sensitive: Tensor = None):
+def accuracy(predictions: Tensor, labels: Tensor, sensitive: Optional[Tensor] = None) -> Explainable:
     if sensitive is None:
         sensitive = predictions.ones_like()
     num_sensitive = sensitive.sum()
@@ -21,7 +22,7 @@ def accuracy(predictions: Tensor, labels: Tensor, sensitive: Tensor = None):
 @role("metric")
 @parallel
 @unit_bounded
-def pr(predictions: Tensor, sensitive: Tensor = None):
+def pr(predictions: Tensor, sensitive: Optional[Tensor] = None):
     if sensitive is None:
         sensitive = predictions.ones_like()
     sum_sensitive = sensitive.sum()
@@ -36,8 +37,10 @@ def pr(predictions: Tensor, sensitive: Tensor = None):
 @role("metric")
 @parallel
 @unit_bounded
-def positives(predictions: Tensor, sensitive: Tensor):
-    return (predictions * sensitive).sum()
+def positives(predictions: Tensor, sensitive: Optional[Tensor] = None):
+    if sensitive is None:
+        sensitive = predictions.ones_like()
+    return Explainable((predictions * sensitive).sum(), samples=sensitive.sum())
 
 
 @role("metric")
@@ -46,7 +49,7 @@ def positives(predictions: Tensor, sensitive: Tensor):
 def tpr(
     predictions: Tensor,
     labels: Tensor,
-    sensitive: Tensor = None,
+    sensitive: Optional[Tensor] = None,
     max_prediction: float = 1,
 ):
     if sensitive is None:
@@ -68,7 +71,7 @@ def tpr(
 def fpr(
     predictions: Tensor,
     labels: Tensor,
-    sensitive: Tensor = None,
+    sensitive: Optional[Tensor] = None,
 ):
     if sensitive is None:
         sensitive = predictions.ones_like()
@@ -91,7 +94,7 @@ def fpr(
 def tnr(
     predictions: Tensor,
     labels: Tensor,
-    sensitive: Tensor = None,
+    sensitive: Optional[Tensor] = None,
     max_prediction: float = 1,
 ):
     if sensitive is None:
@@ -114,7 +117,7 @@ def tnr(
 def fnr(
     predictions: Tensor,
     labels: Tensor,
-    sensitive: Tensor = None,
+    sensitive: Optional[Tensor] = None,
     max_prediction: float = 1,
 ):
     if sensitive is None:

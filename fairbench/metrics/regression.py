@@ -19,7 +19,7 @@ def mae(scores: Tensor, targets: Tensor, sensitive: Tensor = None):
     return Explainable(
         0 if num_sensitive == 0 else true / num_sensitive,
         samples=num_sensitive,
-        sse=true,
+        sae=true,
     )
 
 
@@ -78,7 +78,7 @@ def r2(scores: Tensor, targets: Tensor, sensitive: Tensor = None, deg_freedom: i
 @role("metric")
 @parallel
 def pinball(
-    scores: Tensor, targets: Tensor, alpha: float = 0.5, sensitive: Tensor = None
+    scores: Tensor, targets: Tensor, sensitive: Tensor = None, alpha: float = 0.5
 ):
     assert 0 <= alpha <= 1
     if sensitive is None:

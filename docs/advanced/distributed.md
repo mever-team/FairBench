@@ -50,10 +50,10 @@ print((yhat.case1+yhat.case2)/2)
 ```
 
 !!! danger 
-    Avoid overlapping naming between branches 
-    AND class fields or methods, as they are both 
+    Avoid overlapping names between branches 
+    and class fields or methods, as they are both 
     accessed with the same annotation.
-    If there is confusion, returning branch values will be prioritized.
+    If there is confusion, branch values will be obtained.
 
 A visual view of how data 
 are organized across branches follows. Some

@@ -11,13 +11,13 @@ across several definitions of fairness.
     relevant information (e.g., multireports shown below)
     and extract appropriate [stamps](modelcards.md#stamps).
 
-1. [Generating reports](#generating-reports)
+1. [Generate reports](#generate-reports)
 2. [Report types](#report-types)
-3. [Viewing reports](#viewing-reports)
-4. [Explaining report values](#explaining-report-values)
+3. [Show reports](#show-reports)
+4. [Explainable values](#explainable-values)
 5. [Buffering batch predictions](#buffering-batch-predictions)
 
-## Generating reports
+## Generate reports
 
 You can generate 
 fairness reports by providing some
@@ -76,7 +76,7 @@ report = fb.multireport(predictions=..., labels=..., sensitive=sensitive)
 ```
 
 
-## Viewing reports
+## Show reports
 
 Report are forks whose branches hold dictionaries of
 metric computations. In some reports (e.g., multireport)
@@ -135,7 +135,7 @@ fb.visualize(report)
     [interactive visualization](interactive.md).
 
 
-## Explaining report values
+## Explainable values
 
 Some report values, can be explained 
 in terms of data they are derived from.
