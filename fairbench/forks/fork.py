@@ -774,7 +774,9 @@ def unit_bounded(method):
     def wrapper(*args, **kwargs):
         for iter in [args, kwargs.values()]:
             for arg in iter:
-                if isinstance(arg, ep.Tensor) and arg.shape:  # do not check for single number parameters
+                if (
+                    isinstance(arg, ep.Tensor) and arg.shape
+                ):  # do not check for single number parameters
                     assert (
                         arg.min() >= 0 and arg.max() <= 1
                     ), f"{method.__name__} inputs should lie in the range [0,1]. Maybe use fairbench.categories to transform categorical data."

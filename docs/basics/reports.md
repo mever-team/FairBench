@@ -15,7 +15,6 @@ across several definitions of fairness.
 2. [Report types](#report-types)
 3. [Show reports](#show-reports)
 4. [Explainable values](#explainable-values)
-5. [Buffering batch predictions](#buffering-batch-predictions)
 
 ## Generate reports
 
@@ -175,25 +174,3 @@ Similarly, you can obtain explanations about the values
 contributing to report combinations, for instance
 when comparing two algorithms.
 
-
-## Buffering batch predictions
-
-When training machine learning algorithms, you may want
-to concatenate the same report arguments generated across 
-several batches. You can keep arguments by calling
-`fairbench.todict` to convert a set of keyword arguments
-to a fork of dictionaries, which reports
-automatically unpack internally.
-Entries of such forks (e.g.,
-`predictions` in the example below) can be concatenated
-via a namesake method. iteratively concatenate such dictionaries
-with previous concatenation outcomes to generate a final
-dictionary of keyword arguments to pass to reports like so:
-
-```python
-data = None
-for batch in range(batches):
-    yhat, y, sensitive = ...  # compute for the batch
-    data = fb.concatenate(data, fb.todict(predictions=yhat, labels=y, sensitive=sensitive))
-report = fb.multireport(data)
-```

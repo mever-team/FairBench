@@ -7,7 +7,9 @@ from typing import Optional
 @role("metric")
 @parallel
 @unit_bounded
-def accuracy(predictions: Tensor, labels: Tensor, sensitive: Optional[Tensor] = None) -> Explainable:
+def accuracy(
+    predictions: Tensor, labels: Tensor, sensitive: Optional[Tensor] = None
+) -> Explainable:
     if sensitive is None:
         sensitive = predictions.ones_like()
     num_sensitive = sensitive.sum()

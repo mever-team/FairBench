@@ -34,11 +34,13 @@ def hr(scores: Tensor, labels: Tensor, sensitive: Tensor = None, top: int = 3):
     labels = labels[sensitive == 1]
     indexes = scores.argsort()
     indexes = indexes[-k:]
-    return Explainable(labels[indexes].mean(),
-                       top=k,
-                       true_top=labels[indexes].sum(),
-                       samples=sensitive.sum()
-                       )
+    return Explainable(
+        labels[indexes].mean(),
+        top=k,
+        true_top=labels[indexes].sum(),
+        samples=sensitive.sum(),
+    )
+
 
 @role("metric")
 @parallel
@@ -52,11 +54,13 @@ def reck(scores: Tensor, labels: Tensor, sensitive: Tensor = None, top: int = 3)
     labels = labels[sensitive == 1]
     indexes = scores.argsort()
     indexes = indexes[-k:]
-    return Explainable(labels[indexes].sum()/labels.sum(),
-                       top=k,
-                       true_top=labels[indexes].sum(),
-                       samples=sensitive.sum()
-                       )
+    return Explainable(
+        labels[indexes].sum() / labels.sum(),
+        top=k,
+        true_top=labels[indexes].sum(),
+        samples=sensitive.sum(),
+    )
+
 
 @role("metric")
 @parallel
@@ -71,12 +75,13 @@ def f1k(scores: Tensor, labels: Tensor, sensitive: Tensor = None, top: int = 3):
     indexes = scores.argsort()
     indexes = indexes[-k:]
     prec = labels[indexes].mean()
-    rec = labels[indexes].sum()/labels.sum()
-    return Explainable(2*prec*rec/(prec+rec),
-                       top=k,
-                       true_top=labels[indexes].sum(),
-                       samples=sensitive.sum()
-                       )
+    rec = labels[indexes].sum() / labels.sum()
+    return Explainable(
+        2 * prec * rec / (prec + rec),
+        top=k,
+        true_top=labels[indexes].sum(),
+        samples=sensitive.sum(),
+    )
 
 
 @role("metric")
@@ -92,13 +97,17 @@ def ap(scores: Tensor, labels: Tensor, sensitive: Tensor = None, top: int = 3):
     indexes = scores.argsort()
     curve = list()
     accum = 0
-    for num in range(1, k+1):
+    for num in range(1, k + 1):
         accum += labels[indexes[-num]].numpy()
-        curve.append(accum/num*labels[indexes[-num]].numpy())
-    curve = [v/k for v in curve]
-    return Explainable(sum(curve),
-                       top=k,
-                       curve=ExplanationCurve(np.array(list(range(len(curve))), dtype=float), np.array(curve, dtype=float), "hks"),
-                       samples=sensitive.sum()
-                       )
-
+        curve.append(accum / num * labels[indexes[-num]].numpy())
+    curve = [v / k for v in curve]
+    return Explainable(
+        sum(curve),
+        top=k,
+        curve=ExplanationCurve(
+            np.array(list(range(len(curve))), dtype=float),
+            np.array(curve, dtype=float),
+            "hks",
+        ),
+        samples=sensitive.sum(),
+    )
