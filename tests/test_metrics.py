@@ -46,9 +46,9 @@ def test_f1k():
         assert fb.f1k(scores=fb.astensor([0.5, 0.8, 0.3, 0.2, 0, 0.1, 0.12]), labels=fb.astensor([1, 1, 1, 0, 0, 0, 0])) == 1
 
 
-def test_hk():
+def test_hr():
     for _ in environment():
-        assert fb.hk(scores=fb.astensor([0.5, 0.8, 0.3, 0.2, 0, 0.1, 0.12]), labels=fb.astensor([1, 1, 1, 0, 0, 0, 0])) == 1
+        assert fb.hr(scores=fb.astensor([0.5, 0.8, 0.3, 0.2, 0, 0.1, 0.12]), labels=fb.astensor([1, 1, 1, 0, 0, 0, 0])) == 1
 
 
 def test_reck():
