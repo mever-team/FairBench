@@ -41,6 +41,26 @@ def test_auc():
         assert fb.auc(scores=fb.astensor([0.5, 0.8, 0.3, 0.2]), labels=fb.astensor([1, 1, 1, 0])) > 0.5
 
 
+def test_f1k():
+    for _ in environment():
+        assert fb.f1k(scores=fb.astensor([0.5, 0.8, 0.3, 0.2, 0, 0.1, 0.12]), labels=fb.astensor([1, 1, 1, 0, 0, 0, 0])) == 1
+
+
+def test_hk():
+    for _ in environment():
+        assert fb.hk(scores=fb.astensor([0.5, 0.8, 0.3, 0.2, 0, 0.1, 0.12]), labels=fb.astensor([1, 1, 1, 0, 0, 0, 0])) == 1
+
+
+def test_reck():
+    for _ in environment():
+        assert fb.reck(scores=fb.astensor([0.5, 0.8, 0.3, 0.2, 0, 0.1, 0.12]), labels=fb.astensor([1, 1, 1, 0, 0, 0, 0])) == 1
+
+
+def test_ap():
+    for _ in environment():
+        assert fb.ap(scores=fb.astensor([0.5, 0.8, 0.3, 0.2, 0, 0.1, 0.12]), labels=fb.astensor([1, 1, 1, 0, 0, 0, 0])) == 1
+
+
 def test_pinball():
     for _ in environment():
         mae = fb.metrics.mae(scores=fb.astensor([0.5, 0.8, 0.3, 0.2]), targets=fb.astensor([1, 1, 1, 0]))

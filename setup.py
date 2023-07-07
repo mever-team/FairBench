@@ -8,11 +8,11 @@ import setuptools
 #with open("README.md", "r") as file:
 #    long_description = file.read()
 
-long_description = "For tutorials, documentation, and contribution guidelines, please visit the project's homepage at https://github.com/mever-team/FairBench"
+long_description = "A comprehensive AI fairness exploration framework.<br>**Homepage:** https://github.com/mever-team/FairBench<br>**Documentation:** https://fairbench.readthedocs.io"
 
 setuptools.setup(
     name='fairbench',
-    version='0.2.7',
+    version='0.2.8',
     author="Emmanouil (Manios) Krasanakis",
     author_email="maniospas@hotmail.com",
     description="Fairness model assessment framework",

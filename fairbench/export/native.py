@@ -57,7 +57,7 @@ def describe(report: Fork, spacing: int = 15):
     print(ret)
 
 
-def visualize(report: Fork, hold: bool = False):
+def visualize(report: Fork, hold: bool = False, xrotation:int = 0):
     report = json.loads(tojson(report))
 
     i = 1
@@ -77,6 +77,7 @@ def visualize(report: Fork, hold: bool = False):
                     )
             if barplots:
                 plt.xticks(list(range(len(report["header"][1:]))), report["header"][1:])
+                plt.xticks(rotation=-xrotation, ha='right' if xrotation<0 else 'left')
             else:
                 plt.legend()
             plt.title(metric)

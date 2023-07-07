@@ -4,7 +4,7 @@ Forks declare variables that have one role
 (e.g., they are sensitive attributes) but which exhibit
 several named values, called branches.
 When analysing fairness, branches correspond to
-binary array of attribute values. For instance, there
+binary arrays of attribute values. For instance, there
 may be separate branches of the sensitive attribute
 indicating different genders or races for processed
 data samples.

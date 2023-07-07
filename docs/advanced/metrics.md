@@ -1,13 +1,18 @@
 # Performance metrics
 
-FairBench reports several definitions of fairness, which
-quantify imbalances between groups of people in terms of
-base performance metrics. These can be
+FairBench [reports](../basics/reports.md) 
+implement several definitions of fairness that
+quantify imbalances between groups of people (e.g.,
+different genders) in terms of them obtaining different 
+assessments by base performance metrics. These assessments 
+are often further 
 [reduced](manipulation.md#reduction) across groups
 of samples with different sensitive attribute values.
-Here, we present base metrics. They are all computed
+
+Here, we present base metrics used to assess AI
+that reports use. All metrics computed
 on a subset of 'sensitive samples', which form
-the group being examined each time. Metric outputs are
+the group being examined each time. Outputs are
 wrapped into explainable objects that keep track of
 relevant metadata.
 
@@ -84,7 +89,7 @@ number of samples, number of negatives, number of true negatives
 ### `fpr`
 <div class="doc" markdown="span">
 Computes the false positive rate of binary predictions for sensitive
-data samples. Returns a float in the range [0,1].
+data samples. Returns a float in the range $[0,1]$.
 
 <br><div class="explain"><em>Explanation: 
 number of samples, number of positives, number of false positives
@@ -123,6 +128,79 @@ Returns a float in the range $[0,1]$.
 <br><div class="explain"><em>Explanation: 
 number of samples, the receiver operating characteristic curve
 </em></div></div>
+
+
+### `hr`
+<div class="doc" markdown="span">
+Computes the hit rate, i.e., precision, for a set number of
+top scores for sensitive data samples. This is
+used to assess recommendation systems. By default, the
+top-3 hit rate is analysed.
+Returns a float in the range $[0,1]$.
+
+<br><div class="explain"><em>Explanation: 
+number of samples, top scores, true top scores
+</em></div></div>
+
+| Additional argument | Role      | Values                            |
+|---------------------|-----------|-----------------------------------|
+| top                 | parameter | integer in the range $[1,\infty)$ |
+
+
+### `reck`
+<div class="doc" markdown="span">
+Computes the recall for a set number of
+top scores for sensitive data samples. This is
+used to assess recommendation systems. By default, the
+top-3 recall is analysed.
+Returns a float in the range $[0,1]$.
+
+<br><div class="explain"><em>Explanation: 
+number of samples, top scores, true top scores
+</em></div></div>
+
+| Additional argument | Role      | Values                            |
+|---------------------|-----------|-----------------------------------|
+| top                 | parameter | integer in the range $[1,\infty)$ |
+
+
+### `f1k`
+<div class="doc" markdown="span">
+Computes the f1-score for a set number of
+top scores for sensitive data samples. This is
+the harmonic mean between hr and preck and is
+used to assess recommendation systems. By default, the
+top-3 f1 is analysed.
+Returns a float in the range $[0,1]$.
+
+<br><div class="explain"><em>Explanation: 
+number of samples, top scores, true top scores
+</em></div></div>
+
+| Additional argument | Role      | Values                            |
+|---------------------|-----------|-----------------------------------|
+| top                 | parameter | integer in the range $[1,\infty)$ |
+
+
+
+
+### `ap`
+<div class="doc" markdown="span">
+Computes the average hit rate/precession 
+across different numbers of top scores
+with correct predictions.  By default, the
+top-3 average precision is computed.
+Returns a float in the range $[0,1]$.
+
+<br><div class="explain"><em>Explanation: 
+number of samples, top scores, hr curve
+</em></div></div>
+
+| Additional argument | Role      | Values                            |
+|---------------------|-----------|-----------------------------------|
+| top                 | parameter | integer in the range $[1,\infty)$ |
+
+
 
 
 ## Regression

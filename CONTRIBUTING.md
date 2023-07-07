@@ -1,7 +1,8 @@
 # :pencil: Contributing
-`FairBench` was designed to be easily extensible.
+FairBench was designed to be easily extensible.
 We are primarily looking to integrate new or existing
-fairness metrics, but any improvement to the
+fairness metrics or reduction strategies, 
+but any improvement to the
 codebase is welcome. :smile:
 
 For a timely processing of a new pull request,
@@ -11,40 +12,50 @@ the project's current maintainer: *Manios Krasanakis*
 at *maniospas@hotmail.com* .
 
 ## Pull checklist
+
+Follow these steps to add new features:
+
 1. Fork the repository.
 2. Clone the fork in your local development environment.
 3. Install dependencies.
 4. Write tests for new code and push the changes in your fork. 
 5. Create a pull request from github's interface.
 
-## Create a new metric
+## Create new performance metrics
 
-1. Create it under `fairbench.metrics` module. 
-2. Add the `parallel` decorator like this:
+Create new metrics under the `fairbench.metrics` module.
+If metrics can be computed independently for fork branches,
+e.g., independently for each gender, 
+add the `@parallel` decorator.
+Add the `@role("metric")` decorator on top of every metric 
+(over the parallel decorators) to help FairBench understand
+the role of any output forks or explainables.
+If your implementation uses other decorators, like the `@unit_bounded`
+to assert that all inputs values lie in the range [0,1], put them
+under the above two decorators.
+
 ```
 from faibench import parallel
 
+@role("metric")
 @parallel
 def metric(...):
     return ...
 ```
-3. Reuse as many arguments found in other metrics as possible. 
 
-:warning: Numeric inputs are automatically converted into 
+Reuse as many arguments found in other metrics as possible. 
+Numeric inputs are automatically converted into 
 [eagerpy](https://github.com/jonasrauber/eagerpy) tensors,
 which use a functional interface to ensure interoperability.
 You can use the `@parallel_primitive` decorator to avoid
-this conversion. This lets you work with specific primitives 
-provided by those working with your method, but try not to do so
+this conversion and work with the exact primitives 
+provided by those working with your method. Try not to do so
 without good reason, as it reduces computational equivalence
-between environments.
-
-If your metric should behave differently for different 
+between environments. If your metric should behave differently for different 
 data branches, add a `branch: str = None` default argument in its
 definition to get the branch name.
 
-4. Prefer returning output values as `Explainable` objects.
-
+Prefer returning output values as `Explainable` objects. 
 These wrap simple numbers with additional metadata to be viewed for
 explanation. Some reductions or expansions look at specific
 metadata to be computed (e.g., `cmean` requires a *"samples"* 
@@ -65,22 +76,23 @@ return Explainable(
 stored value, and can be used for new arithmetics (the
 result will be normal numbers).
 
-Try to avoid invalid arithmetic operations, 
+Try to avoid invalid arithmetic operations (e.g., division
+by zero) with appropriate checks, 
 but if there are specific cases for which the 
-output cannot be computed (not when inputs are invalide)
+output cannot be computed (not when inputs are invalid)
 you can return `ExplainableError(message)`. This will
 be viewed as *"---"* in reports but will still have
-a *.explain* field, which will be storing the given message.
+an `.explain` field, which will be storing the given message.
 
 ## Create new reduction strategies
-Reduction strategies follow three steps: transformation,
-expansion, and reduction. To see how to orchestrate
-these components, read [here](docs/basics/reports.md) .
 
+Reduction strategies follow three steps: transformation,
+expansion, and reduction. To see how these components are used, read 
+[here](https://fairbench.readthedocs.io/advanced/manipulation) .
 
 Expansion methods can be found
 in the `fairbench.reports.reduction.expanders` module
-and should transform a list into a (typically longer)
+and should transform a list into a (typically of equal size or longer)
 new list that stores the outcome of comparing the elements
 of the original list, for instance pairwise. Start
 by enriching the following expander definition:
