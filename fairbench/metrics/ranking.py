@@ -16,7 +16,7 @@ def phi(scores: Tensor, sensitive: Optional[Tensor] = None):
     return Explainable(
         0 if sum_sensitive == 0 else (sum_positives / sum_sensitive),
         samples=sum_sensitive,
-        positives=sum_positives,
+        sensitive_scores=sum_positives,
     )
 
 

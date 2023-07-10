@@ -130,6 +130,18 @@ number of samples, the receiver operating characteristic curve
 </em></div></div>
 
 
+### `phi`
+<div class="doc" markdown="span">
+Computes the score mass of
+sensitive data samples compared 
+to the total scores.
+Returns a float in the range $[0,1]$.
+
+<br><div class="explain"><em>Explanation: 
+number of samples, sensitive scores
+</em></div></div>
+
+
 ### `hr`
 <div class="doc" markdown="span">
 Computes the hit rate, i.e., precision, for a set number of
