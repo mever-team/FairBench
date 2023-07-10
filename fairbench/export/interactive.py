@@ -46,7 +46,7 @@ def interactive(
     :param name: Default is 'report'.
     :param width: The minimum width of interactive plot screens.
     :param height: The minimum height of interactive plot screens.
-    :param spacing: The minimum spacing between bars of bar plots. If None, internally set to 50 for horizontal mode and 100 otherwise.
+    :param spacing: The minimum spacing between bars of bar plots. If None, internally set to 30 for horizontal mode and 80 otherwise.
     :param horizontal: Whether bar plots should be horizontally or vertically aligned.
     """
     from bokeh.models import (
@@ -69,13 +69,13 @@ def interactive(
     from bokeh.core.validation.warnings import MISSING_RENDERERS
 
     if spacing is None:
-        spacing = 50 if horizontal else 100
+        spacing = 30 if horizontal else 80
 
     silence(MISSING_RENDERERS, True)
 
     def modify_doc(doc):
         if horizontal:
-            plot = figure(y_range=["1", "2"], width=width, height=height)
+            plot = figure(y_range=["1", "2"], width=width, height=height, x_axis_location="above")
         else:
             plot = figure(x_range=["1", "2"], width=width, height=height)
         plot.add_tools(HoverTool(tooltips=[("Name", "@keys"), ("Value", "@values")]))
@@ -196,14 +196,17 @@ def interactive(
                         ]
                     except TypeError:
                         return
-                keys = [
-                    (metric, branch) for metric in _source for branch in _source[metric]
-                ]
                 if horizontal:
+                    keys = [
+                        (metric, branch) for metric in reversed(_source) for branch in reversed(_source[metric])
+                    ]
                     plot.height = max(height, spacing * len(keys))
                     plot.y_range.factors = keys
                     plot.y_range.range_padding = 0.1
                 else:
+                    keys = [
+                        (metric, branch) for metric in _source for branch in _source[metric]
+                    ]
                     plot.width = max(width, spacing * len(keys))
                     plot.x_range.factors = keys
                     plot.x_range.range_padding = 0.1
@@ -251,7 +254,7 @@ def interactive(
                 plot_data = _branch(selected_branch)
                 explain.visible = hasattr(plot_data, "explain")
                 plot_data = _asdict(plot_data)
-                keys = list(plot_data.keys())
+                keys = list(reversed(plot_data.keys()))
                 if horizontal:
                     plot.height = max(height, spacing * len(keys))
                     plot.y_range.factors = keys

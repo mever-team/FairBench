@@ -4,10 +4,10 @@
 2. [Reduction](#reduction)
 3. [Combining and comparing reports](#combining-and-comparing-reports)
 
-!!! info
-    If you want to extract specific well-known measures
-    from reports, please look at 
-    [stamps](../basics/modelcards.md#stamps) instead.
+!!! tip
+    To extract popular fairness definitions
+    from reports, process them with
+    [stamps](../basics/modelcards.md#stamps).
 
 ## Editing metrics
 
@@ -54,7 +54,7 @@ mistreatment    0.222           0.571
 Reports can be reduced alongside branches. Again,
 this operation is in general applicable to all variable forks,
 although this time usage is discouraged outside of 
-report manipulation, as reduction creates new -and therefore potentially 
+report manipulation, as reduction creates new -and potentially 
 unforeseen- data branches, but constitutes the main mechanism
 for summarizing multi-attribute reports into one measure.
 Reduction internally runs three types of functions obtained
@@ -66,7 +66,11 @@ from its arguments:
 
 To demonstrate usage,
 we compute the mean, and budget of the absolute value ratio
-via the following code:
+via the following code.
+Reduction creates new reports that comprise only one branch.
+The branch's name is dynamically derived by parameters 
+(e.g., *"budgetratioabs"*), but you can also set 
+a specific one with the argument `name="ReductionName"`. 
 
 ```python
 import fairbench as fb
@@ -83,12 +87,7 @@ max_abs_across_branches = fb.reduce(report, fb.budget, expand=fb.ratio, transfor
     You will typically want to perform custom reductions on
     an *accreport* or on manually generated reports for 
     some base evaluation measures. Combine the 
-    outcome of several reductions for better understanding.
- 
-Recuction creates new reports that comprise only one branch.
-The branch's name is dynamically derived by parameters 
-(e.g., *"budgetratioabs"*), but you can also set 
-a specific one with the argument `name="ReductionName"`. 
+    outcome of more than one reduction for better understanding.
 
 !!! info
     Call `areduce` with the same arguments to 

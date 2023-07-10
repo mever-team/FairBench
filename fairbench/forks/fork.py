@@ -16,7 +16,6 @@ def _str_foreign(v, tabs=0):
         for val in v.values():
             if isinstance(val, Fork) or isinstance(val, dict):
                 complicated = True
-        tmp = list(v.values())[0]
         return "\n".join(
             "   " * tabs
             + k

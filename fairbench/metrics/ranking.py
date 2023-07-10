@@ -2,6 +2,22 @@ from fairbench.forks import parallel, unit_bounded, role
 from fairbench.forks.explanation import Explainable, ExplanationCurve
 from eagerpy import Tensor
 import numpy as np
+from typing import Optional
+
+
+@role("metric")
+@parallel
+@unit_bounded
+def phi(scores: Tensor, sensitive: Optional[Tensor] = None):
+    if sensitive is None:
+        sensitive = scores.ones_like()
+    sum_sensitive = sensitive.sum()
+    sum_positives = (scores * sensitive).sum()
+    return Explainable(
+        0 if sum_sensitive == 0 else (sum_positives / sum_sensitive),
+        samples=sum_sensitive,
+        positives=sum_positives,
+    )
 
 
 @role("metric")

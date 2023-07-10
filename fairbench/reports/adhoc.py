@@ -14,6 +14,7 @@ acc_metrics = (
     metrics.tpr,
     metrics.tnr,
     metrics.auc,
+    metrics.phi,
     metrics.hr,
     metrics.reck,
     metrics.ap,

@@ -13,12 +13,11 @@ frameworks with the same interfaces.
 ## Backend selection
 
 If you provide primitives of various frameworks (e.g., tensors),
-these will be automatically converted to the selected
-backend's format. Switch to a different one for internal
-computations as shown below.
+these will be internally converted to FairBench's selected
+backend. Switch to a different backend as shown below.
 
 !!! info 
-    FairBench is preconfigured to run on the `numpy` backend.
+    The `numpy` backend is selected by default.
 
 ```python
 import fairbench as fb
@@ -27,11 +26,12 @@ backend_name = "numpy" # or "torch", "tensorflow", "jax"
 fb.setbackend(backend_name)
 ```
 
-For simple fairness quantification, it does not matter how
+For simple fairness/bias quantification, it does not matter how
 computations run internally. However, you may want to 
-backpropagate fairness/bias results, for example to
-add them to the loss. In this case, you need to set the
-same backend as the one that runs your AI.
+backpropagate results, for example to
+add them to the loss. In this case, you need to set 
+internal operations to run on
+the same backend as the one that runs your AI.
 
 ## Buffering batch predictions
 

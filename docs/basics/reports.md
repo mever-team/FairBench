@@ -5,16 +5,16 @@ Reports perform multi-faceted analyses of system outcomes
 and produce explainable high-level views of biases found
 across several definitions of fairness. 
 
-!!! info
-    If you want to check for specific considerations
-    in the literature, produce reports that contain
-    relevant information (e.g., multireports shown below)
-    and extract appropriate [stamps](modelcards.md#stamps).
-
 1. [Generate reports](#generate-reports)
 2. [Report types](#report-types)
 3. [Show reports](#show-reports)
 4. [Explainable values](#explainable-values)
+
+!!! tip
+    If you want to check for specific fairness considerations
+    from the literature, produce reports that contain
+    relevant information (e.g., multireports shown below)
+    and extract from them appropriate [stamps](modelcards.md#stamps).
 
 ## Generate reports
 
@@ -127,7 +127,7 @@ fb.visualize(report)
 ![report example](reports.png)
 
 !!! warning 
-    Forks of different formats can not always
+    Not all forks can
     be parsed by `fb.visualize` and `fb.display`.
     For example, you cannot visualize a fork of reports.
     Explore complicated forks with
@@ -151,10 +151,10 @@ descriptions. You can perform arithmetic operations
 between explainable objects and other numbers and the
 outcome will be normal python numbers.
 
-As an example, here we use these fields
+As an example, below we use these fields
 to retrieve posterior estimations contributing to
 calculating the *baysian* branch of the minprule
-metric in the *isecreport*:
+metric in the *isecreport*. 
 
 ```python
 report = fb.isecreport(vals)
@@ -168,9 +168,3 @@ minprule        0.857           0.853
 Metric          case1           case2           case2,case1    
                 0.729           0.706           0.827     
 ```
-
-
-Similarly, you can obtain explanations about the values
-contributing to report combinations, for instance
-when comparing two algorithms.
-

@@ -8,7 +8,7 @@
 If you have multiple [forks](../basics/forks.md),
 they should all have the same branches.
 Each branch will execute independently 
-of the rest (some variable may be shared).
+of the rest (non-fork inputs are shared between them).
 You can even create machine learning model 
 forks, where a different model is applied 
 on different branches:
@@ -49,12 +49,6 @@ print((yhat.case1+yhat.case2)/2)
 # [0.  1.  0.  1.  0.5 1.  1.  1. ]
 ```
 
-!!! danger 
-    Avoid overlapping names between branches 
-    and class fields or methods, as they are both 
-    accessed with the same annotation.
-    If there is confusion, branch values will be obtained.
-
 A visual view of how data 
 are organized across branches follows. Some
 variables are identical but others
@@ -66,6 +60,12 @@ independently.
 
 !!! tip
     Use branches to run several computation pipelines concurrently.
+
+!!! danger 
+    Avoid overlapping names between branches 
+    and class fields or methods, as they are both 
+    accessed with the same annotation.
+    If there is confusion, branch values will be obtained.
 
 ## Parallel & distributed computing
 
