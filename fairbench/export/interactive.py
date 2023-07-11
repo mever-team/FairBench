@@ -72,10 +72,13 @@ def interactive(
         spacing = 30 if horizontal else 80
 
     silence(MISSING_RENDERERS, True)
+    order = (lambda x: x) if not horizontal else reversed
 
     def modify_doc(doc):
         if horizontal:
-            plot = figure(y_range=["1", "2"], width=width, height=height, x_axis_location="above")
+            plot = figure(
+                y_range=["1", "2"], width=width, height=height, x_axis_location="above"
+            )
         else:
             plot = figure(x_range=["1", "2"], width=width, height=height)
         plot.add_tools(HoverTool(tooltips=[("Name", "@keys"), ("Value", "@values")]))
@@ -177,8 +180,8 @@ def interactive(
                     try:
                         values = [
                             tofloat(_asdict(branches[branch])[metric])
-                            for metric in _source
-                            for branch in _source[metric]
+                            for metric in order(_source)
+                            for branch in order(_source[metric])
                         ]
                     except TypeError:
                         return
@@ -191,22 +194,21 @@ def interactive(
                     try:
                         values = [
                             tofloat(_asdict(branches[branch])[metric])
-                            for branch in _source
-                            for metric in _source[branch]
+                            for branch in order(_source)
+                            for metric in order(_source[branch])
                         ]
                     except TypeError:
                         return
+                keys = [
+                    (metric, branch)
+                    for metric in order(_source)
+                    for branch in order(_source[metric])
+                ]
                 if horizontal:
-                    keys = [
-                        (metric, branch) for metric in reversed(_source) for branch in reversed(_source[metric])
-                    ]
                     plot.height = max(height, spacing * len(keys))
                     plot.y_range.factors = keys
                     plot.y_range.range_padding = 0.1
                 else:
-                    keys = [
-                        (metric, branch) for metric in _source for branch in _source[metric]
-                    ]
                     plot.width = max(width, spacing * len(keys))
                     plot.x_range.factors = keys
                     plot.x_range.range_padding = 0.1
@@ -254,7 +256,8 @@ def interactive(
                 plot_data = _branch(selected_branch)
                 explain.visible = hasattr(plot_data, "explain")
                 plot_data = _asdict(plot_data)
-                keys = list(reversed(plot_data.keys()))
+                plot_data = {k: plot_data[k] for k in order(plot_data)}
+                keys = list(plot_data.keys())
                 if horizontal:
                     plot.height = max(height, spacing * len(keys))
                     plot.y_range.factors = keys

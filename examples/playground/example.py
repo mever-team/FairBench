@@ -13,4 +13,6 @@ stamp = fb.combine(
 )
 #fb.modelcards.tohtml(stamp, show=True)
 
+print(report)
+
 fb.interactive(report, name="report")
