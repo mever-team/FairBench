@@ -1,3 +1,4 @@
+import fairbench
 from fairbench.forks.fork import Fork, Forklike
 from fairbench.forks.explanation import tofloat, ExplainableError
 
@@ -38,7 +39,13 @@ def _in_jupyter():  # pragma: no cover
 
 
 def interactive(
-    report, name="report", width=800, height=400, spacing=None, horizontal=True
+    report,
+    name="report",
+    width=800,
+    height=400,
+    spacing=None,
+    horizontal=True,
+    port=8888,
 ):  # pragma: no cover
     """
     Creates an interactive visualization over a fairness report.
@@ -82,6 +89,7 @@ def interactive(
         else:
             plot = figure(x_range=["1", "2"], width=width, height=height)
         plot.add_tools(HoverTool(tooltips=[("Name", "@keys"), ("Value", "@values")]))
+        curves = figure(width=width, height=height)
         select_branch = RadioButtonGroup(
             labels=["ALL"] + list(report.branches().keys()), active=0
         )
@@ -95,6 +103,11 @@ def interactive(
         previous = [report]
         previous_title = [name]
         label = Div()
+        cannot_observe = Div()
+        cannot_observe.text = (
+            "Data too complicated to visualize. Focus on one branch or entry."
+        )
+        cannot_observe.visible = False
 
         def _asdict(obj):
             if isinstance(obj, Fork):
@@ -161,6 +174,9 @@ def interactive(
             select_view.disabled = not True
             plot.title.text = "" if selected_branch == "ALL" else selected_branch
             plot.title_location = "above"
+            plot.visible = True
+            curves.visible = False
+            cannot_observe.visible = False
             if selected_branch == "ALL":
                 if horizontal:
                     plot.ygrid.grid_line_color = None
@@ -184,6 +200,8 @@ def interactive(
                             for branch in order(_source[metric])
                         ]
                     except TypeError:
+                        cannot_observe.visible = True
+                        plot.visible = False
                         return
                 else:
                     for branch in branches.keys():
@@ -198,7 +216,11 @@ def interactive(
                             for metric in order(_source[branch])
                         ]
                     except TypeError:
+                        cannot_observe.visible = True
+                        plot.visible = False
                         return
+                if not _source:
+                    pass
                 keys = [
                     (metric, branch)
                     for metric in order(_source)
@@ -256,6 +278,24 @@ def interactive(
                 plot_data = _branch(selected_branch)
                 explain.visible = hasattr(plot_data, "explain")
                 plot_data = _asdict(plot_data)
+                if isinstance(
+                    plot_data[list(plot_data.keys())[0]], fairbench.ExplanationCurve
+                ):
+                    plot.visible = False
+                    curves.visible = True
+                    for i, k in enumerate(plot_data):
+                        curve = plot_data[k]
+                        curves.line(
+                            curve.x,
+                            curve.y,
+                            line_color=Category20[20][i],
+                            line_width=2,
+                            legend_label=curve.name + " of " + k,
+                        )
+                    curves.legend.location = "bottom_right"
+                    # curves.legend.title = selected_branch
+                    return
+
                 plot_data = {k: plot_data[k] for k in order(plot_data)}
                 keys = list(plot_data.keys())
                 if horizontal:
@@ -365,13 +405,15 @@ def interactive(
         back.on_click(back_button)
         update_plot(doc)
         controls = row(select_view, select_branch, back, explain)
-        doc.add_root(column(label, controls, plot))
+        doc.add_root(column(label, controls, plot, curves, cannot_observe))
 
     app = Application(FunctionHandler(modify_doc))
     if _in_jupyter():
         from bokeh.io import show
         from bokeh.plotting import output_notebook
+        import os
 
+        os.environ["BOKEH_ALLOW_WS_ORIGIN"] = "localhost:" + str(port)
         output_notebook()
         show(app)
         return

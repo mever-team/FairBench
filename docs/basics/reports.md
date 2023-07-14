@@ -11,7 +11,7 @@ across several definitions of fairness.
 4. [Explainable values](#explainable-values)
 
 !!! tip
-    If you want to check for specific fairness considerations
+    To check for specific fairness assessments
     from the literature, produce reports that contain
     relevant information (e.g., multireports shown below)
     and extract from them appropriate [stamps](modelcards.md#stamps).

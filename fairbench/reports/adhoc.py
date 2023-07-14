@@ -7,7 +7,13 @@ from fairbench import metrics
 from fairbench.reports import reduction
 
 
-common_metrics = (metrics.accuracy, metrics.prule, metrics.dfpr, metrics.dfnr)
+common_metrics = (
+    metrics.accuracy,
+    metrics.prule,
+    metrics.dfpr,
+    metrics.dfnr,
+)
+
 acc_metrics = (
     metrics.accuracy,
     metrics.pr,
@@ -20,6 +26,7 @@ acc_metrics = (
     metrics.ap,
     metrics.r2,
 )
+
 common_reduction = (
     {"reducer": reduction.min},
     {"reducer": reduction.wmean},

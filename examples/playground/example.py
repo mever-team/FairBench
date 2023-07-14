@@ -11,8 +11,4 @@ stamp = fb.combine(
     fb.stamps.accuracy(report),
     fb.stamps.four_fifths_rule(report)
 )
-#fb.modelcards.tohtml(stamp, show=True)
-
-print(report)
-
-fb.interactive(report, name="report")
+fb.modelcards.tohtml(stamp, show=True)

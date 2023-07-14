@@ -8,7 +8,6 @@ from fairbench import forks
 from fairbench import metrics
 from fairbench import reports
 from fairbench import export
-from fairbench import mitigation
 from fairbench import bench
 from fairbench import stamps
 from fairbench.bench import demos

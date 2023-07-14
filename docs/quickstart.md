@@ -7,6 +7,7 @@ pip install --upgrade fairbench
 ```
 
 A typical workflow involves the following steps:
+
 1. Produce test or validation data
 2. Declare (multi-attribute multi-value) sensitive attributes as [forks](basics/forks.md)
 3. Create and explore [reports](basics/reports.md) that present many types of biases
