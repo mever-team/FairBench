@@ -1,4 +1,5 @@
 data/
+examples/research/
 .ipynb_checkpoints/
 .pytest_cache/
 colour_mnist.py

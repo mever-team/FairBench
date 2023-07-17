@@ -9,6 +9,13 @@ def abs(value):
     return value
 
 
+def _sum(values):
+    ret = 0
+    for value in values:
+        ret = value + ret
+    return ret
+
+
 def sum(values: Iterable[ep.Tensor]) -> ep.Tensor:
     assert isinstance(
         values, list
@@ -23,7 +30,7 @@ def mean(values: Iterable[ep.Tensor]) -> ep.Tensor:
     assert isinstance(
         values, list
     ), "fairbench.mean can only reduce lists. Maybe you meant to use eagerpy.mean?"
-    return sum(values) / len(values)
+    return _sum(values) / len(values)
 
 
 def wmean(values: Iterable[ep.Tensor]) -> ep.Tensor:
@@ -34,8 +41,8 @@ def wmean(values: Iterable[ep.Tensor]) -> ep.Tensor:
             or "samples" not in value.explain.branches()
         ):
             raise ExplainableError("Explanation absent or does not store `samples`")
-    nom = sum([value * value.explain.samples for value in values])
-    denom = sum([value.explain.samples for value in values])
+    nom = _sum([value * value.explain.samples for value in values])
+    denom = _sum([value.explain.samples for value in values])
     return nom if denom == 0 else nom / denom
 
 

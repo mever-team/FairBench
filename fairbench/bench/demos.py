@@ -7,6 +7,15 @@ def adult(
     scaler=sklearn.preprocessing.MinMaxScaler().fit_transform,
     predict="predict",
 ):
+    """
+    Creates demonstration outputs for the *adult* dataset.
+
+    :param classifier: A method returning a trained classifier from X, y training pairs.
+        Default is the `fit` method of sklearn's logistic regression for max_iter=1000.
+    :param scaler: A method to preprocess features X. Default is the `fit_transform` of sklearn's `MinMaxScaler`.
+    :param predict: Either "predict" (default) or "probabilities". The second option returns classification scores.
+    :return: A tuple of the test set, desired binary labels, and predicted binary labels or their probabilities.
+    """
     train = read_csv(
         "https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data",
         header=None,
@@ -41,6 +50,15 @@ def bank(
     scaler=sklearn.preprocessing.MinMaxScaler().fit_transform,
     predict="predict",
 ):
+    """
+    Creates demonstration outputs for the *bank* dataset.
+
+    :param classifier: A method returning a trained classifier from X, y training pairs.
+        Default is the `fit` method of sklearn's logistic regression for max_iter=1000.
+    :param scaler: A method to preprocess features X. Default is the `fit_transform` of sklearn's `MinMaxScaler`.
+    :param predict: Either "predict" (default) or "probabilities". The second option returns classification scores.
+    :return: A tuple of the test set, desired binary labels, and predicted binary labels or their probabilities.
+    """
     data = read_csv(
         "https://archive.ics.uci.edu/static/public/222/bank+marketing.zip/bank/bank.csv",
         delimiter=";",
@@ -63,6 +81,8 @@ def bank(
     y = (test["y"] == "yes").values
     x_train = scaler(x_train)
     x = scaler(x)
+    if predict == "data":
+        return x_train, y_train, x, y, train, test
     classifier = classifier(x_train, y_train)
     if predict == "predict":
         yhat = classifier.predict(x)

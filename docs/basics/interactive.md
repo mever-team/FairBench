@@ -127,7 +127,8 @@ the process with ctrl+C to stop the server). When run in a
 Jupyter environment, a bokeh application will
 start on the next output cell instead.
 
-!!! info When Jupyter runs on its non-default port,
+!!! info 
+    When Jupyter runs on its non-default port,
     add a respective argument (e.g., `port=8889`)
     to interactive visualization to set appropriate permissions.
 
