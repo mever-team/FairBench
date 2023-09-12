@@ -35,7 +35,7 @@ def read_csv(url, *args, **kwargs):
             wget.download(url, temp)
             _extract_nested_zip(temp, extract_to)
     else:
-        shortened = "/".join(url.split("/")[-2:])
+        shortened = "/".join(url.split("/")[-4:])
         path = "data/" + shortened
         if not os.path.exists(path):
             os.makedirs("/".join(path.split("/")[:-1]), exist_ok=True)

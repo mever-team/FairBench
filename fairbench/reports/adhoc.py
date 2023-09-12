@@ -24,6 +24,7 @@ acc_metrics = (
     metrics.hr,
     metrics.reck,
     metrics.ap,
+    metrics.arepr,
     metrics.r2,
 )
 
@@ -33,6 +34,8 @@ common_reduction = (
     {"reducer": reduction.min, "expand": reduction.ratio},
     {"reducer": reduction.max, "expand": reduction.diff},
     {"reducer": reduction.max, "expand": reduction.barea},
+    {"reducer": reduction.max, "expand": reduction.bdcg},
+    {"reducer": reduction.max, "expand": reduction.jsdcg},
 )
 
 

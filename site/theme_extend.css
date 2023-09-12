@@ -1,0 +1,20 @@
+.gemoji {
+  height: 1em;
+  width: 1em;
+  vertical-align: -0.15em;
+}
+
+.doc {
+  padding-left: 20px;
+  margin-bottom: 30px;
+  margin-top: -15px;
+  border-left: 5px solid rgba(230, 230, 230);
+}
+
+.explain {
+  margin-top: 10px;
+}
+
+.md-header .md-header-logo {
+    background-color: #ffffff; /* Replace with your desired color code */
+}

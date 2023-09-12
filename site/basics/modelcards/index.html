@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Emmanouil (Manios) Krasanakis" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Stamps and model cards - FairBench</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+        <link href="../../theme_extend.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Stamps and model cards";
+        var mkdocs_page_input_path = "basics\\modelcards.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <script src="../../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../..">
+          <img src="../../fairbench.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../quickstart/">Quickstart</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Basics</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../forks/">Forks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../reports/">Reports</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../interactive/">Interactive visualization</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Stamps and model cards</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#stamps">Stamps</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#combine-stamps">Combine stamps</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#export-to-model-cards">Export to model cards</a>
+    </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Advanced</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../advanced/metrics/">Performance metrics</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../advanced/ml_integration/">ML Integration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../advanced/manipulation/">Report manipulation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../advanced/distributed/">Computational branches</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">FairBench</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
+          <li>Basics &raquo;</li>
+      <li>Stamps and model cards</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="stamps-and-model-cards">Stamps and model cards</h1>
+<p>When disseminating models, it is often important to summarize
+evaluations under specific fairness perspectives, and whether
+they meet specific thresholds. </p>
+<p><code>FairBench</code> calls such evaluations <em>stamps</em>, and allows their
+automated extraction from <a href="../reports/">reports</a> (reports hold a lot of 
+information, some of which can be matched to speccific popular
+definitions of fairness to be added to model cards). Several
+stamps can be aggregated into forks 
+and outputted in various model card formats.</p>
+<ol>
+<li><a href="#stamps">Stamps</a></li>
+<li><a href="#combine-stamps">Combine stamps</a></li>
+<li><a href="#export-to-model-cards">Export to model cards</a></li>
+</ol>
+<h2 id="stamps">Stamps</h2>
+<p>Stamps are callables that take as inputs reports,
+extract specific fields, and apply potential threshold
+checks. Calling a stamp returns an <code>Explainable</code> object
+(or an <code>ExplainableError</code> in case it cannot be retrieved
+from the report).  This holds either boolean or numeric values, 
+respectively asserting that some property is met and quantifying how
+well a model performs.</p>
+<p>Several stamps are provided within the <code>fairbench.stamps</code>
+backage. To avoid confusion with code library functionalities,
+stamps are not accessed from the global level. Run
+a stamp per:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">fairbench</span> <span class="k">as</span> <span class="nn">fb</span>
+<span class="n">report</span> <span class="o">=</span> <span class="o">...</span>
+<span class="n">stamp</span> <span class="o">=</span> <span class="n">fb</span><span class="o">.</span><span class="n">stamps</span><span class="o">.</span><span class="n">four_fifths_rule</span><span class="p">(</span><span class="n">report</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">stamp</span><span class="p">)</span>
+<span class="c1"># 3/4ths ratio: False</span>
+</code></pre></div>
+<h2 id="combine-stamps">Combine stamps</h2>
+<p>You may want to check a model for various characteristics,
+and therefore assess it with various stamps.
+To do so, combine the stamps into one entity like in the following
+snippet. Each stamp's value is an <code>Explainable</code> object
+under the hood, but they all contain different explanation data;
+avoid mass-explanations (e.g., with <code>stamps.explain</code>)
+and instead export collections of stamps to model cards 
+for a more thorough explanation (see below).</p>
+<div class="highlight"><pre><span></span><code><span class="n">stamps</span> <span class="o">=</span> <span class="n">fb</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span>
+    <span class="n">fb</span><span class="o">.</span><span class="n">stamps</span><span class="o">.</span><span class="n">prule</span><span class="p">(</span><span class="n">report</span><span class="p">),</span>
+    <span class="n">fb</span><span class="o">.</span><span class="n">stamps</span><span class="o">.</span><span class="n">accuracy</span><span class="p">(</span><span class="n">report</span><span class="p">),</span>
+    <span class="n">fb</span><span class="o">.</span><span class="n">stamps</span><span class="o">.</span><span class="n">four_fifths_rule</span><span class="p">(</span><span class="n">report</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">stamps</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>prule: 0.212
+worst accuracy: 0.799
+4/5 rule: False
+</code></pre></div>
+<h2 id="export-to-model-cards">Export to model cards</h2>
+<p>Combined stamps can be exported in popular formats 
+that are often used to represent model cards. The
+exports can be treated as fairness model
+cards or be integrated to the full cards of models
+being tested. Export methods can produce new 
+files if given a path, but also return the respective
+string conversion they would write to the file.</p>
+<p>To avoid confusion with core library functionalities,
+model card exports can only be accessed from 
+the module <code>fairbench.modelcards</code> and not from the
+top level. For example, use the following snippet to
+export markdown:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">fb</span><span class="o">.</span><span class="n">modelcards</span><span class="o">.</span><span class="n">tomarkdown</span><span class="p">(</span><span class="n">stamps</span><span class="p">))</span>  <span class="c1"># or toyaml or tohtml</span>
+</code></pre></div>
+<p>The output will be <a href="../../images/example_modelcard/">this markdown</a>.
+Notice that the original stamp outputs keep track of factors,
+descriptions, and recommendations to add to respective report 
+fields.</p>
+<p>The <code>fairbench.modelcards.tohtml</code> method can also let you open
+the generated html in your browser (without necessarily 
+creating a file) like so:</p>
+<div class="highlight"><pre><span></span><code><span class="n">fb</span><span class="o">.</span><span class="n">modelcards</span><span class="o">.</span><span class="n">tohtml</span><span class="p">(</span><span class="n">stamps</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../interactive/" class="btn btn-neutral float-left" title="Interactive visualization"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../advanced/metrics/" class="btn btn-neutral float-right" title="Performance metrics">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../interactive/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../../advanced/metrics/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme_extra.js" defer></script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../mathjax.js" defer></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6" defer></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

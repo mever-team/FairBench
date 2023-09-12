@@ -337,6 +337,12 @@ class Fork(Mapping):
     def __add__(self, other):
         return call(self, "__add__", other)
 
+    def __pow__(self, other):
+        return call(self, "__pow__", other)
+
+    def __rpow__(self, other):
+        return call(self, "__rpow__", other)
+
     def __radd__(self, other):
         return call(self, "__add__", other)
 

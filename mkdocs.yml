@@ -35,6 +35,8 @@ markdown_extensions:
 
 theme:
   name: readthedocs
+  logo: fairbench.png
+  favicon: favicon.ico
   palette:
     # Palette toggle for light mode
     - scheme: default

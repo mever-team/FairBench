@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Emmanouil (Manios) Krasanakis" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Reports - FairBench</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+        <link href="../../theme_extend.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Reports";
+        var mkdocs_page_input_path = "basics\\reports.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <script src="../../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../..">
+          <img src="../../fairbench.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../quickstart/">Quickstart</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Basics</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../forks/">Forks</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Reports</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#generate-reports">Generate reports</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#report-types">Report types</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#show-reports">Show reports</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#explainable-values">Explainable values</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../interactive/">Interactive visualization</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../modelcards/">Stamps and model cards</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Advanced</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../advanced/metrics/">Performance metrics</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../advanced/ml_integration/">ML Integration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../advanced/manipulation/">Report manipulation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../advanced/distributed/">Computational branches</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">FairBench</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
+          <li>Basics &raquo;</li>
+      <li>Reports</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="reports">Reports</h1>
+<p>Reports perform multi-faceted analyses of system outcomes
+(e.g., predictions, recommendations, regression scores)
+and produce explainable high-level views of biases found
+across several definitions of fairness. </p>
+<ol>
+<li><a href="#generate-reports">Generate reports</a></li>
+<li><a href="#report-types">Report types</a></li>
+<li><a href="#show-reports">Show reports</a></li>
+<li><a href="#explainable-values">Explainable values</a></li>
+</ol>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>To check for specific fairness assessments
+from the literature, produce reports that contain
+relevant information (e.g., multireports shown below)
+and extract from them appropriate <a href="../modelcards/#stamps">stamps</a>.</p>
+</div>
+<h2 id="generate-reports">Generate reports</h2>
+<p>You can generate 
+fairness reports by providing some
+of the optional arguments below to a report
+generation method. These are needed to compute
+performance <a href="../../advanced/metrics/">metrics</a>.
+Report generation method will try to compute fairness
+assessment built from as many base metrics as they can,
+depending on which arguments are provided.
+You can also provide an optional <code>metrics</code>
+argument that holds either 
+a dictionary mapping names to metrics
+or a list of metrics, where
+in the last case their names are automatically inferred.
+Sensitive attributes are <a href="../forks/">forks</a>
+to handle multi-value attributes or multiple
+sensitive attribute values. </p>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Role</th>
+<th>Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>predictions</td>
+<td>system output</td>
+<td>binary array</td>
+</tr>
+<tr>
+<td>scores</td>
+<td>system output</td>
+<td>array with elements in [0,1]</td>
+</tr>
+<tr>
+<td>targets</td>
+<td>prediction target</td>
+<td>array with elements in [0,1]</td>
+</tr>
+<tr>
+<td>labels</td>
+<td>prediction target</td>
+<td>binary array</td>
+</tr>
+<tr>
+<td>sensitive</td>
+<td>sensitive attribute</td>
+<td>fork of arrays with elements in [0,1] (either binary or fuzzy)</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>For the time being, for multiclass problems 
+you need to perform a different fairness assessment for each
+for class label, but this will change in the future with
+new capabilities.</p>
+</div>
+<h2 id="report-types">Report types</h2>
+<p>Out-of-the box, you can use one of the following three
+report generation methods:</p>
+<ul>
+<li><code>accreport</code> provides popular performance evaluation measures to be viewed between branches (accuracy, positives, true positive rates, true negative rates).</li>
+<li><code>binreport</code> conducts a suit of popular binary fairness assessments on each variable branch and should be preferred when branches do <em>not</em> correspond to mult-attribute fairness.</li>
+<li><code>multireport</code> is ideal for multi-fairness approaches, where the <code>sensitive</code> fork has many branches. This report generator performs a lot of <a href="../../advanced/manipulation/">editing</a> to summarize the findings of multi-attribute fairness analysis.</li>
+<li><code>isecreport</code> tackles mult-fairness with many intersectional groups. Its output approximates <em>multireport</em> with a Bayesian framework that is applicable even when protected group intersections are too small to yield meaningful predictions.</li>
+</ul>
+<p>As an example, let's create a simple report
+based on binary predictions, binary
+ideal predictions and multiclass
+sensitive attribute <code>sensitive</code>, which is
+declared to be a fork with two branches
+<em>men,women</em>, each of which is a binary
+feature value per:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">fairbench</span> <span class="k">as</span> <span class="nn">fb</span>
+
+<span class="n">sensitive</span> <span class="o">=</span> <span class="n">fb</span><span class="o">.</span><span class="n">Fork</span><span class="p">(</span><span class="n">case1</span><span class="o">=...</span><span class="p">,</span> <span class="n">case2</span><span class="o">=...</span><span class="p">)</span>
+<span class="n">report</span> <span class="o">=</span> <span class="n">fb</span><span class="o">.</span><span class="n">multireport</span><span class="p">(</span><span class="n">predictions</span><span class="o">=...</span><span class="p">,</span> <span class="n">labels</span><span class="o">=...</span><span class="p">,</span> <span class="n">sensitive</span><span class="o">=</span><span class="n">sensitive</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="show-reports">Show reports</h2>
+<p>Report are forks whose branches hold dictionaries of
+metric computations. In some reports (e.g., multireport)
+<a href="../../advanced/manipulation/">reduction</a>
+operations introduce a comparative analysis
+between the sensitive attribute branches to investigate
+unfairness. For example, <code>min</code> shows the worst evaluation
+across sensitive groups, 
+and <code>minratio</code> and <code>maxdiff</code> the minimum ratio
+and maximum differences between metric values for 
+sensitive groups (groups correspond to sensitive 
+attribute branches).</p>
+<p>Several methods are provided to
+work with the report data format, namely 
+forks of dictionaries. First, you can show 
+reports in the <em>stdout</em> console in the form
+of tables:</p>
+<div class="highlight"><pre><span></span><code><span class="n">fb</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="n">report</span><span class="p">)</span>  
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>Metric          min             minratio        maxdiff        
+accuracy        0.938           1.000           0.000          
+pr              0.812           0.857           0.125          
+fpr             0.063           0.778           0.016          
+fnr             0.333           0.333           0.333  
+</code></pre></div>
+<p>You can also convert reports to <em>json</em>, for example 
+to send to some frontend:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">fb</span><span class="o">.</span><span class="n">tojson</span><span class="p">(</span><span class="n">report</span><span class="p">))</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="nt">&quot;header&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Metric&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;mean&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;minratio&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;maxdiff&quot;</span><span class="p">],</span><span class="w"> </span><span class="nt">&quot;accuracy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mf">0.9375</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">],</span><span class="w"> </span><span class="nt">&quot;pr&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mf">0.8125</span><span class="p">,</span><span class="w"> </span><span class="mf">0.8571428571428571</span><span class="p">,</span><span class="w"> </span><span class="mf">0.125</span><span class="p">],</span><span class="w"> </span><span class="nt">&quot;fpr&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mf">0.06349206349206349</span><span class="p">,</span><span class="w"> </span><span class="mf">0.7777777777777778</span><span class="p">,</span><span class="w"> </span><span class="mf">0.015873015873015872</span><span class="p">],</span><span class="w"> </span><span class="nt">&quot;fnr&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mf">0.3333333333333333</span><span class="p">,</span><span class="w"> </span><span class="mf">0.3333333333333333</span><span class="p">,</span><span class="w"> </span><span class="mf">0.33333333333333337</span><span class="p">]}</span>
+</code></pre></div>
+<p>Reports can be visualized  with <code>matplotlib</code>:
+<div class="highlight"><pre><span></span><code><span class="n">fb</span><span class="o">.</span><span class="n">visualize</span><span class="p">(</span><span class="n">report</span><span class="p">)</span>
+</code></pre></div></p>
+<p><img alt="report example" src="../reports.png" /></p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Not all forks can
+be parsed by <code>fb.visualize</code> and <code>fb.display</code>.
+For example, you cannot visualize a fork of reports.
+Explore complicated forks with
+<a href="../interactive/">interactive visualization</a>.</p>
+</div>
+<h2 id="explainable-values">Explainable values</h2>
+<p>Some report values, can be explained 
+in terms of data they are derived from.
+For instance, if a <code>fairbench.isecreport</code> is made, both
+empirical and bayesian evaluations arise from the underlying
+data branches of multi-attribute fairness forks.</p>
+<p>Whenever possible, the data branches that are converted
+into final reports are preserved by having report values
+be instances of the <code>Explainable</code> class.
+This provides an <code>.explain</code> field of data contributing
+to the report value, and <code>.desc</code> field to store additional 
+descriptions. You can perform arithmetic operations
+between explainable objects and other numbers and the
+outcome will be normal python numbers.</p>
+<p>As an example, below we use these fields
+to retrieve posterior estimations contributing to
+calculating the <em>baysian</em> branch of the minprule
+metric in the <em>isecreport</em>. </p>
+<p><div class="highlight"><pre><span></span><code><span class="n">report</span> <span class="o">=</span> <span class="n">fb</span><span class="o">.</span><span class="n">isecreport</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span>
+<span class="n">fb</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="n">report</span><span class="p">)</span>
+<span class="n">fb</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">bayesian</span><span class="o">.</span><span class="n">minprule</span><span class="o">.</span><span class="n">explain</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>Metric          empirical       bayesian       
+minprule        0.857           0.853          
+
+Metric          case1           case2           case2,case1    
+                0.729           0.706           0.827     
+</code></pre></div></p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../forks/" class="btn btn-neutral float-left" title="Forks"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../interactive/" class="btn btn-neutral float-right" title="Interactive visualization">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../forks/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../interactive/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme_extra.js" defer></script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../mathjax.js" defer></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6" defer></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

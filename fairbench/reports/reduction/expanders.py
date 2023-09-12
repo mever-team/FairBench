@@ -14,7 +14,7 @@ def diff(values: Iterable[ep.Tensor]) -> Iterable[ep.Tensor]:
     return [abs(value1 - value2) for value1 in values for value2 in values]
 
 
-def barea(values: Iterable[ep.Tensor]) -> Iterable[ep.Tensor]:
+def barea(values: Iterable[ep.Tensor], skew=lambda x, y: y, comparator=lambda y1, y2: np.absolute(y1-y2)) -> Iterable[ep.Tensor]:
     assert isinstance(values, list), "fairbench.diff can only reduce lists."
     x_min = None
     x_max = None
@@ -41,12 +41,43 @@ def barea(values: Iterable[ep.Tensor]) -> Iterable[ep.Tensor]:
         n_max = min(
             n_max, value.explain.curve.points
         )  # get the same discretization as the densest curve
-    values = [value.explain.curve.togrid(n_max).y for value in values]
+    x = values[0].explain.curve.togrid(n_max).x
+    values = [skew(x, value.explain.curve.togrid(n_max).y) for value in values]
+    x_integral = skew(x, np.ones_like(x)).mean()
+
     return [
-        np.absolute(value1 - value2).mean() * (x_max - x_min)
+        comparator(value1, value2).mean() / x_integral
         for value1 in values
         for value2 in values
     ]
+
+
+def ndcg_skew(x, y):
+    if x.min() < 1:
+        x += 1-x.min()
+    return y/np.log(x+1)
+
+
+def bdcg(values: Iterable[ep.Tensor]) -> Iterable[ep.Tensor]:
+    return barea(values, ndcg_skew)
+
+
+def kl(y1, y2):
+    return y1*np.log(y1/y2)
+
+
+def js(y1, y2):
+    m = (y1+y2)/2
+    return (kl(y1, m) + kl(y2, m))/2
+
+def kldcg(values: Iterable[ep.Tensor]) -> Iterable[ep.Tensor]:
+    return barea(values, lambda x, y: y/np.log(x+1), comparator=kl)
+
+
+def jsdcg(values: Iterable[ep.Tensor]) -> Iterable[ep.Tensor]:
+    return barea(values, lambda x, y: y/np.log(x+1), comparator=js)
+
+
 
 
 def todata(values: Iterable[ep.Tensor]) -> ep.Tensor:

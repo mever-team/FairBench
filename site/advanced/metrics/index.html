@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Emmanouil (Manios) Krasanakis" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Performance metrics - FairBench</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet" />
+        <link href="../../theme_extend.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Performance metrics";
+        var mkdocs_page_input_path = "advanced\\metrics.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <script src="../../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../..">
+          <img src="../../fairbench.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../quickstart/">Quickstart</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Basics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../basics/forks/">Forks</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../basics/reports/">Reports</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../basics/interactive/">Interactive visualization</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../basics/modelcards/">Stamps and model cards</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Advanced</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Performance metrics</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#classification">Classification</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#accuracy">accuracy</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#pr">pr</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#positives">positives</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#tpr">tpr</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#tnr">tnr</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#fpr">fpr</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#fnr">fnr</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#ranking">Ranking</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#auc">auc</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#phi">phi</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#hr">hr</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#reck">reck</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#f1k">f1k</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#ap">ap</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#regression">Regression</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#max_error">max_error</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#mae">mae</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#mse">mse</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#rmse">rmse</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#r2">r2</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#pinball">pinball</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../ml_integration/">ML Integration</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../manipulation/">Report manipulation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../distributed/">Computational branches</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">FairBench</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
+          <li>Advanced &raquo;</li>
+      <li>Performance metrics</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="performance-metrics">Performance metrics</h1>
+<p>FairBench <a href="../../basics/reports/">reports</a> 
+implement several definitions of fairness that
+quantify imbalances between groups of people (e.g.,
+different genders) in terms of them obtaining different 
+assessments by base performance metrics. These assessments 
+are often further 
+<a href="../manipulation/#reduction">reduced</a> across groups
+of samples with different sensitive attribute values.</p>
+<p>Here, we present base metrics used to assess AI
+that reports use. All metrics computed
+on a subset of 'sensitive samples', which form
+the group being examined each time. Outputs are
+wrapped into explainable objects that keep track of
+relevant metadata.</p>
+<ol>
+<li><a href="#classification">Classification</a></li>
+<li><a href="#ranking">Ranking</a></li>
+<li><a href="#regression">Regression</a></li>
+</ol>
+<h2 id="classification">Classification</h2>
+<p>Classification metrics assess binary predictions. Unless stated
+otherwise, the following arguments need to be provided:</p>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Role</th>
+<th>Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>predictions</td>
+<td>system output</td>
+<td>binary array</td>
+</tr>
+<tr>
+<td>labels</td>
+<td>prediction target</td>
+<td>binary array</td>
+</tr>
+<tr>
+<td>sensitive</td>
+<td>sensitive attribute</td>
+<td>fork of arrays with elements in <span class="arithmatex">\([0,1]\)</span> (either binary or fuzzy)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="accuracy"><code>accuracy</code></h3>
+<div class="doc">
+Computes the accuracy for correctly predicting provided binary labels
+for sensitive data samples. Returns a float in the range <span class="arithmatex">\([0,1]\)</span>.
+
+<br><div class="explain"><em>Explanation: 
+number of samples, true predictions
+</em></div>
+</div>
+<h3 id="pr"><code>pr</code></h3>
+<div class="doc">
+Computes the positive rate of binary predictions for sensitive
+data samples. Returns a float in the range <span class="arithmatex">\([0,1]\)</span>. This metric 
+does not use the <code>labels</code> argument.
+
+<br><div class="explain"><em>Explanation: 
+number of samples, positive predictions
+</em></div>
+</div>
+<h3 id="positives"><code>positives</code></h3>
+<div class="doc">
+Computes the number of positive predictions for
+sensitive data samples. Returns a float in the range <span class="arithmatex">\([0,\infty)\)</span>. 
+This metric does not use the <code>labels</code> argument.
+
+<br><div class="explain"><em>Explanation: 
+number of samples
+</em></div>
+</div>
+<h3 id="tpr"><code>tpr</code></h3>
+<div class="doc">
+Computes the true positive rate of binary predictions for sensitive
+data samples. Returns a float in the range <span class="arithmatex">\([0,1]\)</span>.
+
+<br><div class="explain"><em>Explanation: 
+number of samples, number of positives, number of true positives
+</em></div>
+</div>
+<h3 id="tnr"><code>tnr</code></h3>
+<div class="doc">
+Computes the true negative rate of binary predictions for sensitive
+data samples. Returns a float in the range <span class="arithmatex">\([0,1]\)</span>.
+
+<br><div class="explain"><em>Explanation: 
+number of samples, number of negatives, number of true negatives
+</em></div>
+</div>
+<h3 id="fpr"><code>fpr</code></h3>
+<div class="doc">
+Computes the false positive rate of binary predictions for sensitive
+data samples. Returns a float in the range <span class="arithmatex">\([0,1]\)</span>.
+
+<br><div class="explain"><em>Explanation: 
+number of samples, number of positives, number of false positives
+</em></div>
+</div>
+<h3 id="fnr"><code>fnr</code></h3>
+<div class="doc">
+Computes the false negative rate of binary predictions for sensitive
+data samples. Returns a float in the range <span class="arithmatex">\([0,1]\)</span>.
+
+<br><div class="explain"><em>Explanation: 
+number of samples, number of negatives, number of false negatives
+</em></div>
+</div>
+<h2 id="ranking">Ranking</h2>
+<p>Ranking metrics assess scores that aim to approach
+provided labels. The following arguments need to be provided:</p>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Role</th>
+<th>Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>scores</td>
+<td>system output</td>
+<td>array with elements in <span class="arithmatex">\([0,1]\)</span></td>
+</tr>
+<tr>
+<td>labels</td>
+<td>prediction target</td>
+<td>binary array</td>
+</tr>
+<tr>
+<td>sensitive</td>
+<td>sensitive attribute</td>
+<td>fork of arrays with elements in <span class="arithmatex">\([0,1]\)</span> (either binary or fuzzy)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="auc"><code>auc</code></h3>
+<div class="doc">
+Computes the area under curve of the receiver operating
+characteristics for sensitive data samples.
+Returns a float in the range <span class="arithmatex">\([0,1]\)</span>.
+
+<br><div class="explain"><em>Explanation: 
+number of samples, the receiver operating characteristic curve
+</em></div>
+</div>
+<h3 id="phi"><code>phi</code></h3>
+<div class="doc">
+Computes the score mass of
+sensitive data samples compared 
+to the total scores.
+Returns a float in the range <span class="arithmatex">\([0,1]\)</span>.
+
+<br><div class="explain"><em>Explanation: 
+number of samples, sensitive scores
+</em></div>
+</div>
+<h3 id="hr"><code>hr</code></h3>
+<div class="doc">
+Computes the hit rate, i.e., precision, for a set number of
+top scores for sensitive data samples. This is
+used to assess recommendation systems. By default, the
+top-3 hit rate is analysed.
+Returns a float in the range <span class="arithmatex">\([0,1]\)</span>.
+
+<br><div class="explain"><em>Explanation: 
+number of samples, top scores, true top scores
+</em></div>
+</div>
+<table>
+<thead>
+<tr>
+<th>Additional argument</th>
+<th>Role</th>
+<th>Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>top</td>
+<td>parameter</td>
+<td>integer in the range <span class="arithmatex">\([1,\infty)\)</span></td>
+</tr>
+</tbody>
+</table>
+<h3 id="reck"><code>reck</code></h3>
+<div class="doc">
+Computes the recall for a set number of
+top scores for sensitive data samples. This is
+used to assess recommendation systems. By default, the
+top-3 recall is analysed.
+Returns a float in the range <span class="arithmatex">\([0,1]\)</span>.
+
+<br><div class="explain"><em>Explanation: 
+number of samples, top scores, true top scores
+</em></div>
+</div>
+<table>
+<thead>
+<tr>
+<th>Additional argument</th>
+<th>Role</th>
+<th>Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>top</td>
+<td>parameter</td>
+<td>integer in the range <span class="arithmatex">\([1,\infty)\)</span></td>
+</tr>
+</tbody>
+</table>
+<h3 id="f1k"><code>f1k</code></h3>
+<div class="doc">
+Computes the f1-score for a set number of
+top scores for sensitive data samples. This is
+the harmonic mean between hr and preck and is
+used to assess recommendation systems. By default, the
+top-3 f1 is analysed.
+Returns a float in the range <span class="arithmatex">\([0,1]\)</span>.
+
+<br><div class="explain"><em>Explanation: 
+number of samples, top scores, true top scores
+</em></div>
+</div>
+<table>
+<thead>
+<tr>
+<th>Additional argument</th>
+<th>Role</th>
+<th>Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>top</td>
+<td>parameter</td>
+<td>integer in the range <span class="arithmatex">\([1,\infty)\)</span></td>
+</tr>
+</tbody>
+</table>
+<h3 id="ap"><code>ap</code></h3>
+<div class="doc">
+Computes the average hit rate/precession 
+across different numbers of top scores
+with correct predictions.  By default, the
+top-3 average precision is computed.
+Returns a float in the range <span class="arithmatex">\([0,1]\)</span>.
+
+<br><div class="explain"><em>Explanation: 
+number of samples, top scores, hr curve
+</em></div>
+</div>
+<table>
+<thead>
+<tr>
+<th>Additional argument</th>
+<th>Role</th>
+<th>Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>top</td>
+<td>parameter</td>
+<td>integer in the range <span class="arithmatex">\([1,\infty)\)</span></td>
+</tr>
+</tbody>
+</table>
+<h2 id="regression">Regression</h2>
+<p>Regression metrics assess scores that aim to reproduce
+desired target scores. The following arguments need to be provided:</p>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Role</th>
+<th>Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>scores</td>
+<td>system output</td>
+<td>any float array</td>
+</tr>
+<tr>
+<td>targets</td>
+<td>prediction target</td>
+<td>any float array</td>
+</tr>
+<tr>
+<td>sensitive</td>
+<td>sensitive attribute</td>
+<td>fork of arrays with elements in <span class="arithmatex">\([0,1]\)</span> (either binary or fuzzy)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="max_error"><code>max_error</code></h3>
+<div class="doc">
+Computes the maximum absolute error between scores and targets
+for sensitive data samples. Returns a float in the range <span class="arithmatex">\([0,\infty)\)</span>.
+
+<br><div class="explain"><em>Explanation: ---
+</em></div>
+</div>
+<h3 id="mae"><code>mae</code></h3>
+<div class="doc">
+Computes the mean of the absolute error between scores and targets
+for sensitive data samples. Returns a float in the range <span class="arithmatex">\([0,\infty)\)</span>.
+
+<br><div class="explain"><em>Explanation:
+number of samples, sum of absolute errors
+</em></div>
+</div>
+<h3 id="mse"><code>mse</code></h3>
+<div class="doc">
+Computes the mean of the square error between scores and targets
+for sensitive data samples. Returns a float in the range <span class="arithmatex">\([0,\infty)\)</span>.
+
+<br><div class="explain"><em>Explanation:
+number of samples, sum of square errors
+</em></div>
+</div>
+<h3 id="rmse"><code>rmse</code></h3>
+<div class="doc">
+Computes the root of mse.
+Returns a float in the range <span class="arithmatex">\([0,\infty)\)</span>.
+
+<br><div class="explain"><em>Explanation:
+number of samples, sum of square errors
+</em></div>
+</div>
+<h3 id="r2"><code>r2</code></h3>
+<div class="doc">
+Computes the r2 score between scores
+and target values, adjusted for the 
+provided degree of freedom (default is zero).
+Returns a float in the range <span class="arithmatex">\((-\infty,1]\)</span>,
+where larger values correspond to better
+estimation and models that output the mean
+are evaluated to zero.
+
+<br><div class="explain"><em>Explanation:
+number of samples, sum of square errors, degrees of freedom
+</em></div>
+</div>
+<table>
+<thead>
+<tr>
+<th>Additional argument</th>
+<th>Role</th>
+<th>Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>deg_freedom</td>
+<td>parameter</td>
+<td>integer in the range <span class="arithmatex">\([0,\infty)\)</span></td>
+</tr>
+</tbody>
+</table>
+<h3 id="pinball"><code>pinball</code></h3>
+<div class="doc">
+Computes the pinball deviation between scores
+and target values for a balance parameter alpha
+(default is 0.5).
+Returns a float in the range <span class="arithmatex">\([0,\infty)\)</span>,
+where smaller values correspond to better
+estimation.
+
+<br><div class="explain"><em>Explanation:
+number of samples
+</em></div>
+</div>
+<table>
+<thead>
+<tr>
+<th>Additional argument</th>
+<th>Role</th>
+<th>Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>alpha</td>
+<td>parameter</td>
+<td>float in the range <span class="arithmatex">\([0,1]\)</span></td>
+</tr>
+</tbody>
+</table>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../../basics/modelcards/" class="btn btn-neutral float-left" title="Stamps and model cards"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../ml_integration/" class="btn btn-neutral float-right" title="ML Integration">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../../basics/modelcards/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../ml_integration/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '../..';</script>
+    <script src="../../js/theme_extra.js" defer></script>
+    <script src="../../js/theme.js" defer></script>
+      <script src="../../mathjax.js" defer></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6" defer></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
+      <script src="../../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>
