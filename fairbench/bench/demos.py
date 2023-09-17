@@ -3,9 +3,9 @@ import sklearn
 
 
 def adult(
-        classifier=sklearn.linear_model.LogisticRegression(max_iter=1000).fit,
-        scaler=sklearn.preprocessing.MinMaxScaler().fit_transform,
-        predict="predict",
+    classifier=sklearn.linear_model.LogisticRegression(max_iter=1000).fit,
+    scaler=sklearn.preprocessing.MinMaxScaler().fit_transform,
+    predict="predict",
 ):
     """
     Creates demonstration outputs for the *adult* dataset.
@@ -48,10 +48,10 @@ def adult(
 
 
 def bank(
-        classifier=sklearn.linear_model.LogisticRegression(max_iter=1000).fit,
-        scaler=sklearn.preprocessing.MinMaxScaler().fit_transform,
-        predict="predict",
-        seed=None,
+    classifier=sklearn.linear_model.LogisticRegression(max_iter=1000).fit,
+    scaler=sklearn.preprocessing.MinMaxScaler().fit_transform,
+    predict="predict",
+    seed=None,
 ):
     """
     Creates demonstration outputs for the *bank* dataset.
@@ -97,10 +97,10 @@ def bank(
 
 
 def compas(
-        classifier=sklearn.linear_model.LogisticRegression(max_iter=1000).fit,
-        scaler=sklearn.preprocessing.MinMaxScaler().fit_transform,
-        predict="predict",
-        seed=None,
+    classifier=sklearn.linear_model.LogisticRegression(max_iter=1000).fit,
+    scaler=sklearn.preprocessing.MinMaxScaler().fit_transform,
+    predict="predict",
+    seed=None,
 ):
     """
     Creates demonstration outputs for the *bank* dataset.
@@ -118,22 +118,22 @@ def compas(
     train, test = sklearn.model_selection.train_test_split(data, random_state=seed)
     numeric = [
         "age",
-        #"juv_fel_count",
-        #"decile_score",
-        #"juv_misd_count",
-        #"juv_other_count",
-        #"priors_count",
-        #"days_b_screening_arrest",
+        # "juv_fel_count",
+        # "decile_score",
+        # "juv_misd_count",
+        # "juv_other_count",
+        # "priors_count",
+        # "days_b_screening_arrest",
     ]
     categorical = [
         "sex",
         "c_charge_degree",
         "race",
         "is_recid",
-        #"violent_recid",
-        #"is_violent_recid",
-        #"vr_charge_degree",
-        #"v_decile_score"
+        # "violent_recid",
+        # "is_violent_recid",
+        # "vr_charge_degree",
+        # "v_decile_score"
     ]
     x_train = features(train, numeric, categorical)
     y_train = (train["two_year_recid"] == 1).values

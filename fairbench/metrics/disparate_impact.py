@@ -9,7 +9,7 @@ def prule(
     predictions: Tensor,
     sensitive: Tensor,
     non_sensitive: Optional[Tensor] = None,
-    #max_sensitive: float = 1,
+    # max_sensitive: float = 1,
 ):
     max_sensitive = 1
     if non_sensitive is None:
@@ -34,7 +34,7 @@ def cvdisparity(
     predictions: Tensor,
     sensitive: Tensor,
     non_sensitive: Optional[Tensor] = None,
-    #max_sensitive: float = 1,
+    # max_sensitive: float = 1,
 ):
     max_sensitive = 1
     if non_sensitive is None:
@@ -47,7 +47,7 @@ def cvdisparity(
         return sum_non_sensitive
     r1 = (predictions * sensitive).sum() / sum_sensitive
     r2 = (predictions * non_sensitive).sum() / sum_non_sensitive
-    return r1.maximum(r2)-r1.minimum(r2)
+    return r1.maximum(r2) - r1.minimum(r2)
 
 
 @parallel
@@ -68,7 +68,7 @@ def _cvdisparity(
         return sum_non_sensitive
     r1 = (predictions * sensitive).sum() / sum_sensitive
     r2 = (predictions * non_sensitive).sum() / sum_non_sensitive
-    return r1.maximum(r2)-r1.minimum(r2)
+    return r1.maximum(r2) - r1.minimum(r2)
 
 
 @parallel

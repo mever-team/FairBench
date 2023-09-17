@@ -21,7 +21,7 @@ def test_conversion_number():
 def test_explainble():
     x = fb.Explainable(fb.astensor(1))
     y = fb.Explainable(fb.astensor(np.float32(2)))
-    assert x/y == 0.5
+    assert x / y == 0.5
 
 
 def test_fork_generation():
@@ -36,11 +36,13 @@ def test_fork_generation():
 
 def test_categories():
     for _ in environment():
-        branches = fb.Fork(fb.categories@["Man", "Woman", "Man", "Woman"]).branches()
+        branches = fb.Fork(fb.categories @ ["Man", "Woman", "Man", "Woman"]).branches()
         assert "Man" in branches
         assert "Woman" in branches
 
-        branches = fb.Fork(gender=fb.categories@{"Man": [0, 1], "Woman": [0, 1]}).branches()
+        branches = fb.Fork(
+            gender=fb.categories @ {"Man": [0, 1], "Woman": [0, 1]}
+        ).branches()
         assert "genderMan" in branches
         assert "genderWoman" in branches
 
@@ -48,7 +50,7 @@ def test_categories():
         assert "Man" in branches
         assert "Woman" in branches
 
-        branches = fb.Fork(attr=fb.Categories(range(4))@[0, 1, 2, 0, 1]).branches()
+        branches = fb.Fork(attr=fb.Categories(range(4)) @ [0, 1, 2, 0, 1]).branches()
         assert "attr0" in branches
         assert "attr1" in branches
         assert "attr2" in branches
@@ -62,18 +64,36 @@ def test_categories():
 
 
 def test_intersectional():
-    branches = fb.Fork(gender=fb.binary(np.array([0, 1, 0, 1])),  # same notation as bellow
-                       race=fb.binary@np.array([1, 1, 0, 0])).intersectional().branches()
+    branches = (
+        fb.Fork(
+            gender=fb.binary(np.array([0, 1, 0, 1])),  # same notation as bellow
+            race=fb.binary @ np.array([1, 1, 0, 0]),
+        )
+        .intersectional()
+        .branches()
+    )
     assert len(branches) == 8
 
-    branches = fb.Fork(gender=fb.binary(np.array([0, 1, 0, 1])),  # same notation as bellow
-                       race=fb.binary@np.array([0, 1, 0, 1])).intersectional().branches()
+    branches = (
+        fb.Fork(
+            gender=fb.binary(np.array([0, 1, 0, 1])),  # same notation as bellow
+            race=fb.binary @ np.array([0, 1, 0, 1]),
+        )
+        .intersectional()
+        .branches()
+    )
     assert len(branches) == 6
 
-    branches = fb.Fork(sensitive=fb.binary@np.array([0, 1, 0, 1]) & fb.binary@np.array([0, 1, 0, 1])).branches()
+    branches = fb.Fork(
+        sensitive=fb.binary @ np.array([0, 1, 0, 1])
+        & fb.binary @ np.array([0, 1, 0, 1])
+    ).branches()
     assert len(branches) == 4
 
-    branches = fb.Fork(sensitive=fb.binary@[0, 1, 0, 1] | fb.categories@["Man", "Woman", "Man", "Woman"]).branches()
+    branches = fb.Fork(
+        sensitive=fb.binary @ [0, 1, 0, 1]
+        | fb.categories @ ["Man", "Woman", "Man", "Woman"]
+    ).branches()
     assert len(branches) == 4
 
 
@@ -91,22 +111,24 @@ def test_fork_operations():
         assert not (fork < 0).a
         assert not (fork < 1).a
         assert not (fork > 1).a
-        assert (fork+2).a == 3
-        assert (2+fork).a == 3
-        assert (fork-2).a == -1
-        assert (2-fork).a == 1
-        assert (fork/2).a == 0.5
-        assert (2/fork).a == 2
-        assert (fork//2).a == 0
-        assert (2//fork).a == 2
-        assert (fork*2).a == 2
-        assert (2*fork).a == 2
+        assert (fork + 2).a == 3
+        assert (2 + fork).a == 3
+        assert (fork - 2).a == -1
+        assert (2 - fork).a == 1
+        assert (fork / 2).a == 0.5
+        assert (2 / fork).a == 2
+        assert (fork // 2).a == 0
+        assert (2 // fork).a == 2
+        assert (fork * 2).a == 2
+        assert (2 * fork).a == 2
         assert (abs(-fork) == 1).a
 
 
 def test_fork_getattr():
     for _ in environment():
-        fork = fb.Fork(a=np.array([1, 2, 3]), b=np.array([2, 3, 4]), c=np.array([3, 4, 5]))
+        fork = fb.Fork(
+            a=np.array([1, 2, 3]), b=np.array([2, 3, 4]), c=np.array([3, 4, 5])
+        )
         sums = fork.sum()
         assert sums.a == 6
         assert sums.b == 9
@@ -114,7 +136,7 @@ def test_fork_getattr():
 
 
 def test_fork_of_dicts():
-    #for _ in environment():  # TODO: the following don't work for distributed
+    # for _ in environment():  # TODO: the following don't work for distributed
     fork = fb.Fork(a={"x": 1, "y": 2}, b={"x": 2, "y": 4})
     fork["z"] = fork.x + fork.y
     del fork["x"]
@@ -156,20 +178,33 @@ def test_fork_to_array():
     import fairbench as fb
     import numpy as np
 
-    sensitive = fb.Fork(gender=fb.categories@np.array([1, 0, 0, 1]),
-                        race=fb.categories@np.array([0, 1, 2, 3]),
-                        age=fb.categories@np.array([3, 1, 2, 0]))
+    sensitive = fb.Fork(
+        gender=fb.categories @ np.array([1, 0, 0, 1]),
+        race=fb.categories @ np.array([0, 1, 2, 3]),
+        age=fb.categories @ np.array([3, 1, 2, 0]),
+    )
 
-    report = fb.multireport(predictions=np.array([0, 0, 1, 1]), labels=np.array([0, 1, 1, 0]), sensitive=sensitive)
+    report = fb.multireport(
+        predictions=np.array([0, 0, 1, 1]),
+        labels=np.array([0, 1, 1, 0]),
+        sensitive=sensitive,
+    )
     print(report)
 
 
 def test_fork_direct_explain():
     import fairbench as fb
     import numpy as np
-    sensitive = fb.Fork(gender=fb.categories@np.array([1, 0, 0, 1]),
-                        race=fb.categories@np.array([0, 1, 2, 3]),
-                        age=fb.categories@np.array([3, 1, 2, 0]))
-    report = fb.multireport(predictions=np.array([0, 0, 1, 1]), labels=np.array([0, 1, 1, 0]), sensitive=sensitive)
+
+    sensitive = fb.Fork(
+        gender=fb.categories @ np.array([1, 0, 0, 1]),
+        race=fb.categories @ np.array([0, 1, 2, 3]),
+        age=fb.categories @ np.array([3, 1, 2, 0]),
+    )
+    report = fb.multireport(
+        predictions=np.array([0, 0, 1, 1]),
+        labels=np.array([0, 1, 1, 0]),
+        sensitive=sensitive,
+    )
     explanation = report.explain
     assert "min" in explanation.branches()

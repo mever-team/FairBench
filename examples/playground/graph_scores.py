@@ -6,7 +6,7 @@ _, graph, communities = next(pg.load_datasets_multiple_communities(["highschool"
 train, test = pg.split(pg.to_signal(graph, communities[0]), 0.5)
 sensitive_signal = pg.to_signal(graph, communities[1])
 labels = test.filter(exclude=train)
-sensitive = fb.Fork(gender=fb.categories@sensitive_signal.filter(exclude=train))
+sensitive = fb.Fork(gender=fb.categories @ sensitive_signal.filter(exclude=train))
 
 # create report for pagerank
 algorithm = pg.PageRank(alpha=0.85)

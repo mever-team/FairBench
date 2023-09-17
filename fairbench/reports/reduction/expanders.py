@@ -14,7 +14,11 @@ def diff(values: Iterable[ep.Tensor]) -> Iterable[ep.Tensor]:
     return [abs(value1 - value2) for value1 in values for value2 in values]
 
 
-def barea(values: Iterable[ep.Tensor], skew=lambda x, y: y, comparator=lambda y1, y2: np.absolute(y1-y2)) -> Iterable[ep.Tensor]:
+def barea(
+    values: Iterable[ep.Tensor],
+    skew=lambda x, y: y,
+    comparator=lambda y1, y2: np.absolute(y1 - y2),
+) -> Iterable[ep.Tensor]:
     assert isinstance(values, list), "fairbench.diff can only reduce lists."
     x_min = None
     x_max = None
@@ -54,8 +58,8 @@ def barea(values: Iterable[ep.Tensor], skew=lambda x, y: y, comparator=lambda y1
 
 def ndcg_skew(x, y):
     if x.min() < 1:
-        x += 1-x.min()
-    return y/np.log(x+1)
+        x += 1 - x.min()
+    return y / np.log(x + 1)
 
 
 def bdcg(values: Iterable[ep.Tensor]) -> Iterable[ep.Tensor]:
@@ -63,21 +67,20 @@ def bdcg(values: Iterable[ep.Tensor]) -> Iterable[ep.Tensor]:
 
 
 def kl(y1, y2):
-    return y1*np.log(y1/y2)
+    return y1 * np.log(y1 / y2)
 
 
 def js(y1, y2):
-    m = (y1+y2)/2
-    return (kl(y1, m) + kl(y2, m))/2
+    m = (y1 + y2) / 2
+    return (kl(y1, m) + kl(y2, m)) / 2
+
 
 def kldcg(values: Iterable[ep.Tensor]) -> Iterable[ep.Tensor]:
-    return barea(values, lambda x, y: y/np.log(x+1), comparator=kl)
+    return barea(values, lambda x, y: y / np.log(x + 1), comparator=kl)
 
 
 def jsdcg(values: Iterable[ep.Tensor]) -> Iterable[ep.Tensor]:
-    return barea(values, lambda x, y: y/np.log(x+1), comparator=js)
-
-
+    return barea(values, lambda x, y: y / np.log(x + 1), comparator=js)
 
 
 def todata(values: Iterable[ep.Tensor]) -> ep.Tensor:
