@@ -95,11 +95,13 @@ four_fifths_rule = Stamp(
     ("minratio.pr", "prule"),
     minimum=0.8,
     desc="Checks whether the fraction of positive predictions for each protected group "
-    "is at worst four fifths that of any other group (i.e., the p-rule is 0.8 or greater).",
+    "is at worst four fifths that of any other group (i.e., the p-rule is 0.8 or greater"
+    "for any pairwise group comparison).",
     caveats=[
         "Disparate impact may not always be an appropriate fairness consideration.",
         "Consider input from affected stakeholders to determine whether "
-        "the 80% rule is an appropriate fairness criterion.",
+        "the 4/5 rule is an appropriate fairness criterion.",
+        "The 4/5 rule is often not a legally accepted indication of disparate impact."
     ],
 )
 accuracy = Stamp(
