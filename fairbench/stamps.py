@@ -101,7 +101,7 @@ four_fifths_rule = Stamp(
         "Disparate impact may not always be an appropriate fairness consideration.",
         "Consider input from affected stakeholders to determine whether "
         "the 4/5 rule is an appropriate fairness criterion.",
-        "The 4/5 rule is often not a legally accepted indication of disparate impact."
+        "The 4/5 rule is often not a legally accepted indication of disparate impact.",
     ],
 )
 accuracy = Stamp(

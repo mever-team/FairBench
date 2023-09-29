@@ -5,7 +5,7 @@ AI is everywhere and responsible for many sensitive decisions.
 
 Consider a benign system that predicts whether
 persons prefer eating doughnuts :doughnut: rather than 
-icecream :shaved_ice: by looking at them. We want to
+icecream :cake: by looking at them. We want to
 handout their preferred food in a promotion.
 
 To _test_ the
@@ -17,12 +17,12 @@ shows correct predictions and a cross :x: wrong ones.
 created that system.)
 
 
-:girl: &rarr; :shaved_ice: :heavy_check_mark:<br>
-:girl: &rarr; :shaved_ice: :x:<br>
+:girl: &rarr; :cake: :heavy_check_mark:<br>
+:girl: &rarr; :cake: :x:<br>
 :girl: &rarr; :doughnut: :x:<br>
 :boy: &rarr; :doughnut: :heavy_check_mark:<br>
 :boy: &rarr; :doughnut: :heavy_check_mark:<br>
-:boy: &rarr; :shaved_ice: :heavy_check_mark:<br>
+:boy: &rarr; :cake: :heavy_check_mark:<br>
 
 Would these predictions be unbiased? There are not a lot of people, so any
 imbalances can be random. But if we still want to check for fairness,
