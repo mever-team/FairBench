@@ -4,6 +4,7 @@ import numpy as np
 import inspect
 import sys
 from collections.abc import Mapping
+from typing import Union
 
 _backend = "numpy"
 
@@ -111,12 +112,11 @@ def istensor(value, _allow_explanation=False) -> bool:
     return True
 
 
-def astensor(value, _allow_explanation=True) -> ep.Tensor:
+def astensor(value, _allow_explanation=True) -> Union["Explainable", ep.Tensor]:
     if value.__class__.__name__ == "Explainable" and not _allow_explanation:
         value = value.value
     elif value.__class__.__name__ == "Explainable":
         from fairbench import Explainable
-
         return Explainable(
             astensor(value.value),
             explain=value.explain,

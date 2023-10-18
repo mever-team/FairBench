@@ -1,6 +1,7 @@
 import fairbench
 from fairbench.forks.fork import Fork, Forklike
-from fairbench.forks.explanation import tofloat, ExplainableError
+from fairbench.forks.explanation.base import tofloat
+from fairbench.forks.explanation import ExplainableError
 
 
 def _clean(fork):  # pragma: no cover

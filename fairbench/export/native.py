@@ -2,7 +2,7 @@ from fairbench.forks.fork import Fork, Forklike
 from fairbench.reports.accumulate import todict
 from matplotlib import pyplot as plt
 import json
-from fairbench.forks.explanation import tofloat
+from fairbench.forks.explanation.base import tofloat
 from fairbench.forks import ExplanationCurve
 
 
