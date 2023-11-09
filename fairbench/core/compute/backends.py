@@ -3,7 +3,6 @@ from typing import Union
 import numpy as np
 import sys
 
-
 _backend = "numpy"
 
 def setbackend(backend_name: str):
@@ -12,10 +11,6 @@ def setbackend(backend_name: str):
     _backend = backend_name
 
 def tobackend(value):
-    if isinstance(value, ep.Tensor) and isinstance(
-        value.raw, np.float64
-    ):  # TODO: investigate why this is needed for distributed mode
-        return value
     global _backend
     name = type(value.raw if isinstance(value, ep.Tensor) else value).__module__.split(
         "."
@@ -23,7 +18,23 @@ def tobackend(value):
     m = sys.modules
     if isinstance(value, list):
         value = np.array(value)
-    if name != _backend:
+    if isinstance(value, float) or isinstance(value, np.float64):
+        if _backend == "numpy":
+            return ep.NumPyTensor(value)
+        value = float(value)
+        if _backend == "torch":
+            import torch
+
+            value = torch.tensor(value)
+        elif _backend == "tensorflow":
+            import tensorflow
+
+            value = tensorflow.convert_to_tensor(value)
+        elif _backend == "jax":
+            import jax.numpy as jnp
+
+            value = jnp.array(value)
+    elif name != _backend:
         value = value.raw if isinstance(value, ep.Tensor) else value
         if name == "torch" and isinstance(value, m[name].Tensor):  # type: ignore
             value = value.detach().numpy()
@@ -34,7 +45,7 @@ def tobackend(value):
         if _backend == "torch":
             import torch
 
-            value = torch.from_numpy(value)
+            value = torch.tensor(value)
         elif _backend == "tensorflow":
             import tensorflow
 
@@ -80,23 +91,22 @@ def astensor(value, _allow_explanation=True) -> Union["Explainable", ep.Tensor]:
         return value
     if isinstance(value, list):
         value = np.array(value, dtype=np.float64)
-    if isinstance(value, np.float64):
-        value = ep.NumPyTensor(value)
-    else:
-        value = tobackend(value)
+    #if isinstance(value, np.float64):
+    #    value = float(value)
+    value = tobackend(value)
     if value.ndim != 0:
         value = value.flatten()
     return value.float64()
 
 
-def fromtensor(value, _allow_explanation=True):
+def asprimitive(value, _allow_explanation=True):
     if value.__class__.__name__ == "Explainable" and not _allow_explanation:
         value = value.value
     elif value.__class__.__name__ == "Explainable":
         from fairbench import Explainable
 
         return Explainable(
-            fromtensor(value.value),
+            asprimitive(value.value),
             explain=value.explain,
             desc=value.desc,
             units=value.units,

@@ -17,7 +17,7 @@ def _str_foreign(v, tabs=0):
             + k
             + ": "
             + ("\n" if complicated else "")
-            + _str_foreign(fromtensor(v), tabs + 1)
+            + _str_foreign(asprimitive(v), tabs + 1)
             for k, v in v.items()
         )
     if isinstance(v, float) or isinstance(v, np.float64):
@@ -323,7 +323,7 @@ class Fork(Mapping):
             if isinstance(v, dict):
                 html += "<td>{}</td>".format(self.__repr_html__(v))
             else:
-                html += "<td>{}</td>".format(fromtensor(v))
+                html += "<td>{}</td>".format(asprimitive(v))
             html += "</tr>"
         html += "</table>"
         return html
