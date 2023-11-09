@@ -1,0 +1,53 @@
+four_fifths_rule:
+  title: "4/5 rule"
+  alias: ["minratio.pr", "prule"]
+  minimum: 0.8
+  description:
+    "Checks whether the fraction of positive predictions for each protected group 
+    is at worst four fifths that of any other group (i.e., the p-rule is 0.8 or greater
+    for any pairwise group comparison)."
+  caveats:
+    - "Disparate impact may not always be an appropriate fairness consideration."
+    - "Consider input from affected stakeholders to determine whether "
+    - "the 4/5 rule is an appropriate fairness criterion."
+    - "The 4/5 rule is often not a legally accepted indication of disparate impact."
+
+accuracy:
+  title: "worst accuracy"
+  alias: ["min.accuracy", "accuracy"]
+  description:
+    "Computes the worst performance among protected groups; this is the minimum
+    benefit the system brings to any group."
+  caveats:
+    - "The worst accuracy is a lower bound but not an estimation of overall accuracy.
+      There may be different distributions of benefits that could be protected."
+
+prule:
+  title: "p-rule"
+  alias: ["minratio.pr", "prule"]
+  description:
+    "Compares the fraction of positive predictions between groups.
+    The worst ratio is reported, so that value of 0 indicates 
+    disparate impact, and value of 1 disparate impact mitigation."
+  caveats:
+    - "Disparate impact may not always be an appropriate fairness consideration."
+
+dfpr:
+  title: "dfpr"
+  alias: ["maxdiff.tnr", "dfpr"]
+  description:
+    "Compares the false positive rates between groups. The maximum difference is reported, so that value of 1 indicates
+    disparate mistreatment, and value of 0 disparate mistreatment mitigation."
+  caveats:
+    - "Disparate mistreatment may not always be an appropriate fairness consideration."
+    - "Consider input from affected stakeholders to determine whether dfpr is an appropriate fairness measure."
+
+dfnr:
+  title: "dfnr"
+  alias: ["maxdiff.tpr", "dfnr"]
+  description:
+    "The maximum difference is reported, so that value of 1 indicates
+    disparate mistreatment, and value of 0 disparate mistreatment mitigation."
+  caveats:
+    - "Disparate mistreatment may not always be an appropriate fairness consideration."
+    - "Consider input from affected stakeholders to determine whether dfnr is an appropriate fairness measure."
