@@ -19,7 +19,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest
           pip install pytest-cov
-          pip install objwrap numpy eagerpy distributed makefun matplotlib wget scikit-learn pandas
+          pip install objwrap numpy eagerpy distributed makefun matplotlib wget scikit-learn pandas requests pyyaml
           pip install torch
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Test with pytest
