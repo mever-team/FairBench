@@ -1,4 +1,5 @@
-from fairbench.forks.fork import Fork, astensor, comparator, fromtensor, role
+from fairbench.forks.fork import Fork, astensor, fromtensor, role
+from fairbench.forks.computations import comparator
 from fairbench.forks.explanation import Explainable, ExplainableError
 from typing import Optional
 
