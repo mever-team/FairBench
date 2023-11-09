@@ -15,7 +15,7 @@ def test_conversion_number():
         x2 = fb.asprimitive(y)
         fb.setbackend("numpy")
         x2 = fb.asprimitive(x2)
-        assert abs(x2-np.float64(0.69314718))<0.0000001
+        assert abs(x2 - np.float64(0.69314718)) < 0.0000001
 
 
 def test_explainble():

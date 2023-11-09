@@ -331,6 +331,7 @@ class Fork(Mapping):
 
 def role(rolename):
     """Sets the _role attribute of returned Fork or Forklike."""
+
     def decorator(_wrapped_method):
         @wraps(_wrapped_method)
         def wrapper(*args, **kwargs):
@@ -338,9 +339,10 @@ def role(rolename):
             if isinstance(ret, Forklike) or isinstance(ret, Fork):
                 object.__setattr__(ret, "_role", rolename)
             return ret
-        return wrapper
-    return decorator
 
+        return wrapper
+
+    return decorator
 
 
 def multibranch_tensors(_wrapped_method):
@@ -422,4 +424,3 @@ def call(obj, method, *args, **kwargs):
     if not callable(attr):
         return attr
     return attr(*args, **kwargs)
-

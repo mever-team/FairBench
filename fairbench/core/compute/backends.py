@@ -5,10 +5,12 @@ import sys
 
 _backend = "numpy"
 
+
 def setbackend(backend_name: str):
     assert backend_name in ["torch", "tensorflow", "jax", "numpy"]
     global _backend
     _backend = backend_name
+
 
 def tobackend(value):
     global _backend
@@ -68,12 +70,12 @@ def istensor(value, _allow_explanation=False) -> bool:
     return True
 
 
-
 def astensor(value, _allow_explanation=True) -> Union["Explainable", ep.Tensor]:
     if value.__class__.__name__ == "Explainable" and not _allow_explanation:
         value = value.value
     elif value.__class__.__name__ == "Explainable":
         from fairbench import Explainable
+
         return Explainable(
             astensor(value.value),
             explain=value.explain,
@@ -91,7 +93,7 @@ def astensor(value, _allow_explanation=True) -> Union["Explainable", ep.Tensor]:
         return value
     if isinstance(value, list):
         value = np.array(value, dtype=np.float64)
-    #if isinstance(value, np.float64):
+    # if isinstance(value, np.float64):
     #    value = float(value)
     value = tobackend(value)
     if value.ndim != 0:
