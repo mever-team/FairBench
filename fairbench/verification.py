@@ -99,10 +99,18 @@ class StampSpecs:
         self._path = path
         self._resources = None
 
+    def source(self, path):
+        self._path = path
+        self._resources = None
+
+    def clear(self):
+        self._resources = None
+        self._path = None
+
     def __getattribute__(self, attr):
         if attr in ["_resources", "_stamps", "_path"]:
             return object.__getattribute__(self, attr)
-        if self._resources is None:
+        if self._resources is None and self._path is None:
             response = requests.get(self._path)
             if response.status_code == 200:
                 self._resources = yaml.safe_load(response.text)
