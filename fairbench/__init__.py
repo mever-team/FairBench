@@ -9,5 +9,5 @@ from fairbench import metrics
 from fairbench import reports
 from fairbench import export
 from fairbench import bench
-from fairbench import stamps
 from fairbench.bench import demos
+from fairbench.verification import stamps

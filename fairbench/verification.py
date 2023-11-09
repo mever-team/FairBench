@@ -90,63 +90,35 @@ class Stamp:
         )
 
 
-four_fifths_rule = Stamp(
-    "4/5 rule",
-    ("minratio.pr", "prule"),
-    minimum=0.8,
-    desc="Checks whether the fraction of positive predictions for each protected group "
-    "is at worst four fifths that of any other group (i.e., the p-rule is 0.8 or greater"
-    "for any pairwise group comparison).",
-    caveats=[
-        "Disparate impact may not always be an appropriate fairness consideration.",
-        "Consider input from affected stakeholders to determine whether "
-        "the 4/5 rule is an appropriate fairness criterion.",
-        "The 4/5 rule is often not a legally accepted indication of disparate impact.",
-    ],
-)
-accuracy = Stamp(
-    "worst accuracy",
-    ("min.accuracy", "accuracy"),
-    desc="Computes the worst performance among protected groups; this is the minimum "
-    "benefit the system brings to any group.",
-    caveats=[
-        "The worst accuracy is a lower bound but not an estimation of overall accuracy. "
-        "There may be different distributions of benefits that could be protected."
-    ],
-)
-prule = Stamp(
-    "p-rule",
-    ("minratio.pr", "prule"),
-    desc="Compares the fraction of positive predictions between groups. "
-    "The worst ratio is reported, so that value of 0 indicates "
-    "disparate impact, and value of 1 disparate impact mitigation.",
-    caveats=[
-        "Disparate impact may not always be an appropriate fairness consideration."
-    ],
-)
+import requests
+import yaml
 
-dfpr = Stamp(
-    "dfpr",
-    ("maxdiff.tnr", "dfpr"),
-    desc="Compares the false positive rates between groups. "
-    "The maximum difference is reported, so that value of 1 indicates "
-    "disparate mistreatment, and value of 0 disparate mistreatment mitigation.",
-    caveats=[
-        "Disparate mistreatment may not always be an appropriate fairness consideration.",
-        "Consider input from affected stakeholders to determine whether dfpr is "
-        "an appropriate fairness measure.",
-    ],
-)
+class StampSpecs:
+    def __init__(self, path="https://raw.githubusercontent.com/mever-team/FairBench/main/stamps/common.yaml"):
+        self._stamps = dict()
+        self._path = path
+        self._resources = None
 
-dfnr = Stamp(
-    "dfnr",
-    ("maxdiff.tpr", "dfnr"),
-    desc="Compares the false negative rates between groups. "
-    "The maximum difference is reported, so that value of 1 indicates "
-    "disparate mistreatment, and value of 0 disparate mistreatment mitigation.",
-    caveats=[
-        "Disparate mistreatment may not always be an appropriate fairness consideration.",
-        "Consider input from affected stakeholders to determine whether dfnr is "
-        "an appropriate fairness measure.",
-    ],
-)
+    def __getattribute__(self, attr):
+        if attr in ["_resources", "_stamps", "_path"]:
+            return object.__getattribute__(self, attr)
+        if self._resources is None:
+            response = requests.get(self._path)
+            if response.status_code == 200:
+                self._resources = yaml.safe_load(response.text)
+            else:
+                raise Exception(f"Failed to download YAML file from {self._path}. Status code: {response.status_code}")
+
+        if attr in self._stamps:
+            return self._stamps[attr]
+        resource = self._resources[attr]
+        ret = Stamp(resource["title"],
+                    resource["alias"],
+                    minimum=resource.get("minimum", None),
+                    maximum=resource.get("maximum", None),
+                    desc=resource.get("description"),
+                    caveats=resource.get("caveats"))
+        self._stamps[attr] = ret
+        return ret
+
+stamps = StampSpecs()

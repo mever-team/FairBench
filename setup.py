@@ -37,6 +37,5 @@ setuptools.setup(
         "objwrap",
         "bokeh",
         "pyyaml",
-        "yamlres",
     ],
 )
