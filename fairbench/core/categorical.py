@@ -1,4 +1,4 @@
-from fairbench.forks.fork import tobackend, istensor, Fork
+from fairbench.core.fork import tobackend, istensor, Fork
 from typing import Iterable, Mapping
 
 

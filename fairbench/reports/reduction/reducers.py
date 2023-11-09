@@ -1,6 +1,6 @@
 import eagerpy as ep
 from typing import Iterable
-from fairbench.forks import Explainable, ExplainableError
+from fairbench.core import Explainable, ExplainableError
 
 
 def abs(value):

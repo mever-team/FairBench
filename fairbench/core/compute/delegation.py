@@ -1,5 +1,5 @@
 import inspect
-from fairbench.core.computations.backends import *
+from fairbench.core.compute.backends import *
 from makefun import wraps
 
 def _call_on_branch(_wrapped_method, args, kwargs, branch, transform_args):

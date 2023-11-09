@@ -3,19 +3,19 @@ import numpy as np
 
 
 def environment():
-    for _ in ["torch", "numpy"]:
-        fb.distributed()
-        yield "distributed"
-        fb.serial()
-        yield "serial"
+    for env in ["torch", "numpy"]:
+        fb.setbackend(env)
+        yield env
 
 
 def test_conversion_number():
     for _ in environment():
         x = np.float64(2)
         y = fb.astensor(x).log()
-        x2 = fb.fromtensor(y)
-        assert isinstance(x2, np.float64)
+        x2 = fb.asprimitive(y)
+        fb.setbackend("numpy")
+        x2 = fb.asprimitive(x2)
+        assert abs(x2-np.float64(0.69314718))<0.0000001
 
 
 def test_explainble():

@@ -1,7 +1,7 @@
 from makefun import wraps
 from collections.abc import Mapping
-from fairbench.forks.computations.backends import *
-from fairbench.forks.computations import comparator, parallel_primitive
+from fairbench.core.compute.backends import *
+from fairbench.core.compute import comparator, parallel_primitive
 
 
 def _str_foreign(v, tabs=0):

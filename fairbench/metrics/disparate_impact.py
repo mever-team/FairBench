@@ -1,4 +1,4 @@
-from fairbench.forks import parallel, unit_bounded
+from fairbench.core import parallel, unit_bounded
 from eagerpy import Tensor
 from typing import Optional
 

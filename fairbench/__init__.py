@@ -1,10 +1,10 @@
-from fairbench.forks import *
+from fairbench.core import Fork, categories, binary
 from fairbench.metrics import *
 from fairbench.reports import *
 from fairbench.export import *
 from fairbench.bench import *
 
-from fairbench import forks
+from fairbench import core
 from fairbench import metrics
 from fairbench import reports
 from fairbench import export

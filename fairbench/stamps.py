@@ -1,4 +1,4 @@
-from fairbench.forks import Fork, Forklike, Explainable, ExplainableError
+from fairbench.core import Fork, Forklike, Explainable, ExplainableError
 from typing import Iterable
 
 

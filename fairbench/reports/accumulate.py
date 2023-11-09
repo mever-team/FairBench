@@ -1,5 +1,4 @@
-from fairbench.forks.fork import comparator, parallel_primitive, astensor, merge
-from fairbench.forks.explanation import Explainable
+from fairbench.core.fork import comparator, parallel_primitive, astensor, merge
 import eagerpy as ep
 
 

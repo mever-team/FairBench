@@ -1,5 +1,5 @@
-from fairbench.forks.fork import parallel_primitive, comparator, role
-from fairbench.forks.explanation import Explainable
+from fairbench.core.fork import parallel_primitive, comparator, role
+from fairbench.core.explanation import Explainable
 import inspect
 from typing import Union, Iterable, Callable
 

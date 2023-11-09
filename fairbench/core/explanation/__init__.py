@@ -1,3 +1,3 @@
-from fairbench.forks.explanation.base import Explainable
-from fairbench.forks.explanation.curve import ExplanationCurve
-from fairbench.forks.explanation.error import ExplainableError
+from fairbench.core.explanation.base import Explainable
+from fairbench.core.explanation.curve import ExplanationCurve
+from fairbench.core.explanation.error import ExplainableError

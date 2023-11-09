@@ -1,5 +1,5 @@
-from fairbench.forks import parallel, unit_bounded, role
-from fairbench.forks.explanation import Explainable, ExplanationCurve
+from fairbench.core import parallel, unit_bounded, role
+from fairbench.core.explanation import Explainable, ExplanationCurve
 from eagerpy import Tensor
 import numpy as np
 from typing import Optional

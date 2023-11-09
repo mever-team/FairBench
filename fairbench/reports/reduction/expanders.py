@@ -1,6 +1,6 @@
 import eagerpy as ep
 from typing import Iterable
-from fairbench.forks.explanation import Explainable, ExplainableError, ExplanationCurve
+from fairbench.core.explanation import Explainable, ExplainableError, ExplanationCurve
 import numpy as np
 
 

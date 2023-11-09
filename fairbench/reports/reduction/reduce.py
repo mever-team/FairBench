@@ -1,6 +1,6 @@
-from fairbench.forks.fork import Fork, astensor, fromtensor, role
-from fairbench.forks.computations import comparator
-from fairbench.forks.explanation import Explainable, ExplainableError
+from fairbench.core.fork import Fork, astensor, asprimitive, role
+from fairbench.core.compute import comparator
+from fairbench.core.explanation import Explainable, ExplainableError
 from typing import Optional
 
 # from fairbench.reports.accumulate import todict as tokwargs
@@ -66,7 +66,7 @@ def reduce(
         {
             k: _tryorexplainable(
                 Explainable,
-                _tryorexplainable(fromtensor, _tryorexplainable(reducer, v), False),
+                _tryorexplainable(asprimitive, _tryorexplainable(reducer, v), False),
                 fork[k],
                 desc=name,
             )
@@ -75,7 +75,7 @@ def reduce(
         if isinstance(fields, dict)
         else _tryorexplainable(
             Explainable,
-            _tryorexplainable(fromtensor, _tryorexplainable(reducer, fields), False),
+            _tryorexplainable(asprimitive, _tryorexplainable(reducer, fields), False),
             fork,
             desc=name,
         )

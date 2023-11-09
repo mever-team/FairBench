@@ -1,5 +1,5 @@
-from fairbench.forks import parallel, unit_bounded, role
-from fairbench.forks.explanation import Explainable
+from fairbench.core import parallel, unit_bounded, role
+from fairbench.core.explanation import Explainable
 from eagerpy import Tensor
 from typing import Optional
 
@@ -56,6 +56,7 @@ def tpr(
 ):
     if sensitive is None:
         sensitive = predictions.ones_like()
+
     error = (max_prediction - (predictions - labels).abs()) * predictions
     error_sensitive = error * sensitive
     num_sensitive = (sensitive * predictions).sum()

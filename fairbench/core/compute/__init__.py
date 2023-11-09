@@ -1,1 +1,1 @@
-from fairbench.core.computations.delegation import *
+from fairbench.core.compute.delegation import *

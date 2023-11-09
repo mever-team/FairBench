@@ -14,7 +14,7 @@ class Explainable(ClosedWrapper):
     def __init__(
         self, value, explain: Any = None, desc: str = None, units: Any = None, **kwargs
     ):
-        from fairbench.forks import Fork
+        from fairbench.core import Fork
 
         if value.__class__.__name__ == "Future":
             value = value.result()

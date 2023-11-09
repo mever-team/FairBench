@@ -1,7 +1,7 @@
 from fairbench.export.modelcards.toyaml import toyamlprimitives
 import webbrowser
 import tempfile
-from fairbench.forks import Fork, Explainable
+from fairbench.core import Fork, Explainable
 
 
 def _resulttohtml(value, inline=False):

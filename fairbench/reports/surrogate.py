@@ -1,5 +1,5 @@
 from fairbench.reports import reduce, todata, identical
-from fairbench.forks.fork import Fork, multibranch_tensors
+from fairbench.core.fork import Fork, multibranch_tensors
 from sklearn.linear_model import LogisticRegression
 import numpy as np
 
