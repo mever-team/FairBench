@@ -121,8 +121,8 @@ def test_fork_operations():
         assert (2 // fork).a == 2
         assert (fork * 2).a == 2
         assert (2 * fork).a == 2
-        assert ((1+fork)**3).a == 8
-        assert (3**(1+fork)).a == 9
+        assert ((1 + fork) ** 3).a == 8
+        assert (3 ** (1 + fork)).a == 9
         assert (abs(-fork) == 1).a
 
 
@@ -201,7 +201,9 @@ def test_fork_to_str():
 
 
 def test_fork_to_html():
-    fork = fb.Fork(a={"c": 1.0, "d": {"value": "2.0b"}}, b={"c": 3.0, "d": 4.0})  # just something complex
+    fork = fb.Fork(
+        a={"c": 1.0, "d": {"value": "2.0b"}}, b={"c": 3.0, "d": 4.0}
+    )  # just something complex
     converted = fork._repr_html_()
     assert "1.0" in converted
     assert "2.0b" in converted

@@ -17,41 +17,65 @@ def produce_report():
 def test_reduce():
     for _ in environment():
         reduction = fb.reduce(produce_report(), reducer=fb.min, expand=fb.ratio)
-        assert abs(reduction.minratio.accuracy.value - 0.666666) < 1.E-6
+        assert abs(reduction.minratio.accuracy.value - 0.666666) < 1.0e-6
         assert reduction.minratio.dfnr.value == -2
 
 
 def test_areduce():
     report = produce_report()
-    assert abs(
-        fb.areduce(report.accuracy, reducer=fb.min, expand=fb.ratio)
-        - 0.6666666666666667
-    ) < 1.E-6
-    assert abs(
-        fb.areduce(report.accuracy, reducer=fb.max, expand=fb.diff)
-        - 0.33333333333333326
-    ) < 1.E-6
-    assert abs(
-        fb.areduce(report.accuracy, reducer=fb.mean, expand=fb.diff)
-        - 0.1481481481481481
-    ) < 1.E-6
-    assert abs(
-        fb.areduce(report.accuracy, reducer=fb.budget, expand=fb.diff)
-        +1.09861228866811
-    ) < 1.E-6
-    assert abs(
-        fb.areduce(report.accuracy, reducer=fb.min, expand=fb.ratio).value
-        - 0.6666666666666667
-    ) < 1.E-6
-    assert abs(
-        fb.areduce(report.accuracy, reducer=fb.max, expand=fb.diff).value
-        - 0.33333333333333326
-    ) < 1.E-6
-    assert abs(
-        fb.areduce(report.accuracy, reducer=fb.mean, expand=fb.diff).value
-        - 0.1481481481481481
-    ) < 1.E-6
-    assert abs(
-        fb.areduce(report.accuracy, reducer=fb.budget, expand=fb.diff).value
-        - -1.09861228866811
-    ) < 1.E-6
+    assert (
+        abs(
+            fb.areduce(report.accuracy, reducer=fb.min, expand=fb.ratio)
+            - 0.6666666666666667
+        )
+        < 1.0e-6
+    )
+    assert (
+        abs(
+            fb.areduce(report.accuracy, reducer=fb.max, expand=fb.diff)
+            - 0.33333333333333326
+        )
+        < 1.0e-6
+    )
+    assert (
+        abs(
+            fb.areduce(report.accuracy, reducer=fb.mean, expand=fb.diff)
+            - 0.1481481481481481
+        )
+        < 1.0e-6
+    )
+    assert (
+        abs(
+            fb.areduce(report.accuracy, reducer=fb.budget, expand=fb.diff)
+            + 1.09861228866811
+        )
+        < 1.0e-6
+    )
+    assert (
+        abs(
+            fb.areduce(report.accuracy, reducer=fb.min, expand=fb.ratio).value
+            - 0.6666666666666667
+        )
+        < 1.0e-6
+    )
+    assert (
+        abs(
+            fb.areduce(report.accuracy, reducer=fb.max, expand=fb.diff).value
+            - 0.33333333333333326
+        )
+        < 1.0e-6
+    )
+    assert (
+        abs(
+            fb.areduce(report.accuracy, reducer=fb.mean, expand=fb.diff).value
+            - 0.1481481481481481
+        )
+        < 1.0e-6
+    )
+    assert (
+        abs(
+            fb.areduce(report.accuracy, reducer=fb.budget, expand=fb.diff).value
+            - -1.09861228866811
+        )
+        < 1.0e-6
+    )
