@@ -1,11 +1,8 @@
 from fairbench.reports.base import report
-from fairbench.reports import reduction as fb
+from fairbench.blocks import framework, reducers, expanders, metrics
 from fairbench.reports.accumulate import todict as tokwargs
 from fairbench.core.fork import combine, merge, role
 from fairbench.reports.surrogate import surrogate_positives
-from fairbench import metrics
-from fairbench.reports import reduction
-
 
 common_metrics = (
     metrics.accuracy,
@@ -29,13 +26,13 @@ acc_metrics = (
 )
 
 common_reduction = (
-    {"reducer": reduction.min},
-    {"reducer": reduction.wmean},
-    {"reducer": reduction.min, "expand": reduction.ratio},
-    {"reducer": reduction.max, "expand": reduction.diff},
-    {"reducer": reduction.max, "expand": reduction.barea},
-    {"reducer": reduction.max, "expand": reduction.bdcg},
-    {"reducer": reduction.max, "expand": reduction.jsdcg},
+    {"reducer": reducers.min},
+    {"reducer": reducers.wmean},
+    {"reducer": reducers.min, "expand": expanders.ratio},
+    {"reducer": reducers.max, "expand": expanders.diff},
+    {"reducer": reducers.max, "expand": expanders.barea},
+    {"reducer": reducers.max, "expand": expanders.bdcg},
+    {"reducer": reducers.max, "expand": expanders.jsdcg},
 )
 
 
@@ -52,7 +49,7 @@ def multireport(
     *args, metrics=acc_metrics, reduction_schemes=common_reduction, **kwargs
 ):
     base = report(*args, metrics=metrics, **kwargs)
-    return combine(*[fb.reduce(base, **scheme) for scheme in reduction_schemes])
+    return combine(*[framework.reduce(base, **scheme) for scheme in reduction_schemes])
 
 
 @role("report")
@@ -65,17 +62,17 @@ def isecreport(*args, **kwargs):
             params = merge(params, arg)
         params = merge(params, kwargs)
 
-    bayesian = fb.reduce(
+    bayesian = framework.reduce(
         surrogate_positives(params["predictions"], params["sensitive"]),
-        fb.min,
-        fb.ratio,
+        reducers.min,
+        expanders.ratio,
         name="bayesian",
     )
 
-    empirical = fb.reduce(
+    empirical = framework.reduce(
         metrics.pr(predictions=params["predictions"], sensitive=params["sensitive"]),
-        fb.min,
-        fb.ratio,
+        reducers.min,
+        expanders.ratio,
         name="empirical",
     )
     return combine(tokwargs(minprule=empirical), tokwargs(minprule=bayesian))

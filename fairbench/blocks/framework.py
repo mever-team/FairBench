@@ -23,7 +23,7 @@ def _tryorexplainable(method, *args, **kwargs):
         return e
 
 
-@role("reduction")
+@role("reducers")
 @comparator
 def reduce(
     fork: Fork,

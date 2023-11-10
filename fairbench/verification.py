@@ -24,10 +24,12 @@ class Stamp:
         minimum=None,
         maximum=None,
         desc="Computed with FairBench.",
-        caveats=[
-            "Different fairness measures capture different concerns and may be at odds with each other."
-        ],
+        caveats=None,
     ):
+        if caveats is None:
+            caveats = [
+                "Different fairness measures capture different concerns and may be at odds with each other."
+            ]
         assert isinstance(fields, Iterable)
         if not isinstance(list(fields)[0], Iterable):
             fields = [fields]

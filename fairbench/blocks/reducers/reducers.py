@@ -53,7 +53,7 @@ def identical(values: Iterable[ep.Tensor]) -> ep.Tensor:
     for value in values:
         if (value - values[0]).abs().sum() != 0:
             raise ExplainableError(
-                "The same value should reside in all branches for identical reduction."
+                "The same value should reside in all branches for identical reducers."
             )
     return values[0]
 

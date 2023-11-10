@@ -12,9 +12,9 @@ def test_conversion_number():
     for _ in environment():
         x = np.float64(2)
         y = fb.astensor(x).log()
-        x2 = fb.asprimitive(y)
+        x2 = fb.core.asprimitive(y)
         fb.setbackend("numpy")
-        x2 = fb.asprimitive(x2)
+        x2 = fb.core.asprimitive(x2)
         assert abs(x2 - np.float64(0.69314718)) < 0.0000001
 
 

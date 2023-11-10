@@ -19,7 +19,7 @@ def barea(
     skew=lambda x, y: y,
     comparator=lambda y1, y2: np.absolute(y1 - y2),
 ) -> Iterable[ep.Tensor]:
-    assert isinstance(values, list), "fairbench.diff can only reduce lists."
+    assert isinstance(values, list), "fairbench.barea can only reduce lists."
     x_min = None
     x_max = None
     n_max = float("inf")
