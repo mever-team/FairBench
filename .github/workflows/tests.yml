@@ -21,6 +21,7 @@ jobs:
           pip install pytest-cov
           pip install objwrap numpy eagerpy distributed makefun matplotlib wget scikit-learn pandas requests pyyaml
           pip install torch
+          pip install jax[cpu]
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Test with pytest
         run: pytest -x --cov=fairbench --cov-report=xml

@@ -26,8 +26,9 @@ class Explainable(ClosedWrapper):
             isinstance(value, float)
             or isinstance(value, int)
             or isinstance(value, np.floating)
-            or "tensor" in value.__class__.__name__.lower()
-            or "array" in value.__class__.__name__
+            or "tensor" in value.__class__.__name__.lower() # torch and tensorflow
+            or "array" in value.__class__.__name__ # numpy
+            or "ArrayImpl" in value.__class__.__name__  # jax
         ), f"Can not set data type as explainable: {type(value)}"
         assert (
             explain is None or not kwargs
