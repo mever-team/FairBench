@@ -13,7 +13,7 @@ nav:
         - 'advanced/metrics.md'
         - 'advanced/ml_integration.md'
         - 'advanced/manipulation.md'
-        - 'advanced/distributed.md'
+        - 'advanced/multimodal.md'
 
 markdown_extensions:
   - admonition

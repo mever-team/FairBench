@@ -29,7 +29,7 @@ tensor access alongside a specific dimension.
 !!! info
     Perspectives as a programming pattern arise from
     FairBench's 
-    [concurrent execution](../advanced/distributed.md#computational-branches)
+    [concurrent execution](../advanced/multimodal.md)
     principle on fork membership access 
     and a `Forklike` datatype used internally. The latter is a
     dictionary whose elements can also be accessed like class members. 

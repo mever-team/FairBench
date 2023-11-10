@@ -175,9 +175,6 @@ def test_fork_of_forks():
 
 
 def test_fork_to_array():
-    import fairbench as fb
-    import numpy as np
-
     sensitive = fb.Fork(
         gender=fb.categories @ np.array([1, 0, 0, 1]),
         race=fb.categories @ np.array([0, 1, 2, 3]),
@@ -192,10 +189,37 @@ def test_fork_to_array():
     print(report)
 
 
-def test_fork_direct_explain():
-    import fairbench as fb
-    import numpy as np
+def test_fork_to_str():
+    fork = fb.Fork(a={"c": 1.0, "d": 2.0}, b={"c": 3.0, "d": 4.0})
+    converted = str(fork)
+    assert "1.0" in converted
+    assert "2.0" in converted
+    assert "3.0" in converted
+    assert "4.0" in converted
 
+
+def test_fork_to_html():
+    fork = fb.Fork(a={"c": 1.0, "d": 2.0}, b={"c": 3.0, "d": 4.0})
+    assert fork.__repr_html__("overriden") == "overriden"
+    converted = fork.__repr_html__()
+    assert "1.0" in converted
+    assert "2.0" in converted
+    assert "3.0" in converted
+    assert "4.0" in converted
+    assert "<table>" in converted
+    assert "<tr><td><strong>c" in converted
+    assert "<tr><td><strong>d" in converted
+
+
+def test_fork_of_iterables():
+    fork = fb.Fork(a={"c": 1.0, "d": 2.0}, b={"c": 3.0, "d": 4.0})
+    for k, v in fork.items():
+        assert k in ["c", "d"]
+        assert "a" in v.branches()
+        assert "b" in v.branches()
+
+
+def test_fork_direct_explain():
     sensitive = fb.Fork(
         gender=fb.categories @ np.array([1, 0, 0, 1]),
         race=fb.categories @ np.array([0, 1, 2, 3]),

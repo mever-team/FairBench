@@ -1,10 +1,5 @@
 # Computational branches
 
-1. [Multiple forked variables](#multiple-forked-variables)
-2. [Parallel & distributed computing](#parallel--distributed-computing)
-
-## Multiple forked variables
-
 If you have multiple [forks](../basics/forks.md),
 they should all have the same branches.
 Each branch will execute independently 
@@ -66,35 +61,3 @@ independently.
     and class fields or methods, as they are both 
     accessed with the same annotation.
     If there is confusion, branch values will be obtained.
-
-## Parallel & distributed computing
-
-FairBench supports parallel or distributed computing
-of computationally intensive operations that are separated
-into different branches
-via [dask](https://www.dask.org).
-This capability can be enabled per:
-
-```python
-import fairbench as fb
-
-fb.distributed(*args, **todict)
-```
-
-where the arguments and keyword arguments are those
-necessary to instantiate a `dask.Client`. For example,
-you can provide no arguments to start simple parallel
-computing, where workers are created locally in your machine.
-You can also provide an IP address pointing to the dask
-server. If the server's workers have been instantiated with the same
-names as some branches, those branches will be executed
-there in respective servers.
-
-!!! warning 
-    If computations are too simple, parallelization
-    will be slower, due to data transfer overheads.
-
-!!! warning
-    Accessing branch values, for instance in report generation 
-    and visualization, under distributed computing
-    awaits for dependent remote computations to conclude.
