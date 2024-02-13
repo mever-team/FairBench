@@ -12,7 +12,7 @@ def surrogate_positives(
     X = framework.reduce(sensitive, todata, name=None).numpy()
     surrogate_model = surrogate_model.fit(X, predictions)
     prediction_branches = dict()
-    for branches in sensitive.intersections():
+    for branches in sensitive.iterate_intersections():
         Xbranch = np.array(
             [[1 if branch in branches else 0 for branch in sensitive._branches]]
         )

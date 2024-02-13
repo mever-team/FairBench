@@ -1,4 +1,4 @@
-from fairbench.core.fork import parallel_primitive, comparator, role
+from fairbench.core.fork import parallel_primitive, comparator, role, Fork
 from fairbench.core.explanation import Explainable
 import inspect
 from typing import Union, Iterable, Callable
@@ -6,7 +6,7 @@ from typing import Union, Iterable, Callable
 
 def reportargsparse(*args, **kwargs):
     for arg in args:
-        if not isinstance(arg, dict):
+        if not isinstance(arg, dict) and not isinstance(arg, Fork):
             raise TypeError(
                 "Reports only support dicts of arguments as positional arguments"
             )
