@@ -95,9 +95,11 @@ class Fork(Mapping):
 
         return Fork(
             {
-                k: v.__getattribute__(name)
-                if isinstance(v, Fork)
-                else call(v, "__getattribute__", name)
+                k: (
+                    v.__getattribute__(name)
+                    if isinstance(v, Fork)
+                    else call(v, "__getattribute__", name)
+                )
                 for k, v in self._branches.items()
             }
         )
@@ -112,9 +114,11 @@ class Fork(Mapping):
 
     def branches(self, branch_names=None, zero_mask=False):
         return {
-            branch: _result(value)
-            if branch_names is None or not zero_mask or branch in branch_names
-            else _result(value) * 0
+            branch: (
+                _result(value)
+                if branch_names is None or not zero_mask or branch in branch_names
+                else _result(value) * 0
+            )
             for branch, value in self._branches.items()
             if branch_names is None or zero_mask or branch in branch_names
         }
@@ -277,9 +281,11 @@ class Fork(Mapping):
 
         return Fork(
             **{
-                branch: value(*args, **kwargs)
-                if not isinstance(value, Explainable)
-                else value
+                branch: (
+                    value(*args, **kwargs)
+                    if not isinstance(value, Explainable)
+                    else value
+                )
                 for branch, value in self._branches.items()
             }
         )
@@ -361,15 +367,19 @@ def multibranch_tensors(_wrapped_method):
                 f"Method {_wrapped_method} annotated as @multibranch_tensors and requires at least one Fork input"
             )
         args = [
-            arg
-            if isinstance(arg, Fork) or not istensor(arg, True)
-            else Fork(**{branch: astensor(arg) for branch in branches})
+            (
+                arg
+                if isinstance(arg, Fork) or not istensor(arg, True)
+                else Fork(**{branch: astensor(arg) for branch in branches})
+            )
             for arg in args
         ]
         kwargs = {
-            key: arg
-            if isinstance(arg, Fork) or not istensor(arg)
-            else Fork(**{branch: astensor(arg) for branch in branches})
+            key: (
+                arg
+                if isinstance(arg, Fork) or not istensor(arg)
+                else Fork(**{branch: astensor(arg) for branch in branches})
+            )
             for key, arg in kwargs.items()
         }
         return _wrapped_method(*args, **kwargs)

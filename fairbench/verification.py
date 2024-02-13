@@ -79,9 +79,11 @@ class Stamp:
         if isinstance(report, Fork):
             return Fork(
                 {
-                    k: v
-                    if isinstance(v, Explainable) or isinstance(v, ExplainableError)
-                    else Explainable(v, explain=original_report, units=bool)
+                    k: (
+                        v
+                        if isinstance(v, Explainable) or isinstance(v, ExplainableError)
+                        else Explainable(v, explain=original_report, units=bool)
+                    )
                     for k, v in report.branches().items()
                 }
             )

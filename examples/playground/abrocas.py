@@ -38,9 +38,11 @@ for skew in np.arange(1, 2.01, 0.01):
         [
             np.random.choice(
                 [0, 1],
-                p=[1 - positive_rate, positive_rate]
-                if s == 1
-                else [1 - positive_rate * (1 - bias), (1 - bias) * positive_rate],
+                p=(
+                    [1 - positive_rate, positive_rate]
+                    if s == 1
+                    else [1 - positive_rate * (1 - bias), (1 - bias) * positive_rate]
+                ),
             )
             for s in sensitive
         ]

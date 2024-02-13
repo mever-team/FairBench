@@ -89,8 +89,8 @@ def categories(x):
         return Categorical(x)
     vals = list(set(x))
     return {
-        str(val.numpy())
-        if istensor(val)
-        else str(val): tobackend([1 if val == xval else 0 for xval in x])
+        str(val.numpy()) if istensor(val) else str(val): tobackend(
+            [1 if val == xval else 0 for xval in x]
+        )
         for val in vals
     }

@@ -8,9 +8,9 @@ def _call_on_branch(_wrapped_method, args, kwargs, branch, transform_args):
         _wrapped_method(
             *(transform_args(arg._branches[branch]) for arg in args),
             **{
-                key: branch
-                if key == "branch"
-                else transform_args(arg._branches[branch])
+                key: (
+                    branch if key == "branch" else transform_args(arg._branches[branch])
+                )
                 for key, arg in kwargs.items()
             },
         )
@@ -23,9 +23,11 @@ def _align_branches(_wrapped_method, args, kwargs, Fork, branches):
         for arg in args
     ]
     kwargs = {
-        key: arg
-        if isinstance(arg, Fork)
-        else Fork(**{branch: arg for branch in branches})
+        key: (
+            arg
+            if isinstance(arg, Fork)
+            else Fork(**{branch: arg for branch in branches})
+        )
         for key, arg in kwargs.items()
     }
     argnames = inspect.getfullargspec(_wrapped_method)[0]

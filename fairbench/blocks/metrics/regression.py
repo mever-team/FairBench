@@ -63,10 +63,12 @@ def r2(scores: Tensor, targets: Tensor, sensitive: Tensor = None, deg_freedom: i
     target_mean = (targets**2 * sensitive).sum() / num_sensitive
     target_variance = target_mean_squares - target_mean**2
     return Explainable(
-        0
-        if num_sensitive == 0
-        else (1 - (true / target_variance))
-        * ((num_sensitive - 1) / (num_sensitive - 1 - deg_freedom)),
+        (
+            0
+            if num_sensitive == 0
+            else (1 - (true / target_variance))
+            * ((num_sensitive - 1) / (num_sensitive - 1 - deg_freedom))
+        ),
         samples=num_sensitive,
         # target_mean=target_mean,
         # target_variance=target_variance,
