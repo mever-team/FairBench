@@ -17,7 +17,9 @@ def reportargsparse(*args, **kwargs):
     return kwargs
 
 
-def report(*args, metrics: Union[Callable, Iterable, dict] = None, modify_kwargs=None, **kwargs):
+def report(
+    *args, metrics: Union[Callable, Iterable, dict] = None, modify_kwargs=None, **kwargs
+):
     """
     This is a wrapper method of the true _report method, which also adds the prospect of modifying kwargs.
     """

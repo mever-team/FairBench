@@ -54,27 +54,48 @@ def binreport(*args, metrics=common_adhoc_metrics, **kwargs):
 
 @role("report")
 def multireport(
-    *args, metrics=common_performance_metrics, reduction_schemes=common_reduction, compare_all_to=None, **kwargs
+    *args,
+    metrics=common_performance_metrics,
+    reduction_schemes=common_reduction,
+    compare_all_to=None,
+    **kwargs
 ):
     base = report(*args, metrics=metrics, **kwargs)
-    return combine(*[framework.reduce(base, **scheme, base=compare_all_to) for scheme in reduction_schemes])
+    return combine(
+        *[
+            framework.reduce(base, **scheme, base=compare_all_to)
+            for scheme in reduction_schemes
+        ]
+    )
 
 
 @role("report")
 def unireport(
-    *args, metrics=common_performance_metrics, reduction_schemes=common_reduction, **kwargs
+    *args,
+    metrics=common_performance_metrics,
+    reduction_schemes=common_reduction,
+    **kwargs
 ):
     def modify_kwargs(kwargs):
         # adds an additional branch for the whole population called Any
         if "sensitive" in kwargs and "Any" not in kwargs["sensitive"]._branches:
-            length = framework.areduce(kwargs["sensitive"].shape[0], identical)  # asserts that everything has the same identical shape and returns it
+            length = framework.areduce(
+                kwargs["sensitive"].shape[0], identical
+            )  # asserts that everything has the same identical shape and returns it
             length = int(length.value)  # retrieve int value from the explainable
-            kwargs["sensitive"]._branches["Any"]=tobackend(np.ones((length,)))
+            kwargs["sensitive"]._branches["Any"] = tobackend(np.ones((length,)))
         return kwargs
+
     base = report(*args, metrics=metrics, modify_kwargs=modify_kwargs, **kwargs)
     # perform the reduction while accounting for the
-    return combine(*[framework.reduce(base, **scheme, base="Any")  # the bas kwarg refers to the base fork branch of the base report
-                     for scheme in reduction_schemes])
+    return combine(
+        *[
+            framework.reduce(
+                base, **scheme, base="Any"
+            )  # the bas kwarg refers to the base fork branch of the base report
+            for scheme in reduction_schemes
+        ]
+    )
 
 
 @role("report")

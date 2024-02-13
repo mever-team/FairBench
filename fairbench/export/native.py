@@ -57,9 +57,11 @@ def describe(report: Fork, spacing: int = 15):
     print(ret)
 
 
-def visualize(report: Fork, hold: bool = False, xrotation: int = 0, legend: bool = True):
+def visualize(
+    report: Fork, hold: bool = False, xrotation: int = 0, legend: bool = True
+):
     report = json.loads(tojson(report))
-    num_metrics = len([metric for metric in report if metric!="header"])
+    num_metrics = len([metric for metric in report if metric != "header"])
     i = 1
     for metric in report:
         if metric != "header":

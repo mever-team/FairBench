@@ -1,4 +1,3 @@
-
 from fairbench.core.fork import comparator, parallel_primitive, astensor, merge
 import eagerpy as ep
 

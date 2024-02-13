@@ -23,7 +23,9 @@ def _tryorexplainable(method, *args, **kwargs):
         return e
 
 
-def reduce_namefinder(reducer, expand=None, transform=None, branches=None, base=None) -> str:
+def reduce_namefinder(
+    reducer, expand=None, transform=None, branches=None, base=None
+) -> str:
     name = reducer.__name__
     if expand is not None:
         name += expand.__name__
@@ -32,7 +34,7 @@ def reduce_namefinder(reducer, expand=None, transform=None, branches=None, base=
     if branches is not None:
         name += "[" + ",".join(branches) + "]"
     if base is not None:
-        name += "[vs"+base+"]"
+        name += "[vs" + base + "]"
     return name
 
 
@@ -54,13 +56,15 @@ def reduce(
     for branch, v in fork.branches().items():
         if branches is not None and branch not in branches:
             continue
-        if base is None or base!=branch:
+        if base is None or base != branch:
             if fields is None:
                 fields = {f: list() for f in v} if isinstance(v, dict) else list()
             if isinstance(v, dict):
                 for f in v:
                     fields[f].append(
-                        astensor(v[f]) if transform is None else transform(astensor(v[f]))
+                        astensor(v[f])
+                        if transform is None
+                        else transform(astensor(v[f]))
                     )
             else:
                 fields.append(
@@ -72,13 +76,22 @@ def reduce(
             if isinstance(v, dict):
                 for f in v:
                     base_fields[f].append(
-                        astensor(v[f]) if transform is None else transform(astensor(v[f]))
+                        astensor(v[f])
+                        if transform is None
+                        else transform(astensor(v[f]))
                     )
             else:
-                raise Exception("The base argument is supported only in the reduction of forks of dicts")
+                raise Exception(
+                    "The base argument is supported only in the reduction of forks of dicts"
+                )
     if expand is not None:
         fields = (
-            {k: _tryorexplainable(expand, v, None if base_fields is None else base_fields[k]) for k, v in fields.items()}
+            {
+                k: _tryorexplainable(
+                    expand, v, None if base_fields is None else base_fields[k]
+                )
+                for k, v in fields.items()
+            }
             if isinstance(fields, dict)
             else _tryorexplainable(expand, fields)
         )

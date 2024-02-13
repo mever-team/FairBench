@@ -40,6 +40,7 @@ class Transform:
     ):  # allow traditional call in case someone finds it easier to read
         return self.__matmul__(other)
 
+
 def _onehot(num, position):
     ret = np.zeros((num))
     ret[position] = 1
