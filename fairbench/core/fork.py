@@ -137,7 +137,7 @@ class Fork(Mapping):
                 new_branches[branch + "'"] = 1 - branches[branch]
         return Fork({**branches, **new_branches})
 
-    def intersections(self):
+    def iterate_intersections(self):
         # get branches
         branches = self.branches()
         ids2names = dict(enumerate(branches))
@@ -159,7 +159,7 @@ class Fork(Mapping):
         # get branches
         branches = self.branches()
         new_branches = dict()
-        for candidates in self.intersections():
+        for candidates in self.iterate_intersections():
             new_mask = 1
             for branch in candidates:
                 new_mask = tobackend(branches[branch]) * new_mask

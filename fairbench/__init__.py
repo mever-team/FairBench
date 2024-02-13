@@ -1,4 +1,4 @@
-from fairbench.core import Fork, categories, binary, Categories, setbackend
+from fairbench.core import Fork, categories, binary, Categories, setbackend, individuals
 from fairbench.blocks import *
 from fairbench.reports import *
 from fairbench.export import *

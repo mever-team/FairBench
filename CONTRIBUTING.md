@@ -23,7 +23,7 @@ Follow these steps to add new features:
 
 ## Create new performance metrics
 
-Create new metrics under the `fairbench.metrics` module.
+Create new metrics under the `fairbench.blocks.metrics` module.
 If metrics can be computed independently for fork branches,
 e.g., independently for each gender, 
 add the `@parallel` decorator.
@@ -91,7 +91,7 @@ expansion, and reduction. To see how these components are used, read
 [here](https://fairbench.readthedocs.io/advanced/manipulation) .
 
 Expansion methods can be found
-in the `fairbench.reports.reduction.expanders` module
+in the `fairbench.blocks.expanders` module
 and should transform a list into a (typically of equal size or longer)
 new list that stores the outcome of comparing the elements
 of the original list, for instance pairwise. Start
@@ -107,7 +107,7 @@ Reducers take lists of values, such as lists produced by
 an expander, and perform an aggregation strategy to summarize
 it into one float value. Take care for your computations
 to be backpropagateable. Add reducers in the 
-`fairbench.reports.reduction.reducers` module and start
+`fairbench.blocks.reducers` module and start
 by enriching the following definition:
 
 ```python
@@ -117,13 +117,13 @@ def reducer(values: Iterable[ep.Tensor]) -> ep.Tensor:
 ```
 
 Inputs to expanders or reducers could be `Explainable`,
-and you can check for this.
+and you can check for this with isinstance.
 The outcome of expanders could also be explainable, though
 reducer outcome will be automatically assigned explanations
-based on base measure values.
+based on base measure values (it will forgo your explanations).
 
 If an invalid condition is encountered in some expander
-or reducer raise an explainable error via
+or reducer raise an explainable error per
 `raise ExplainableError(message)`. This is the same error
 used to indicate uncomputable base measures, though here
 it needs to be an exception. Adopt this functionality

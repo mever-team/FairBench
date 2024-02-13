@@ -17,11 +17,20 @@ def reportargsparse(*args, **kwargs):
     return kwargs
 
 
+def report(*args, metrics: Union[Callable, Iterable, dict] = None, modify_kwargs=None, **kwargs):
+    """
+    This is a wrapper method of the true _report method, which also adds the prospect of modifying kwargs.
+    """
+    kwargs = reportargsparse(*args, **kwargs)
+    if modify_kwargs is not None:
+        kwargs = modify_kwargs(kwargs)
+    return _report(metrics, **kwargs)
+
+
 @role("report")
 @comparator
 @parallel_primitive
-def report(*args, metrics: Union[Callable, Iterable, dict] = None, **kwargs):
-    kwargs = reportargsparse(*args, **kwargs)
+def _report(metrics: Union[Callable, Iterable, dict] = None, **kwargs):
     assert (
         metrics is not None
     ), "Cannot use fairbench.report() without explicitly declared metrics.\nUse accreport, binreport, multireport, or isecreport as ad-hoc report generation mechanisms."

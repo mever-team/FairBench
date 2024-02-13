@@ -1,5 +1,6 @@
 from fairbench.core.fork import tobackend, istensor, Fork
 from typing import Iterable, Mapping
+import numpy as np
 
 
 class Categorical(dict):
@@ -38,6 +39,20 @@ class Transform:
         self, other
     ):  # allow traditional call in case someone finds it easier to read
         return self.__matmul__(other)
+
+def _onehot(num, position):
+    ret = np.zeros((num))
+    ret[position] = 1
+    ret = tobackend(ret)
+    return ret
+
+
+@Transform
+def individuals(x):
+    if not isinstance(x, int):
+        assert isinstance(x, Iterable)
+        x = len(x)
+    return {str(i): _onehot(x, i) for i in range(x)}
 
 
 @Transform

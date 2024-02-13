@@ -57,13 +57,14 @@ def describe(report: Fork, spacing: int = 15):
     print(ret)
 
 
-def visualize(report: Fork, hold: bool = False, xrotation: int = 0):
+def visualize(report: Fork, hold: bool = False, xrotation: int = 0, legend: bool = True):
     report = json.loads(tojson(report))
-
+    num_metrics = len([metric for metric in report if metric!="header"])
     i = 1
     for metric in report:
         if metric != "header":
-            plt.subplot(2, len(report) // 2, i)
+            if num_metrics > 1:
+                plt.subplot(2, len(report) // 2, i)
             barplots = False
             for j, case in enumerate(report["header"][1:]):
                 if isinstance(report[metric][j], float):
@@ -78,10 +79,11 @@ def visualize(report: Fork, hold: bool = False, xrotation: int = 0):
             if barplots:
                 plt.xticks(list(range(len(report["header"][1:]))), report["header"][1:])
                 plt.xticks(rotation=-xrotation, ha="right" if xrotation < 0 else "left")
-            else:
+            elif legend:
                 plt.legend()
             plt.title(metric)
             i += 1
-    plt.tight_layout()
+    if num_metrics > 1:
+        plt.tight_layout()
     if not hold:
         plt.show()
