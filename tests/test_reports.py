@@ -115,6 +115,21 @@ def test_accreport():
         assert report.men.accuracy == 1
         assert report.nonbin.pr == 0
 
+def test_unireport():
+    for _ in environment():
+        men = np.array([1, 1, 1, 0, 0, 0, 0, 0])
+        women = np.array([0, 0, 0, 1, 1, 1, 0, 0])
+        nonbin = np.array([0, 0, 0, 0, 0, 0, 1, 1])
+        sensitive = fb.Fork(men=men, women=women, nonbin=nonbin)
+        predictions = np.array([1, 0, 1, 1, 0, 1, 0, 0])
+        labels = np.array([1, 0, 1, 0, 1, 0, 1, 0])
+        report = fb.unireport(
+            predictions=predictions, labels=labels, sensitive=sensitive
+        )
+        assert report.branches()["min[vsAny]"].accuracy.value == 0
+        assert report.branches()["min[vsAny]"].accuracy.explain.men == 1
+        assert report.branches()["minratio[vsAny]"].pr.value == 0
+
 
 def test_report_combination():
     for _ in environment():

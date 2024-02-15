@@ -20,4 +20,10 @@ fair_report = fb.multireport(labels=labels, scores=fair_scores, sensitive=sensit
 
 # combine both reports into one and get the auc perspective
 fork = fb.Fork(ppr=report, lfpr=fair_report)
-fb.describe(fork.phi)
+#fb.interactive(fork)
+#fb.describe(fork.phi)
+
+stamp = fb.combine(
+    fb.stamps.maxbdcg(report),
+)
+fb.modelcards.tohtml(stamp, show=True)

@@ -51,3 +51,12 @@ dfnr:
   caveats:
     - "Disparate mistreatment may not always be an appropriate fairness consideration."
     - "Consider input from affected stakeholders to determine whether dfnr is an appropriate fairness measure."
+
+maxbdcg:
+  title: "NDCG of average precision"
+  alias: ["maxbdcg.arepr"]
+  description:
+    "The maximum of NDCG-weighted differences between curves, counting the number of elements
+    represented at different top-k predictions. This is a type of disparate impact for recommendation systems."
+  caveats:
+    - "Disparate impact may not always be an appropriate fairness consideration."
