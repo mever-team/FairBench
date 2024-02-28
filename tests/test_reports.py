@@ -115,6 +115,7 @@ def test_accreport():
         assert report.men.accuracy == 1
         assert report.nonbin.pr == 0
 
+
 def test_unireport():
     for _ in environment():
         men = np.array([1, 1, 1, 0, 0, 0, 0, 0])

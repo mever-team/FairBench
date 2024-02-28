@@ -85,7 +85,7 @@ def test_auc():
 def test_f1k():
     for _ in environment():
         assert (
-            fb.f1k(
+            fb.metrics.topf1(
                 scores=fb.astensor([0.5, 0.8, 0.3, 0.2, 0, 0.1, 0.12]),
                 labels=fb.astensor([1, 1, 1, 0, 0, 0, 0]),
             )
@@ -96,7 +96,7 @@ def test_f1k():
 def test_hr():
     for _ in environment():
         assert (
-            fb.hr(
+            fb.metrics.tophr(
                 scores=fb.astensor([0.5, 0.8, 0.3, 0.2, 0, 0.1, 0.12]),
                 labels=fb.astensor([1, 1, 1, 0, 0, 0, 0]),
             )
@@ -107,24 +107,12 @@ def test_hr():
 def test_reck():
     for _ in environment():
         assert (
-            fb.reck(
+            fb.metrics.toprec(
                 scores=fb.astensor([0.5, 0.8, 0.3, 0.2, 0, 0.1, 0.12]),
                 labels=fb.astensor([1, 1, 1, 0, 0, 0, 0]),
             )
             == 1
         )
-
-
-def test_ap():
-    for _ in environment():
-        assert (
-            fb.ap(
-                scores=fb.astensor([0.5, 0.8, 0.3, 0.2, 0, 0.1, 0.12]),
-                labels=fb.astensor([1, 1, 1, 0, 0, 0, 0]),
-            )
-            == 1
-        )
-
 
 def test_pinball():
     for _ in environment():

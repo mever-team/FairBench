@@ -16,16 +16,19 @@ report = fb.multireport(labels=labels, scores=scores, sensitive=sensitive, top=5
 # create report for locally fair pagerank
 fair_algorithm = pg.LFPR(alpha=0.85, redistributor="original")
 fair_scores = fair_algorithm(train, sensitive=sensitive_signal).filter(exclude=train)
-fair_report = fb.multireport(labels=labels, scores=fair_scores, sensitive=sensitive, top=50)
+fair_report = fb.multireport(
+    labels=labels, scores=fair_scores, sensitive=sensitive, top=50
+)
 
 # combine both reports into one and get the auc perspective
 fork = fb.Fork(ppr=report, lfpr=fair_report)
 #   fb.interactive(fork)
-#fb.describe(fork.phi)
-#print(fork.phi)
+# fb.describe(fork.phi)
+# print(fork.phi)
 
-value = fb.areduce(fb.avghr(labels=labels, scores=fair_scores, sensitive=sensitive, top=50),
-          reducer=fb.reducers.max,
-          expand=fb.expanders.bdcg
-        )
+value = fb.areduce(
+    fb.avghr(labels=labels, scores=fair_scores, sensitive=sensitive, top=50),
+    reducer=fb.reducers.max,
+    expand=fb.expanders.bdcg,
+)
 print(value.explain)

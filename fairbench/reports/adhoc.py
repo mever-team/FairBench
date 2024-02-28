@@ -38,9 +38,9 @@ common_reduction = (
     {"reducer": reducers.wmean},
     {"reducer": reducers.min, "expand": expanders.ratio},
     {"reducer": reducers.max, "expand": expanders.diff},
-    #{"reducer": reducers.max, "expand": expanders.barea},
-    #{"reducer": reducers.max, "expand": expanders.bdcg},
-    #{"reducer": reducers.max, "expand": expanders.jsdcg},
+    {"reducer": reducers.max, "expand": expanders.barea},
+    {"reducer": reducers.max, "expand": expanders.bdcg},
+    # {"reducer": reducers.max, "expand": expanders.jsdcg},
 )
 
 
@@ -96,6 +96,7 @@ def unireport(
             for scheme in reduction_schemes
         ]
     )
+
 
 @role("report")
 def isecreport(*args, **kwargs):

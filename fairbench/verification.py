@@ -69,7 +69,9 @@ class Stamp:
                 report = getattr(report, field)
         except AttributeError:
             return ExplainableError(f"Report does not contain {'.'.join(fields)}")
-        if isinstance(report, Fork) or (callable(report) and not isinstance(report, Explainable)):
+        if isinstance(report, Fork) or (
+            callable(report) and not isinstance(report, Explainable)
+        ):
             return ExplainableError(f"Report does not contain {'.'.join(fields)}")
         original_report = report
         if self.minimum is not None and self.maximum is not None:
@@ -125,7 +127,7 @@ class StampSpecs:
         if self._resources is None and self._path is not None:
             response = requests.get(self._path)
             if response.status_code == 200:
-                #print(response.text)
+                # print(response.text)
                 self._resources = yaml.load(response.text, Loader=yaml.SafeLoader)
             else:
                 raise Exception(
@@ -135,7 +137,7 @@ class StampSpecs:
         if attr in self._stamps:
             return self._stamps[attr]
         if attr not in self._resources:
-            raise Exception(f'Stamp {attr} not found in {self._resources.keys()}')
+            raise Exception(f"Stamp {attr} not found in {self._resources.keys()}")
         resource = self._resources[attr]
         ret = Stamp(
             resource["title"],

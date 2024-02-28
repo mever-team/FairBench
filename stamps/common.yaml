@@ -52,6 +52,16 @@ dfnr:
     - "Disparate mistreatment may not always be an appropriate fairness consideration."
     - "Consider input from affected stakeholders to determine whether dfnr is an appropriate fairness measure."
 
+abroca:
+  title: "abroca"
+  alias: ["maxbarea.auc"]
+  description:
+    "The maximum area between ROC curves.
+    This is a type of disparate mistreatment for recommendation systems."
+  caveats:
+    - "Disparate mistreatment may not always be an appropriate fairness consideration."
+    - "Consider input from affected stakeholders to determine whether abroca is an appropriate fairness measure."
+
 maxbdcg:
   title: "NDCG of average precision"
   alias: ["maxbdcg.avgrepr"]

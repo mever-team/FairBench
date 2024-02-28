@@ -34,8 +34,8 @@ def tomarkdown(report, _=None, table=True, file=None):
         if isinstance(metric_fork, Fork):
             metric_fork = metric_fork.branches()
         if isinstance(metric_fork, ExplainableError):
-            #raise Exception(metric_fork.explain)
-            continue
+            raise Exception(metric_fork.explain)
+            # continue
         factors.extend(metric_fork.keys())
         if table:
             caveats.extend(row["caveats"])

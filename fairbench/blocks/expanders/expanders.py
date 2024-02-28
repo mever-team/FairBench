@@ -88,7 +88,7 @@ def bdcg(values: Iterable[ep.Tensor], base: Iterable[ep.Tensor]) -> Iterable[ep.
 
 
 def kl(y1, y2):
-    return y1 * np.log(y1 / (y2+1.E-12)+1.E-12)
+    return y1 * np.log(y1 / (y2 + 1.0e-12) + 1.0e-12)
 
 
 def js(y1, y2):
@@ -107,7 +107,7 @@ def kldcg(
 def jsdcg(
     values: Iterable[ep.Tensor], base: Optional[ep.Tensor]
 ) -> Iterable[ep.Tensor]:
-    return barea(values, base, lambda x, y: y / np.log(x + 1+1.e-12), comparator=js)
+    return barea(values, base, lambda x, y: y / np.log(x + 1 + 1.0e-12), comparator=js)
 
 
 @expander
