@@ -11,14 +11,17 @@ report = fb.multireport(
 # report = fb.combine(report, report2)
 fb.describe(report)
 
-print(fb.stamps.available())
 
 stamps = fb.combine(
     fb.stamps.four_fifths_rule(report),
     fb.stamps.prule(report),
     fb.stamps.maxbdcg(report),
 )
-print(fb.modelcards.tomarkdown(stamps))
+report = fb.Fork(auc=fb.reduce(fb.auc(scores=yhat, labels=y, sensitive=s), fb.reducers.max, fb.expanders.barea))
+print(report)
+stamps = fb.combine(fb.stamps.abroca(report))
+fb.modelcards.tohtml(stamps, show=True)
+
 
 
 # fb.interactive(report)

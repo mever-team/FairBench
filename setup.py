@@ -12,7 +12,7 @@ long_description = "A comprehensive AI fairness exploration framework.<br>**Home
 
 setuptools.setup(
     name="fairbench",
-    version="0.2.12",
+    version="0.2.13",
     author="Emmanouil (Manios) Krasanakis",
     author_email="maniospas@hotmail.com",
     description="Fairness model assessment framework",
