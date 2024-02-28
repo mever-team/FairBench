@@ -202,6 +202,8 @@ class Fork(Mapping):
         return call(self, "__delitem__", name)
 
     def __getitem__(self, name):
+        if name in self._branches:
+            return _result(self._branches[name])
         return call(self, "__getitem__", name)
 
     def __setitem__(self, name, value):

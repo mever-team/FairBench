@@ -41,7 +41,7 @@ def auc(scores: Tensor, labels: Tensor, sensitive: Tensor = None):
 @role("metric")
 @parallel
 @unit_bounded
-def hr(scores: Tensor, labels: Tensor, sensitive: Tensor = None, top: int = 3):
+def tophr(scores: Tensor, labels: Tensor, sensitive: Tensor = None, top: int = 3):
     k = int(top.numpy())
     assert 0 < k <= scores.shape[0]
     if sensitive is None:
@@ -61,7 +61,7 @@ def hr(scores: Tensor, labels: Tensor, sensitive: Tensor = None, top: int = 3):
 @role("metric")
 @parallel
 @unit_bounded
-def reck(scores: Tensor, labels: Tensor, sensitive: Tensor = None, top: int = 3):
+def toprec(scores: Tensor, labels: Tensor, sensitive: Tensor = None, top: int = 3):
     k = int(top.numpy())
     assert 0 < k <= scores.shape[0]
     if sensitive is None:
@@ -81,7 +81,7 @@ def reck(scores: Tensor, labels: Tensor, sensitive: Tensor = None, top: int = 3)
 @role("metric")
 @parallel
 @unit_bounded
-def f1k(scores: Tensor, labels: Tensor, sensitive: Tensor = None, top: int = 3):
+def topf1(scores: Tensor, labels: Tensor, sensitive: Tensor = None, top: int = 3):
     k = int(top.numpy())
     assert 0 < k <= scores.shape[0]
     if sensitive is None:
@@ -103,7 +103,7 @@ def f1k(scores: Tensor, labels: Tensor, sensitive: Tensor = None, top: int = 3):
 @role("metric")
 @parallel
 @unit_bounded
-def ap(scores: Tensor, labels: Tensor, sensitive: Tensor = None, top: int = 3):
+def avghr(scores: Tensor, labels: Tensor, sensitive: Tensor = None, top: int = 3):
     k = int(top.numpy())
     assert 0 < k <= scores.shape[0]
     if sensitive is None:
@@ -132,7 +132,7 @@ def ap(scores: Tensor, labels: Tensor, sensitive: Tensor = None, top: int = 3):
 @role("metric")
 @parallel
 @unit_bounded
-def arepr(scores: Tensor, sensitive: Tensor = None, top: int = 3):
+def avgrepr(scores: Tensor, sensitive: Tensor = None, top: int = 3):
     k = int(top.numpy())
     assert 0 < k <= scores.shape[0]
     if sensitive is None:

@@ -54,7 +54,7 @@ dfnr:
 
 maxbdcg:
   title: "NDCG of average precision"
-  alias: ["maxbdcg.arepr"]
+  alias: ["maxbdcg.avgrepr"]
   description:
     "The maximum of NDCG-weighted differences between curves, counting the number of elements
     represented at different top-k predictions. This is a type of disparate impact for recommendation systems."

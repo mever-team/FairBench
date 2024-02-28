@@ -142,7 +142,7 @@ number of samples, sensitive scores
 </em></div></div>
 
 
-### `hr`
+### `tophr`
 <div class="doc" markdown="span">
 Computes the hit rate, i.e., precision, for a set number of
 top scores for sensitive data samples. This is
@@ -154,12 +154,12 @@ Returns a float in the range $[0,1]$.
 number of samples, top scores, true top scores
 </em></div></div>
 
-| Additional argument | Role      | Values                            |
+| Optional argument | Role      | Values                            |
 |---------------------|-----------|-----------------------------------|
 | top                 | parameter | integer in the range $[1,\infty)$ |
 
 
-### `reck`
+### `toprec`
 <div class="doc" markdown="span">
 Computes the recall for a set number of
 top scores for sensitive data samples. This is
@@ -171,12 +171,12 @@ Returns a float in the range $[0,1]$.
 number of samples, top scores, true top scores
 </em></div></div>
 
-| Additional argument | Role      | Values                            |
+| Optional argument | Role      | Values                            |
 |---------------------|-----------|-----------------------------------|
 | top                 | parameter | integer in the range $[1,\infty)$ |
 
 
-### `f1k`
+### `topf1`
 <div class="doc" markdown="span">
 Computes the f1-score for a set number of
 top scores for sensitive data samples. This is
@@ -189,14 +189,14 @@ Returns a float in the range $[0,1]$.
 number of samples, top scores, true top scores
 </em></div></div>
 
-| Additional argument | Role      | Values                            |
+| Optional argument | Role      | Values                            |
 |---------------------|-----------|-----------------------------------|
 | top                 | parameter | integer in the range $[1,\infty)$ |
 
 
 
 
-### `ap`
+### `tophr`
 <div class="doc" markdown="span">
 Computes the average hit rate/precession 
 across different numbers of top scores
@@ -208,7 +208,7 @@ Returns a float in the range $[0,1]$.
 number of samples, top scores, hr curve
 </em></div></div>
 
-| Additional argument | Role      | Values                            |
+| Optional argument | Role      | Values                            |
 |---------------------|-----------|-----------------------------------|
 | top                 | parameter | integer in the range $[1,\infty)$ |
 
@@ -277,7 +277,7 @@ are evaluated to zero.
 number of samples, sum of square errors, degrees of freedom
 </em></div></div>
 
-| Additional argument | Role      | Values                            |
+| Optional argument | Role      | Values                            |
 |---------------------|-----------|-----------------------------------|
 | deg_freedom         | parameter | integer in the range $[0,\infty)$ |      
 
@@ -295,6 +295,6 @@ estimation.
 number of samples
 </em></div></div>
 
-| Additional argument | Role      | Values                     |
+| Optional argument | Role      | Values                     |
 |---------------------|-----------|----------------------------|
 | alpha               | parameter | float in the range $[0,1]$ |      

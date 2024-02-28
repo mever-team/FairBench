@@ -1,5 +1,7 @@
 from fairbench.core import Fork, Forklike, Explainable, ExplainableError
 from typing import Iterable
+import requests
+import yaml
 
 
 def _check_equals(fork1, fork2):
@@ -67,6 +69,8 @@ class Stamp:
                 report = getattr(report, field)
         except AttributeError:
             return ExplainableError(f"Report does not contain {'.'.join(fields)}")
+        if isinstance(report, Fork) or (callable(report) and not isinstance(report, Explainable)):
+            return ExplainableError(f"Report does not contain {'.'.join(fields)}")
         original_report = report
         if self.minimum is not None and self.maximum is not None:
             report = (report >= self.minimum) & (report <= self.maximum)
@@ -94,11 +98,6 @@ class Stamp:
         )
 
 
-import requests
-import yaml
-import yamlres
-
-
 class StampSpecs:
     def __init__(
         self,
@@ -116,13 +115,17 @@ class StampSpecs:
         self._resources = None
         self._path = None
 
+    def available(self):
+        getattr(self, "prule")  # needed to retrieve first set of resources
+        return tuple(self._resources.keys())
+
     def __getattribute__(self, attr):
-        if attr in ["_resources", "_stamps", "_path"]:
+        if attr in ["_resources", "_stamps", "_path", "available", "clear", "source"]:
             return object.__getattribute__(self, attr)
         if self._resources is None and self._path is not None:
             response = requests.get(self._path)
             if response.status_code == 200:
-                print(response.text)
+                #print(response.text)
                 self._resources = yaml.load(response.text, Loader=yaml.SafeLoader)
             else:
                 raise Exception(
@@ -131,6 +134,8 @@ class StampSpecs:
 
         if attr in self._stamps:
             return self._stamps[attr]
+        if attr not in self._resources:
+            raise Exception(f'Stamp {attr} not found in {self._resources.keys()}')
         resource = self._resources[attr]
         ret = Stamp(
             resource["title"],

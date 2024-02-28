@@ -11,19 +11,21 @@ sensitive = fb.Fork(gender=fb.categories @ sensitive_signal.filter(exclude=train
 # create report for pagerank
 algorithm = pg.PageRank(alpha=0.85)
 scores = algorithm(train).filter(exclude=train)
-report = fb.multireport(labels=labels, scores=scores, sensitive=sensitive)
+report = fb.multireport(labels=labels, scores=scores, sensitive=sensitive, top=50)
 
 # create report for locally fair pagerank
 fair_algorithm = pg.LFPR(alpha=0.85, redistributor="original")
 fair_scores = fair_algorithm(train, sensitive=sensitive_signal).filter(exclude=train)
-fair_report = fb.multireport(labels=labels, scores=fair_scores, sensitive=sensitive)
+fair_report = fb.multireport(labels=labels, scores=fair_scores, sensitive=sensitive, top=50)
 
 # combine both reports into one and get the auc perspective
 fork = fb.Fork(ppr=report, lfpr=fair_report)
-#fb.interactive(fork)
+#   fb.interactive(fork)
 #fb.describe(fork.phi)
+#print(fork.phi)
 
-stamp = fb.combine(
-    fb.stamps.maxbdcg(report),
-)
-fb.modelcards.tohtml(stamp, show=True)
+value = fb.areduce(fb.avghr(labels=labels, scores=fair_scores, sensitive=sensitive, top=50),
+          reducer=fb.reducers.max,
+          expand=fb.expanders.bdcg
+        )
+print(value.explain)
