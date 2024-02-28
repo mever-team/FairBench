@@ -9,17 +9,15 @@ report = fb.multireport(
 )
 # report2 = fb.unireport(predictions=(yhat > 0.5), labels=y, sensitive=s, top=50)
 # report = fb.combine(report, report2)
-fb.describe(report)
+#fb.describe(report)
 
 
 stamps = fb.combine(
-    fb.stamps.four_fifths_rule(report),
-    fb.stamps.prule(report),
     fb.stamps.maxbdcg(report),
 )
-report = fb.Fork(auc=fb.reduce(fb.auc(scores=yhat, labels=y, sensitive=s), fb.reducers.max, fb.expanders.barea))
-print(report)
-stamps = fb.combine(fb.stamps.abroca(report))
+
+
+#stamps = fb.combine(fb.stamps.abroca(report))
 fb.modelcards.tohtml(stamps, show=True)
 
 
