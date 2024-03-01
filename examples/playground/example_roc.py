@@ -13,6 +13,7 @@ report = fb.multireport(
 
 
 stamps = fb.combine(
+    fb.stamps.prule(report),
     fb.stamps.maxbdcg(report),
 )
 

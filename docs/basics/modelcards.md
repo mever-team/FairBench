@@ -26,7 +26,7 @@ respectively asserting that some property is met and quantifying how
 well a model performs.
 
 Several stamps are provided within the `fairbench.stamps`
-backage. To avoid confusion with code library functionalities,
+package. To avoid confusion with core library functionalities,
 stamps are not accessed from the global level. Run
 a stamp per:
 

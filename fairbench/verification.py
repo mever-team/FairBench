@@ -69,7 +69,7 @@ class Stamp:
                 report = getattr(report, field)
         except AttributeError:
             return ExplainableError(f"Report does not contain {'.'.join(fields)}")
-        if isinstance(report, Fork) or (
+        if isinstance(report, Fork) or isinstance(report, Forklike) or (
             callable(report) and not isinstance(report, Explainable)
         ):
             return ExplainableError(f"Report does not contain {'.'.join(fields)}")
