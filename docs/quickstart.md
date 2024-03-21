@@ -30,14 +30,14 @@ test, y, yhat = fb.demos.adult()  # test is a Pandas dataframe
 Declare sensitive attributes for test data with 
 a data structure called [fork](basics/forks.md).
 FairBench supports multi-value and multi-attribute 
-fairness analysis with the same interfaces by just declaring
-more attributes to the same fork.
+fairness analysis with the same interfaces by just 
+declaring more attributes in the same fork.
 Forks can be constructed with many patterns,
-depending on available datatypes. In the most common case:
+depending on available datatypes. A common case is:
 
 ```python
 sensitive = fb.Fork(fb.categories @ test[8], fb.categories @ test[9])  # analyses of the gender and race columns
-sensitive = sensitive.intersectional()  # switch to full intersectional analysis
+sensitive = sensitive.intersectional()  # automatically find non-empty intersections
 ```
 
 Given that a sensitive attribute fork has been created, 
@@ -45,24 +45,29 @@ use it alongside predictions
 to generate a fairness [report](basics/reports.md). 
 We now generate a multireport, which compares all population
 groups or subgroups pairwise and aggregates all comparisons
-to one value. We set some test and predictive data arguments 
+to one value for each base performance metric.
+We indicate test and prediction data 
 with keywords pertaining to the classification task at hand; 
 other arguments enable usage of base performance 
-[metrics](advanced/metrics.md) for other tasks.
+[metrics](advanced/metrics.md) for non-classification tasks.
 
 ```python
 report = fb.multireport(predictions=yhat, labels=y, sensitive=sensitive)
 fb.describe(report)  # or print(report) or fb.visualize(report) or fb.interactive(report)
 ```
 
-Either perform an [interactive](basics/interactive.md) exploration
-of the report to get a sense of where unfairness is exhibited, or
-create some stamps about fairness definitions it adheres to
-and use these to generate a fairness [model card](basics/modelcards.md). 
-The snippet below exports a model card to an html file
-format and opens it in your browser. The card will look like
+Perform an [interactive](basics/interactive.md) exploration
+of the report to get a sense of where unfairness is exhibited.
+This can be done either programmatically or through an interactive UI.
+
+Afterwards, create some stamps about popular fairness definitions 
+it adheres to and pack these to a fairness [model card](basics/modelcards.md)
+that includes caveats and recommendations.
+The snippet below exports the model card to an html file
+format and opens it in your browser. It will look like
 [this](images/example_modelcard.md).
-You can omit the arguments that export to a file or open the modelcards.
+You can omit the arguments for exporting to a file or 
+for immediately showing the modelcards.
 You can also export cards in markdown or yaml formats.
 
 
