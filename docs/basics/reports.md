@@ -18,11 +18,11 @@ across several definitions of fairness.
 
 ## Generate reports
 
-You can generate 
-fairness reports by providing some
+You can generate fairness reports by providing some
 of the optional arguments below to a report
-generation method. These are needed to compute
-performance [metrics](../advanced/metrics.md).
+generation method. These arguments are needed to automatically
+understand which base
+performance [metrics](../advanced/metrics.md) to compute.
 Report generation method will try to compute fairness
 assessment built from as many base metrics as they can,
 depending on which arguments are provided.
@@ -56,7 +56,8 @@ report generation methods:
 
 - `accreport` provides popular performance evaluation measures to be viewed between branches (accuracy, positives, true positive rates, true negative rates).
 - `binreport` conducts a suit of popular binary fairness assessments on each variable branch and should be preferred when branches do *not* correspond to mult-attribute fairness.
-- `multireport` is ideal for multi-fairness approaches, where the `sensitive` fork has many branches. This report generator performs a lot of [editing](../advanced/manipulation.md) to summarize the findings of multi-attribute fairness analysis.
+- `multireport` is ideal for multi-fairness approaches, where the `sensitive` fork has many branches. This report generator performs a lot of [editing](../advanced/manipulation.md) to summarize the findings of multi-attribute fairness analysis by making all possible group or subgroup comparisons.
+- `unireport` is similar to `multireport`, with the difference being that each group or subgroup is compared to the whole population. 
 - `isecreport` tackles mult-fairness with many intersectional groups. Its output approximates *multireport* with a Bayesian framework that is applicable even when protected group intersections are too small to yield meaningful predictions.
 
 As an example, let's create a simple report
@@ -70,8 +71,10 @@ feature value per:
 ```python
 import fairbench as fb
 
-sensitive = fb.Fork(case1=..., case2=...)
-report = fb.multireport(predictions=..., labels=..., sensitive=sensitive)
+sensitive = fb.Fork(men=[1, 1, 0, 0, 0], women=[0, 0, 1, 1, 1])
+report = fb.multireport(predictions=[1, 0, 1, 0, 0], 
+                        labels=[1, 0, 0, 1, 0], 
+                        sensitive=sensitive)
 ```
 
 
@@ -140,7 +143,9 @@ Some report values, can be explained
 in terms of data they are derived from.
 For instance, if a `fairbench.isecreport` is made, both
 empirical and bayesian evaluations arise from the underlying
-data branches of multi-attribute fairness forks.
+data branches of multi-attribute fairness forks. More 
+on exploration based on explainable objects can be found in
+our introduction to programmatic [interactive exporation](interactive.md)
 
 Whenever possible, the data branches that are converted
 into final reports are preserved by having report values
