@@ -31,6 +31,7 @@ nosetests.xml
 coverage.xml
 *.cover
 .hypothesis/
+site/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

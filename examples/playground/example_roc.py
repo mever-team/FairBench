@@ -9,7 +9,7 @@ report = fb.multireport(
 )
 # report2 = fb.unireport(predictions=(yhat > 0.5), labels=y, sensitive=s, top=50)
 # report = fb.combine(report, report2)
-#fb.describe(report)
+# fb.describe(report)
 
 
 stamps = fb.combine(
@@ -18,9 +18,8 @@ stamps = fb.combine(
 )
 
 
-#stamps = fb.combine(fb.stamps.abroca(report))
+# stamps = fb.combine(fb.stamps.abroca(report))
 fb.modelcards.tohtml(stamps, show=True)
-
 
 
 # fb.interactive(report)

@@ -114,6 +114,7 @@ def test_reck():
             == 1
         )
 
+
 def test_pinball():
     for _ in environment():
         mae = fb.metrics.mae(

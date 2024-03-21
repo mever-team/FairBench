@@ -14,38 +14,43 @@ A typical workflow involves the following steps:
 4. Extract relevant fairness definitions into [model cards](basics/modelcards.md)
 
 
-We will show how to investigate the fairness of a binary
+Here, we show how to investigate the fairness of a binary
 classification algorithm. Other types of systems can
-be analysed too. Import
-the library and create some predictions:
+be analysed too. Import the library and create some demo
+predictions to play with, like below. You can also have
+data in popular that ducktype native Python iterables, such as
+numpy arrays and pytorch/tensorflow tensors.
 
 ```python
-from sklearn.linear_model import LogisticRegression
+import fairbench as fb
 
-classifier = LogisticRegression()
-classifier.fit(trainx, trainy)
-yhat = classifier.predict(x)
+test, y, yhat = fb.demos.adult()  # test is a Pandas dataframe
 ```
 
 Declare sensitive attributes for test data with 
 a data structure called [fork](basics/forks.md).
 FairBench supports multi-value and multi-attribute 
-fairness analysis with the same interfaces by just adding more
-attributes to the same fork.
-Forks can be constructed with many patterns, depending on available datatypes.
+fairness analysis with the same interfaces by just declaring
+more attributes to the same fork.
+Forks can be constructed with many patterns,
+depending on available datatypes. In the most common case:
+
+```python
+sensitive = fb.Fork(fb.categories @ test[8], fb.categories @ test[9])  # analyses of the gender and race columns
+sensitive = sensitive.intersectional()  # switch to full intersectional analysis
+```
 
 Given that a sensitive attribute fork has been created, 
 use it alongside predictions 
 to generate a fairness [report](basics/reports.md). 
-Here, we will generate a multireport, which is the most general 
--albeit a little complex- 
-deterministic fairness exploration FairBench provides. We set
-some test and predictive data arguments with keywords pertaining
-to the classification task at hand; other arguments enable 
+We now generate a multireport, which compares all population
+groups or subgroups pairwise and aggregates all comparisons
+to one value. We set some test and predictive data arguments 
+with keywords pertaining to the classification task at hand; 
+other arguments enable usage of base performance 
 [metrics](advanced/metrics.md) for other tasks.
 
 ```python
-sensitive = fb.Fork(men=sensitive1, case2=sensitive2)
 report = fb.multireport(predictions=yhat, labels=y, sensitive=sensitive)
 fb.describe(report)  # or print(report) or fb.visualize(report) or fb.interactive(report)
 ```
@@ -57,8 +62,8 @@ and use these to generate a fairness [model card](basics/modelcards.md).
 The snippet below exports a model card to an html file
 format and opens it in your browser. The card will look like
 [this](images/example_modelcard.md).
-You can omit the file export or show arguments, or
-export cards in markdown or yaml formats.
+You can omit the arguments that export to a file or open the modelcards.
+You can also export cards in markdown or yaml formats.
 
 
 ```python
@@ -71,11 +76,8 @@ fb.modelcards.tohtml(stamps, file="output.html", show=True)
 ```
 
 
-!!! tip
-    Multireport considers many possible variations
-    of what could constitute bias. For naive analysis, 
-    create a binreport instead.
-
 !!! danger
     Always consult stakeholders to decide which stamps are
-    relevant for your systems.
+    relevant for your systems. If a report reveals potential
+    issues that do not match those of model cards, also
+    ask about them (and you can create custom stumps).
