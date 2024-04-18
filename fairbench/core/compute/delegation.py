@@ -152,7 +152,10 @@ def parallel_primitive(_wrapped_method):
                 return ret
             except AttributeError:
                 from fairbench import ExplainableError
-                return ExplainableError(f"Cannot call {_wrapped_method.__name__} with arguments {args} {kwargs}")
+
+                return ExplainableError(
+                    f"Cannot call {_wrapped_method.__name__} with arguments {args} {kwargs}"
+                )
         args, kwargs = _align_branches(_wrapped_method, args, kwargs, Fork, branches)
         return Fork(
             **{

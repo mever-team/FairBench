@@ -46,7 +46,7 @@ dfnr:
   title: "dfnr"
   alias: ["maxdiff.tpr", "maxdiff[vsAny].tpr", "dfnr"]
   description:
-    "The maximum difference is reported, so that value of 1 indicates
+    "Compares the false negative rates between groups. The maximum difference is reported, so that value of 1 indicates
     disparate mistreatment, and value of 0 disparate mistreatment mitigation."
   caveats:
     - "Disparate mistreatment may not always be an appropriate fairness consideration."

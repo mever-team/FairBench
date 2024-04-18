@@ -147,7 +147,11 @@ def interactive(
                 return
 
             if isinstance(previous[-1], Forklike) or isinstance(previous[-1], Fork):
-                val = "" if not hasattr(list(branches.values())[0], "role") else list(branches.values())[0].role()
+                val = (
+                    ""
+                    if not hasattr(list(branches.values())[0], "role")
+                    else list(branches.values())[0].role()
+                )
                 prev_selection = select_view.value
                 options = ["Branch", "Entries" if val is None else val]
                 select_view.options = options
@@ -287,9 +291,12 @@ def interactive(
                 plot_data = _branch(selected_branch)
                 explain.visible = hasattr(plot_data, "explain")
                 plot_data = _asdict(plot_data)
-                if hasattr(plot_data, "keys") and (not list(plot_data.keys()) or isinstance(
-                    plot_data[list(plot_data.keys())[0]], fairbench.ExplanationCurve
-                )):
+                if hasattr(plot_data, "keys") and (
+                    not list(plot_data.keys())
+                    or isinstance(
+                        plot_data[list(plot_data.keys())[0]], fairbench.ExplanationCurve
+                    )
+                ):
                     plot.visible = False
                     curves.visible = True
                     for i, k in enumerate(plot_data):
@@ -393,7 +400,11 @@ def interactive(
             update_plot(doc)
 
         def update_value(doc):
-            selected_branch = select_branch.labels[select_branch.active] if select_branch.labels else "ALL"
+            selected_branch = (
+                select_branch.labels[select_branch.active]
+                if select_branch.labels
+                else "ALL"
+            )
             if selected_branch != "ALL" and _depth(_branch(selected_branch)) > 1:
                 previous_title.append(selected_branch)
                 branch = _branch(selected_branch)

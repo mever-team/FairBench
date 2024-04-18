@@ -6,6 +6,7 @@ from fairbench.core.compute import comparator, parallel_primitive
 
 def simplify(fork):
     from fairbench import Explainable, ExplainableError
+
     branches = fork.branches() if isinstance(fork, Fork) else fork
     branches = {
         k: simplify(v) if isinstance(v, Fork) or isinstance(v, Forklike) else v
@@ -15,6 +16,7 @@ def simplify(fork):
     if not branches:
         return ExplainableError("Branch holds no values.")
     return Fork(branches) if isinstance(fork, Fork) else Forklike(**branches)
+
 
 def _str_foreign(v, tabs=0):
     if isinstance(v, Fork):
