@@ -1,6 +1,6 @@
 four_fifths_rule:
   title: "4/5 rule"
-  alias: ["minratio.pr", "minratio.pr[vsAny]", "prule"]
+  alias: ["minratio.pr", "minratio[vsAny].pr", "prule"]
   minimum: 0.8
   description:
     "Checks whether the fraction of positive predictions for each protected group 
@@ -14,7 +14,7 @@ four_fifths_rule:
 
 accuracy:
   title: "worst accuracy"
-  alias: ["min.accuracy", "min.accuracy[vsAny]", "accuracy"]
+  alias: ["min.accuracy", "min[vsAny].accuracy", "accuracy"]
   description:
     "Computes the worst performance among protected groups; this is the minimum
     benefit the system brings to any group."
@@ -24,7 +24,7 @@ accuracy:
 
 prule:
   title: "p-rule"
-  alias: ["minratio.pr", "minratio.pr[vsAny]", "prule"]
+  alias: ["minratio.pr", "minratio[vsAny].pr", "prule"]
   description:
     "Compares the fraction of positive predictions between groups.
     The worst ratio is reported, so that value of 0 indicates 
@@ -34,7 +34,7 @@ prule:
 
 dfpr:
   title: "dfpr"
-  alias: ["maxdiff.tnr", "maxdiff.tnr[vsAny]", "dfpr"]
+  alias: ["maxdiff.tnr", "maxdiff[vsAny].tnr", "dfpr"]
   description:
     "Compares the false positive rates between groups. The maximum difference is reported, so that value of 1 indicates
     disparate mistreatment, and value of 0 disparate mistreatment mitigation."
@@ -44,7 +44,7 @@ dfpr:
 
 dfnr:
   title: "dfnr"
-  alias: ["maxdiff.tpr", "maxdiff.tpr[vsAny]", "dfnr"]
+  alias: ["maxdiff.tpr", "maxdiff[vsAny].tpr", "dfnr"]
   description:
     "The maximum difference is reported, so that value of 1 indicates
     disparate mistreatment, and value of 0 disparate mistreatment mitigation."
@@ -54,7 +54,7 @@ dfnr:
 
 abroca:
   title: "abroca"
-  alias: ["maxbarea.auc", "maxbarea.auc[vsAny]"]
+  alias: ["maxbarea.auc", "maxbarea[vsAny].auc"]
   description:
     "The maximum area between ROC curves.
     This is a type of disparate mistreatment for recommendation systems."
@@ -64,7 +64,7 @@ abroca:
 
 maxbdcg:
   title: "NDCG of average precision"
-  alias: ["maxbdcg.avgrepr", "maxbdcg.avgrepr[vsAny]"]
+  alias: ["maxbdcg.avgrepr", "maxbdcg[vsAny].avgrepr"]
   description:
     "The maximum of NDCG-weighted differences between curves, counting the number of elements
     represented at different top-k predictions. This is a type of disparate impact for recommendation systems."

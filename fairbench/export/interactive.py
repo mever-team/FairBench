@@ -47,6 +47,7 @@ def interactive(
     spacing=None,
     horizontal=True,
     port=8888,
+    browser=None,
 ):  # pragma: no cover
     """
     Creates an interactive visualization over a fairness report.
@@ -130,17 +131,23 @@ def interactive(
         def _depth(obj):
             if obj is None:
                 return 0
-            if isinstance(obj, Fork):
-                return max(_depth(x) for x in obj.branches().values()) + 1
-            if isinstance(obj, dict):
-                if obj.values():
+            elif isinstance(obj, Fork):
+                branches = obj.branches()
+                if branches:
+                    return max(_depth(x) for x in branches.values()) + 1
+            elif isinstance(obj, dict):
+                if obj:
                     return max(_depth(x) for x in obj.values()) + 1
             return 0
 
         def _update_branches():
             branches = _asdict(previous[-1])
+            if not branches:
+                select_branch.labels = ["ALL"]
+                return
+
             if isinstance(previous[-1], Forklike) or isinstance(previous[-1], Fork):
-                val = list(branches.values())[0].role()
+                val = "" if not hasattr(list(branches.values())[0], "role") else list(branches.values())[0].role()
                 prev_selection = select_view.value
                 options = ["Branch", "Entries" if val is None else val]
                 select_view.options = options
@@ -189,11 +196,12 @@ def interactive(
                 if (select_view.value == select_view.options[0]) != isinstance(
                     previous[-1], Fork
                 ):
-                    for branch in branches.keys():
-                        for k, v in _asdict(branches[branch]).items():
-                            if k not in _source:
-                                _source[k] = list()
-                            _source[k].append(branch)
+                    if branches:
+                        for branch in branches.keys():
+                            for k, v in _asdict(branches[branch]).items():
+                                if k not in _source:
+                                    _source[k] = list()
+                                _source[k].append(branch)
                     try:
                         values = [
                             tofloat(_asdict(branches[branch])[metric])
@@ -279,9 +287,9 @@ def interactive(
                 plot_data = _branch(selected_branch)
                 explain.visible = hasattr(plot_data, "explain")
                 plot_data = _asdict(plot_data)
-                if isinstance(
+                if hasattr(plot_data, "keys") and (not list(plot_data.keys()) or isinstance(
                     plot_data[list(plot_data.keys())[0]], fairbench.ExplanationCurve
-                ):
+                )):
                     plot.visible = False
                     curves.visible = True
                     for i, k in enumerate(plot_data):
@@ -293,10 +301,10 @@ def interactive(
                             line_width=2,
                             legend_label=curve.name + " of " + k,
                         )
-                    curves.legend.location = "bottom_right"
+                    if plot_data:
+                        curves.legend.location = "bottom_right"
                     # curves.legend.title = selected_branch
                     return
-
                 plot_data = {k: plot_data[k] for k in order(plot_data)}
                 keys = list(plot_data.keys())
                 if horizontal:
@@ -385,7 +393,7 @@ def interactive(
             update_plot(doc)
 
         def update_value(doc):
-            selected_branch = select_branch.labels[select_branch.active]
+            selected_branch = select_branch.labels[select_branch.active] if select_branch.labels else "ALL"
             if selected_branch != "ALL" and _depth(_branch(selected_branch)) > 1:
                 previous_title.append(selected_branch)
                 branch = _branch(selected_branch)
@@ -409,7 +417,7 @@ def interactive(
         doc.add_root(column(label, controls, plot, curves, cannot_observe))
 
     app = Application(FunctionHandler(modify_doc))
-    if _in_jupyter():
+    if browser is not None and not browser and _in_jupyter():
         from bokeh.io import show
         from bokeh.plotting import output_notebook
         import os
@@ -418,6 +426,8 @@ def interactive(
         output_notebook()
         show(app)
         return
+    if browser is not None and browser == True:
+        raise Exception("Cannot set broswer=False when not using Jupyter,")
     server = Server({"/": app}, num_procs=1)
     server.start()
     address = server.address.split(":")[0] if server.address else "localhost"
