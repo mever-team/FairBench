@@ -25,8 +25,13 @@ def test_curve_visualization(monkeypatch):
     from matplotlib import pyplot as plt
 
     for _ in environment():
-        monkeypatch.setattr(plt, "show", lambda: None)
-        test, y, yhat = fb.demos.adult(predict="probabilities")
-        s = fb.Fork(fb.categories @ test[9])
-        report = fb.multireport(scores=yhat, labels=y, sensitive=s)
-        fb.visualize(report.min.auc.explain.explain)
+        for setting, protected in [
+            (fb.demos.adult, 9),
+            (fb.demos.bank, "marital"),
+            (fb.demos.compas, "sex"),
+        ]:
+            monkeypatch.setattr(plt, "show", lambda: None)
+            test, y, yhat = setting(predict="probabilities")
+            s = fb.Fork(fb.categories @ test[protected])
+            report = fb.multireport(scores=yhat, labels=y, sensitive=s)
+            fb.visualize(report.min.auc.explain.explain)
