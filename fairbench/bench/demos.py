@@ -103,7 +103,7 @@ def compas(
     seed=None,
 ):
     """
-    Creates demonstration outputs for the *bank* dataset.
+    Creates demonstration outputs for the *compas* dataset.
 
     :param classifier: A method returning a trained classifier from X, y training pairs.
         Default is the `fit` method of sklearn's logistic regression for max_iter=1000.
@@ -112,7 +112,7 @@ def compas(
     :return: A tuple of the test set, desired binary labels, and predicted binary labels or their probabilities.
     """
     data = read_csv(
-        "https://raw.githubusercontent.com/maniospas/AdaptiveFairness/master/%2BdataImport/compas-scores-two-years.csv",
+        "https://raw.githubusercontent.com/propublica/compas-analysis/master/compas-scores-two-years.csv",
         delimiter=",",
     )
     train, test = sklearn.model_selection.train_test_split(data, random_state=seed)

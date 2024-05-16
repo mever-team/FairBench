@@ -11,14 +11,6 @@ Computes the minimum base metric value across all groups or
 subgroups. Should have a high value to indicate that the base
 metric has high value for even then less priviledged group.</div>
 
-### `gini`
-<div class="doc" markdown="span">
-Computes the gini coefficient between metric values
-across all groups or subgroups. Value of 0 indicates
-that all groups achieve the same evaluation, whereas
-value of 1 indicates full imbalance between metric
-values.</div>
-
 ### `wmean`
 <div class="doc" markdown="span">
 Computes the average of base metric values across
@@ -29,6 +21,14 @@ across groups, and low values worse performance.
 This mostly helps get sense of whether a `min`
 comparison is substantially smaller than the average.
 </div>
+
+### `gini`
+<div class="doc" markdown="span">
+Computes the gini coefficient between metric values
+across all groups or subgroups. Value of 0 indicates
+that all groups achieve the same evaluation, whereas
+value of 1 indicates full imbalance between metric
+values.</div>
 
 ### `minratio`
 <div class="doc" markdown="span">
@@ -66,11 +66,25 @@ pairs of groups is reported. Zero area difference
 indicates that all groups have similar areas.
 </div>
 
+
+### `maxbdcg`
+<div class="doc" markdown="span">
+A similar strategy to `maxbarea` where differences
+are made to matter more through a normalized discounted
+comulative gain (NDCG) weighting. This is ideal for
+comparing the top hit rates of recommendation systems,
+but the formula has also been generalized to account
+for ROC curves, where false positive rate differences
+matter more when they occur for the same
+small negative rates. Zero relative area difference again
+indicates that all groups have similar ROC curves.
+</div>
+
 ### `maxrarea`
 <div class="doc" markdown="span">
 A similar strategy to `maxbarea` where the comparison
 between curve points is made not through an absolute
 difference but how much their ratio deviates from 1.
 Zero relative area difference again
-indicates that all groups have similar areas.
+indicates that all groups have similar ROC curves.
 </div>
