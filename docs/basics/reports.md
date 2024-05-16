@@ -3,7 +3,9 @@
 Reports perform multi-faceted analyses of system outcomes
 (e.g., predictions, recommendations, regression scores)
 and produce explainable high-level views of biases found
-across several definitions of fairness. 
+across several definitions of fairness. For interpretation
+of what report outcomes mean, 
+look at the <sub><sup>REPORT ENTRIES</sup></sub> section.
 
 1. [Generate reports](#generate-reports)
 2. [Report types](#report-types)
