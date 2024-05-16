@@ -76,6 +76,22 @@ def barea(
     ]
 
 
+def _relative(y1, y2):
+    numerator = np.maximum(y1, y2) - np.minimum(y1, y2)
+    denominator = np.maximum(y1, y2)
+    with np.errstate(invalid="ignore"):
+        result = np.divide(numerator, denominator)
+        result[denominator == 0] = 0
+    return result
+
+
+def rarea(
+    values: Optional[ep.Tensor],
+    base: Optional[ep.Tensor],
+):
+    return barea(values, base, comparator=_relative)
+
+
 def ndcg_skew(x, y):
     if x.min() < 1:
         x += 1 - x.min()

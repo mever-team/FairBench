@@ -94,3 +94,48 @@ def min(values: Iterable[ep.Tensor]) -> ep.Tensor:
         if value < ret:
             ret = value
     return ret
+
+
+def std(values: Iterable[ep.Tensor]) -> ep.Tensor:
+    assert isinstance(values, list), "fairbench.std can only reduce lists."
+    n = len(values)
+    s = 0
+    ss = 0
+    for val in values:
+        s = val + s
+        ss = val * val + ss
+    variance = (ss - (s * s) / n) / n
+    return variance**0.5
+
+
+def coefvar(values: Iterable[ep.Tensor]) -> ep.Tensor:
+    # coefficient of variation
+    # adhered to requirements by Campano, F., & Salvatore, D. (2006). Income Distribution: Includes CD. Oxford University Press.
+    assert isinstance(values, list), "fairbench.std can only reduce lists."
+    n = len(values)
+    s = 0
+    ss = 0
+    for val in values:
+        s = val + s
+        ss = val * val + ss
+    variance = (ss - (s * s) / n) / n
+    return variance**0.5 * n / s
+
+
+def gini(values: Iterable[ep.Tensor]) -> ep.Tensor:
+    # coefficient of variation
+    assert isinstance(values, list), "fairbench.std can only reduce lists."
+    n = len(values)
+
+    # Mean of the values
+    mean = _sum(values) / n
+
+    # Calculate the Gini numerator
+    gini_sum = 0
+    for i in range(n):
+        for j in range(n):
+            gini_sum = abs(values[i] - values[j]) + gini_sum
+
+    # Calculate the Gini coefficient
+    gini_coefficient = gini_sum / (2 * n * n * mean)
+    return gini_coefficient

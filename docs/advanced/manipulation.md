@@ -55,7 +55,7 @@ Reports can be reduced alongside branches. Again,
 this operation is in general applicable to all variable forks,
 although this time usage is discouraged outside of 
 report manipulation, as reduction creates new -and potentially 
-unforeseen- data branches, but constitutes the main mechanism
+unforeseen- data branches. That said, it is also the main mechanism
 for summarizing multi-attribute reports into one measure.
 Reduction internally runs three types of functions obtained
 from its arguments:
@@ -65,12 +65,11 @@ from its arguments:
 - `reducer` method that takes a list of all branch values for each metric and summarizes them into one value. These can be *mean,max,min,sum,budget*, where the last one is the logarithm of the maximum declared in differential fairness formulations.
 
 To demonstrate usage,
-we compute the mean, and budget of the absolute value ratio
-via the following code.
+we next compute the mean and budget of the absolute value ratio.
 Reduction creates new reports that comprise only one branch.
 The branch's name is dynamically derived by parameters 
 (e.g., *"budgetratioabs"*), but you can also set 
-a specific one with the argument `name="ReductionName"`. 
+a specific name with the argument `name="ReductionName"`. 
 
 ```python
 import fairbench as fb

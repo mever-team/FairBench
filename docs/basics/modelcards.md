@@ -26,7 +26,8 @@ respectively asserting that some property is met and quantifying how
 well a model performs.
 
 Several stamps are provided within the `fairbench.stamps`
-package. To avoid confusion with core library functionalities,
+package. Find them all [here](../advanced/stamps.md).
+To avoid confusion with core library functionalities,
 stamps are not accessed from the global level. Run
 a stamp per:
 
@@ -38,6 +39,14 @@ print(stamp)
 # 3/4ths ratio: False
 ```
 
+!!! tip
+    List all available stamps with `fb.stamps.available()`.
+
+!!! warning
+    Stamps require an internet connection to work
+    because they are updated each time based on an 
+    online database maintained in FairBench's repository.
+
 ## Combine stamps
 You may want to check a model for various characteristics,
 and therefore assess it with various stamps.
@@ -46,7 +55,7 @@ snippet. Each stamp's value is an `Explainable` object
 under the hood, but they all contain different explanation data;
 avoid mass-explanations (e.g., with `stamps.explain`)
 and instead export collections of stamps to model cards 
-for a more thorough explanation (see below).
+for a more thorough explanation (see below). 
 
 ```python
 stamps = fb.combine(
@@ -76,21 +85,26 @@ To avoid confusion with core library functionalities,
 model card exports can only be accessed from 
 the module `fairbench.modelcards` and not from the
 top level. For example, use the following snippet to
-export markdown:
+export markdown, where `file` is either a string path
+of where to export or None (default). The method
+returns the string representation of the generated
+modelcard in the specified format.
+The output of the snippet bellow 
+is shown [here](../images/example_modelcard.md).
+Notice that it kept track of factors,
+descriptions, and caveats and recommendations 
+to add to respective report fields.
 
 ```python
-print(fb.modelcards.tomarkdown(stamps))  # or toyaml or tohtml
+print(fb.modelcards.tomarkdown(stamps, file=None))  # or toyaml or tohtml
 ```
 
-The output will be [this markdown](../images/example_modelcard.md).
-Notice that the original stamp outputs keep track of factors,
-descriptions, and recommendations to add to respective report 
-fields.
+Below are the supported modelcard formats. 
+You can also display a model card in a browser window
+without creating a file per `fb.modelcards.tohtml(stamps, show=True)`.
 
-The `fairbench.modelcards.tohtml` method can also let you open
-the generated html in your browser (without necessarily 
-creating a file) like so:
-
-```python
-fb.modelcards.tohtml(stamps, show=True)
-```
+| Export     | Description                                  |
+|------------|----------------------------------------------|
+| tomarkdown | Exports the model card to a Markdown format. |
+| toyaml     | Exports the model card to a YAML format compatible with [HuggingFace](https://huggingface.co/docs/hub/en/model-cards).    |
+| tohtml     | Exports the model card to an HTML format.    |

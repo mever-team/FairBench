@@ -299,6 +299,8 @@ def interactive(
                 ):
                     plot.visible = False
                     curves.visible = True
+                    curves.renderers = []
+                    curves.legend.items = []
                     for i, k in enumerate(plot_data):
                         curve = plot_data[k]
                         curves.line(
@@ -437,7 +439,7 @@ def interactive(
         output_notebook()
         show(app)
         return
-    if browser is not None and browser == True:
+    if browser is not None and browser == False:
         raise Exception("Cannot set broswer=False when not using Jupyter,")
     server = Server({"/": app}, num_procs=1)
     server.start()

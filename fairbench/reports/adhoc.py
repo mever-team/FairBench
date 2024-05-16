@@ -35,10 +35,12 @@ common_performance_metrics = (
 
 common_reduction = (
     {"reducer": reducers.min},
+    {"reducer": reducers.gini},
     {"reducer": reducers.wmean},
     {"reducer": reducers.min, "expand": expanders.ratio},
     {"reducer": reducers.max, "expand": expanders.diff},
     {"reducer": reducers.max, "expand": expanders.barea},
+    {"reducer": reducers.max, "expand": expanders.rarea},
     {"reducer": reducers.max, "expand": expanders.bdcg},
     # {"reducer": reducers.max, "expand": expanders.jsdcg},
 )

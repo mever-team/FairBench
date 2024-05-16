@@ -9,19 +9,4 @@ report = fb.multireport(
 )
 # report2 = fb.unireport(predictions=(yhat > 0.5), labels=y, sensitive=s, top=50)
 # report = fb.combine(report, report2)
-# fb.describe(report)
-
-
-stamps = fb.combine(
-    fb.stamps.prule(report),
-    fb.stamps.maxbdcg(report),
-)
-
-
-# stamps = fb.combine(fb.stamps.abroca(report))
-fb.modelcards.tohtml(stamps, show=True)
-
-
-# fb.interactive(report)
-# fb.interactive(report)
-# fb.visualize(report.maxbarea.arepr.explain.explain.curve, xrotation=30)
+fb.interactive(report)

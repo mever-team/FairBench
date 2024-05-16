@@ -10,7 +10,7 @@ four_fifths_rule:
     - "Disparate impact may not always be an appropriate fairness consideration."
     - "Consider input from affected stakeholders to determine whether 
       the 4/5 rule is an appropriate fairness criterion."
-    - "The 4/5 rule is often not a legally accepted indication of disparate impact."
+    - "High 4/5 rule is not a legally accepted indication of disparate impact mitigation."
 
 accuracy:
   title: "worst accuracy"
@@ -57,6 +57,16 @@ abroca:
   alias: ["maxbarea.auc", "maxbarea[vsAny].auc"]
   description:
     "The maximum area between ROC curves.
+    This is a type of disparate mistreatment for recommendation systems."
+  caveats:
+    - "Disparate mistreatment may not always be an appropriate fairness consideration."
+    - "Consider input from affected stakeholders to determine whether abroca is an appropriate fairness measure."
+
+rbroca:
+  title: "rbroca"
+  alias: ["maxrarea.auc", "maxrarea[vsAny].auc"]
+  description:
+    "The maximum relative area between ROC curves.
     This is a type of disparate mistreatment for recommendation systems."
   caveats:
     - "Disparate mistreatment may not always be an appropriate fairness consideration."

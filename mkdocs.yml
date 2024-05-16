@@ -10,10 +10,14 @@ nav:
         - 'basics/interactive.md'
         - 'basics/modelcards.md'
     - Advanced:
-        - 'advanced/metrics.md'
+        - 'advanced/multiclass.md'
         - 'advanced/ml_integration.md'
         - 'advanced/manipulation.md'
         - 'advanced/multimodal.md'
+    - Report entries:
+        - 'advanced/metrics.md'
+        - 'advanced/comparisons.md'
+        - 'advanced/stamps.md'
 
 markdown_extensions:
   - admonition

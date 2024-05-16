@@ -11,10 +11,10 @@ across several definitions of fairness.
 4. [Explainable values](#explainable-values)
 
 !!! tip
-    To check for specific fairness assessments
-    from the literature, produce reports that contain
+    To check for some well-known fairness metric, 
+    produce reports with
     relevant information (e.g., multireports shown below)
-    and extract from them appropriate [stamps](modelcards.md#stamps).
+    and extract the metric with its [stamp](modelcards.md#stamps).
 
 ## Generate reports
 
@@ -44,21 +44,22 @@ sensitive attribute values.
 | sensitive   | sensitive attribute | fork of arrays with elements in [0,1] (either binary or fuzzy) |
 
 !!! info
-    For the time being, for multiclass problems 
-    you need to perform a different fairness assessment for each
-    for class label, but this will change in the future with
-    new capabilities.
+    In multiclass settings, 
+    perform a different fairness assessment for each
+    for class label. See [here](../advanced/multiclass.md).
 
 ## Report types
 
-Out-of-the box, you can use one of the following three
+Out-of-the box, you can use one of the following
 report generation methods:
 
-- `accreport` provides popular performance evaluation measures to be viewed between branches (accuracy, positives, true positive rates, true negative rates).
-- `binreport` conducts a suit of popular binary fairness assessments on each variable branch and should be preferred when branches do *not* correspond to mult-attribute fairness.
-- `multireport` is ideal for multi-fairness approaches, where the `sensitive` fork has many branches. This report generator performs a lot of [editing](../advanced/manipulation.md) to summarize the findings of multi-attribute fairness analysis by making all possible group or subgroup comparisons.
-- `unireport` is similar to `multireport`, with the difference being that each group or subgroup is compared to the whole population. 
-- `isecreport` tackles mult-fairness with many intersectional groups. Its output approximates *multireport* with a Bayesian framework that is applicable even when protected group intersections are too small to yield meaningful predictions.
+| Report      | Description                                                                                   | Best for                                                                     |
+|-------------|-----------------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
+| accreport   | Provides popular performance evaluation measures to be viewed between branches.               | Just metrics: accuracy, positives, true positive rates, true negative rates. |
+| binreport   | Conducts a suite of popular binary fairness assessments on each variable branch.               | Branches that do *not* correspond to sensitive attributes.                   |
+| multireport | Ideal for multi-fairness approaches, where the `sensitive` fork has many branches.             | Multidimensional analysis                                                    |
+| unireport   | Similar to `multireport`, but each group or subgroup is compared to the whole population.      | Group-vs-population comparisons.                                             |
+| isecreport  | Tackles multi-fairness with many intersectional groups.                                        | Bayesian analysis for small intersections.                                   |
 
 As an example, let's create a simple report
 based on binary predictions, binary
@@ -90,7 +91,11 @@ across sensitive groups,
 and `minratio` and `maxdiff` the minimum ratio
 and maximum differences between metric values for 
 sensitive groups (groups correspond to sensitive 
-attribute branches).
+attribute branches). Some comparison mechanisms
+may also consider intermediate computations, like
+distributions, used to compute the metrics.
+Given a report, you can find what its comparisons mean
+[here](../advanced/comparisons.md).
 
 Several methods are provided to
 work with the report data format, namely 
@@ -100,9 +105,7 @@ of tables:
 
 ```python
 fb.describe(report)  
-```
 
-```
 Metric          min             minratio        maxdiff        
 accuracy        0.938           1.000           0.000          
 pr              0.812           0.857           0.125          
@@ -115,9 +118,7 @@ to send to some frontend:
 
 ```python
 print(fb.tojson(report))
-```
 
-```json
 {"header": ["Metric", "mean", "minratio", "maxdiff"], "accuracy": [0.9375, 1.0, 0.0], "pr": [0.8125, 0.8571428571428571, 0.125], "fpr": [0.06349206349206349, 0.7777777777777778, 0.015873015873015872], "fnr": [0.3333333333333333, 0.3333333333333333, 0.33333333333333337]}
 ```
 
@@ -130,16 +131,15 @@ fb.visualize(report)
 ![report example](reports.png)
 
 !!! warning 
-    Not all forks can
-    be parsed by `fb.visualize` and `fb.display`.
-    For example, you cannot visualize a fork of reports.
-    Explore complicated forks with
-    [interactive visualization](interactive.md).
+    Complicated forks (e.g., forks of reports)
+    cannot be parsed by `fb.visualize` and `fb.display`.
+    But you can either print them/convert them to string.
+    or employ [interactive visualization](interactive.md).
 
 
 ## Explainable values
 
-Some report values, can be explained 
+Some report values can be explained 
 in terms of data they are derived from.
 For instance, if a `fairbench.isecreport` is made, both
 empirical and bayesian evaluations arise from the underlying

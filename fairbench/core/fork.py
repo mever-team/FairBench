@@ -173,6 +173,24 @@ class Fork(Mapping):
             candidates = [ids2names[i] for i in range(len(vec)) if vec[i] != 0]
             yield candidates
 
+    def relax(self):
+        branches = {
+            name: asprimitive(branch) for name, branch in self.branches().items()
+        }
+        from sklearn.naive_bayes import GaussianNB
+
+        new_branches = {}
+        for name, branch in branches.items():
+            X = np.array([branches[br] for br in branches if br != name]).transpose()
+            classifier = GaussianNB()
+            classifier.fit(X, branch)
+            new_branches[name] = classifier.predict_proba(X)[:, 0].ravel()
+            new_branches[name] = new_branches[name] / new_branches[name].max()
+            # new_branches[name] = new_branches[name]*(branch.sum()/new_branches[name].sum())
+            # print(new_branches[name])
+        # print(new_branches)
+        return Fork(new_branches)
+
     def intersectional(self, delimiter="&"):
         # get branches
         branches = self.branches()
