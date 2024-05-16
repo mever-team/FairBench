@@ -27,8 +27,12 @@ jobs:
         run: pytest -x --cov=fairbench --cov-report=xml --cov-report=html
       - name: Generate coverage badge
         run: coverage-badge -o coverage.svg -f
-      - name: Upload coverage badge
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-badge
-          path: coverage.svg
+      - name: Commit coverage badge
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+          git add coverage.svg
+          git commit -m 'Update coverage badge'
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
