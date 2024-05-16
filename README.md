@@ -1,7 +1,7 @@
 # FairBench
 
 ![build](https://github.com/mever-team/FairBench/actions/workflows/tests.yml/badge.svg)
-[![codecov](https://codecov.io/gh/mever-team/FairBench/branch/main/graph/badge.svg?token=qeiNv3DN0W)](https://codecov.io/gh/mever-team/FairBench)
+![coverage](https://github.com/mever-team/FairBench/blob/main/coverage.svg)
 [![Documentation Status](https://readthedocs.org/projects/fairbench/badge/?version=latest)](https://fairbench.readthedocs.io/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 

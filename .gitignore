@@ -1,4 +1,6 @@
 data/
+coverage/
+.coverage
 examples/research/
 .ipynb_checkpoints/
 .pytest_cache/

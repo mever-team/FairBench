@@ -11,6 +11,7 @@ def test_modelcards(monkeypatch):
             test, y, yhat = setting()
             sensitive = fb.Fork(fb.categories @ test[protected])
             report = fb.multireport(predictions=yhat, labels=y, sensitive=sensitive)
+            assert "prule" in fb.stamps.available()
             stamps = fb.combine(
                 fb.stamps.prule(report),
                 fb.stamps.accuracy(report),
