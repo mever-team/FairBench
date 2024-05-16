@@ -27,6 +27,8 @@ jobs:
         run: pytest -x --cov=fairbench --cov-report=xml --cov-report=html
       - name: Generate coverage badge
         run: coverage-badge -o coverage.svg -f
+      - name: Check for uncommitted changes
+        run: git diff --exit-code
       - name: Commit coverage badge
         if: ${{ matrix.python-version == '3.11' }}
         run: |
