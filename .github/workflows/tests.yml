@@ -28,6 +28,7 @@ jobs:
       - name: Generate coverage badge
         run: coverage-badge -o coverage.svg -f
       - name: Commit coverage badge
+        if: ${{ matrix.python-version == '3.11' }}
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
