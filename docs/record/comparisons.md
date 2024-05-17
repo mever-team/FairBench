@@ -1,9 +1,9 @@
 # Metric comparisons
 
 In FairBench [reports](../basics/reports.md) you will see 
-several comparison mechanisms of base metrics that include expansions
-and reductions. Here we summarize those mechanisms based on
-how they appear as column titles in generated reports.
+several comparison mechanisms of [base metrics](metrics.md) that include expansions
+and reductions. Here we summarize the mechanisms that
+appear as column titles of the in-built report methods.
 
 ### `min`
 <div class="doc" markdown="span">

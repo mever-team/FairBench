@@ -6,7 +6,7 @@ Visit one of the links below, or read the full documentation.
 <div style="display: flex; flex-wrap: wrap; gap: 10px;" markdown="span">
 
   <a href="quickstart/" style="border: 1px solid black; padding: 10px; flex: 1; text-align: center;" markdown="span">
-    <span style="font-size: 250%"> :rocket: </span><br>**Quickstart**<br> New? Start here.
+    <span style="font-size: 250%"> :rocket: </span><br>**Quickstart**<br> New to the library? Start here.
   </a>
 
   <a href="basics/forks/" style="border: 1px solid black; padding: 10px; flex: 1; text-align: center;" markdown="span">

@@ -27,7 +27,7 @@ import fairbench as fb
 test, y, yhat = fb.demos.adult()  # test is a Pandas dataframe
 ```
 
-## 2. Create a sensitive attribute [fork](basics/forks.md)
+## 2. Set    sensitive attribute [fork](basics/forks.md)
 
 Pack sensitive attributes found in your test data
 into a data structure called fork.
@@ -40,7 +40,7 @@ sensitive = fb.Fork(fb.categories @ test[8], fb.categories @ test[9])  # analyse
 sensitive = sensitive.intersectional()  # automatically find non-empty intersections
 ```
 
-## 3. Create and explore fairness [reports](basics/reports.md)
+## 3. Explore fairness [reports](basics/reports.md)
 
 Use sensitive attribute forks alongside predictions 
 to generate fairness reports.

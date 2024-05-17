@@ -1,4 +1,4 @@
-# Performance metrics
+# Base metrics
 
 FairBench [reports](../basics/reports.md) 
 implement several definitions of fairness that
