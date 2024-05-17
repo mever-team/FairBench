@@ -1,4 +1,4 @@
-# Interactive visualization
+# Explore reports
 
 Interactive visualization explores
 complex objects generated with  `FairBench`, such as
@@ -7,13 +7,9 @@ or of different algorithms. This is done with a user interface
 that lets you navigate between various perspectives (see below).
 The same exploration can be performed programmatically.
 
-1. [Perspectives](#perspectives)
-2. [Start visualization](#start-visualization)
-3. [Interface](#interface)
-
 ## Perspectives
 
-To delve into complicate comparisons between
+To delve into complicated comparisons between
 subgroups, you need to understand the concept 
 of report perspectives. Viewing all values stored in a branch
 is one perspective (e.g., `report.min` to view 
@@ -25,15 +21,6 @@ all values for the same entry in all branches
 rates across all branches).
 Perspectives are equivalent to a combination of 
 tensor access alongside a specific dimension.
-
-!!! info
-    Perspectives as a programming pattern arise from
-    FairBench's 
-    [concurrent execution](../advanced/multimodal.md)
-    principle on fork membership access 
-    and a `Forklike` datatype used internally. The latter is a
-    dictionary whose elements can also be accessed like class members. 
-
 
 ### Code-based exploration
 
@@ -103,7 +90,7 @@ maxbarea        0.169           0.262
 
 
 
-## Start visualization
+## Interactive visualization
 
 To start interactive visualization, call the snippet below
 on an object that is a dictionary or fork. 
@@ -132,7 +119,6 @@ start on the next output cell instead.
     add a respective argument (e.g., `port=8889`)
     to interactive visualization to set appropriate permissions.
 
-## Interface
 
 Interactive visualization starts from the top level of 
 forks/reports and looks like the figures below. Figures

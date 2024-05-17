@@ -1,25 +1,25 @@
 # Quickstart
 
-Install FairBench with:
+Before starting, install FairBench with:
 
 ```shell
 pip install --upgrade fairbench
 ```
 
-A typical workflow involves the following steps:
+A typical workflow using the library will help you identify prospective
+fairness concerns to discuss with stakeholders. You need to eventually
+decide which of the concerns matter after getting a wide enough
+picture. Follow the steps below.
 
-1. Produce test or validation data
-2. Declare (multi-attribute multi-value) sensitive attributes as [forks](basics/forks.md)
-3. Create and explore [reports](basics/reports.md) that present many types of biases
-4. Extract relevant fairness definitions into [model cards](basics/modelcards.md)
+## 1. Prepare test data
 
-
-Here, we show how to investigate the fairness of a binary
-classification algorithm. Other types of systems can
-be analysed too. Import the library and create some demo
-predictions to play with, like below. You can also have
-data in popular that ducktype native Python iterables, such as
-numpy arrays and pytorch/tensorflow tensors.
+Run your system to generate some predictions for test data.
+Here, we assess biases for a binary
+classifier, but other types of predictions can be analysed too. 
+Supported data formats
+include lists, numpy arrays, and pytorch/tensorflow tensors.
+Import the library and create some demo
+predictions to play with:
 
 ```python
 import fairbench as fb
@@ -27,48 +27,53 @@ import fairbench as fb
 test, y, yhat = fb.demos.adult()  # test is a Pandas dataframe
 ```
 
-Declare sensitive attributes for test data with 
-a data structure called [fork](basics/forks.md).
-FairBench supports multi-value and multi-attribute 
-fairness analysis with the same interfaces by just 
-declaring more attributes in the same fork.
-Forks can be constructed with many patterns,
-depending on available datatypes. A common case is:
+## 2. Create a sensitive attribute [fork](basics/forks.md)
+
+Pack sensitive attributes found in your test data
+into a data structure called fork.
+This can store any number of attributes with any number of values
+by considering each value as a separate dimension.
+A fork can be constructed with many patterns, like this one:
 
 ```python
 sensitive = fb.Fork(fb.categories @ test[8], fb.categories @ test[9])  # analyses of the gender and race columns
 sensitive = sensitive.intersectional()  # automatically find non-empty intersections
 ```
 
-Given that a sensitive attribute fork has been created, 
-use it alongside predictions 
-to generate a fairness [report](basics/reports.md). 
-We now generate a multireport, which compares all population
-groups or subgroups pairwise and aggregates all comparisons
-to one value for each base performance metric.
-We indicate test and prediction data 
-with keywords pertaining to the classification task at hand; 
-other arguments enable usage of base performance 
-[metrics](advanced/metrics.md) for non-classification tasks.
+## 3. Create and explore fairness [reports](basics/reports.md)
+
+Use sensitive attribute forks alongside predictions 
+to generate fairness reports.
+Next we generate a multireport, which compares all population
+groups or subgroups pairwise based on some base performance metrics
+and aggregates all comparisons to one value.
+The task type (here: binary classification)
+and corresponding base performance 
+metrics are determined by
+which arguments are provided.
 
 ```python
 report = fb.multireport(predictions=yhat, labels=y, sensitive=sensitive)
 fb.describe(report)  # or print(report) or fb.visualize(report) or fb.interactive(report)
 ```
 
-Perform an [interactive](basics/interactive.md) exploration
-of the report to get a sense of where unfairness is exhibited.
-This can be done either programmatically or through an interactive UI.
+[Explore](basics/interactive.md) 
+reports to get a sense of where unfairness is exhibited.
+This can be done either programmatically 
+or through an interactive UI
+that is also launched programmatically via `fb.interactive(report)`.
 
-Afterwards, create some stamps about popular fairness definitions 
-it adheres to and pack these to a fairness [model card](basics/modelcards.md)
+## 4. Create fairness [model cards](advanced/modelcards.md)
+
+After determining key issues at play,
+create some stamps of popular fairness definitions 
+and organize these into a fairness model card.
 that includes caveats and recommendations.
-The snippet below exports the model card to an html file
-format and opens it in your browser. It will look like
-[this](images/example_modelcard.md).
+The snippet below creates a card like
+[this one](images/example_modelcard.md).
 You can omit the arguments for exporting to a file or 
 for immediately showing the modelcards.
-You can also export cards in markdown or yaml formats.
+You can also export to markdown or yaml formats.
 
 
 ```python
@@ -82,7 +87,6 @@ fb.modelcards.tohtml(stamps, file="output.html", show=True)
 
 
 !!! danger
-    Always consult stakeholders to decide which stamps are
-    relevant for your systems. If a report reveals potential
-    issues that do not match those of model cards, also
-    ask about them (and you can create custom stumps).
+    Blindly stamping systems is not 
+    always a good idea. Consult with stakeholders to determine
+    what actually matters.

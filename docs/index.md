@@ -1,18 +1,22 @@
 # FairBench
 
-![build](https://github.com/mever-team/FairBench/actions/workflows/tests.yml/badge.svg)
-![coverage](https://github.com/mever-team/FairBench/blob/main/coverage.svg)
-[![Documentation Status](https://readthedocs.org/projects/fairbench/badge/?version=latest)](https://fairbench.readthedocs.io/)
+This is a comprehensive AI fairness exploration framework. 
+Visit one of the links below, or read the full documentation.
 
-A comprehensive AI fairness exploration framework.
+<div style="display: flex; flex-wrap: wrap; gap: 10px;" markdown="span">
 
-**Author:** Emmanouil (Manios) Krasanakis<br>
-**License:** Apache Software License 2<br>
+  <a href="quickstart/" style="border: 1px solid black; padding: 10px; flex: 1; text-align: center;" markdown="span">
+    <span style="font-size: 250%"> :rocket: </span><br>**Quickstart**<br> New? Start here.
+  </a>
 
-:chart_with_upwards_trend: Fairness reports and stamps<br>
-:flags: Multivalue multiattribute<br>
-:hammer_and_wrench: Measure building blocks<br>
-:gear: ML integration
+  <a href="basics/forks/" style="border: 1px solid black; padding: 10px; flex: 1; text-align: center;" markdown="span">
+    <span style="font-size: 250%"> :flags: </span> <br><b>Sensitive attribute forks</b> <br>Options for creating forks from data.
+  </a>
 
-Recipe notebooks can be found in the
-project's [github page](https://github.com/mever-team/FairBench).
+  <a href="record/comparisons/" style="border: 1px solid black; padding: 10px; flex: 1; text-align: center;" markdown="span">
+    <span style="font-size: 250%"> :hammer_and_wrench: </span> <br><b>Metric comparisons</b> <br>What fairness report entries mean.
+  </a>
+    
+</div>
+
+<br>

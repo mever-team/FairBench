@@ -1,7 +1,7 @@
 # Stamps
 
 Here we describe the available stamps that can be used to
-produce [fairness model cards](../basics/modelcards.md).
+produce [fairness model cards](../advanced/modelcards.md).
 A database of all stamps can be found in FairBench's 
 repository [here](https://github.com/mever-team/FairBench/blob/main/stamps/common.yaml).
 This database, as well as the rest of the library's

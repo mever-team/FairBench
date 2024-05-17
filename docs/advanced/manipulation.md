@@ -1,13 +1,8 @@
 # Report manipulation
 
-1. [Manipulating metrics](#manipulating-metrics)
-2. [Reduction](#reduction)
-3. [Combining and comparing reports](#combining-and-comparing-reports)
-
 !!! tip
-    To extract popular fairness definitions
-    from reports, process them with
-    [stamps](../basics/modelcards.md#stamps).
+    If you are trying to extract popular fairness definitions
+    from reports, use [stamps](modelcards.md#stamps).
 
 ## Editing metrics
 
@@ -82,19 +77,13 @@ max_abs_across_branches = fb.reduce(report, fb.budget, expand=fb.ratio, transfor
 ```
 
 
-!!! tip
-    You will typically want to perform custom reductions on
-    an *accreport* or on manually generated reports for 
-    some base evaluation measures. Combine the 
-    outcome of more than one reduction for better understanding.
-
 !!! info
     Call `areduce` with the same arguments to 
-    obtain the reduction's numeric output instead of a fork.
+    obtain a numeric output instead.
 
-# Combining and comparing reports
+## Combining reports
 
-Reports, including reduced ones, can be combined to
+Reports, including reductions, can be combined to
 create a super-report with all sub-branches. This 
 is demonstrated in the following snippet:
 
@@ -109,6 +98,11 @@ accuracy        0.938           0.938           0.938           0.000
 fpr             0.056           0.071           0.063           0.251          
 fnr             0.167           0.500           0.333           1.099    
 ```
+
+!!! tip
+    Combine multiple reductions to create your own reports.
+
+## Extracting from reports
 
 Sometimes, you may want to compare the same report
 generated for multiple algorithms. To do this, you

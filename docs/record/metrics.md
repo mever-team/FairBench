@@ -6,19 +6,14 @@ quantify imbalances between groups of people (e.g.,
 different genders) in terms of them obtaining different 
 assessments by base performance metrics. These assessments 
 are often further 
-[reduced](manipulation.md#reduction) across groups
+[reduced](../advanced/manipulation.md#reduction) across groups
 of samples with different sensitive attribute values.
-
 Here, we present base metrics used to assess AI
 that reports use. All metrics computed
 on a subset of 'sensitive samples', which form
 the group being examined each time. Outputs are
 wrapped into explainable objects that keep track of
 relevant metadata.
-
-1. [Classification](#classification)
-2. [Ranking](#ranking)
-3. [Regression](#regression)
 
 
 ## Classification

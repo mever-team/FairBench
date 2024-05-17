@@ -7,16 +7,12 @@ across several definitions of fairness. For interpretation
 of what report outcomes mean, 
 look at the <sub><sup>REPORT ENTRIES</sup></sub> section.
 
-1. [Generate reports](#generate-reports)
-2. [Report types](#report-types)
-3. [Show reports](#show-reports)
-4. [Explainable values](#explainable-values)
 
 !!! tip
     To check for some well-known fairness metric, 
     produce reports with
     relevant information (e.g., multireports shown below)
-    and extract the metric with its [stamp](modelcards.md#stamps).
+    and extract the metric with its [stamp](../advanced/modelcards.md#stamps).
 
 ## Generate reports
 
@@ -24,7 +20,7 @@ You can generate fairness reports by providing some
 of the optional arguments below to a report
 generation method. These arguments are needed to automatically
 understand which base
-performance [metrics](../advanced/metrics.md) to compute.
+performance [metrics](../record/metrics.md) to compute.
 Report generation method will try to compute fairness
 assessment built from as many base metrics as they can,
 depending on which arguments are provided.
@@ -46,9 +42,8 @@ sensitive attribute values.
 | sensitive   | sensitive attribute | fork of arrays with elements in [0,1] (either binary or fuzzy) |
 
 !!! info
-    In multiclass settings, 
-    perform a different fairness assessment for each
-    for class label. See [here](../advanced/multiclass.md).
+    In multiclass settings, create a report for
+    each class label and combine them. See [here](interactive.md).
 
 ## Report types
 
@@ -97,7 +92,7 @@ attribute branches). Some comparison mechanisms
 may also consider intermediate computations, like
 distributions, used to compute the metrics.
 Given a report, you can find what its comparisons mean
-[here](../advanced/comparisons.md).
+[here](../record/comparisons.md).
 
 Several methods are provided to
 work with the report data format, namely 
@@ -135,8 +130,8 @@ fb.visualize(report)
 !!! warning 
     Complicated forks (e.g., forks of reports)
     cannot be parsed by `fb.visualize` and `fb.display`.
-    But you can either print them/convert them to string.
-    or employ [interactive visualization](interactive.md).
+    But they can be converted to strings, printed, 
+    or [interactively visualized](interactive.md).
 
 
 ## Explainable values

@@ -5,15 +5,11 @@ evaluations under specific fairness perspectives, and whether
 they meet specific thresholds. 
 
 `FairBench` calls such evaluations *stamps*, and allows their
-automated extraction from [reports](reports.md) (reports hold a lot of 
+automated extraction from [reports](../basics/reports.md) (reports hold a lot of 
 information, some of which can be matched to speccific popular
 definitions of fairness to be added to model cards). Several
 stamps can be aggregated into forks 
 and outputted in various model card formats.
-
-1. [Stamps](#stamps)
-2. [Combine stamps](#combine-stamps)
-3. [Export to model cards](#export-to-model-cards)
 
 
 ## Stamps
@@ -26,7 +22,7 @@ respectively asserting that some property is met and quantifying how
 well a model performs.
 
 Several stamps are provided within the `fairbench.stamps`
-package. Find them all [here](../advanced/stamps.md).
+package. Find them all [here](../record/stamps.md).
 To avoid confusion with core library functionalities,
 stamps are not accessed from the global level. Run
 a stamp per:

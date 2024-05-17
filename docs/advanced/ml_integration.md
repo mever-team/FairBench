@@ -7,9 +7,6 @@ backpropagate-able computations. This is achieved by running
 under the hood to abstract the operations of different
 frameworks with the same interfaces.
 
-1. [Backend selection](#backend-selection)
-2. [Buffering batch predictions](#buffering-batch-predictions)
-
 ## Backend selection
 
 If you provide primitives of various frameworks (e.g., tensors),

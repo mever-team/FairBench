@@ -6,8 +6,6 @@ For instance, there
 may a branch for each gender or race to capture which 
 data samples exhibit those protected attribute values.
 
-1. [Fork definition](#fork-definition)
-2. [Intersectional analysis](#intersectional-analysis)
 
 ## Fork definition
 
