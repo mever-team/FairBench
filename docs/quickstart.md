@@ -35,7 +35,7 @@ by considering each value as a separate dimension.
 A fork can be constructed with many patterns, like this one:
 
 ```python
-sensitive = fb.Fork(fb.categories @ test[8], fb.categories @ test[9])  # analyses of the gender and race columns
+sensitive = fb.Fork(fb.categories @ test[8], fb.categories @ test[9])  # analyse the gender and race columns
 sensitive = sensitive.intersectional()  # automatically find non-empty intersections
 ```
 

@@ -14,7 +14,7 @@ look at the <sub><sup>REPORT ENTRIES</sup></sub> section.
     relevant information (e.g., multireports shown below)
     and extract the metric with its [stamp](../advanced/modelcards.md#stamps).
 
-## Generate reports
+## Arguments
 
 You can generate fairness reports by providing some
 of the optional arguments below to a report
@@ -56,7 +56,7 @@ report generation methods:
 | binreport   | Conducts a suite of popular binary fairness assessments on each variable branch.               | Branches that do *not* correspond to sensitive attributes.                   |
 | multireport | Ideal for multi-fairness approaches, where the `sensitive` fork has many branches.             | Multidimensional analysis                                                    |
 | unireport   | Similar to `multireport`, but each group or subgroup is compared to the whole population.      | Group-vs-population comparisons.                                             |
-| isecreport  | Tackles multi-fairness with many intersectional groups.                                        | Bayesian analysis for small intersections.                                   |
+| isecreport  | Tackles multi-fairness with many intersectional groups.                                        | Bayesian analysis for small or empty intersections.                          |
 
 As an example, let's create a simple report
 based on binary predictions, binary
@@ -110,8 +110,11 @@ fpr             0.063           0.778           0.016
 fnr             0.333           0.333           0.333  
 ```
 
-You can also convert reports to *json*, for example 
+<button onclick="toggleCode('json')" class="toggle-button">>></button>
+You can convert reports to *json*, for example 
 to send to some frontend:
+
+<div id="json" class="code-block" style="display:none;">
 
 ```python
 print(fb.tojson(report))
@@ -119,19 +122,48 @@ print(fb.tojson(report))
 {"header": ["Metric", "mean", "minratio", "maxdiff"], "accuracy": [0.9375, 1.0, 0.0], "pr": [0.8125, 0.8571428571428571, 0.125], "fpr": [0.06349206349206349, 0.7777777777777778, 0.015873015873015872], "fnr": [0.3333333333333333, 0.3333333333333333, 0.33333333333333337]}
 ```
 
-Reports can be visualized  with `matplotlib`:
+</div>
+
+<button onclick="toggleCode('visualize')" class="toggle-button">>></button>
+You can visualize reports with the command `fb.visualize(report)`.
+
+
+<div id="visualize" class="code-block" style="display:none;">
+
 ```python
 fb.visualize(report)
 ```
+<img src="../reports.png" alt="report example">
 
+</div>
 
-![report example](reports.png)
+<button onclick="toggleCode('matplotlib')" class="toggle-button">>></button>
+Visualization uses `matplotlib` under the hood. You can
+rotate the horizontal axis labels, for example
+when there are too many sensitive attribute dimensions,
+and can ask for the visualization not to open the figure
+so that you can perform additional operations.
+
+<div id="matplotlib" class="code-block" style="display:none;">
+
+```python
+import matplotlib.pyplot as plt
+import fairbench as fb
+report = ...  # generate the report
+fb.visualize(report, 
+             xrotation=90, # rotate x labels
+             hold=True)
+plt.title("Report")
+plt.show() # only show now
+```
+
+</div>
 
 !!! warning 
     Complicated forks (e.g., forks of reports)
-    cannot be parsed by `fb.visualize` and `fb.display`.
+    cannot be displayed or visualized.
     But they can be converted to strings, printed, 
-    or [interactively visualized](interactive.md).
+    or [interacted](interactive.md).
 
 
 ## Explainable values
@@ -153,16 +185,21 @@ descriptions. You can perform arithmetic operations
 between explainable objects and other numbers and the
 outcome will be normal python numbers.
 
-As an example, below we use these fields
+<button onclick="toggleCode('explain')" class="toggle-button">>></button>
+As an example, you can use these fields
 to retrieve posterior estimations contributing to
 calculating the *baysian* branch of the minprule
 metric in the *isecreport*. 
+
+
+<div id="explain" class="code-block" style="display:none;">
 
 ```python
 report = fb.isecreport(vals)
 fb.describe(report)
 fb.describe(report.bayesian.minprule.explain)
 ```
+
 ```
 Metric          empirical       bayesian       
 minprule        0.857           0.853          
@@ -170,3 +207,17 @@ minprule        0.857           0.853
 Metric          case1           case2           case2,case1    
                 0.729           0.706           0.827     
 ```
+
+</div>
+
+
+<script>
+function toggleCode(id) {
+    var codeBlock = document.getElementById(id);
+    if (codeBlock.style.display === "none") {
+        codeBlock.style.display = "block";
+    } else {
+        codeBlock.style.display = "none";
+    }
+}
+</script>
