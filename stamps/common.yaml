@@ -1,6 +1,6 @@
 # WARNING: THIS FILE IS USED BY EARLIER VERSIONS OF FAIRBENCH CONSIDER UPGRADING
 
-four_fifths_rule:
+four_fifths:
   title: "4/5 rule"
   alias: ["minratio.pr", "minratio[vsAny].pr", "prule"]
   minimum: 0.8

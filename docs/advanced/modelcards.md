@@ -30,7 +30,7 @@ a stamp per:
 ```python
 import fairbench as fb
 report = ...
-stamp = fb.stamps.four_fifths_rule(report)
+stamp = fb.stamps.four_fifths(report)
 print(stamp)
 # 3/4ths ratio: False
 ```
@@ -57,7 +57,7 @@ for a more thorough explanation (see below).
 stamps = fb.combine(
     fb.stamps.prule(report),
     fb.stamps.accuracy(report),
-    fb.stamps.four_fifths_rule(report)
+    fb.stamps.four_fifths(report)
 )
 print(stamps)
 ```

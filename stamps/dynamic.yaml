@@ -81,11 +81,11 @@ abroca:
   symbols:
     COMPARISON:
       - "each pair of groups"
-      - "each group and its complement"
-      - "each group and its complement"
+      - "each group and the total population"
+      - "each group and the rest of the population"
   description:
-    "The maximum area between ROC curves, compared between {COMPARISON}.
-    This is a type of disparate mistreatment for recommendation systems."
+    "Compares the area between ROC curves. This comparison is made between {COMPARISON}
+    and is a type of disparate mistreatment for recommendation systems."
   caveats:
     - "Disparate mistreatment may not always be an appropriate fairness consideration."
     - "Consider input from affected stakeholders to determine whether abroca is an appropriate fairness measure."
@@ -96,11 +96,11 @@ rbroca:
   symbols:
     COMPARISON:
       - "each pair of groups"
-      - "each group and its complement"
-      - "each group and its complement"
+      - "each group and the total population"
+      - "each group and the rest of the population"
   description:
-    "The maximum relative area between ROC curves, compared between {COMPARISON}.
-    This is a type of disparate mistreatment for recommendation systems."
+    "Compares the relative area between ROC curves. This comparison is made between {COMPARISON}
+    and is a type of disparate mistreatment for recommendation systems."
   caveats:
     - "Disparate mistreatment may not always be an appropriate fairness consideration."
     - "Consider input from affected stakeholders to determine whether abroca is an appropriate fairness measure."
@@ -111,10 +111,10 @@ maxbdcg:
   symbols:
     COMPARISON:
       - "each pair of groups"
-      - "each group and its complement"
-      - "each group and its complement"
+      - "each group and the total population"
+      - "each group and the rest of the population"
   description:
-    "The maximum of NDCG-weighted differences between top-k curves of {COMPARISON}.
+    "Compares the NDCG-weighted differences between top-k curves of {COMPARISON}.
     These curves count the number of elements
     represented at different top-k predictions, and this measure 
     is a type of disparate impact for recommendation systems."

@@ -14,10 +14,16 @@ def toyamlprimitives(report):
         description = stamp.desc
         caveats = stamp.caveats
         value = str(value)
-        if value=="True" and stamp.caveats_accept is not None:
-            caveats += stamp.caveats_reject
-        if value=="False" and stamp.caveats_reject is not None:
-            caveats += stamp.caveats_reject
+        if value == "True" and stamp.caveats_accept is not None:
+            caveats = caveats + stamp.caveats_reject
+        if value == "False" and stamp.caveats_reject is not None:
+            caveats = caveats + stamp.caveats_reject
+        if symbols:
+            for symbol, replace in symbols.items():
+                description = description.replace("{" + symbol + "}", replace)
+                caveats = [
+                    caveat.replace("{" + symbol + "}", replace) for caveat in caveats
+                ]
         metric_dict = {
             "name": metric,
             "description": description,

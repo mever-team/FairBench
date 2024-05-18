@@ -81,7 +81,7 @@ You can also export to markdown or yaml formats.
 stamps = fb.combine(
     fb.stamps.prule(report),
     fb.stamps.accuracy(report),
-    fb.stamps.four_fifths_rule(report)
+    fb.stamps.four_fifths(report)
 )
 fb.modelcards.tohtml(stamps, file="output.html", show=True)
 ```

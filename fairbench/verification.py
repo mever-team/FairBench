@@ -29,7 +29,7 @@ class Stamp:
         caveats=None,
         caveats_accept=None,
         caveats_reject=None,
-        symbols=None
+        symbols=None,
     ):
         if caveats is None:
             caveats = [
@@ -62,16 +62,36 @@ class Stamp:
     def __call__(self, report):
         rets = [self.__call_once(fields, report) for fields in self._fields]
         result = None
-        for ret in rets:
+        for selection, ret in enumerate(rets):
             if not isinstance(ret, ExplainableError):
                 if result is None or isinstance(ret, Explainable):
-                    result = ret
+                    result = (selection, ret)
                 # _check_equals(result, ret)
         if result is None:
             result = ExplainableError(
                 f"Report does not contain any of {', '.join('.'.join(fields) for fields in self._fields)}"
             )
-        result.stamp = self
+            result.stamp = self
+        else:
+            selection, result = result
+            result.stamp = Stamp(
+                self.name,
+                self._fields,
+                self.minimum,
+                self.maximum,
+                self.desc,
+                self.caveats,
+                self.caveats_accept,
+                self.caveats_reject,
+                symbols=(
+                    None
+                    if self.symbols is None
+                    else {
+                        symbol: value[selection]
+                        for symbol, value in self.symbols.items()
+                    }
+                ),
+            )
         return Forklike({self.name: result})
 
     def __call_once(self, fields, report):
@@ -161,7 +181,7 @@ class StampSpecs:
             desc=resource.get("description"),
             caveats=resource.get("caveats"),
             caveats_accept=resource.get("caveats_accept", None),
-            caveats_reject=resource.get("caveats_accept", None),
+            caveats_reject=resource.get("caveats_reject", None),
             symbols=resource.get("symbols", None),
         )
         self._stamps[attr] = ret

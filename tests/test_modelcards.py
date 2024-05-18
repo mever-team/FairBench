@@ -17,7 +17,7 @@ def test_modelcards(monkeypatch):
                 fb.stamps.accuracy(report),
                 fb.stamps.dfpr(report),
                 fb.stamps.dfnr(report),
-                fb.stamps.four_fifths_rule(report),
+                fb.stamps.four_fifths(report),
             )
 
             fb.modelcards.toyaml(stamps)  # TODO: add this to texts

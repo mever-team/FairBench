@@ -26,8 +26,8 @@ Click on one of the stamps below to get a full description.
 
 ## Classification
 
-<button onclick="toggleCode('four_fifths_rule', this)" class="toggle-reveal">
-four_fifths_rule</button>
+<button onclick="toggleCode('four_fifths', this)" class="toggle-reveal">
+four_fifths</button>
 <button onclick="toggleCode('accuracy', this)" class="toggle-reveal">
 accuracy</button>
 <button onclick="toggleCode('dfpr', this)" class="toggle-reveal">
@@ -35,8 +35,8 @@ dfpr</button>
 <button onclick="toggleCode('dfnr', this)" class="toggle-reveal">
 dfnr</button>
 
-<div id="four_fifths_rule" class="doc" markdown="span" style="display:none;">
-The `four_fifths_rule` stamp refers to the popular 4/5ths rule that infers discrimination
+<div id="four_fifths" class="doc" markdown="span" style="display:none;">
+The `four_fifths` stamp refers to the popular 4/5ths rule that infers discrimination
 if positive rate ratios lies below 80%. We apply this for
 all subgroups, an approach also known as differential fairness.
 </div>
