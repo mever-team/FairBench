@@ -1,47 +1,99 @@
 # Stamps
 
-Here we describe the available stamps that can be used to
-produce [fairness model cards](../advanced/modelcards.md).
-A database of all stamps can be found in FairBench's 
+Stamps are popular fairness
+definitions that can be extracted from 
+[reports](../basics/reports.md)
+and can be
+used to create [fairness model cards](../advanced/modelcards.md).
+You need stamps because they keep track of several metadata
+that are shown in the model cards.
+Create a stamp based on the following pattern:
+
+```python
+import fairbench as fb
+report = ...  # code to generate a fairness report here
+stamp = fb.stamps.stamp_name(report)
+```
+
+The same stamp may be supported by multiple reports,
+in which case the report type changes the nuances of
+the comparison. A database of all stamps is maintained in FairBench's 
 repository [here](https://github.com/mever-team/FairBench/blob/main/stamps/common.yaml).
 This database, as well as the rest of the library's
 codebase is open to contributions at any time.
+Here we present all available stamps.
+Click on one of the stamps below to get a full description.
 
-### `four_fifths_rule`
-<div class="doc" markdown="span">
-This is the popular 4/5ths rule that infers discrimination
+## Classification
+
+<button onclick="toggleCode('four_fifths_rule', this)" class="toggle-reveal">
+four_fifths_rule</button>
+<button onclick="toggleCode('accuracy', this)" class="toggle-reveal">
+accuracy</button>
+<button onclick="toggleCode('dfpr', this)" class="toggle-reveal">
+dfpr</button>
+<button onclick="toggleCode('dfnr', this)" class="toggle-reveal">
+dfnr</button>
+
+<div id="four_fifths_rule" class="doc" markdown="span" style="display:none;">
+The `four_fifths_rule` stamp refers to the popular 4/5ths rule that infers discrimination
 if positive rate ratios lies below 80%. We apply this for
 all subgroups, an approach also known as differential fairness.
 </div>
 
-
-### `accuracy`
-<div class="doc" markdown="span">
-This is the worst accuracy across all groups or subgroups.
+<div id="accuracy" class="doc" markdown="span" style="display:none;">
+The `accuracy` stamp refers to the worst accuracy across all groups or subgroups.
 </div>
 
-
-### `dfpr`
-<div class="doc" markdown="span">
-The difference in false positive rates between groups or subgroups.
+<div id="dfpr" class="doc" markdown="span" style="display:none;">
+The `dfpr` stamp refers to the difference in false positive rates between groups or subgroups.
 We consider a multidimensional extension that considers the
 worst difference.
 </div>
 
-### `dfnr`
-<div class="doc" markdown="span">
-The difference in false negative rates between groups or subgroups.
+<div id="dfnr" class="doc" markdown="span" style="display:none;">
+The `dfnr` stamp refers to the difference in false negative rates between groups or subgroups.
 We consider a multidimensional extension that considers the
 worst difference.
 </div>
 
-### `abroca`
-<div class="doc" markdown="span">
-The absolute betweeness area between ROC curves (used to
+
+## Ranking
+
+<button onclick="toggleCode('abroca', this)" class="toggle-reveal">
+abroca</button>
+<button onclick="toggleCode('rbroca', this)" class="toggle-reveal">
+rbroca</button>
+
+<div id="abroca" class="doc" markdown="span" style="display:none;">
+The `abroca` stamp refers to the absolute betweeness area between ROC curves (used to
 compute AUC) of recommendation systems.
 </div>
 
-### `rbroca`
-<div class="doc" markdown="span">
-The relative between area variation of abroca.
+
+<div id="rbroca" class="doc" markdown="span" style="display:none;">
+The `rbroca` stamp refers to the relative between area variation of abroca.
 </div>
+
+
+<script>
+function toggleCode(id, button) {
+    var divsToHide = document.getElementsByClassName("doc");
+    for(var i = 0; i < divsToHide.length; i++) {
+        divsToHide[i].style.display = "none";
+    }
+    var codeBlock = document.getElementById(id);
+    if (codeBlock.style.display === "none") {
+        codeBlock.style.display = "block";
+    } else {
+        codeBlock.style.display = "none";
+    }
+
+    var buttons = document.getElementsByClassName("toggle-reveal");
+    for (var j = 0; j < buttons.length; j++) {
+        buttons[j].classList.remove("active");
+    }
+    button.classList.add("active");
+
+}
+</script>

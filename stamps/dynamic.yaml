@@ -1,22 +1,26 @@
-# WARNING: THIS FILE IS USED BY EARLIER VERSIONS OF FAIRBENCH CONSIDER UPGRADING
-
-four_fifths_rule:
+four_fifths:
   title: "4/5 rule"
   alias: ["minratio.pr", "minratio[vsAny].pr", "prule"]
   minimum: 0.8
+  symbols:
+    COMPARISON:
+      - "any other group"
+      - "its complement"
+      - "the other group"
   description:
     "Checks whether the fraction of positive predictions for each protected group 
-    is at worst four fifths that of any other group (i.e., the p-rule is 0.8 or greater
+    is at worst four fifths that of {COMPARISON} (i.e., the p-rule is 0.8 or greater
     for any pairwise group comparison)."
   caveats:
     - "Disparate impact may not always be an appropriate fairness consideration."
+  caveats_accept:
     - "Consider input from affected stakeholders to determine whether 
-      the 4/5 rule is an appropriate fairness criterion."
-    - "High 4/5 rule is not a legally accepted indication of disparate impact mitigation."
+      the 4/5 threshold is appropriate."
+    - "Satisfying the 4/5 rule is not a legally accepted indication of disparate impact mitigation."
 
 accuracy:
   title: "worst accuracy"
-  alias: ["min.accuracy", "min[vsAny].accuracy", "accuracy"]
+  alias: ["min.accuracy", "accuracy"]
   description:
     "Computes the worst performance among protected groups; this is the minimum
     benefit the system brings to any group."
@@ -27,8 +31,13 @@ accuracy:
 prule:
   title: "p-rule"
   alias: ["minratio.pr", "minratio[vsAny].pr", "prule"]
+  symbols:
+    COMPARISON:
+      - "each pair of groups"
+      - "each group and its complement"
+      - "each group and its complement"
   description:
-    "Compares the fraction of positive predictions between groups.
+    "Compares the fraction of positive predictions between {COMPARISON}.
     The worst ratio is reported, so that value of 0 indicates 
     disparate impact, and value of 1 disparate impact mitigation."
   caveats:
@@ -37,8 +46,14 @@ prule:
 dfpr:
   title: "dfpr"
   alias: ["maxdiff.tnr", "maxdiff[vsAny].tnr", "dfpr"]
+  symbols:
+    COMPARISON:
+      - "each pair of groups"
+      - "each group and its complement"
+      - "each group and its complement"
   description:
-    "Compares the false positive rates between groups. The maximum difference is reported, so that value of 1 indicates
+    "Compares the false positive rates between {COMPARISON}. 
+    The maximum difference is reported, so that value of 1 indicates
     disparate mistreatment, and value of 0 disparate mistreatment mitigation."
   caveats:
     - "Disparate mistreatment may not always be an appropriate fairness consideration."
@@ -47,8 +62,14 @@ dfpr:
 dfnr:
   title: "dfnr"
   alias: ["maxdiff.tpr", "maxdiff[vsAny].tpr", "dfnr"]
+  symbols:
+    COMPARISON:
+      - "each pair of groups"
+      - "each group and its complement"
+      - "each group and its complement"
   description:
-    "Compares the false negative rates between groups. The maximum difference is reported, so that value of 1 indicates
+    "Compares the false negative rates between {COMPARISON}. 
+    The maximum difference is reported, so that value of 1 indicates
     disparate mistreatment, and value of 0 disparate mistreatment mitigation."
   caveats:
     - "Disparate mistreatment may not always be an appropriate fairness consideration."
@@ -57,8 +78,13 @@ dfnr:
 abroca:
   title: "abroca"
   alias: ["maxbarea.auc", "maxbarea[vsAny].auc"]
+  symbols:
+    COMPARISON:
+      - "each pair of groups"
+      - "each group and its complement"
+      - "each group and its complement"
   description:
-    "The maximum area between ROC curves.
+    "The maximum area between ROC curves, compared between {COMPARISON}.
     This is a type of disparate mistreatment for recommendation systems."
   caveats:
     - "Disparate mistreatment may not always be an appropriate fairness consideration."
@@ -67,8 +93,13 @@ abroca:
 rbroca:
   title: "rbroca"
   alias: ["maxrarea.auc", "maxrarea[vsAny].auc"]
+  symbols:
+    COMPARISON:
+      - "each pair of groups"
+      - "each group and its complement"
+      - "each group and its complement"
   description:
-    "The maximum relative area between ROC curves.
+    "The maximum relative area between ROC curves, compared between {COMPARISON}.
     This is a type of disparate mistreatment for recommendation systems."
   caveats:
     - "Disparate mistreatment may not always be an appropriate fairness consideration."
@@ -77,8 +108,15 @@ rbroca:
 maxbdcg:
   title: "NDCG of average precision"
   alias: ["maxbdcg.avgrepr", "maxbdcg[vsAny].avgrepr"]
+  symbols:
+    COMPARISON:
+      - "each pair of groups"
+      - "each group and its complement"
+      - "each group and its complement"
   description:
-    "The maximum of NDCG-weighted differences between curves, counting the number of elements
-    represented at different top-k predictions. This is a type of disparate impact for recommendation systems."
+    "The maximum of NDCG-weighted differences between top-k curves of {COMPARISON}.
+    These curves count the number of elements
+    represented at different top-k predictions, and this measure 
+    is a type of disparate impact for recommendation systems."
   caveats:
     - "Disparate impact may not always be an appropriate fairness consideration."

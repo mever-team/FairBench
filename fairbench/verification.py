@@ -27,6 +27,9 @@ class Stamp:
         maximum=None,
         desc="Computed with FairBench.",
         caveats=None,
+        caveats_accept=None,
+        caveats_reject=None,
+        symbols=None
     ):
         if caveats is None:
             caveats = [
@@ -37,15 +40,24 @@ class Stamp:
             fields = [fields]
         if isinstance(caveats, str):
             caveats = [caveats]
+        if isinstance(caveats_accept, str):
+            caveats_accept = [caveats_accept]
+        if isinstance(caveats_reject, str):
+            caveats_reject = [caveats_reject]
         fields = [
             field.split(".") if isinstance(field, str) else field for field in fields
         ]
+        if symbols is not None:
+            assert isinstance(symbols, dict)
         self.name = name
         self._fields = fields
         self.minimum = minimum
         self.maximum = maximum
         self.desc = desc
         self.caveats = caveats
+        self.caveats_accept = caveats_accept
+        self.caveats_reject = caveats_reject
+        self.symbols = symbols
 
     def __call__(self, report):
         rets = [self.__call_once(fields, report) for fields in self._fields]
@@ -59,7 +71,7 @@ class Stamp:
             result = ExplainableError(
                 f"Report does not contain any of {', '.join('.'.join(fields) for fields in self._fields)}"
             )
-        result.desc = self
+        result.stamp = self
         return Forklike({self.name: result})
 
     def __call_once(self, fields, report):
@@ -105,7 +117,7 @@ class Stamp:
 class StampSpecs:
     def __init__(
         self,
-        path="https://raw.githubusercontent.com/mever-team/FairBench/main/stamps/common.yaml",
+        path="https://raw.githubusercontent.com/mever-team/FairBench/main/stamps/dynamic.yaml",
     ):
         self._stamps = dict()
         self._path = path
@@ -148,6 +160,9 @@ class StampSpecs:
             maximum=resource.get("maximum", None),
             desc=resource.get("description"),
             caveats=resource.get("caveats"),
+            caveats_accept=resource.get("caveats_accept", None),
+            caveats_reject=resource.get("caveats_accept", None),
+            symbols=resource.get("symbols", None),
         )
         self._stamps[attr] = ret
         return ret

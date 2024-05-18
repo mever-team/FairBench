@@ -13,9 +13,6 @@ If you provide primitives of various frameworks (e.g., tensors),
 these will be internally converted to FairBench's selected
 backend. Switch to a different backend as shown below.
 
-!!! info 
-    The `numpy` backend is selected by default.
-
 ```python
 import fairbench as fb
 
@@ -29,6 +26,9 @@ backpropagate results, for example to
 add them to the loss. In this case, you need to set 
 internal operations to run on
 the same backend as the one that runs your AI.
+
+!!! info 
+    The `numpy` backend is selected by default.
 
 ## Buffering batch predictions
 

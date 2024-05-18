@@ -9,11 +9,20 @@ def toyamlprimitives(report):
         report = report.branches()
     result = list()
     for metric, value in report.items():
+        stamp = value.stamp
+        symbols = stamp.symbols
+        description = stamp.desc
+        caveats = stamp.caveats
+        value = str(value)
+        if value=="True" and stamp.caveats_accept is not None:
+            caveats += stamp.caveats_reject
+        if value=="False" and stamp.caveats_reject is not None:
+            caveats += stamp.caveats_reject
         metric_dict = {
             "name": metric,
-            "description": value.desc.desc,
-            "results": str(value),
-            "caveats": value.desc.caveats,
+            "description": description,
+            "results": value,
+            "caveats": caveats,
         }
         result.append(metric_dict)
     return result

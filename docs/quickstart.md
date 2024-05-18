@@ -23,7 +23,6 @@ predictions to play with:
 
 ```python
 import fairbench as fb
-
 test, y, yhat = fb.demos.adult()  # test is a Pandas dataframe
 ```
 
@@ -58,7 +57,9 @@ fb.describe(report)  # or print(report) or fb.visualize(report) or fb.interactiv
 ```
 
 [Explore](basics/interactive.md) 
-reports to get a sense of where unfairness is exhibited.
+reports by backtracking their
+intermediate computations
+to get a sense of where unfairness comes from.
 This can be done either programmatically 
 or through an interactive UI
 that is also launched programmatically via `fb.interactive(report)`.
