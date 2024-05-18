@@ -5,17 +5,16 @@ several comparison mechanisms of [base metrics](metrics.md) that include expansi
 and reductions. Here we summarize the mechanisms that
 appear as column titles of the in-built report methods.
 
-## Worst performance
+## Performance
 
-These report columns take the worst value of base metrics
-across groups.
+These report columns assess the performance of analysed 
+systems while accounting explicitly for the existence of
+subgroups.
 
 <button onclick="toggleCode('min', this)" class="toggle-reveal">
 min</button>
 <button onclick="toggleCode('wmean', this)" class="toggle-reveal">
 wmean</button>
-<button onclick="toggleCode('gini', this)" class="toggle-reveal">
-gini</button>
 
 <div id="min" class="doc" markdown="span" style="display:none;">
 Computes the minimum base metric value across all groups or
@@ -33,14 +32,6 @@ This mostly helps get sense of whether a `min`
 comparison is substantially smaller than the average.
 </div>
 
-<div id="gini" class="doc" markdown="span" style="display:none;">
-Computes the gini coefficient between metric values
-across all groups or subgroups. Value of 0 indicates
-that all groups achieve the same evaluation, whereas
-value of 1 indicates full imbalance between metric
-values.
-</div>
-
 ## Performance comparisons
 
 These report columns directly compare the values of
@@ -50,10 +41,20 @@ groups or subgroups you indicated in the sensitive
 attribute fork, each group against the total population,
 or each group against its complement in the population.
 
+<button onclick="toggleCode('gini', this)" class="toggle-reveal">
+gini</button>
 <button onclick="toggleCode('minratio', this)" class="toggle-reveal">
 minratio</button>
 <button onclick="toggleCode('maxdiff', this)" class="toggle-reveal">
 maxdiff</button>
+
+<div id="gini" class="doc" markdown="span" style="display:none;">
+Computes the gini coefficient between metric values
+across all groups or subgroups. Value of 0 indicates
+that all groups achieve the same evaluation, whereas
+value of 1 indicates full imbalance between metric
+values.
+</div>
 
 <div id="minratio" class="doc" markdown="span" style="display:none;">
 The minimum ratio between base metric values

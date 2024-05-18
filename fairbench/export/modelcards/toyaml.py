@@ -15,7 +15,7 @@ def toyamlprimitives(report):
         caveats = stamp.caveats
         value = str(value)
         if value == "True" and stamp.caveats_accept is not None:
-            caveats = caveats + stamp.caveats_reject
+            caveats = caveats + stamp.caveats_accept
         if value == "False" and stamp.caveats_reject is not None:
             caveats = caveats + stamp.caveats_reject
         if symbols:
