@@ -15,11 +15,9 @@ the group being examined each time. Outputs are
 wrapped into explainable objects that keep track of
 relevant metadata.
 
-
 ## Classification
 Classification metrics assess binary predictions. Unless stated
 otherwise, the following arguments need to be provided:
-
 
 | Argument    | Role                | Values                                                           |
 |-------------|---------------------|------------------------------------------------------------------|
@@ -27,10 +25,22 @@ otherwise, the following arguments need to be provided:
 | labels      | prediction target   | binary array                                                     | 
 | sensitive   | sensitive attribute | fork of arrays with elements in $[0,1]$ (either binary or fuzzy) |
 
+<button onclick="toggleCode('accuracy', this)" class="toggle-reveal">
+accuracy</button>
+<button onclick="toggleCode('pr', this)" class="toggle-reveal">
+pr</button>
+<button onclick="toggleCode('positives', this)" class="toggle-reveal">
+positives</button>
+<button onclick="toggleCode('tpr', this)" class="toggle-reveal">
+tpr</button>
+<button onclick="toggleCode('tnr', this)" class="toggle-reveal">
+tnr</button>
+<button onclick="toggleCode('fpr', this)" class="toggle-reveal">
+fpr</button>
+<button onclick="toggleCode('fnr', this)" class="toggle-reveal">
+fnr</button>
 
-
-### `accuracy`
-<div class="doc" markdown="span">
+<div id="accuracy" class="doc" markdown="span" style="display:none;">
 Computes the accuracy for correctly predicting provided binary labels
 for sensitive data samples. Returns a float in the range $[0,1]$.
 
@@ -38,9 +48,7 @@ for sensitive data samples. Returns a float in the range $[0,1]$.
 number of samples, true predictions
 </em></div></div>
 
-
-### `pr`
-<div class="doc" markdown="span">
+<div id="pr" class="doc" markdown="span" style="display:none;">
 Computes the positive rate of binary predictions for sensitive
 data samples. Returns a float in the range $[0,1]$. This metric 
 does not use the `labels` argument.
@@ -49,9 +57,7 @@ does not use the `labels` argument.
 number of samples, positive predictions
 </em></div></div>
 
-
-### `positives`
-<div class="doc" markdown="span">
+<div id="positives" class="doc" markdown="span" style="display:none;">
 Computes the number of positive predictions for
 sensitive data samples. Returns a float in the range $[0,\infty)$. 
 This metric does not use the `labels` argument.
@@ -60,9 +66,7 @@ This metric does not use the `labels` argument.
 number of samples
 </em></div></div>
 
-
-### `tpr`
-<div class="doc" markdown="span">
+<div id="tpr" class="doc" markdown="span" style="display:none;">
 Computes the true positive rate of binary predictions for sensitive
 data samples. Returns a float in the range $[0,1]$.
 
@@ -70,9 +74,7 @@ data samples. Returns a float in the range $[0,1]$.
 number of samples, number of positives, number of true positives
 </em></div></div>
 
-
-### `tnr`
-<div class="doc" markdown="span">
+<div id="tnr" class="doc" markdown="span" style="display:none;">
 Computes the true negative rate of binary predictions for sensitive
 data samples. Returns a float in the range $[0,1]$.
 
@@ -80,9 +82,7 @@ data samples. Returns a float in the range $[0,1]$.
 number of samples, number of negatives, number of true negatives
 </em></div></div>
 
-
-### `fpr`
-<div class="doc" markdown="span">
+<div id="fpr" class="doc" markdown="span" style="display:none;">
 Computes the false positive rate of binary predictions for sensitive
 data samples. Returns a float in the range $[0,1]$.
 
@@ -90,9 +90,7 @@ data samples. Returns a float in the range $[0,1]$.
 number of samples, number of positives, number of false positives
 </em></div></div>
 
-
-### `fnr`
-<div class="doc" markdown="span">
+<div id="fnr" class="doc" markdown="span" style="display:none;">
 Computes the false negative rate of binary predictions for sensitive
 data samples. Returns a float in the range $[0,1]$.
 
@@ -100,12 +98,10 @@ data samples. Returns a float in the range $[0,1]$.
 number of samples, number of negatives, number of false negatives
 </em></div></div>
 
-
 ## Ranking
 
 Ranking metrics assess scores that aim to approach
 provided labels. The following arguments need to be provided:
-
 
 | Argument  | Role                | Values                                                           |
 |-----------|---------------------|------------------------------------------------------------------|
@@ -113,9 +109,20 @@ provided labels. The following arguments need to be provided:
 | labels    | prediction target   | binary array                                                     | 
 | sensitive | sensitive attribute | fork of arrays with elements in $[0,1]$ (either binary or fuzzy) |
 
+<button onclick="toggleCode('auc', this)" class="toggle-reveal">
+auc</button>
+<button onclick="toggleCode('phi', this)" class="toggle-reveal">
+phi</button>
+<button onclick="toggleCode('tophr', this)" class="toggle-reveal">
+tophr</button>
+<button onclick="toggleCode('toprec', this)" class="toggle-reveal">
+toprec</button>
+<button onclick="toggleCode('topf1', this)" class="toggle-reveal">
+topf1</button>
+<button onclick="toggleCode('tophr_avg', this)" class="toggle-reveal">
+tophr_avg</button>
 
-### `auc`
-<div class="doc" markdown="span">
+<div id="auc" class="doc" markdown="span" style="display:none;">
 Computes the area under curve of the receiver operating
 characteristics for sensitive data samples.
 Returns a float in the range $[0,1]$.
@@ -124,9 +131,7 @@ Returns a float in the range $[0,1]$.
 number of samples, the receiver operating characteristic curve
 </em></div></div>
 
-
-### `phi`
-<div class="doc" markdown="span">
+<div id="phi" class="doc" markdown="span" style="display:none;">
 Computes the score mass of
 sensitive data samples compared 
 to the total scores.
@@ -136,9 +141,7 @@ Returns a float in the range $[0,1]$.
 number of samples, sensitive scores
 </em></div></div>
 
-
-### `tophr`
-<div class="doc" markdown="span">
+<div id="tophr" class="doc" markdown="span" style="display:none;">
 Computes the hit rate, i.e., precision, for a set number of
 top scores for sensitive data samples. This is
 used to assess recommendation systems. By default, the
@@ -147,15 +150,15 @@ Returns a float in the range $[0,1]$.
 
 <br><div class="explain"><em>Explanation: 
 number of samples, top scores, true top scores
-</em></div></div>
+</em></div>
 
 | Optional argument | Role      | Values                            |
 |---------------------|-----------|-----------------------------------|
 | top                 | parameter | integer in the range $[1,\infty)$ |
 
+</div>
 
-### `toprec`
-<div class="doc" markdown="span">
+<div id="toprec" class="doc" markdown="span" style="display:none;">
 Computes the recall for a set number of
 top scores for sensitive data samples. This is
 used to assess recommendation systems. By default, the
@@ -164,15 +167,15 @@ Returns a float in the range $[0,1]$.
 
 <br><div class="explain"><em>Explanation: 
 number of samples, top scores, true top scores
-</em></div></div>
+</em></div>
 
 | Optional argument | Role      | Values                            |
 |---------------------|-----------|-----------------------------------|
 | top                 | parameter | integer in the range $[1,\infty)$ |
 
+</div>
 
-### `topf1`
-<div class="doc" markdown="span">
+<div id="topf1" class="doc" markdown="span" style="display:none;">
 Computes the f1-score for a set number of
 top scores for sensitive data samples. This is
 the harmonic mean between hr and preck and is
@@ -182,17 +185,15 @@ Returns a float in the range $[0,1]$.
 
 <br><div class="explain"><em>Explanation: 
 number of samples, top scores, true top scores
-</em></div></div>
+</em></div>
 
 | Optional argument | Role      | Values                            |
 |---------------------|-----------|-----------------------------------|
 | top                 | parameter | integer in the range $[1,\infty)$ |
 
+</div>
 
-
-
-### `tophr`
-<div class="doc" markdown="span">
+<div id="tophr_avg" class="doc" markdown="span" style="display:none;">
 Computes the average hit rate/precession 
 across different numbers of top scores
 with correct predictions.  By default, the
@@ -201,20 +202,18 @@ Returns a float in the range $[0,1]$.
 
 <br><div class="explain"><em>Explanation: 
 number of samples, top scores, hr curve
-</em></div></div>
+</em></div>
 
 | Optional argument | Role      | Values                            |
 |---------------------|-----------|-----------------------------------|
 | top                 | parameter | integer in the range $[1,\infty)$ |
 
-
-
+</div>
 
 ## Regression
 
 Regression metrics assess scores that aim to reproduce
 desired target scores. The following arguments need to be provided:
-
 
 | Argument  | Role                | Values                                                           |
 |-----------|---------------------|------------------------------------------------------------------|
@@ -222,17 +221,27 @@ desired target scores. The following arguments need to be provided:
 | targets   | prediction target   | any float array                                                  | 
 | sensitive | sensitive attribute | fork of arrays with elements in $[0,1]$ (either binary or fuzzy) |
 
+<button onclick="toggleCode('max_error', this)" class="toggle-reveal">
+max_error</button>
+<button onclick="toggleCode('mae', this)" class="toggle-reveal">
+mae</button>
+<button onclick="toggleCode('mse', this)" class="toggle-reveal">
+mse</button>
+<button onclick="toggleCode('rmse', this)" class="toggle-reveal">
+rmse</button>
+<button onclick="toggleCode('r2', this)" class="toggle-reveal">
+r2</button>
+<button onclick="toggleCode('pinball', this)" class="toggle-reveal">
+pinball</button>
 
-### `max_error`
-<div class="doc" markdown="span">
+<div id="max_error" class="doc" markdown="span" style="display:none;">
 Computes the maximum absolute error between scores and targets
 for sensitive data samples. Returns a float in the range $[0,\infty)$.
 
 <br><div class="explain"><em>Explanation: ---
 </em></div></div>
 
-### `mae`
-<div class="doc" markdown="span">
+<div id="mae" class="doc" markdown="span" style="display:none;">
 Computes the mean of the absolute error between scores and targets
 for sensitive data samples. Returns a float in the range $[0,\infty)$.
 
@@ -240,8 +249,7 @@ for sensitive data samples. Returns a float in the range $[0,\infty)$.
 number of samples, sum of absolute errors
 </em></div></div>
 
-### `mse`
-<div class="doc" markdown="span">
+<div id="mse" class="doc" markdown="span" style="display:none;">
 Computes the mean of the square error between scores and targets
 for sensitive data samples. Returns a float in the range $[0,\infty)$.
 
@@ -249,8 +257,7 @@ for sensitive data samples. Returns a float in the range $[0,\infty)$.
 number of samples, sum of square errors
 </em></div></div>
 
-### `rmse`
-<div class="doc" markdown="span">
+<div id="rmse" class="doc" markdown="span" style="display:none;">
 Computes the root of mse.
 Returns a float in the range $[0,\infty)$.
 
@@ -258,8 +265,7 @@ Returns a float in the range $[0,\infty)$.
 number of samples, sum of square errors
 </em></div></div>
 
-### `r2`
-<div class="doc" markdown="span">
+<div id="r2" class="doc" markdown="span" style="display:none;">
 Computes the r2 score between scores
 and target values, adjusted for the 
 provided degree of freedom (default is zero).
@@ -270,15 +276,15 @@ are evaluated to zero.
 
 <br><div class="explain"><em>Explanation:
 number of samples, sum of square errors, degrees of freedom
-</em></div></div>
+</em></div>
 
 | Optional argument | Role      | Values                            |
 |---------------------|-----------|-----------------------------------|
 | deg_freedom         | parameter | integer in the range $[0,\infty)$ |      
 
+</div>
 
-### `pinball`
-<div class="doc" markdown="span">
+<div id="pinball" class="doc" markdown="span" style="display:none;">
 Computes the pinball deviation between scores
 and target values for a balance parameter alpha
 (default is 0.5).
@@ -288,8 +294,32 @@ estimation.
 
 <br><div class="explain"><em>Explanation:
 number of samples
-</em></div></div>
+</em></div>
 
 | Optional argument | Role      | Values                     |
 |---------------------|-----------|----------------------------|
 | alpha               | parameter | float in the range $[0,1]$ |      
+
+</div>
+
+<script>
+function toggleCode(id, button) {
+    var divsToHide = document.getElementsByClassName("doc");
+    for(var i = 0; i < divsToHide.length; i++) {
+        divsToHide[i].style.display = "none";
+    }
+    var codeBlock = document.getElementById(id);
+    if (codeBlock.style.display === "none") {
+        codeBlock.style.display = "block";
+    } else {
+        codeBlock.style.display = "none";
+    }
+
+    var buttons = document.getElementsByClassName("toggle-reveal");
+    for (var j = 0; j < buttons.length; j++) {
+        buttons[j].classList.remove("active");
+    }
+    button.classList.add("active");
+
+}
+</script>

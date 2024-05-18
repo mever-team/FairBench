@@ -20,11 +20,35 @@ in which case the report type changes the nuances of
 the comparison. A database of all stamps is maintained in FairBench's 
 repository [here](https://github.com/mever-team/FairBench/blob/main/stamps/common.yaml).
 This database, as well as the rest of the library's
-codebase is open to contributions at any time.
-Here we present all available stamps.
-Click on one of the stamps below to get a full description.
+codebase is open to contributions.
+Here we present all available stamps;
+click on them to get a full description.
+
+!!! tip
+    Depending on the type of report, group comparisons may
+    occur between groups or subgroups pairwise, for each 
+    group against the total population, or for each group
+    against its complement in the population. FairBench
+    keeps track of this information in case its needed
+    for model card descriptions or caveats. If multiple
+    reports have been merged, one of the values is
+    selected based on a priority order that each stamp
+    dictates.
+
+!!! danger
+    Popular definitions reflected by stamps
+    are not suited to all systems, and there may
+    be definitions without a stamp.
+    Some stamps may also only be used to expose certain biases
+    but the absense of these biases may not necessarily
+    imply fairness.
+    For more details, look at the caveats and recommendations
+    of produced model cards.
+
 
 ## Classification
+The stamps presented here are often used to assess the 
+fairness or bias of binary classifiers.
 
 <button onclick="toggleCode('four_fifths', this)" class="toggle-reveal">
 four_fifths</button>
@@ -47,7 +71,7 @@ The `accuracy` stamp refers to the worst accuracy across all groups or subgroups
 
 <div id="dfpr" class="doc" markdown="span" style="display:none;">
 The `dfpr` stamp refers to the difference in false positive rates between groups or subgroups.
-We consider a multidimensional extension that considers the
+We consider a multidimensional extension that, depending on considers the
 worst difference.
 </div>
 
@@ -60,16 +84,28 @@ worst difference.
 
 ## Ranking
 
+The stamps presented here are often used to assess the 
+fairness or bias of ranking when there is a binary outcome
+of success against failure. This also models the case
+of parity in the top-k predictions of recommender systems.
+
+<button onclick="toggleCode('auc', this)" class="toggle-reveal">
+auc</button>
 <button onclick="toggleCode('abroca', this)" class="toggle-reveal">
 abroca</button>
 <button onclick="toggleCode('rbroca', this)" class="toggle-reveal">
 rbroca</button>
 
+
+<div id="auc" class="doc" markdown="span" style="display:none;">
+The `auc` stamp refers to the worst AUC across all groups or subgroups.
+</div>
+
+
 <div id="abroca" class="doc" markdown="span" style="display:none;">
 The `abroca` stamp refers to the absolute betweeness area between ROC curves (used to
 compute AUC) of recommendation systems.
 </div>
-
 
 <div id="rbroca" class="doc" markdown="span" style="display:none;">
 The `rbroca` stamp refers to the relative between area variation of abroca.

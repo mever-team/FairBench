@@ -75,6 +75,16 @@ dfnr:
     - "Disparate mistreatment may not always be an appropriate fairness consideration."
     - "Consider input from affected stakeholders to determine whether dfnr is an appropriate fairness measure."
 
+auc:
+  title: "worst AUC"
+  alias: ["min.auc", "auc"]
+  description:
+    "Computes the worst AUC among protected groups; this is the minimum
+    benefit the system brings to any group."
+  caveats:
+    - "The worst AUC is a lower bound but not an estimation of overall predictive quality.
+      There may be different distributions of benefits that could be protected."
+
 abroca:
   title: "abroca"
   alias: ["maxbarea.auc", "maxbarea[vsAny].auc"]
