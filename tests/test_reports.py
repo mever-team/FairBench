@@ -127,8 +127,8 @@ def test_unireport():
         report = fb.unireport(
             predictions=predictions, labels=labels, sensitive=sensitive
         )
-        assert report.branches()["min[vsAny]"].accuracy.value == 0
-        assert report.branches()["min[vsAny]"].accuracy.explain.men == 1
+        assert report.branches()["min"].accuracy.value == 0
+        assert report.branches()["min"].accuracy.explain.men == 1
         assert report.branches()["minratio[vsAny]"].pr.value == 0
 
 
