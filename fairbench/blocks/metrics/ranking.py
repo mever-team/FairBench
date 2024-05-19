@@ -17,17 +17,21 @@ def avgscore(scores: Tensor, sensitive: Optional[Tensor] = None, bins: int = 100
 
     scores = scores.numpy()
     sensitive = sensitive.numpy()
-    hist, bin_edges = np.histogram(scores[sensitive==1], bins=bins, density=True, range=(0, 1))
-    bin_edges = np.concatenate([[0], bin_edges[:-1][hist!=0], [bin_edges[-1], 1]])
-    hist = np.concatenate([[0], hist[hist!=0], [0]])
+    hist, bin_edges = np.histogram(
+        scores[sensitive == 1], bins=bins, density=True, range=(0, 1)
+    )
+    bin_edges = np.concatenate([[0], bin_edges[:-1][hist != 0], [bin_edges[-1], 1]])
+    hist = np.concatenate([[0], hist[hist != 0], [0]])
 
     return Explainable(
         0 if sum_sensitive == 0 else (sum_positives / sum_sensitive),
         samples=sum_sensitive,
         sum_scores=sum_positives,
-        curve=ExplanationCurve(np.array((bin_edges[:-1] + bin_edges[1:]) / 2, dtype=float),
-                               np.array(hist,dtype=float),
-                               "Prob. density"),
+        curve=ExplanationCurve(
+            np.array((bin_edges[:-1] + bin_edges[1:]) / 2, dtype=float),
+            np.array(hist, dtype=float),
+            "Prob. density",
+        ),
     )
 
 
