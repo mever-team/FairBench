@@ -21,17 +21,18 @@ of the optional arguments below to a report
 generation method. These arguments are needed to automatically
 understand which base
 performance [metrics](../record/metrics.md) to compute.
-Report generation method will try to compute fairness
+Report generation methods will try to compute fairness
 assessment built from as many base metrics as they can,
 depending on which arguments are provided.
+Sensitive attributes are [forks](forks.md)
+to handle multi-value attributes or multiple
+sensitive attribute values. 
+
 You can also provide an optional `metrics`
 argument that holds either 
 a dictionary mapping names to metrics
 or a list of metrics, where
 in the last case their names are automatically inferred.
-Sensitive attributes are [forks](forks.md)
-to handle multi-value attributes or multiple
-sensitive attribute values. 
 
 | Argument    | Role                | Values                                                         |
 |-------------|---------------------|----------------------------------------------------------------|
@@ -61,24 +62,83 @@ report generation methods:
 As an example, let's create a simple report
 based on binary predictions, binary
 ideal predictions and multiclass
-sensitive attribute `sensitive`, which is
+sensitive attribute `sensitive`. The
+sensitive attribute is
 declared to be a fork with two branches
 *men,women*, each of which is a binary
-feature value per:
+feature value. The report looks like this
+when displayed:
 
 ```python
 import fairbench as fb
-
 sensitive = fb.Fork(men=[1, 1, 0, 0, 0], women=[0, 0, 1, 1, 1])
 report = fb.multireport(predictions=[1, 0, 1, 0, 0], 
                         labels=[1, 0, 0, 1, 0], 
                         sensitive=sensitive)
 ```
 
+<button onclick="toggleCode('print')" class="toggle-button">>></button>
+Printing a report creates a yaml representation
+of its contents. Use this only for a quick
+peek, as there are better ways to explore reports,
+described below. Entries that can not be computed
+given the provided arguments are not filled.
+
+<div id="print" class="code-block" style="display:none;">
+
+```python
+print(report)
+```
+
+```
+min: 
+   accuracy: 0.333
+   pr: 0.333
+   tpr: 0.000
+   tnr: 0.500
+wmean: 
+   accuracy: 0.600
+   pr: 0.400
+   tpr: 0.400
+   tnr: 0.700
+gini: 
+   accuracy: 0.250
+   pr: 0.100
+   tpr: 0.500
+   tnr: 0.167
+minratio: 
+   accuracy: 0.333
+   pr: 0.667
+   tpr: 0.000
+   tnr: 0.500
+maxdiff: 
+   accuracy: 0.667
+   pr: 0.167
+   tpr: 1.000
+   tnr: 0.500
+maxbarea: 
+   accuracy: ---
+   pr: ---
+   tpr: ---
+   tnr: ---
+maxrarea: 
+   accuracy: ---
+   pr: ---
+   tpr: ---
+   tnr: ---
+maxbdcg: 
+   accuracy: ---
+   pr: ---
+   tpr: ---
+   tnr: ---
+```
+
+</div>
+
 
 ## Show reports
 
-Report are forks whose branches hold dictionaries of
+Reports are forks whose branches hold dictionaries of
 metric computations. In some reports (e.g., multireport)
 [reduction](../advanced/manipulation.md)
 operations introduce a comparative analysis
@@ -97,7 +157,7 @@ Given a report, you can find what its comparisons mean
 Several methods are provided to
 work with the report data format, namely 
 forks of dictionaries. First, you can show 
-reports in the *stdout* console in the form
+reports in the `stdout` console in the form
 of tables:
 
 ```python
@@ -138,7 +198,7 @@ fb.visualize(report)
 </div>
 
 <button onclick="toggleCode('matplotlib')" class="toggle-button">>></button>
-Visualization uses `matplotlib` under the hood. You can
+Visualization uses `matplotlib.pyplot` under the hood. You can
 rotate the horizontal axis labels, for example
 when there are too many sensitive attribute dimensions,
 and can ask for the visualization not to open the figure

@@ -23,7 +23,7 @@ common_performance_metrics = (
     metrics.tpr,
     metrics.tnr,
     metrics.auc,
-    metrics.phi,
+    metrics.avgscore,
     metrics.tophr,
     metrics.toprec,
     metrics.mae,
@@ -93,7 +93,7 @@ def unireport(
     return combine(
         *[
             framework.reduce(
-                base, **scheme, base="Any"
+                base, **scheme, base="Any" if "expand" in scheme else None
             )  # the bas kwarg refers to the base fork branch of the base report
             for scheme in reduction_schemes
         ]

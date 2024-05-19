@@ -8,15 +8,26 @@ from typing import Optional
 @role("metric")
 @parallel
 @unit_bounded
-def phi(scores: Tensor, sensitive: Optional[Tensor] = None):
+def avgscore(scores: Tensor, sensitive: Optional[Tensor] = None, bins: int = 100):
+    bins = int(bins.numpy())
     if sensitive is None:
         sensitive = scores.ones_like()
     sum_sensitive = sensitive.sum()
     sum_positives = (scores * sensitive).sum()
+
+    scores = scores.numpy()
+    sensitive = sensitive.numpy()
+    hist, bin_edges = np.histogram(scores[sensitive==1], bins=bins, density=True, range=(0, 1))
+    bin_edges = np.concatenate([[0], bin_edges[:-1][hist!=0], [bin_edges[-1], 1]])
+    hist = np.concatenate([[0], hist[hist!=0], [0]])
+
     return Explainable(
         0 if sum_sensitive == 0 else (sum_positives / sum_sensitive),
         samples=sum_sensitive,
-        sensitive_scores=sum_positives,
+        sum_scores=sum_positives,
+        curve=ExplanationCurve(np.array((bin_edges[:-1] + bin_edges[1:]) / 2, dtype=float),
+                               np.array(hist,dtype=float),
+                               "Prob. density"),
     )
 
 

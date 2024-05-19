@@ -8,12 +8,17 @@ assessments by base performance metrics. These assessments
 are often further 
 [reduced](../advanced/manipulation.md#reduction) across groups
 of samples with different sensitive attribute values.
-Here, we present base metrics used to assess AI
-that reports use. All metrics computed
-on a subset of 'sensitive samples', which form
+Here, we present base metrics of AI assessment
+used by reports. All metrics are computed
+on a subset of "sensitive samples", which form
 the group being examined each time. Outputs are
 wrapped into explainable objects that keep track of
-relevant metadata.
+relevant metadata. 
+
+!!! tip
+    You can give any arguments to reports,
+    and these compute all metrics that can be computed
+    with those arguments.
 
 ## Classification
 Classification metrics assess binary predictions. Unless stated
@@ -111,8 +116,8 @@ provided labels. The following arguments need to be provided:
 
 <button onclick="toggleCode('auc', this)" class="toggle-reveal">
 auc</button>
-<button onclick="toggleCode('phi', this)" class="toggle-reveal">
-phi</button>
+<button onclick="toggleCode('avgscore', this)" class="toggle-reveal">
+avgscore</button>
 <button onclick="toggleCode('tophr', this)" class="toggle-reveal">
 tophr</button>
 <button onclick="toggleCode('toprec', this)" class="toggle-reveal">
@@ -131,15 +136,24 @@ Returns a float in the range $[0,1]$.
 number of samples, the receiver operating characteristic curve
 </em></div></div>
 
-<div id="phi" class="doc" markdown="span" style="display:none;">
+<div id="avgscore" class="doc" markdown="span" style="display:none;">
 Computes the score mass of
 sensitive data samples compared 
 to the total scores.
 Returns a float in the range $[0,1]$.
+Keeps track of the score distribution by organizing into
+a histogram with the given number of bins.
 
 <br><div class="explain"><em>Explanation: 
-number of samples, sensitive scores
-</em></div></div>
+number of samples, sensitive scores, curve of score distributions
+</em></div>
+
+| Optional argument | Role      | Values                             |
+|---------------------|-----------|------------------------------------|
+| bins                | parameter | integer in the range $[10,\infty)$ |
+
+
+</div>
 
 <div id="tophr" class="doc" markdown="span" style="display:none;">
 Computes the hit rate, i.e., precision, for a set number of
