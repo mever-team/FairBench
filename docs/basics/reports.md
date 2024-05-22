@@ -149,7 +149,7 @@ report = fb.accreport( # just print performance metrics
     predictions=[1, 0, 1, 0, 0], 
     labels=[1, 0, 0, 1, 0], 
     metrics=[fb.accuracy, fb.pr, fb.fpr, fb.fnr])
-fb.describe(report)  # pretty print - more later
+fb.describe(report)  # pretty print - more on this later
 ```
 
 </div>
@@ -157,8 +157,8 @@ fb.describe(report)  # pretty print - more later
 ## Show reports
 
 Reports are forks whose branches hold dictionaries of
-metric computations. In some reports (e.g., multireport)
-[reduction](../advanced/manipulation.md)
+metric computations. In some reports (e.g., multireport
+and unireport) [reduction](../advanced/manipulation.md)
 operations introduce a comparative analysis
 between the sensitive attribute branches to investigate
 unfairness. For example, `min` shows the worst evaluation
@@ -190,8 +190,8 @@ fnr             0.333           0.333           0.333
 
 
 <button onclick="toggleCode('latex')" class="toggle-button">>></button>
-You can use the arguments of the `describe` method to only
-keep the string representation without printing, and to create
+You can use the arguments to make `describe`
+return a string without printing, or to create
 latex tables.
 
 <div id="latex" class="code-block" style="display:none;">
@@ -208,9 +208,7 @@ text = fb.describe(report,
     separator=" & ", # separator between columns
     newline="\\\\\n") # use \\ and then the newline character
 print(text)
-```
 
-```
 Metric          & min             & wmean           & gini            & minratio[vsAny] & maxdiff[vsAny]  & maxbarea[vsAny] & maxrarea[vsAny] & maxbdcg[vsAny] \\
 auc             & 0.861           & 0.882           & 0.012           & 0.972           & 0.025           & 0.025           & 0.038           & 0.028          \\
 avgscore        & 0.110           & 0.239           & 0.197           & 0.461           & 0.129           & 0.454           & 0.548           & 0.499          \\
@@ -238,18 +236,16 @@ print(fb.tojson(report))
 
 </div>
 
-<button onclick="toggleCode('visualize')" class="toggle-button">>></button>
-You can visualize reports with the command `fb.visualize(report)`.
+## Plotting
 
+You can plot reports with the command `fb.visualize(report)`.
 
-<div id="visualize" class="code-block" style="display:none;">
 
 ```python
 fb.visualize(report)
 ```
 <img src="../reports.png" alt="report example">
 
-</div>
 
 <button onclick="toggleCode('matplotlib')" class="toggle-button">>></button>
 Visualization uses `matplotlib.pyplot` under the hood. You can
@@ -269,25 +265,6 @@ fb.visualize(report,
              hold=True)
 plt.title("Report")
 plt.show() # only show now
-```
-
-</div>
-
-<button onclick="toggleCode('multiclass')" class="toggle-button">>></button>
-You can create a fork of reports to hold multiclass data. In this 
-case, each fork branch holds its own report. Please visit the link
-at the warning below to understand how to view and explore such
-complicated reports.
-
-<div id="multiclass" class="code-block" style="display:none;">
-
-```python
-import matplotlib.pyplot as plt
-import fairbench as fb
-reportA = fb.multireport(...)  # generate a report for class A
-reportB = fb.multireport(...)  # generate the same report for class B
-multiclass = fb.Fork(A=reportA, B=reportB)
-fb.describe(muilticlass.minratio)  # compare the minratio reductions between classes
 ```
 
 </div>

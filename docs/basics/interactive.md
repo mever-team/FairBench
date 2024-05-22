@@ -1,11 +1,21 @@
 # Explore reports
 
-Interactive visualization explores
-complex objects generated with  `FairBench`, such as
-comparison of report value explanations,
-or of different algorithms. This is done with a user interface
-that lets you navigate between various perspectives (see below).
-The same exploration can be performed programmatically.
+Here we describe how to explore reports or other complex
+objects created with FairBench. These objects are organized
+as forks (reports are also forks) whose branches correspond to
+column names. The main mechanism to access parts of reports
+is the perspective notation below. For example, you can write
+`report.minratio` to obtain a Fork of all minimum ratio reductions
+for all base measures, `report.auc` to obtain all the reductions
+for the base auc measure, and
+`report.auc.minratio` to obtain the (explainable) value of the
+minratio reduction for auc. 
+Once you get a hang of how perspectives can be obtained, you
+can explore reports or comparisons of reports across
+different algorithms and classes programmatically.
+You can also perform the exploration via an
+interactive visual interface
+that lets you navigate between various perspectives.
 
 ## Perspectives
 
@@ -21,16 +31,6 @@ all values for the same entry in all branches
 rates across all branches).
 Perspectives are equivalent to a combination of 
 tensor access alongside a specific dimension.
-
-### Code-based exploration
-
-!!! info 
-    This paragraph is under construction.
-
-### Branch explanations
-
-!!! info 
-    This paragraph is under construction.
 
 
 ## Explainable values
@@ -65,9 +65,7 @@ metric in the *isecreport*.
 report = fb.isecreport(vals)
 fb.describe(report)
 fb.describe(report.bayesian.minprule.explain)
-```
 
-```
 Metric          empirical       bayesian       
 minprule        0.857           0.853          
 
@@ -78,24 +76,41 @@ Metric          case1           case2           case2,case1
 </div>
 
 
-### Algorithm comparison
+## Compare reports
 
 To compare the same type of reports produced by two different
 algorithms, you need to create a fork with the reports as its
-branches. In the example below, we use 
-[pygrank](https://github.com/MKLab-ITI/pygrank)
-to run a normal pagerank algorithm and a fairness-aware adaptation
-for node recommendation. Any number of algorithms can be assessed with
-a FairBench reporting mechanism and combined into a fork. In this case,
-the mechanism of choice is the multireport, used with
-arguments needed to assess recommendation outcomes. At the end,
-a fork is created and, although it can be too complicated to 
-show in one figure or table,
-you can obtain any perspective and visualize that. 
-For example, the snippet below prints a table in the console
-that compares algorithms in terms of various base auc measure
-reductions.
+branches. Any number of algorithms or classes of the same
+algorithm can be assessed with
+a FairBench reporting mechanism and combined into a fork.
+Then, view the fork under some perspective to 
+simplify it. The pattern to do so is:
 
+```python
+import fairbench as fb
+reportAlg1 = ...  # a report
+reportAlg2 = ...  # a report
+property = ...   # a property (e.g., row or column of the report) to focus on
+reports = {"al1": reportAlg1, "alg2": reportAlg2} # with the dict you can also create the reports incrementally
+fb = fb.Fork(reports)
+fb.describe(fb[property]) 
+```
+
+<button onclick="toggleCode('pygrank')" class="toggle-button">>></button>
+For example, employ 
+[pygrank](https://github.com/MKLab-ITI/pygrank)
+to run both a normal pagerank algorithm and a fairness-aware adaptation
+for node recommendation. Use the recommendation outcomes
+by those algorithms
+to produced two reports (e.g., multireports)
+and create a fork of them, each corresponding to a different
+algorithm. Then obtain some perspective of the complicated
+fork to describe visualize,
+such as all the reductions of the auc base measure. 
+This will essentially
+compare the reductions between the two algorithms. 
+
+<div id="pygrank" class="code-block" style="display:none;">
 
 ```python
 import pygrank as pg
@@ -121,17 +136,40 @@ fair_report = fb.multireport(labels=labels, scores=fair_scores, sensitive=sensit
 """combine both reports into one and get the auc perspective"""
 fork = fb.Fork(ppr=report, lfpr=fair_report)
 fb.describe(fork.auc)
-```
 
-```
 Metric          ppr             lfpr           
 min             0.680           0.589          
 wmean           0.780           0.743          
+gini            0.058           0.095          
 minratio        0.792           0.681          
 maxdiff         0.178           0.276          
 maxbarea        0.169           0.262          
+maxrarea        0.247           0.302          
+maxbdcg         0.184           0.276         
 ```
 
+</div>
+
+
+
+<button onclick="toggleCode('multiclass')" class="toggle-button">>></button>
+A fork of reports can also hold multiclass data by making
+each fork branch correspond to a different class. You can not describe
+or visualize the created fork directly because it is too complex, 
+but you can view parts of it that are simple enough.
+
+<div id="multiclass" class="code-block" style="display:none;">
+
+```python
+import matplotlib.pyplot as plt
+import fairbench as fb
+reportA = fb.multireport(...)  # generate a report for class A
+reportB = fb.multireport(...)  # generate the same report for class B
+multiclass = fb.Fork(A=reportA, B=reportB)
+fb.describe(muilticlass.minratio)  # compare the minratio reductions between classes
+```
+
+</div>
 
 
 
@@ -212,3 +250,16 @@ values.
     or data gathering issues
     that eventually give rise to bias.<br><br>
     ![Explanations of explanations](../images/interactive_internal_explanations.png)
+
+
+
+<script>
+function toggleCode(id) {
+    var codeBlock = document.getElementById(id);
+    if (codeBlock.style.display === "none") {
+        codeBlock.style.display = "block";
+    } else {
+        codeBlock.style.display = "none";
+    }
+}
+</script>

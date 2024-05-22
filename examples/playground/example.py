@@ -1,12 +1,23 @@
+import pygrank as pg
 import fairbench as fb
 
-test, y, yhat = fb.demos.adult(predict="probabilities")
-s = fb.Fork(fb.categories @ test[9])
-report = fb.unireport(scores=yhat, labels=y, sensitive=s)
+"""load data and set sensitive attribute"""
+_, graph, communities = next(pg.load_datasets_multiple_communities(["highschool"]))
+train, test = pg.split(pg.to_signal(graph, communities[0]), 0.5)
+sensitive_signal = pg.to_signal(graph, communities[1])
+labels = test.filter(exclude=train)
+sensitive = fb.Fork(gender=fb.categories@sensitive_signal.filter(exclude=train))
 
-text = fb.describe(report, show=False, separator=" & ", newline="\\\\\n")
-print(text)
+"""create report for pagerank"""
+algorithm = pg.PageRank(alpha=0.85)
+scores = algorithm(train).filter(exclude=train)
+report = fb.multireport(labels=labels, scores=scores, sensitive=sensitive)
 
-# fb.visualize(report.avgscore.maxbarea.explain.explain.curve)
+"""create report for locally fair pagerank"""
+fair_algorithm = pg.LFPR(alpha=0.85, redistributor="original")
+fair_scores = fair_algorithm(train, sensitive=sensitive_signal).filter(exclude=train)
+fair_report = fb.multireport(labels=labels, scores=fair_scores, sensitive=sensitive)
 
-# fb.describe(report)
+"""combine both reports into one and get the auc perspective"""
+fork = fb.Fork(ppr=report, lfpr=fair_report)
+fb.describe(fork.auc)
