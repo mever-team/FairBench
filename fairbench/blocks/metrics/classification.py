@@ -100,7 +100,9 @@ def tnr(
 ):
     if sensitive is None:
         sensitive = predictions.ones_like()
-    true_negatives = ((max_prediction - predictions) * (max_prediction - labels) * sensitive).sum()
+    true_negatives = (
+        (max_prediction - predictions) * (max_prediction - labels) * sensitive
+    ).sum()
     negatives = ((max_prediction - labels) * sensitive).sum()
     tnr_value = 0 if negatives == 0 else true_negatives / negatives
     return Explainable(

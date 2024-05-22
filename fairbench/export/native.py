@@ -40,11 +40,20 @@ def tojson(report: Fork):
     return json.dumps(data)
 
 
-def describe(report: Fork, spacing: int = 15, show: bool = True, separator: str = " ", newline="\n"):
+def describe(
+    report: Fork,
+    spacing: int = 15,
+    show: bool = True,
+    separator: str = " ",
+    newline="\n",
+):
     report = json.loads(tojson(report))
     ret = ""
     if report["header"]:
-        ret += separator.join([entry.ljust(spacing) for entry in report["header"]]) + newline
+        ret += (
+            separator.join([entry.ljust(spacing) for entry in report["header"]])
+            + newline
+        )
     for metric in report:
         if metric != "header":
             ret += (
