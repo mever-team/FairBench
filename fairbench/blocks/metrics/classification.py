@@ -29,10 +29,11 @@ def pr(predictions: Tensor, sensitive: Optional[Tensor] = None):
         sensitive = predictions.ones_like()
     sum_sensitive = sensitive.sum()
     sum_positives = (predictions * sensitive).sum()
+    pr_value = 0 if sum_sensitive == 0 else sum_positives / sum_sensitive
     return Explainable(
-        0 if sum_sensitive == 0 else (sum_positives / sum_sensitive),
-        samples=sum_sensitive,
-        positives=sum_positives,
+        pr_value,
+        samples=sum_sensitive.item(),
+        positives=sum_positives.item(),
     )
 
 
@@ -52,19 +53,17 @@ def tpr(
     predictions: Tensor,
     labels: Tensor,
     sensitive: Optional[Tensor] = None,
-    max_prediction: float = 1,
 ):
     if sensitive is None:
         sensitive = predictions.ones_like()
-
-    error = (max_prediction - (predictions - labels).abs()) * predictions
-    error_sensitive = error * sensitive
-    num_sensitive = (sensitive * predictions).sum()
+    true_positives = (predictions * labels * sensitive).sum()
+    positives = (labels * sensitive).sum()
+    tpr_value = 0 if positives == 0 else true_positives / positives
     return Explainable(
-        0 if num_sensitive == 0 else (error_sensitive.sum() / num_sensitive),
-        positives=num_sensitive,
-        true_positives=error_sensitive.sum(),
-        samples=sensitive.sum(),
+        tpr_value,
+        positives=positives.item(),
+        true_positives=true_positives.item(),
+        samples=sensitive.sum().item(),
     )
 
 
@@ -75,19 +74,18 @@ def fpr(
     predictions: Tensor,
     labels: Tensor,
     sensitive: Optional[Tensor] = None,
+    max_prediction: float = 1,
 ):
     if sensitive is None:
         sensitive = predictions.ones_like()
-    error = (predictions - labels).abs() * predictions
-    error_sensitive = error * sensitive
-    num_sensitive = (sensitive * predictions).sum()
-    if num_sensitive == 0:
-        return 0
+    false_positives = (predictions * (max_prediction - labels) * sensitive).sum()
+    negatives = ((max_prediction - labels) * sensitive).sum()
+    fpr_value = 0 if negatives == 0 else false_positives / negatives
     return Explainable(
-        0 if num_sensitive == 0 else (error_sensitive.sum() / num_sensitive),
-        positives=num_sensitive,
-        false_positives=error_sensitive.sum(),
-        samples=sensitive.sum(),
+        fpr_value,
+        negatives=negatives.item(),
+        false_positives=false_positives.item(),
+        samples=sensitive.sum().item(),
     )
 
 
@@ -102,15 +100,14 @@ def tnr(
 ):
     if sensitive is None:
         sensitive = predictions.ones_like()
-    negatives = max_prediction - predictions
-    error = (max_prediction - (predictions - labels).abs()) * negatives
-    error_sensitive = error * sensitive
-    num_sensitive = (sensitive * negatives).sum()
+    true_negatives = ((max_prediction - predictions) * (max_prediction - labels) * sensitive).sum()
+    negatives = ((max_prediction - labels) * sensitive).sum()
+    tnr_value = 0 if negatives == 0 else true_negatives / negatives
     return Explainable(
-        0 if num_sensitive == 0 else (error_sensitive.sum() / num_sensitive),
-        negatives=num_sensitive,
-        true_negatives=error_sensitive.sum(),
-        samples=sensitive.sum(),
+        tnr_value,
+        negatives=negatives.item(),
+        true_negatives=true_negatives.item(),
+        samples=sensitive.sum().item(),
     )
 
 
@@ -125,13 +122,12 @@ def fnr(
 ):
     if sensitive is None:
         sensitive = predictions.ones_like()
-    negatives = max_prediction - predictions
-    error = (predictions - labels).abs() * negatives
-    error_sensitive = error * sensitive
-    num_sensitive = (sensitive * negatives).sum()
+    false_negatives = ((max_prediction - predictions) * labels * sensitive).sum()
+    positives = (labels * sensitive).sum()
+    fnr_value = 0 if positives == 0 else false_negatives / positives
     return Explainable(
-        0 if num_sensitive == 0 else (error_sensitive.sum() / num_sensitive),
-        negatives=num_sensitive,
-        false_negatives=error_sensitive.sum(),
-        samples=sensitive.sum(),
+        fnr_value,
+        positives=positives.item(),
+        false_negatives=false_negatives.item(),
+        samples=sensitive.sum().item(),
     )

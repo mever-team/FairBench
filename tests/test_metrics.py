@@ -17,12 +17,12 @@ def test_accuracy():
 
 def test_tpr():
     for _ in environment():
-        assert fb.tpr(fb.astensor([1, 1, 0, 0]), fb.astensor([1, 1, 1, 0])) == 1
-        assert fb.tpr(fb.astensor([1, 1, 1, 0]), fb.astensor([1, 1, 0, 0])) < 1
+        assert fb.tpr(fb.astensor([1, 1, 0, 0]), fb.astensor([1, 1, 1, 0])) < 1
+        assert fb.tpr(fb.astensor([1, 1, 1, 0]), fb.astensor([1, 1, 0, 0])) == 1
         assert (
             fb.tpr(
-                fb.astensor([1, 1, 1, 0]),
                 fb.astensor([1, 1, 0, 0]),
+                fb.astensor([1, 1, 1, 0]),
                 fb.astensor([1, 1, 0, 1]),
             )
             == 1
@@ -31,8 +31,8 @@ def test_tpr():
 
 def test_tnr():
     for _ in environment():
-        assert fb.tnr(fb.astensor([1, 1, 0, 0]), fb.astensor([1, 1, 1, 0])) < 1
-        assert fb.tnr(fb.astensor([1, 1, 0, 0]), fb.astensor([1, 0, 0, 0])) == 1
+        assert fb.tnr(fb.astensor([1, 1, 0, 0]), fb.astensor([1, 1, 1, 0])) == 1
+        assert fb.tnr(fb.astensor([1, 1, 0, 0]), fb.astensor([1, 0, 0, 0])) < 1
         assert (
             fb.tnr(
                 fb.astensor([1, 1, 0, 0]),

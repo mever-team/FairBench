@@ -8,8 +8,8 @@ report = fb.combine(
     fb.multireport(scores=yhat, labels=y, sensitive=s),
 )
 
-# fb.interactive(report)
-
-# print(report.avgscore.maxbarea.explain)
-
 fb.describe(report)
+
+fb.visualize(report.avgscore.maxbarea.explain.explain.curve)
+
+#fb.describe(report)

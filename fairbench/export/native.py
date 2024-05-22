@@ -40,21 +40,23 @@ def tojson(report: Fork):
     return json.dumps(data)
 
 
-def describe(report: Fork, spacing: int = 15):
+def describe(report: Fork, spacing: int = 15, show: bool = True, separator: str = " ", newline="\n"):
     report = json.loads(tojson(report))
     ret = ""
     if report["header"]:
-        ret += " ".join([entry.ljust(spacing) for entry in report["header"]]) + "\n"
+        ret += separator.join([entry.ljust(spacing) for entry in report["header"]]) + newline
     for metric in report:
         if metric != "header":
             ret += (
-                " ".join(
+                separator.join(
                     [metric.ljust(spacing)]
                     + [f"{entry:.3f}".ljust(spacing) for entry in report[metric]]
                 )
-                + "\n"
+                + newline
             )
-    print(ret)
+    if show:
+        print(ret)
+    return ret
 
 
 def visualize(
