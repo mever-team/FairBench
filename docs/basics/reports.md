@@ -26,13 +26,7 @@ assessment built from as many base metrics as they can,
 depending on which arguments are provided.
 Sensitive attributes are [forks](forks.md)
 to handle multi-value attributes or multiple
-sensitive attribute values. 
-
-You can also provide an optional `metrics`
-argument that holds either 
-a dictionary mapping names to metrics
-or a list of metrics, where
-in the last case their names are automatically inferred.
+sensitive attribute values.
 
 | Argument    | Role                | Values                                                         |
 |-------------|---------------------|----------------------------------------------------------------|
@@ -72,10 +66,12 @@ when displayed:
 ```python
 import fairbench as fb
 sensitive = fb.Fork(men=[1, 1, 0, 0, 0], women=[0, 0, 1, 1, 1])
-report = fb.multireport(predictions=[1, 0, 1, 0, 0], 
-                        labels=[1, 0, 0, 1, 0], 
-                        sensitive=sensitive)
+report = fb.multireport(
+    predictions=[1, 0, 1, 0, 0], 
+    labels=[1, 0, 0, 1, 0], 
+    sensitive=sensitive)
 ```
+
 
 <button onclick="toggleCode('print')" class="toggle-button">>></button>
 Printing a report creates a yaml representation
@@ -136,6 +132,28 @@ maxbdcg:
 </div>
 
 
+<button onclick="toggleCode('metricsarg')" class="toggle-button">>></button>
+You can restrict which metrics
+the report considers by providing a `metrics`
+argument. This should hold either 
+a dictionary mapping names to metrics
+or a list of metrics, where
+in the last case their names are automatically inferred.
+You can also add customly defined metrics.
+
+<div id="metricsarg" class="code-block" style="display:none;">
+
+```python
+import fairbench as fb
+report = fb.accreport( # just print performance metrics
+    predictions=[1, 0, 1, 0, 0], 
+    labels=[1, 0, 0, 1, 0], 
+    metrics=[fb.accuracy, fb.pr, fb.fpr, fb.fnr])
+fb.describe(report)  # pretty print - more later
+```
+
+</div>
+
 ## Show reports
 
 Reports are forks whose branches hold dictionaries of
@@ -169,6 +187,42 @@ pr              0.812           0.857           0.125
 fpr             0.063           0.778           0.016          
 fnr             0.333           0.333           0.333  
 ```
+
+
+<button onclick="toggleCode('latex')" class="toggle-button">>></button>
+You can use the arguments of the `describe` method to only
+keep the string representation without printing, and to create
+latex tables.
+
+<div id="latex" class="code-block" style="display:none;">
+
+```python
+import fairbench as fb
+
+test, y, yhat = fb.demos.adult(predict="probabilities")
+s = fb.Fork(fb.categories @ test[9])
+report = fb.unireport(scores=yhat, labels=y, sensitive=s)
+
+text = fb.describe(report,
+    show=False, # prevents immediate printing
+    separator=" & ", # separator between columns
+    newline="\\\\\n") # use \\ and then the newline character
+print(text)
+```
+
+```
+Metric          & min             & wmean           & gini            & minratio[vsAny] & maxdiff[vsAny]  & maxbarea[vsAny] & maxrarea[vsAny] & maxbdcg[vsAny] \\
+auc             & 0.861           & 0.882           & 0.012           & 0.972           & 0.025           & 0.025           & 0.038           & 0.028          \\
+avgscore        & 0.110           & 0.239           & 0.197           & 0.461           & 0.129           & 0.454           & 0.548           & 0.499          \\
+tophr           & 0.667           & 0.722           & 0.095           & 1.000           & 0.333           & nan             & nan             & nan            \\
+toprec          & 0.001           & 0.001           & 0.489           & 1.181           & 0.005           & nan             & nan             & nan            \\
+avghr           & 0.389           & 0.491           & 0.229           & 1.000           & 0.611           & 0.611           & 0.611           & 0.696          \\
+avgrepr         & 0.000           & 1.000           & 0.400           & 0.000           & 1.000           & 1.000           & 1.000           & 1.000          \\
+```
+
+
+</div>
+
 
 <button onclick="toggleCode('json')" class="toggle-button">>></button>
 You can convert reports to *json*, for example 
@@ -219,56 +273,32 @@ plt.show() # only show now
 
 </div>
 
+<button onclick="toggleCode('multiclass')" class="toggle-button">>></button>
+You can create a fork of reports to hold multiclass data. In this 
+case, each fork branch holds its own report. Please visit the link
+at the warning below to understand how to view and explore such
+complicated reports.
+
+<div id="multiclass" class="code-block" style="display:none;">
+
+```python
+import matplotlib.pyplot as plt
+import fairbench as fb
+reportA = fb.multireport(...)  # generate a report for class A
+reportB = fb.multireport(...)  # generate the same report for class B
+multiclass = fb.Fork(A=reportA, B=reportB)
+fb.describe(muilticlass.minratio)  # compare the minratio reductions between classes
+```
+
+</div>
+
 !!! warning 
     Complicated forks (e.g., forks of reports)
     cannot be displayed or visualized.
     But they can be converted to strings, printed, 
-    or [interacted](interactive.md).
+    or [interacted](interactive.md) with.
 
 
-## Explainable values
-
-Some report values can be explained 
-in terms of data they are derived from.
-For instance, if a `fairbench.isecreport` is made, both
-empirical and bayesian evaluations arise from the underlying
-data branches of multi-attribute fairness forks. More 
-on exploration based on explainable objects can be found in
-our introduction to programmatic [interactive exporation](interactive.md)
-
-Whenever possible, the data branches that are converted
-into final reports are preserved by having report values
-be instances of the `Explainable` class.
-This provides an `.explain` field of data contributing
-to the report value, and `.desc` field to store additional 
-descriptions. You can perform arithmetic operations
-between explainable objects and other numbers and the
-outcome will be normal python numbers.
-
-<button onclick="toggleCode('explain')" class="toggle-button">>></button>
-As an example, you can use these fields
-to retrieve posterior estimations contributing to
-calculating the *baysian* branch of the minprule
-metric in the *isecreport*. 
-
-
-<div id="explain" class="code-block" style="display:none;">
-
-```python
-report = fb.isecreport(vals)
-fb.describe(report)
-fb.describe(report.bayesian.minprule.explain)
-```
-
-```
-Metric          empirical       bayesian       
-minprule        0.857           0.853          
-
-Metric          case1           case2           case2,case1    
-                0.729           0.706           0.827     
-```
-
-</div>
 
 
 <script>

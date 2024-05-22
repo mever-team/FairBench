@@ -33,6 +33,51 @@ tensor access alongside a specific dimension.
     This paragraph is under construction.
 
 
+## Explainable values
+
+Some report values can be explained 
+in terms of data they are derived from.
+For instance, if a `fairbench.isecreport` is made, both
+empirical and bayesian evaluations arise from the underlying
+data branches of multi-attribute fairness forks. More 
+on exploration based on explainable objects can be found in
+our introduction to programmatic [interactive exporation](interactive.md)
+
+Whenever possible, the data branches that are converted
+into final reports are preserved by having report values
+be instances of the `Explainable` class.
+This provides an `.explain` field of data contributing
+to the report value, and `.desc` field to store additional 
+descriptions. You can perform arithmetic operations
+between explainable objects and other numbers and the
+outcome will be normal python numbers.
+
+<button onclick="toggleCode('explain')" class="toggle-button">>></button>
+As an example, you can use these fields
+to retrieve posterior estimations contributing to
+calculating the *baysian* branch of the minprule
+metric in the *isecreport*. 
+
+
+<div id="explain" class="code-block" style="display:none;">
+
+```python
+report = fb.isecreport(vals)
+fb.describe(report)
+fb.describe(report.bayesian.minprule.explain)
+```
+
+```
+Metric          empirical       bayesian       
+minprule        0.857           0.853          
+
+Metric          case1           case2           case2,case1    
+                0.729           0.706           0.827     
+```
+
+</div>
+
+
 ### Algorithm comparison
 
 To compare the same type of reports produced by two different

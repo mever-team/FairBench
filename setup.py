@@ -8,17 +8,21 @@ import setuptools
 # with open("README.md", "r") as file:
 #    long_description = file.read()
 
-long_description = "A comprehensive AI fairness exploration framework.<br>**Homepage:** https://github.com/mever-team/FairBench<br>**Documentation:** https://fairbench.readthedocs.io"
+long_description = (
+    "A comprehensive AI fairness exploration framework.<br>"
+    "**Homepage:** https://fairbench.readthedocs.io<br>"
+    "**Repository:** https://github.com/mever-team/FairBench"
+)
 
 setuptools.setup(
     name="fairbench",
     version="0.3.1",
     author="Emmanouil (Manios) Krasanakis",
     author_email="maniospas@hotmail.com",
-    description="Fairness model assessment framework",
+    description="A fairness assessment framework",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/mever-team/FairBench",
+    url="https://fairbench.readthedocs.io",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
