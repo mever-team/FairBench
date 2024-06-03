@@ -5,6 +5,16 @@ from typing import Optional
 
 # from fairbench.reports.accumulate import todict as tokwargs
 
+"""
+def _stopatexplainableerror(value):
+    if isinstance(value, ExplainableError):
+        raise value.reraise()
+    if isinstance(value, list):
+        for v in value:
+            _stopatexplainableerror(v)
+    return value
+"""
+
 
 def areduce(fork: Fork, reducer, expand=None, transform=None, branches=None):
     return reduce(fork, reducer, expand, transform, branches, name=None)
@@ -20,7 +30,7 @@ def _tryorexplainable(method, *args, **kwargs):
     try:
         return method(*args, **kwargs)
     except ExplainableError as e:
-        return e
+        return e.caught()
 
 
 def reduce_namefinder(

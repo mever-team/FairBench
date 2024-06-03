@@ -80,7 +80,7 @@ def fpr(
         sensitive = predictions.ones_like()
     false_positives = (predictions * (max_prediction - labels) * sensitive).sum()
     negatives = ((max_prediction - labels) * sensitive).sum()
-    fpr_value = 0 if negatives == 0 else false_positives / negatives
+    fpr_value = 1 if negatives == 0 else false_positives / negatives
     return Explainable(
         fpr_value,
         negatives=negatives.item(),
@@ -126,7 +126,7 @@ def fnr(
         sensitive = predictions.ones_like()
     false_negatives = ((max_prediction - predictions) * labels * sensitive).sum()
     positives = (labels * sensitive).sum()
-    fnr_value = 0 if positives == 0 else false_negatives / positives
+    fnr_value = 1 if positives == 0 else false_negatives / positives
     return Explainable(
         fnr_value,
         positives=positives.item(),

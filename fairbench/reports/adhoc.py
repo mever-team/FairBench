@@ -5,6 +5,7 @@ from fairbench.core.fork import combine, merge, role, tobackend, Fork
 from fairbench.reports.surrogate import surrogate_positives
 from fairbench.blocks.reducers import identical
 import numpy as np
+import math
 from makefun import wraps
 
 # TODO: create a differentiable report (and maybe separate metrics into subpackages of diffs vs normal)
@@ -84,7 +85,9 @@ def unireport(
             length = framework.areduce(
                 kwargs["sensitive"].shape[0], identical
             )  # asserts that everything has the same identical shape and returns it
-            length = int(length.value)  # retrieve int value from the explainable
+            length = int(
+                0 if math.isnan(length.value) else length.value
+            )  # retrieve int value from the explainable
             kwargs["sensitive"]._branches["Any"] = tobackend(np.ones((length,)))
         return kwargs
 

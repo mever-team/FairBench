@@ -20,3 +20,17 @@ Visit one of the links below, or read the full documentation.
 </div>
 
 <br>
+
+
+## How to cite
+
+```
+@article{krasanakis2024standardizing,
+      title={Towards Standardizing AI Bias Exploration}, 
+      author={Emmanouil Krasanakis and Symeon Papadopoulos},
+      year={2024},
+      eprint={2405.19022},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+```

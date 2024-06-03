@@ -24,3 +24,16 @@ Learn more in the [documentation](https://fairbench.readthedocs.io/).
 [<img alt="branches" width="20%" src="docs/images/tabular.png" />](examples/demos/demo.ipynb)
 [<img alt="branches" width="20%" src="docs/images/graphs.png" />](examples/demos/graphs.ipynb)
 [<img alt="branches" width="20%" src="docs/images/vision.png" />](examples/demos/vision.ipynb)
+
+## Citation
+
+```
+@article{krasanakis2024standardizing,
+      title={Towards Standardizing AI Bias Exploration}, 
+      author={Emmanouil Krasanakis and Symeon Papadopoulos},
+      year={2024},
+      eprint={2405.19022},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+```

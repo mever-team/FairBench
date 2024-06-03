@@ -453,6 +453,8 @@ def unit_bounded(method):
 
 @parallel_primitive
 def call(obj, method, *args, **kwargs):
+    from fairbench import ExplainableError
+
     if method == "__getattribute__":
         obj = _result(obj)
     if (
@@ -462,8 +464,11 @@ def call(obj, method, *args, **kwargs):
         and len(kwargs) == 0
     ):
         return obj[args[0]]
-    if callable(method):
-        return method(obj, *args, **kwargs)
+    try:
+        if callable(method):
+            return method(obj, *args, **kwargs)
+    except ExplainableError as e:
+        return e.caught()
     attr = getattr(obj, method)
     if not callable(attr):
         return attr

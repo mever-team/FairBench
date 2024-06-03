@@ -6,6 +6,7 @@ examples/research/
 .pytest_cache/
 colour_mnist.py
 flac.py
+.log
 
 # =================== PYCHARM ===================
 # idea

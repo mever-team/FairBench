@@ -2,6 +2,7 @@ from typing import Any
 from objwrap import ClosedWrapper
 import numpy as np
 import eagerpy as ep
+from fairbench.core.explanation.error import ExplainableError
 
 
 def tofloat(value: Any) -> float:
@@ -61,3 +62,9 @@ class Explainable(ClosedWrapper):
 
     def __after__(self, obj):
         return obj
+
+    def __wrapcall__(self, obj, name, *args, **kwargs):
+        for arg in args:
+            if isinstance(arg, ExplainableError):
+                arg.reraise()
+        return super().__wrapcall__(obj, name, *args, **kwargs)

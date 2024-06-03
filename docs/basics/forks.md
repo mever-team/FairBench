@@ -183,7 +183,7 @@ for multiple attributes with the bitwise *and* `&`.
 
 <div id="code8" class="code-block" style="display:none;">
 ```python
-import fairbench as fbimport fairbench as fb
+import fairbench as fb
 sensitive = fb.Fork(fb.categories@["Man", "Woman", "Man", "Nonbin"]
                     & fb.categories@["Black", "Black", "White", "White"])
 print(sensitive)

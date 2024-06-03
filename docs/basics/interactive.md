@@ -91,7 +91,7 @@ import fairbench as fb
 reportAlg1 = ...  # a report
 reportAlg2 = ...  # a report
 property = ...   # a property (e.g., row or column of the report) to focus on
-reports = {"al1": reportAlg1, "alg2": reportAlg2} # with the dict you can also create the reports incrementally
+reports = {"alg1": reportAlg1, "alg2": reportAlg2} # with the dict you can also create the reports incrementally
 fb = fb.Fork(reports)
 fb.describe(fb[property]) 
 ```
@@ -186,7 +186,7 @@ comprehensive during complex intersectional analysis.
 ```python
 import fairbench as fb
 
-obj = ...  # the object to explore (e.g., a  report)
+obj = ...  # the object to explore (e.g., a report, or fork of reports)
 fb.interactive(obj, name="report", horizontal=True)
 ```
 

@@ -1,8 +1,10 @@
 from fairbench.core import parallel, unit_bounded, role
 from fairbench.core.explanation import Explainable, ExplanationCurve
+from fairbench.core.explanation.error import verify
 from eagerpy import Tensor
 import numpy as np
 from typing import Optional
+import math
 
 
 @role("metric")
@@ -46,8 +48,13 @@ def auc(scores: Tensor, labels: Tensor, sensitive: Tensor = None):
     scores = scores[sensitive == 1]
     labels = labels[sensitive == 1]
     fpr, tpr, _ = sklearn.metrics.roc_curve(labels.numpy(), scores.numpy())
+    value = sklearn.metrics.auc(fpr, tpr)
+    verify(
+        not math.isnan(value),
+        f"Cannot compute AUC when all instances have the same label for branch",
+    )
     return Explainable(
-        sklearn.metrics.auc(fpr, tpr),
+        value,
         curve=ExplanationCurve(fpr, tpr, "ROC"),
         samples=sensitive.sum(),
     )
@@ -56,15 +63,28 @@ def auc(scores: Tensor, labels: Tensor, sensitive: Tensor = None):
 @role("metric")
 @parallel
 @unit_bounded
-def tophr(scores: Tensor, labels: Tensor, sensitive: Tensor = None, top: int = 3):
+def tophr(
+    scores: Tensor,
+    labels: Tensor,
+    sensitive: Tensor = None,
+    top: int = 3,
+    branch: str = "branch",
+):
     k = int(top.numpy())
-    assert 0 < k <= scores.shape[0]
+    verify(
+        0 < k <= scores.shape[0],
+        f"There are only {scores.shape[0]} inputs but top={top} were requested for ranking analysis",
+    )
     if sensitive is None:
         sensitive = scores.ones_like()
     scores = scores[sensitive == 1]
     labels = labels[sensitive == 1]
     indexes = scores.argsort()
-    indexes = indexes[-k:]
+    verify(
+        k <= len(indexes),
+        f"There are only {len(indexes)} {branch} members but top={top} were requested for ranking analysis",
+    )
+    indexes = indexes[(len(indexes) - k) :]
     return Explainable(
         labels[indexes].mean(),
         top=k,
@@ -78,17 +98,26 @@ def tophr(scores: Tensor, labels: Tensor, sensitive: Tensor = None, top: int = 3
 @unit_bounded
 def toprec(scores: Tensor, labels: Tensor, sensitive: Tensor = None, top: int = 3):
     k = int(top.numpy())
-    assert 0 < k <= scores.shape[0]
+    verify(
+        0 < k <= scores.shape[0],
+        f"There are only {scores.shape[0]} inputs but top={top} were requested for ranking analysis",
+    )
     if sensitive is None:
         sensitive = scores.ones_like()
     scores = scores[sensitive == 1]
     labels = labels[sensitive == 1]
     indexes = scores.argsort()
-    indexes = indexes[-k:]
+    verify(
+        k <= len(indexes),
+        f"There are only {len(indexes)} members but top={top} were requested for ranking analysis",
+    )
+    indexes = indexes[(len(indexes) - k) :]
+    denom = labels.sum()
     return Explainable(
-        labels[indexes].sum() / labels.sum(),
+        0 if denom == 0 else labels[indexes].sum() / denom,
         top=k,
         true_top=labels[indexes].sum(),
+        true_all=denom,
         samples=sensitive.sum(),
     )
 
@@ -98,19 +127,29 @@ def toprec(scores: Tensor, labels: Tensor, sensitive: Tensor = None, top: int = 
 @unit_bounded
 def topf1(scores: Tensor, labels: Tensor, sensitive: Tensor = None, top: int = 3):
     k = int(top.numpy())
-    assert 0 < k <= scores.shape[0]
+    verify(
+        0 < k <= scores.shape[0],
+        f"There are only {scores.shape[0]} inputs but top={top} were requested for ranking analysis",
+    )
     if sensitive is None:
         sensitive = scores.ones_like()
     scores = scores[sensitive == 1]
     labels = labels[sensitive == 1]
     indexes = scores.argsort()
-    indexes = indexes[-k:]
+    verify(
+        k <= len(indexes),
+        f"There are only {len(indexes)} members but top={top} were requested for ranking analysis",
+    )
+    indexes = indexes[(len(indexes) - k) :]
     prec = labels[indexes].mean()
-    rec = labels[indexes].sum() / labels.sum()
+    denom_rec = labels.sum()
+    rec = 0 if denom_rec == 0 else labels[indexes].sum() / denom_rec
+    denom = prec + rec
     return Explainable(
-        2 * prec * rec / (prec + rec),
+        0 if denom == 0 else 2 * prec * rec / denom,
         top=k,
         true_top=labels[indexes].sum(),
+        true_all=denom_rec,
         samples=sensitive.sum(),
     )
 
@@ -120,17 +159,24 @@ def topf1(scores: Tensor, labels: Tensor, sensitive: Tensor = None, top: int = 3
 @unit_bounded
 def avghr(scores: Tensor, labels: Tensor, sensitive: Tensor = None, top: int = 3):
     k = int(top.numpy())
-    assert 0 < k <= scores.shape[0]
+    verify(
+        0 < k <= scores.shape[0],
+        f"There are only {scores.shape[0]} inputs but top={top} were requested for ranking analysis",
+    )
     if sensitive is None:
         sensitive = scores.ones_like()
     scores = scores[sensitive == 1]
     labels = labels[sensitive == 1]
     indexes = scores.argsort()
+    verify(
+        k <= len(indexes),
+        f"There are only {len(indexes)} members but top={top} were requested for ranking analysis",
+    )
     curve = list()
     accum = 0
     for num in range(1, k + 1):
-        accum += labels[indexes[-num]].numpy()
-        curve.append(accum / num * labels[indexes[-num]].numpy())
+        accum += labels[indexes[len(indexes) - num]].numpy()
+        curve.append(accum / num * labels[indexes[len(indexes) - num]].numpy())
     curve = [v for v in curve]
     return Explainable(
         sum(curve) / len(curve),
@@ -149,11 +195,18 @@ def avghr(scores: Tensor, labels: Tensor, sensitive: Tensor = None, top: int = 3
 @unit_bounded
 def avgrepr(scores: Tensor, sensitive: Tensor = None, top: int = 3):
     k = int(top.numpy())
-    assert 0 < k <= scores.shape[0]
+    verify(
+        0 < k <= scores.shape[0],
+        f"There are only {scores.shape[0]} inputs but top={top} were requested for ranking analysis",
+    )
     if sensitive is None:
         sensitive = scores.ones_like()
     expected = float(sensitive.mean().numpy())
     indexes = scores.argsort()
+    verify(
+        k <= len(indexes),
+        f"There are only {len(indexes)} members but top={top} were requested for ranking analysis",
+    )
     curve = list()
     accum = 0
     for num in range(1, k + 1):
@@ -161,7 +214,7 @@ def avgrepr(scores: Tensor, sensitive: Tensor = None, top: int = 3):
         curve.append(accum / num / expected)
     curve = [v for v in curve]
     return Explainable(
-        sum(curve) / len(curve),
+        0 if len(curve) == 0 else sum(curve) / len(curve),
         top=k,
         curve=ExplanationCurve(
             np.array(list(range(len(curve))), dtype=float) + 1,

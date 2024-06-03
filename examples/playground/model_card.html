@@ -1,0 +1,8 @@
+<h2>Factors</h2><ul><li>The groups that are considered for fairness assessment are f, m.</li></ul><h2>Metrics</h2><ul><li>Fairness-aware metrics are computed. The <em>p-rule</em> compares the fraction of positive predictions between each pair of groups. The worst ratio is reported, so that value of 0 indicates disparate impact, and value of 1 disparate impact mitigation. The <em>worst accuracy</em> computes the worst performance among protected groups; this is the minimum benefit the system brings to any group. The <em>4/5 rule</em> checks whether the fraction of positive predictions for each protected group is at worst four fifths that of any other group (i.e., the p-rule is 0.8 or greater for any pairwise group comparison). </li></ul>
+<h2>Evaluation Results</h2>
+<table>
+<tr><th>Metric</th><th>Value</th></tr>
+<tr><td>p-rule</td><td>1.000</td></tr>
+<tr><td>worst accuracy</td><td>0.500</td></tr>
+<tr><td>4/5 rule</td><td>&#9989;</td></tr>
+</table><h2>Caveats and Recommendations</h2><ul><li>Consider input from affected stakeholders to determine whether the 4/5 threshold is appropriate.</li><li>Disparate impact may not always be an appropriate fairness consideration.</li><li>Satisfying the 4/5 rule is not a legally accepted indication of disparate impact mitigation.</li><li>The worst accuracy is a lower bound but not an estimation of overall accuracy. There may be different distributions of benefits that could be protected.</li></ul>

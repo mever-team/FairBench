@@ -1,5 +1,6 @@
 import inspect
 from fairbench.core.compute.backends import *
+from fairbench.core.explanation.error import ExplainableError
 from makefun import wraps
 
 
@@ -41,35 +42,40 @@ def parallel(_wrapped_method):
     def wrapper(*args, **kwargs):
         from fairbench.core.fork import Fork
 
-        if len(args) == 1 and not kwargs:
-            argnames = inspect.getfullargspec(_wrapped_method)[0]
-            arg = args[0]
-            kwargs = {k: getattr(arg, k) for k in argnames if hasattr(arg, k)}
-            args = []
-        branches = set(
-            [
-                branch
-                for arg in list(args) + list(kwargs.values())
-                if isinstance(arg, Fork)
-                for branch in arg._branches
-            ]
-        )
-        if not branches:
-            return asprimitive(
-                _wrapped_method(
-                    *(astensor(arg) for arg in args),
-                    **{key: astensor(arg) for key, arg in kwargs.items()},
-                )
+        try:
+            if len(args) == 1 and not kwargs:
+                argnames = inspect.getfullargspec(_wrapped_method)[0]
+                arg = args[0]
+                kwargs = {k: getattr(arg, k) for k in argnames if hasattr(arg, k)}
+                args = []
+            branches = set(
+                [
+                    branch
+                    for arg in list(args) + list(kwargs.values())
+                    if isinstance(arg, Fork)
+                    for branch in arg._branches
+                ]
             )
-        args, kwargs = _align_branches(_wrapped_method, args, kwargs, Fork, branches)
-        return Fork(
-            **{
-                branch: asprimitive(
-                    _call_on_branch(_wrapped_method, args, kwargs, branch, astensor)
+            if not branches:
+                return asprimitive(
+                    _wrapped_method(
+                        *(astensor(arg) for arg in args),
+                        **{key: astensor(arg) for key, arg in kwargs.items()},
+                    )
                 )
-                for branch in branches
-            }
-        )
+            args, kwargs = _align_branches(
+                _wrapped_method, args, kwargs, Fork, branches
+            )
+            return Fork(
+                **{
+                    branch: asprimitive(
+                        _call_on_branch(_wrapped_method, args, kwargs, branch, astensor)
+                    )
+                    for branch in branches
+                }
+            )
+        except ExplainableError as e:
+            return e.caught()
 
     return wrapper
 
