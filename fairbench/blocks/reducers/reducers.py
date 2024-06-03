@@ -1,6 +1,7 @@
 import eagerpy as ep
 from fairbench.core import Explainable, ExplainableError
 from fairbench.core.explanation.error import verify
+from typing import List
 
 
 def abs(value):
@@ -16,7 +17,7 @@ def _sum(values):
     return ret
 
 
-def sum(values: list[ep.Tensor]) -> ep.Tensor:
+def sum(values: List[ep.Tensor]) -> ep.Tensor:
     verify(
         isinstance(values, list),
         "fairbench.sum can only reduce lists. Maybe you meant to use eagerpy.sum?",
@@ -27,7 +28,7 @@ def sum(values: list[ep.Tensor]) -> ep.Tensor:
     return ret
 
 
-def mean(values: list[ep.Tensor]) -> ep.Tensor:
+def mean(values: List[ep.Tensor]) -> ep.Tensor:
     verify(
         isinstance(values, list),
         "fairbench.mean can only reduce lists. Maybe you meant to use eagerpy.mean?",
@@ -35,7 +36,7 @@ def mean(values: list[ep.Tensor]) -> ep.Tensor:
     return _sum(values) / len(values)
 
 
-def wmean(values: list[ep.Tensor]) -> ep.Tensor:
+def wmean(values: List[ep.Tensor]) -> ep.Tensor:
     verify(isinstance(values, list), "fairbench.wmean can only reduce lists.")
     for value in values:
         if (
@@ -48,7 +49,7 @@ def wmean(values: list[ep.Tensor]) -> ep.Tensor:
     return nom if denom == 0 else nom / denom
 
 
-def identical(values: list[ep.Tensor]) -> ep.Tensor:
+def identical(values: List[ep.Tensor]) -> ep.Tensor:
     verify(
         isinstance(values, list),
         "Can only reduce lists with fairbench.identical. Maybe you meant to use an eagerpy method?",
@@ -61,7 +62,7 @@ def identical(values: list[ep.Tensor]) -> ep.Tensor:
     return values[0]
 
 
-def gm(values: list[ep.Tensor]) -> ep.Tensor:
+def gm(values: List[ep.Tensor]) -> ep.Tensor:
     verify(isinstance(values, list), "fairbench.gm can only reduce lists.")
     ret = 1
     for value in values:
@@ -69,7 +70,7 @@ def gm(values: list[ep.Tensor]) -> ep.Tensor:
     return ret ** (1.0 / len(values))
 
 
-def max(values: list[ep.Tensor]) -> ep.Tensor:
+def max(values: List[ep.Tensor]) -> ep.Tensor:
     verify(
         isinstance(values, list),
         "fairbench.max can only reduce lists. Maybe you meant to use eagerpy.maximum?",
@@ -81,7 +82,7 @@ def max(values: list[ep.Tensor]) -> ep.Tensor:
     return ret
 
 
-def budget(values: list[ep.Tensor]) -> ep.Tensor:
+def budget(values: List[ep.Tensor]) -> ep.Tensor:
     verify(isinstance(values, list), "fairbench.budget can only reduce lists.")
     from math import log  # TODO: make this compatible with backpropagation
 
@@ -89,7 +90,7 @@ def budget(values: list[ep.Tensor]) -> ep.Tensor:
     return max(values).log()
 
 
-def min(values: list[ep.Tensor]) -> ep.Tensor:
+def min(values: List[ep.Tensor]) -> ep.Tensor:
     verify(
         isinstance(values, list),
         "fairbench.min can only reduce lists. Maybe you meant to use eagerpy.minimum?",
@@ -101,7 +102,7 @@ def min(values: list[ep.Tensor]) -> ep.Tensor:
     return ret
 
 
-def std(values: list[ep.Tensor]) -> ep.Tensor:
+def std(values: List[ep.Tensor]) -> ep.Tensor:
     verify(isinstance(values, list), "fairbench.std can only reduce lists.")
     n = len(values)
     s = 0
@@ -113,7 +114,7 @@ def std(values: list[ep.Tensor]) -> ep.Tensor:
     return variance**0.5
 
 
-def coefvar(values: list[ep.Tensor]) -> ep.Tensor:
+def coefvar(values: List[ep.Tensor]) -> ep.Tensor:
     # coefficient of variation
     # adhered to requirements by Campano, F., & Salvatore, D. (2006). Income Distribution: Includes CD. Oxford University Press.
     verify(isinstance(values, list), "fairbench.std can only reduce lists.")
@@ -127,7 +128,7 @@ def coefvar(values: list[ep.Tensor]) -> ep.Tensor:
     return variance**0.5 * n / s
 
 
-def gini(values: list[ep.Tensor]) -> ep.Tensor:
+def gini(values: List[ep.Tensor]) -> ep.Tensor:
     # coefficient of variation
     verify(isinstance(values, list), "fairbench.std can only reduce lists.")
     n = len(values)
