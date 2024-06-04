@@ -95,12 +95,18 @@ class Stamp:
         return Forklike({self.name: result})
 
     def __call_once(self, fields, report):
+        silent = ExplainableError.silent
+        ExplainableError.silent = True
         assert isinstance(report, Fork)
         try:
             for field in fields:
                 report = getattr(report, field)
+        except ExplainableError as e:
+            return e
         except AttributeError:
             return ExplainableError(f"Report does not contain {'.'.join(fields)}")
+        finally:
+            ExplainableError.silent = False
         if (
             isinstance(report, Fork)
             or isinstance(report, Forklike)

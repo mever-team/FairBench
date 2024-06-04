@@ -3071,3 +3071,77 @@ Traceback (most recent call last):  File "C:\Users\manio\PycharmProjects\FairBen
   File "C:\Users\manio\PycharmProjects\FairBench\fairbench\core\explanation\error.py", line 104, in reraise
     stack_trace = "".join(traceback.format_stack())
 ------------------------------------------------------------------------------------------------------------------------
+2024-06-03 23:38:53,798 - root - ERROR - There was an attempt to call computations that encountered an ExplainabeError
+This is the full stack trace of the ExplainableError that includes FairBench internals
+Traceback (most recent call last):
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\blocks\framework.py", line 31, in _tryorexplainable
+    return method(*args, **kwargs)
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\blocks\expanders\expanders.py", line 16, in expand
+    return method(values, base, *args, **kwargs)
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\blocks\expanders\expanders.py", line 50, in barea
+    raise ExplainableError("Explanation absent or does not store `curve`")
+fairbench.core.explanation.error.ExplainableError: ---
+2024-06-03 23:38:53,820 - root - ERROR - This is the full stack trace of the computations where the ExplainableError was encountered
+Traceback (most recent call last):  File "C:\Users\manio\PycharmProjects\FairBench\examples\playground\simple.py", line 9, in <module>
+    fb.stamps.four_fifths(report),
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\verification.py", line 63, in __call__
+    rets = [self.__call_once(fields, report) for fields in self._fields]
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\verification.py", line 63, in <listcomp>
+    rets = [self.__call_once(fields, report) for fields in self._fields]
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\verification.py", line 101, in __call_once
+    report = getattr(report, field)
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\core\fork.py", line 111, in __getattribute__
+    {
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\core\fork.py", line 115, in <dictcomp>
+    else call(v, "__getattribute__", name)
+  File "<makefun-gen-2>", line 2, in call
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\core\compute\delegation.py", line 157, in wrapper
+    ret = _wrapped_method(*args, **kwargs)
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\core\fork.py", line 466, in call
+    return obj[args[0]]
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\core\fork.py", line 58, in __getitem__
+    return Forklike({k: getattr(v, item) for k, v in self.items()})
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\core\fork.py", line 58, in <dictcomp>
+    return Forklike({k: getattr(v, item) for k, v in self.items()})
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\core\explanation\error.py", line 132, in __getattr__
+    self.reraise()
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\core\explanation\error.py", line 140, in reraise
+    stack_trace = "".join(traceback.format_stack())
+------------------------------------------------------------------------------------------------------------------------
+2024-06-03 23:43:23,416 - root - ERROR - There was an attempt to call computations that encountered an ExplainabeError
+This is the full stack trace of the ExplainableError that includes FairBench internals
+Traceback (most recent call last):
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\blocks\framework.py", line 31, in _tryorexplainable
+    return method(*args, **kwargs)
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\blocks\expanders\expanders.py", line 16, in expand
+    return method(values, base, *args, **kwargs)
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\blocks\expanders\expanders.py", line 50, in barea
+    raise ExplainableError("Explanation absent or does not store `curve`")
+fairbench.core.explanation.error.ExplainableError: ---
+2024-06-03 23:43:23,417 - root - ERROR - This is the full stack trace of the computations where the ExplainableError was encountered
+Traceback (most recent call last):  File "C:\Users\manio\PycharmProjects\FairBench\examples\playground\simple.py", line 9, in <module>
+    fb.stamps.four_fifths(report),
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\verification.py", line 63, in __call__
+    rets = [self.__call_once(fields, report) for fields in self._fields]
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\verification.py", line 63, in <listcomp>
+    rets = [self.__call_once(fields, report) for fields in self._fields]
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\verification.py", line 101, in __call_once
+    report = getattr(report, field)
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\core\fork.py", line 111, in __getattribute__
+    {
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\core\fork.py", line 115, in <dictcomp>
+    else call(v, "__getattribute__", name)
+  File "<makefun-gen-2>", line 2, in call
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\core\compute\delegation.py", line 157, in wrapper
+    ret = _wrapped_method(*args, **kwargs)
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\core\fork.py", line 466, in call
+    return obj[args[0]]
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\core\fork.py", line 58, in __getitem__
+    return Forklike({k: getattr(v, item) for k, v in self.items()})
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\core\fork.py", line 58, in <dictcomp>
+    return Forklike({k: getattr(v, item) for k, v in self.items()})
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\core\explanation\error.py", line 132, in __getattr__
+    self.reraise()
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\core\explanation\error.py", line 140, in reraise
+    stack_trace = "".join(traceback.format_stack())
+------------------------------------------------------------------------------------------------------------------------

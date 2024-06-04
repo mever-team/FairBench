@@ -6,6 +6,7 @@ from fairbench.core import (
     setbackend,
     individuals,
     simplify,
+    tobackend,
 )
 from fairbench.blocks import *
 from fairbench.reports import *

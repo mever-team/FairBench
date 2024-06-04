@@ -16,7 +16,7 @@ long_description = (
 
 setuptools.setup(
     name="fairbench",
-    version="0.3.2",
+    version="0.3.3",
     author="Emmanouil (Manios) Krasanakis",
     author_email="maniospas@hotmail.com",
     description="A fairness assessment framework",

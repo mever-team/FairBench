@@ -14,6 +14,14 @@ def setbackend(backend_name: str):
 
 def tobackend(value):
     global _backend
+    if value.__class__.__name__ == "Fork":
+        from fairbench import Fork
+
+        return Fork({k: tobackend(v) for k, v in value.branches().items()})
+    if value.__class__.__name__ == "Forklike":
+        from fairbench import Forklike
+
+        return Forklike({k: tobackend(v) for k, v in value.items()})
     name = type(value.raw if isinstance(value, ep.Tensor) else value).__module__.split(
         "."
     )[0]

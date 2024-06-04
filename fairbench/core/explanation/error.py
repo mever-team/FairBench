@@ -2,16 +2,40 @@ import traceback
 import sys
 import logging
 import os
+from io import StringIO
+import warnings
+
 
 logging.basicConfig(
     level=logging.ERROR,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[logging.FileHandler("fairbench.log")],
 )
-from objwrap import Wrapper
+
+
+class ComputationWithExplainableError(SystemExit):
+    """Exit Exception for IPython."""
+
+    def __init__(self):
+        self.stderr = sys.stderr
+        self.stdout = sys.stdout
+        sys.stderr = StringIO()
+        sys.stdout = StringIO()
+
+    def __del__(self):
+        sys.stderr.close()
+        sys.stderr = self.stderr
+        sys.stdout.close()
+        sys.stdout = self.stdout
+
+
+def _ipy_exit():
+    raise ComputationWithExplainableError
 
 
 class ExplainableError(Exception):
+    silent = False
+
     def __init__(self, message):
         super().__init__(message)
         self.explain = message
@@ -32,7 +56,7 @@ class ExplainableError(Exception):
     def __repr__(self):
         return f"{type(self).__name__}: {self.explain}"
 
-    def format_traceback(self):
+    def format_traceback(self, show_stack=True):
         tb = traceback.extract_tb(self.__traceback__)
         tb = [frame for frame in traceback.extract_stack()[:-1]] + tb
         filtered_tb = [
@@ -44,7 +68,7 @@ class ExplainableError(Exception):
             and not frame.filename.endswith(r"fairbench\blocks\framework.py")
             and not frame.filename.startswith("<makefun-gen-")
         ]
-        formatted_tb = traceback.format_list(filtered_tb)
+        formatted_tb = traceback.format_list(filtered_tb) if show_stack else []
         return (
             "".join(formatted_tb) + f"{type(self).__name__}: {self.explain}"
             f"\nThis error only appears because you requested dependent computations."
@@ -103,8 +127,18 @@ class ExplainableError(Exception):
     def __rpow__(self, other):
         self.reraise()
 
+    def __call__(self, *args, **kwargs):
+        self.reraise()
+
+    def __getattr__(self, item):
+        self.reraise()
+
     def reraise(self):
-        if self.__printed:
+        if ExplainableError.silent:
+            raise self
+        from fairbench.export.interactive import _in_jupyter
+
+        if self.__printed and not _in_jupyter():
             print("Repeated usage of " + repr(self), file=sys.stderr)
             raise self
         self.__printed = True
@@ -119,8 +153,12 @@ class ExplainableError(Exception):
             "\nTraceback (most recent call last):" + stack_trace + "-" * 120
         )
         # this is what happens when the explainable error creates another issue down the line
-        print(self.format_traceback(), file=sys.stderr)
-        # remove this to print full errors for fairbench's internal debugging
+        if _in_jupyter():
+            warnings.warn(self.format_traceback(False))
+            _ipy_exit()  # immediately stop for cell
+        else:
+            print(self.format_traceback(), file=sys.stderr)
+            # remove this to print full errors for fairbench's internal debugging
         raise self
 
 
