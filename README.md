@@ -1,7 +1,7 @@
 # FairBench
 
 ![build](https://github.com/mever-team/FairBench/actions/workflows/tests.yml/badge.svg)
-![coverage](https://raw.githubusercontent.com/mever-team/FairBench/main/coverage.svg)
+![coverage](https://github.com/mever-team/FairBench/actions/workflows/tests.yml/coverage.svg)
 [![Documentation Status](https://readthedocs.org/projects/fairbench/badge/?version=latest)](https://fairbench.readthedocs.io/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
