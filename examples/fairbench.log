@@ -2834,3 +2834,117 @@ Traceback (most recent call last):  File "C:\Users\manio\AppData\Local\Programs\
   File "c:\users\manio\pycharmprojects\fairbench\fairbench\core\explanation\error.py", line 143, in reraise
     stack_trace = "".join(traceback.format_stack())
 ------------------------------------------------------------------------------------------------------------------------
+2024-06-06 23:38:59,478 - root - ERROR - There was an attempt to call computations that encountered an ExplainabeError
+This is the full stack trace of the ExplainableError that includes FairBench internals
+fairbench.core.explanation.error.ExplainableError: ---
+2024-06-06 23:38:59,478 - root - ERROR - This is the full stack trace of the computations where the ExplainableError was encountered
+Traceback (most recent call last):  File "C:\Users\manio\AppData\Local\Programs\Python\Python310\lib\runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "C:\Users\manio\AppData\Local\Programs\Python\Python310\lib\runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "c:\users\manio\pycharmprojects\fairbench\venv\lib\site-packages\ipykernel_launcher.py", line 17, in <module>
+    app.launch_new_instance()
+  File "c:\users\manio\pycharmprojects\fairbench\venv\lib\site-packages\traitlets\config\application.py", line 1043, in launch_instance
+    app.start()
+  File "c:\users\manio\pycharmprojects\fairbench\venv\lib\site-packages\ipykernel\kernelapp.py", line 725, in start
+    self.io_loop.start()
+  File "c:\users\manio\pycharmprojects\fairbench\venv\lib\site-packages\tornado\platform\asyncio.py", line 215, in start
+    self.asyncio_loop.run_forever()
+  File "C:\Users\manio\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 600, in run_forever
+    self._run_once()
+  File "C:\Users\manio\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1896, in _run_once
+    handle._run()
+  File "C:\Users\manio\AppData\Local\Programs\Python\Python310\lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "c:\users\manio\pycharmprojects\fairbench\venv\lib\site-packages\ipykernel\kernelbase.py", line 513, in dispatch_queue
+    await self.process_one()
+  File "c:\users\manio\pycharmprojects\fairbench\venv\lib\site-packages\ipykernel\kernelbase.py", line 502, in process_one
+    await dispatch(*args)
+  File "c:\users\manio\pycharmprojects\fairbench\venv\lib\site-packages\ipykernel\kernelbase.py", line 409, in dispatch_shell
+    await result
+  File "c:\users\manio\pycharmprojects\fairbench\venv\lib\site-packages\ipykernel\kernelbase.py", line 729, in execute_request
+    reply_content = await reply_content
+  File "c:\users\manio\pycharmprojects\fairbench\venv\lib\site-packages\ipykernel\ipkernel.py", line 422, in do_execute
+    res = shell.run_cell(
+  File "c:\users\manio\pycharmprojects\fairbench\venv\lib\site-packages\ipykernel\zmqshell.py", line 540, in run_cell
+    return super().run_cell(*args, **kwargs)
+  File "c:\users\manio\pycharmprojects\fairbench\venv\lib\site-packages\IPython\core\interactiveshell.py", line 3009, in run_cell
+    result = self._run_cell(
+  File "c:\users\manio\pycharmprojects\fairbench\venv\lib\site-packages\IPython\core\interactiveshell.py", line 3064, in _run_cell
+    result = runner(coro)
+  File "c:\users\manio\pycharmprojects\fairbench\venv\lib\site-packages\IPython\core\async_helpers.py", line 129, in _pseudo_sync_runner
+    coro.send(None)
+  File "c:\users\manio\pycharmprojects\fairbench\venv\lib\site-packages\IPython\core\interactiveshell.py", line 3269, in run_cell_async
+    has_raised = await self.run_ast_nodes(code_ast.body, cell_name,
+  File "c:\users\manio\pycharmprojects\fairbench\venv\lib\site-packages\IPython\core\interactiveshell.py", line 3448, in run_ast_nodes
+    if await self.run_code(code, result, async_=asy):
+  File "c:\users\manio\pycharmprojects\fairbench\venv\lib\site-packages\IPython\core\interactiveshell.py", line 3508, in run_code
+    exec(code_obj, self.user_global_ns, self.user_ns)
+  File "C:\Users\manio\AppData\Local\Temp\ipykernel_27232\572536564.py", line 1, in <module>
+    sensitive.sum()  # apply sum to all forks
+  File "c:\users\manio\pycharmprojects\fairbench\fairbench\core\fork.py", line 317, in __call__
+    **{
+  File "c:\users\manio\pycharmprojects\fairbench\fairbench\core\fork.py", line 319, in <dictcomp>
+    value(*args, **kwargs)
+  File "c:\users\manio\pycharmprojects\fairbench\fairbench\core\explanation\error.py", line 131, in __call__
+    self.reraise()
+  File "c:\users\manio\pycharmprojects\fairbench\fairbench\core\explanation\error.py", line 145, in reraise
+    stack_trace = "".join(traceback.format_stack())
+------------------------------------------------------------------------------------------------------------------------
+2024-06-06 23:40:33,926 - root - ERROR - There was an attempt to call computations that encountered an ExplainabeError
+This is the full stack trace of the ExplainableError that includes FairBench internals
+fairbench.core.explanation.error.ExplainableError: ---
+2024-06-06 23:40:33,927 - root - ERROR - This is the full stack trace of the computations where the ExplainableError was encountered
+Traceback (most recent call last):  File "C:\Users\manio\AppData\Local\Programs\Python\Python310\lib\runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "C:\Users\manio\AppData\Local\Programs\Python\Python310\lib\runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "c:\users\manio\pycharmprojects\fairbench\venv\lib\site-packages\ipykernel_launcher.py", line 17, in <module>
+    app.launch_new_instance()
+  File "c:\users\manio\pycharmprojects\fairbench\venv\lib\site-packages\traitlets\config\application.py", line 1043, in launch_instance
+    app.start()
+  File "c:\users\manio\pycharmprojects\fairbench\venv\lib\site-packages\ipykernel\kernelapp.py", line 725, in start
+    self.io_loop.start()
+  File "c:\users\manio\pycharmprojects\fairbench\venv\lib\site-packages\tornado\platform\asyncio.py", line 215, in start
+    self.asyncio_loop.run_forever()
+  File "C:\Users\manio\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 600, in run_forever
+    self._run_once()
+  File "C:\Users\manio\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 1896, in _run_once
+    handle._run()
+  File "C:\Users\manio\AppData\Local\Programs\Python\Python310\lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "c:\users\manio\pycharmprojects\fairbench\venv\lib\site-packages\ipykernel\kernelbase.py", line 513, in dispatch_queue
+    await self.process_one()
+  File "c:\users\manio\pycharmprojects\fairbench\venv\lib\site-packages\ipykernel\kernelbase.py", line 502, in process_one
+    await dispatch(*args)
+  File "c:\users\manio\pycharmprojects\fairbench\venv\lib\site-packages\ipykernel\kernelbase.py", line 409, in dispatch_shell
+    await result
+  File "c:\users\manio\pycharmprojects\fairbench\venv\lib\site-packages\ipykernel\kernelbase.py", line 729, in execute_request
+    reply_content = await reply_content
+  File "c:\users\manio\pycharmprojects\fairbench\venv\lib\site-packages\ipykernel\ipkernel.py", line 422, in do_execute
+    res = shell.run_cell(
+  File "c:\users\manio\pycharmprojects\fairbench\venv\lib\site-packages\ipykernel\zmqshell.py", line 540, in run_cell
+    return super().run_cell(*args, **kwargs)
+  File "c:\users\manio\pycharmprojects\fairbench\venv\lib\site-packages\IPython\core\interactiveshell.py", line 3009, in run_cell
+    result = self._run_cell(
+  File "c:\users\manio\pycharmprojects\fairbench\venv\lib\site-packages\IPython\core\interactiveshell.py", line 3064, in _run_cell
+    result = runner(coro)
+  File "c:\users\manio\pycharmprojects\fairbench\venv\lib\site-packages\IPython\core\async_helpers.py", line 129, in _pseudo_sync_runner
+    coro.send(None)
+  File "c:\users\manio\pycharmprojects\fairbench\venv\lib\site-packages\IPython\core\interactiveshell.py", line 3269, in run_cell_async
+    has_raised = await self.run_ast_nodes(code_ast.body, cell_name,
+  File "c:\users\manio\pycharmprojects\fairbench\venv\lib\site-packages\IPython\core\interactiveshell.py", line 3448, in run_ast_nodes
+    if await self.run_code(code, result, async_=asy):
+  File "c:\users\manio\pycharmprojects\fairbench\venv\lib\site-packages\IPython\core\interactiveshell.py", line 3508, in run_code
+    exec(code_obj, self.user_global_ns, self.user_ns)
+  File "C:\Users\manio\AppData\Local\Temp\ipykernel_7924\572536564.py", line 1, in <module>
+    sensitive.sum()  # apply sum to all forks
+  File "c:\users\manio\pycharmprojects\fairbench\fairbench\core\fork.py", line 317, in __call__
+    **{
+  File "c:\users\manio\pycharmprojects\fairbench\fairbench\core\fork.py", line 319, in <dictcomp>
+    value(*args, **kwargs)
+  File "c:\users\manio\pycharmprojects\fairbench\fairbench\core\explanation\error.py", line 131, in __call__
+    self.reraise()
+  File "c:\users\manio\pycharmprojects\fairbench\fairbench\core\explanation\error.py", line 145, in reraise
+    stack_trace = "".join(traceback.format_stack())
+------------------------------------------------------------------------------------------------------------------------

@@ -69,7 +69,7 @@ def describe(
 
 
 def visualize(
-    report: Fork, hold: bool = False, xrotation: int = 0, legend: bool = True
+    report: Fork, hold: bool = False, xrotation: int = None, legend: bool = True
 ):
     report = json.loads(tojson(report))
     num_metrics = len([metric for metric in report if metric != "header"])
@@ -79,6 +79,8 @@ def visualize(
             if num_metrics > 1:
                 plt.subplot(2, len(report) // 2, i)
             barplots = False
+            if xrotation is None:
+                xrotation = 90 if len((report["header"][1:])) > 5 else 0
             for j, case in enumerate(report["header"][1:]):
                 if isinstance(report[metric][j], float):
                     plt.bar(j, report[metric][j])
