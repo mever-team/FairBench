@@ -47,7 +47,7 @@ def interactive(
     spacing=None,
     horizontal=True,
     port=8888,
-    browser=False,
+    browser=None,
 ):  # pragma: no cover
     """
     Creates an interactive visualization over a fairness report.

@@ -16,9 +16,11 @@ def produce_report():
 
 def test_reduce():
     for _ in environment():
+        print(produce_report())
         reduction = fb.reduce(produce_report(), reducer=fb.min, expand=fb.ratio)
         assert abs(reduction.minratio.accuracy.value - 0.666666) < 1.0e-6
-        assert reduction.minratio.dfnr.value == -2
+        reduction = fb.reduce(produce_report(), reducer=fb.max, expand=fb.diff)
+        assert reduction.maxdiff.dfnr.value == 0
 
 
 def test_areduce():

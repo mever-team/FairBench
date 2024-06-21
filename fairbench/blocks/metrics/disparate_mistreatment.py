@@ -11,6 +11,7 @@ def dfpr(
     sensitive: Tensor,
     non_sensitive: Optional[Tensor] = None,
 ):
+    predictions, labels = labels, predictions  # temporary fix: original implementation had them flipped
     if non_sensitive is None:
         non_sensitive = 1.0 - sensitive
     error = (predictions - labels).abs() * predictions
@@ -35,6 +36,7 @@ def dfnr(
     non_sensitive: Optional[Tensor] = None,
     # max_prediction: float = 1,
 ):
+    predictions, labels = labels, predictions  # temporary fix: original implementation had them flipped
     negatives = 1.0 - predictions
     if non_sensitive is None:
         non_sensitive = 1.0 - sensitive

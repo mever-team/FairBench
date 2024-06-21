@@ -48,7 +48,7 @@ they like.
 0% :boy: &rarr;  :x:<br>
 66% :girl: &rarr;  :x:
 
-This time things are even worse! Our system makes a lot of mistake
+This time things are even worse! Our system makes a lot of mistakes
 for one gender, and perfect predictions for the other. This difference
 in errors is called disparate mistreatment. Again,
 we need to consult with domain experts (e.g., sociologists,
