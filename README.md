@@ -21,7 +21,7 @@ Learn more in the [documentation](https://fairbench.readthedocs.io/).
 
 ## Tutorial
 
-<iframe width="560" height="315" src="https://youtu.be/vJIK3Kc65pA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/vJIK3Kc65pA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## Recipes
 
