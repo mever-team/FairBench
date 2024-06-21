@@ -18,6 +18,7 @@ nav:
         - 'record/metrics.md'
         - 'record/comparisons.md'
         - 'record/stamps.md'
+    - 'cite.md'
 
 markdown_extensions:
   - admonition

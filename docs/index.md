@@ -27,14 +27,3 @@ Visit one of the links below, or read the full documentation.
 <iframe width="560" height="315" src="https://www.youtube.com/embed/vJIK3Kc65pA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 </div>
-
-```
-@article{krasanakis2024standardizing,
-      title={Towards Standardizing AI Bias Exploration}, 
-      author={Emmanouil Krasanakis and Symeon Papadopoulos},
-      year={2024},
-      eprint={2405.19022},
-      archivePrefix={arXiv},
-      primaryClass={cs.LG}
-}
-```
