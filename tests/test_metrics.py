@@ -156,6 +156,9 @@ def test_mse():
 def test_rmse():
     for _ in environment():
         assert (
-            abs(fb.rmse(scores=fb.astensor([0.5, 0.8]), targets=fb.astensor([0, 1]))
-            - 0.3807886552931954) < 1.E-6
+            abs(
+                fb.rmse(scores=fb.astensor([0.5, 0.8]), targets=fb.astensor([0, 1]))
+                - 0.3807886552931954
+            )
+            < 1.0e-6
         )
