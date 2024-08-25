@@ -1,7 +1,14 @@
 import json
 import tempfile
 import webbrowser
-from fairbench.core import Fork, Forklike, Explainable, ExplainableError, tobackend, ExplanationCurve
+from fairbench.core import (
+    Fork,
+    Forklike,
+    Explainable,
+    ExplainableError,
+    tobackend,
+    ExplanationCurve,
+)
 
 
 def fork_to_dict(fork):
@@ -12,7 +19,10 @@ def fork_to_dict(fork):
     if isinstance(fork, ExplainableError):
         return None
     if isinstance(fork, Explainable):
-        return {"value": fork_to_dict(fork.value), "explain": fork_to_dict(fork.explain)}
+        return {
+            "value": fork_to_dict(fork.value),
+            "explain": fork_to_dict(fork.explain),
+        }
     if isinstance(fork, float) or isinstance(fork, int):
         return fork
     if isinstance(fork, ExplanationCurve):
@@ -287,12 +297,12 @@ def interactive_html(fork, name="Report", filename=None, show=True):
 
     # Step 3: Save the HTML Content to a File or Create a Temporary File and Open in Browser
     if filename is not None:
-        with open(filename, 'w') as file:
+        with open(filename, "w") as file:
             file.write(html_content)
         if show:
             webbrowser.open_new_tab(filename)
     else:
-        with tempfile.NamedTemporaryFile('w', delete=False, suffix='.html') as tmp_file:
+        with tempfile.NamedTemporaryFile("w", delete=False, suffix=".html") as tmp_file:
             tmp_file.write(html_content)
             temp_filename = tmp_file.name
         webbrowser.open_new_tab(temp_filename)
