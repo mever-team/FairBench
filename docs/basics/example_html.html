@@ -58,6 +58,7 @@
             .children {
                 margin-left: 20px; /* Indent child elements */
                 margin-top: 10px;
+                margin-bottom: 10px;
             }
             .bar-container {
                 display: inline-block;
@@ -83,8 +84,7 @@
     <body>
         <div id="container">
             <h1>Report</h1>
-            <p>Click on an entry to expand into explanations or collapse the explanation.<br>All entries with the 
-            same name are expanded simultaneously.</p>
+            <p>Click on an entry to expand collapse explanations.</p>
             <button id="collapseButton">Collapse all</button>
             <div id="visualization"></div>
         </div>
@@ -95,6 +95,13 @@
         "accuracy": {
             "value": 0.7984346224677716,
             "explain": {
+                "Male": {
+                    "value": 0.7984346224677716,
+                    "explain": {
+                        "samples": 10860.0,
+                        "true": 2189.0
+                    }
+                },
                 "Female": {
                     "value": 0.9153292750415053,
                     "explain": {
@@ -102,11 +109,11 @@
                         "true": 459.0
                     }
                 },
-                "Male": {
-                    "value": 0.7984346224677716,
+                "Any": {
+                    "value": 0.8373564277378539,
                     "explain": {
-                        "samples": 10860.0,
-                        "true": 2189.0
+                        "samples": 16281.0,
+                        "true": 2648.0
                     }
                 }
             }
@@ -114,6 +121,13 @@
         "pr": {
             "value": 0.04925290536801328,
             "explain": {
+                "Male": {
+                    "value": 0.25810313075506447,
+                    "explain": {
+                        "samples": 10860.0,
+                        "positives": 2803.0
+                    }
+                },
                 "Female": {
                     "value": 0.04925290536801328,
                     "explain": {
@@ -121,11 +135,11 @@
                         "positives": 267.0
                     }
                 },
-                "Male": {
-                    "value": 0.25810313075506447,
+                "Any": {
+                    "value": 0.18856335605921012,
                     "explain": {
-                        "samples": 10860.0,
-                        "positives": 2803.0
+                        "samples": 16281.0,
+                        "positives": 3070.0
                     }
                 }
             }
@@ -133,6 +147,14 @@
         "tpr": {
             "value": 0.33728813559322035,
             "explain": {
+                "Male": {
+                    "value": 0.5942874692874693,
+                    "explain": {
+                        "positives": 3256.0,
+                        "true_positives": 1935.0,
+                        "samples": 10860.0
+                    }
+                },
                 "Female": {
                     "value": 0.33728813559322035,
                     "explain": {
@@ -141,12 +163,12 @@
                         "samples": 5421.0
                     }
                 },
-                "Male": {
-                    "value": 0.5942874692874693,
+                "Any": {
+                    "value": 0.5548621944877795,
                     "explain": {
-                        "positives": 3256.0,
-                        "true_positives": 1935.0,
-                        "samples": 10860.0
+                        "positives": 3846.0,
+                        "true_positives": 2134.0,
+                        "samples": 16281.0
                     }
                 }
             }
@@ -154,6 +176,14 @@
         "tnr": {
             "value": 0.8858495528669121,
             "explain": {
+                "Male": {
+                    "value": 0.8858495528669121,
+                    "explain": {
+                        "negatives": 7604.0,
+                        "true_negatives": 6736.0,
+                        "samples": 10860.0
+                    }
+                },
                 "Female": {
                     "value": 0.9859242392879322,
                     "explain": {
@@ -162,12 +192,12 @@
                         "samples": 5421.0
                     }
                 },
-                "Male": {
-                    "value": 0.8858495528669121,
+                "Any": {
+                    "value": 0.9247285886610374,
                     "explain": {
-                        "negatives": 7604.0,
-                        "true_negatives": 6736.0,
-                        "samples": 10860.0
+                        "negatives": 12435.0,
+                        "true_negatives": 11499.0,
+                        "samples": 16281.0
                     }
                 }
             }
@@ -175,6 +205,13 @@
         "auc": {
             "value": 0.8614349488889204,
             "explain": {
+                "Male": {
+                    "value": 0.8614349488889204,
+                    "explain": {
+                        "curve": null,
+                        "samples": 10860.0
+                    }
+                },
                 "Female": {
                     "value": 0.9088561163951738,
                     "explain": {
@@ -182,11 +219,11 @@
                         "samples": 5421.0
                     }
                 },
-                "Male": {
-                    "value": 0.8614349488889204,
+                "Any": {
+                    "value": 0.8866847806200147,
                     "explain": {
                         "curve": null,
-                        "samples": 10860.0
+                        "samples": 16281.0
                     }
                 }
             }
@@ -194,6 +231,14 @@
         "avgscore": {
             "value": 0.11023017696989586,
             "explain": {
+                "Male": {
+                    "value": 0.30384649781747625,
+                    "explain": {
+                        "samples": 10860.0,
+                        "sum_scores": 3299.7729662977918,
+                        "curve": null
+                    }
+                },
                 "Female": {
                     "value": 0.11023017696989586,
                     "explain": {
@@ -202,11 +247,11 @@
                         "curve": null
                     }
                 },
-                "Male": {
-                    "value": 0.30384649781747625,
+                "Any": {
+                    "value": 0.2393790771851605,
                     "explain": {
-                        "samples": 10860.0,
-                        "sum_scores": 3299.7729662977918,
+                        "samples": 16281.0,
+                        "sum_scores": 3897.330755651598,
                         "curve": null
                     }
                 }
@@ -215,6 +260,14 @@
         "tophr": {
             "value": 0.88,
             "explain": {
+                "Male": {
+                    "value": 0.94,
+                    "explain": {
+                        "top": 50,
+                        "true_top": 47.0,
+                        "samples": 10860.0
+                    }
+                },
                 "Female": {
                     "value": 0.88,
                     "explain": {
@@ -223,19 +276,28 @@
                         "samples": 5421.0
                     }
                 },
-                "Male": {
+                "Any": {
                     "value": 0.94,
                     "explain": {
                         "top": 50,
                         "true_top": 47.0,
-                        "samples": 10860.0
+                        "samples": 16281.0
                     }
                 }
             }
         },
         "toprec": {
-            "value": 0.014434889434889435,
+            "value": 0.012220488819552781,
             "explain": {
+                "Male": {
+                    "value": 0.014434889434889435,
+                    "explain": {
+                        "top": 50,
+                        "true_top": 47.0,
+                        "true_all": 3256.0,
+                        "samples": 10860.0
+                    }
+                },
                 "Female": {
                     "value": 0.07457627118644068,
                     "explain": {
@@ -245,13 +307,13 @@
                         "samples": 5421.0
                     }
                 },
-                "Male": {
-                    "value": 0.014434889434889435,
+                "Any": {
+                    "value": 0.012220488819552781,
                     "explain": {
                         "top": 50,
                         "true_top": 47.0,
-                        "true_all": 3256.0,
-                        "samples": 10860.0
+                        "true_all": 3846.0,
+                        "samples": 16281.0
                     }
                 }
             }
@@ -259,6 +321,14 @@
         "avghr": {
             "value": 0.8398837306873772,
             "explain": {
+                "Male": {
+                    "value": 0.8426674907186243,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 10860.0
+                    }
+                },
                 "Female": {
                     "value": 0.8398837306873772,
                     "explain": {
@@ -267,12 +337,12 @@
                         "samples": 5421.0
                     }
                 },
-                "Male": {
-                    "value": 0.8426674907186243,
+                "Any": {
+                    "value": 0.8432881803737967,
                     "explain": {
                         "top": 50,
                         "curve": null,
-                        "samples": 10860.0
+                        "samples": 16281.0
                     }
                 }
             }
@@ -280,6 +350,14 @@
         "avgrepr": {
             "value": 0.06565265381514034,
             "explain": {
+                "Male": {
+                    "value": 1.466399352087304,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 10860.0
+                    }
+                },
                 "Female": {
                     "value": 0.06565265381514034,
                     "explain": {
@@ -288,12 +366,12 @@
                         "samples": 5421.0
                     }
                 },
-                "Male": {
-                    "value": 1.466399352087304,
+                "Any": {
+                    "value": 1.0,
                     "explain": {
                         "top": 50,
                         "curve": null,
-                        "samples": 10860.0
+                        "samples": 16281.0
                     }
                 }
             }
@@ -303,6 +381,13 @@
         "accuracy": {
             "value": 0.8373564277378539,
             "explain": {
+                "Male": {
+                    "value": 0.7984346224677716,
+                    "explain": {
+                        "samples": 10860.0,
+                        "true": 2189.0
+                    }
+                },
                 "Female": {
                     "value": 0.9153292750415053,
                     "explain": {
@@ -310,11 +395,11 @@
                         "true": 459.0
                     }
                 },
-                "Male": {
-                    "value": 0.7984346224677716,
+                "Any": {
+                    "value": 0.8373564277378539,
                     "explain": {
-                        "samples": 10860.0,
-                        "true": 2189.0
+                        "samples": 16281.0,
+                        "true": 2648.0
                     }
                 }
             }
@@ -322,6 +407,13 @@
         "pr": {
             "value": 0.18856335605921012,
             "explain": {
+                "Male": {
+                    "value": 0.25810313075506447,
+                    "explain": {
+                        "samples": 10860.0,
+                        "positives": 2803.0
+                    }
+                },
                 "Female": {
                     "value": 0.04925290536801328,
                     "explain": {
@@ -329,18 +421,26 @@
                         "positives": 267.0
                     }
                 },
-                "Male": {
-                    "value": 0.25810313075506447,
+                "Any": {
+                    "value": 0.18856335605921012,
                     "explain": {
-                        "samples": 10860.0,
-                        "positives": 2803.0
+                        "samples": 16281.0,
+                        "positives": 3070.0
                     }
                 }
             }
         },
         "tpr": {
-            "value": 0.5087157361042175,
+            "value": 0.5317889652959985,
             "explain": {
+                "Male": {
+                    "value": 0.5942874692874693,
+                    "explain": {
+                        "positives": 3256.0,
+                        "true_positives": 1935.0,
+                        "samples": 10860.0
+                    }
+                },
                 "Female": {
                     "value": 0.33728813559322035,
                     "explain": {
@@ -349,19 +449,27 @@
                         "samples": 5421.0
                     }
                 },
-                "Male": {
-                    "value": 0.5942874692874693,
+                "Any": {
+                    "value": 0.5548621944877795,
                     "explain": {
-                        "positives": 3256.0,
-                        "true_positives": 1935.0,
-                        "samples": 10860.0
+                        "positives": 3846.0,
+                        "true_positives": 2134.0,
+                        "samples": 16281.0
                     }
                 }
             }
         },
         "tnr": {
-            "value": 0.9191709013767303,
+            "value": 0.9219497450188837,
             "explain": {
+                "Male": {
+                    "value": 0.8858495528669121,
+                    "explain": {
+                        "negatives": 7604.0,
+                        "true_negatives": 6736.0,
+                        "samples": 10860.0
+                    }
+                },
                 "Female": {
                     "value": 0.9859242392879322,
                     "explain": {
@@ -370,19 +478,26 @@
                         "samples": 5421.0
                     }
                 },
-                "Male": {
-                    "value": 0.8858495528669121,
+                "Any": {
+                    "value": 0.9247285886610374,
                     "explain": {
-                        "negatives": 7604.0,
-                        "true_negatives": 6736.0,
-                        "samples": 10860.0
+                        "negatives": 12435.0,
+                        "true_negatives": 11499.0,
+                        "samples": 16281.0
                     }
                 }
             }
         },
         "auc": {
-            "value": 0.877224528709042,
+            "value": 0.8819546546645284,
             "explain": {
+                "Male": {
+                    "value": 0.8614349488889204,
+                    "explain": {
+                        "curve": null,
+                        "samples": 10860.0
+                    }
+                },
                 "Female": {
                     "value": 0.9088561163951738,
                     "explain": {
@@ -390,11 +505,11 @@
                         "samples": 5421.0
                     }
                 },
-                "Male": {
-                    "value": 0.8614349488889204,
+                "Any": {
+                    "value": 0.8866847806200147,
                     "explain": {
                         "curve": null,
-                        "samples": 10860.0
+                        "samples": 16281.0
                     }
                 }
             }
@@ -402,6 +517,14 @@
         "avgscore": {
             "value": 0.23937907718516047,
             "explain": {
+                "Male": {
+                    "value": 0.30384649781747625,
+                    "explain": {
+                        "samples": 10860.0,
+                        "sum_scores": 3299.7729662977918,
+                        "curve": null
+                    }
+                },
                 "Female": {
                     "value": 0.11023017696989586,
                     "explain": {
@@ -410,19 +533,27 @@
                         "curve": null
                     }
                 },
-                "Male": {
-                    "value": 0.30384649781747625,
+                "Any": {
+                    "value": 0.2393790771851605,
                     "explain": {
-                        "samples": 10860.0,
-                        "sum_scores": 3299.7729662977918,
+                        "samples": 16281.0,
+                        "sum_scores": 3897.330755651598,
                         "curve": null
                     }
                 }
             }
         },
         "tophr": {
-            "value": 0.9200221116639028,
+            "value": 0.9300110558319513,
             "explain": {
+                "Male": {
+                    "value": 0.94,
+                    "explain": {
+                        "top": 50,
+                        "true_top": 47.0,
+                        "samples": 10860.0
+                    }
+                },
                 "Female": {
                     "value": 0.88,
                     "explain": {
@@ -431,19 +562,28 @@
                         "samples": 5421.0
                     }
                 },
-                "Male": {
+                "Any": {
                     "value": 0.94,
                     "explain": {
                         "top": 50,
                         "true_top": 47.0,
-                        "samples": 10860.0
+                        "samples": 16281.0
                     }
                 }
             }
         },
         "toprec": {
-            "value": 0.034459852918407606,
+            "value": 0.02334017086898019,
             "explain": {
+                "Male": {
+                    "value": 0.014434889434889435,
+                    "explain": {
+                        "top": 50,
+                        "true_top": 47.0,
+                        "true_all": 3256.0,
+                        "samples": 10860.0
+                    }
+                },
                 "Female": {
                     "value": 0.07457627118644068,
                     "explain": {
@@ -453,20 +593,28 @@
                         "samples": 5421.0
                     }
                 },
-                "Male": {
-                    "value": 0.014434889434889435,
+                "Any": {
+                    "value": 0.012220488819552781,
                     "explain": {
                         "top": 50,
                         "true_top": 47.0,
-                        "true_all": 3256.0,
-                        "samples": 10860.0
+                        "true_all": 3846.0,
+                        "samples": 16281.0
                     }
                 }
             }
         },
         "avghr": {
-            "value": 0.8417405966009787,
+            "value": 0.8425143884873877,
             "explain": {
+                "Male": {
+                    "value": 0.8426674907186243,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 10860.0
+                    }
+                },
                 "Female": {
                     "value": 0.8398837306873772,
                     "explain": {
@@ -475,19 +623,27 @@
                         "samples": 5421.0
                     }
                 },
-                "Male": {
-                    "value": 0.8426674907186243,
+                "Any": {
+                    "value": 0.8432881803737967,
                     "explain": {
                         "top": 50,
                         "curve": null,
-                        "samples": 10860.0
+                        "samples": 16281.0
                     }
                 }
             }
         },
         "avgrepr": {
-            "value": 0.9999999999999999,
+            "value": 1.0,
             "explain": {
+                "Male": {
+                    "value": 1.466399352087304,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 10860.0
+                    }
+                },
                 "Female": {
                     "value": 0.06565265381514034,
                     "explain": {
@@ -496,12 +652,12 @@
                         "samples": 5421.0
                     }
                 },
-                "Male": {
-                    "value": 1.466399352087304,
+                "Any": {
+                    "value": 1.0,
                     "explain": {
                         "top": 50,
                         "curve": null,
-                        "samples": 10860.0
+                        "samples": 16281.0
                     }
                 }
             }
@@ -509,8 +665,15 @@
     },
     "gini": {
         "accuracy": {
-            "value": 0.03410465488963333,
+            "value": 0.030547272745725915,
             "explain": {
+                "Male": {
+                    "value": 0.7984346224677716,
+                    "explain": {
+                        "samples": 10860.0,
+                        "true": 2189.0
+                    }
+                },
                 "Female": {
                     "value": 0.9153292750415053,
                     "explain": {
@@ -518,18 +681,25 @@
                         "true": 459.0
                     }
                 },
-                "Male": {
-                    "value": 0.7984346224677716,
+                "Any": {
+                    "value": 0.8373564277378539,
                     "explain": {
-                        "samples": 10860.0,
-                        "true": 2189.0
+                        "samples": 16281.0,
+                        "true": 2648.0
                     }
                 }
             }
         },
         "pr": {
-            "value": 0.3397529263154265,
+            "value": 0.2807582961792884,
             "explain": {
+                "Male": {
+                    "value": 0.25810313075506447,
+                    "explain": {
+                        "samples": 10860.0,
+                        "positives": 2803.0
+                    }
+                },
                 "Female": {
                     "value": 0.04925290536801328,
                     "explain": {
@@ -537,18 +707,26 @@
                         "positives": 267.0
                     }
                 },
-                "Male": {
-                    "value": 0.25810313075506447,
+                "Any": {
+                    "value": 0.18856335605921012,
                     "explain": {
-                        "samples": 10860.0,
-                        "positives": 2803.0
+                        "samples": 16281.0,
+                        "positives": 3070.0
                     }
                 }
             }
         },
         "tpr": {
-            "value": 0.13793799040452753,
+            "value": 0.11526408249460027,
             "explain": {
+                "Male": {
+                    "value": 0.5942874692874693,
+                    "explain": {
+                        "positives": 3256.0,
+                        "true_positives": 1935.0,
+                        "samples": 10860.0
+                    }
+                },
                 "Female": {
                     "value": 0.33728813559322035,
                     "explain": {
@@ -557,19 +735,27 @@
                         "samples": 5421.0
                     }
                 },
-                "Male": {
-                    "value": 0.5942874692874693,
+                "Any": {
+                    "value": 0.5548621944877795,
                     "explain": {
-                        "positives": 3256.0,
-                        "true_positives": 1935.0,
-                        "samples": 10860.0
+                        "positives": 3846.0,
+                        "true_positives": 2134.0,
+                        "samples": 16281.0
                     }
                 }
             }
         },
         "tnr": {
-            "value": 0.02673258030443169,
+            "value": 0.023857107389462968,
             "explain": {
+                "Male": {
+                    "value": 0.8858495528669121,
+                    "explain": {
+                        "negatives": 7604.0,
+                        "true_negatives": 6736.0,
+                        "samples": 10860.0
+                    }
+                },
                 "Female": {
                     "value": 0.9859242392879322,
                     "explain": {
@@ -578,19 +764,26 @@
                         "samples": 5421.0
                     }
                 },
-                "Male": {
-                    "value": 0.8858495528669121,
+                "Any": {
+                    "value": 0.9247285886610374,
                     "explain": {
-                        "negatives": 7604.0,
-                        "true_negatives": 6736.0,
-                        "samples": 10860.0
+                        "negatives": 12435.0,
+                        "true_negatives": 11499.0,
+                        "samples": 16281.0
                     }
                 }
             }
         },
         "auc": {
-            "value": 0.013393607536126659,
+            "value": 0.011898531828797292,
             "explain": {
+                "Male": {
+                    "value": 0.8614349488889204,
+                    "explain": {
+                        "curve": null,
+                        "samples": 10860.0
+                    }
+                },
                 "Female": {
                     "value": 0.9088561163951738,
                     "explain": {
@@ -598,18 +791,26 @@
                         "samples": 5421.0
                     }
                 },
-                "Male": {
-                    "value": 0.8614349488889204,
+                "Any": {
+                    "value": 0.8866847806200147,
                     "explain": {
                         "curve": null,
-                        "samples": 10860.0
+                        "samples": 16281.0
                     }
                 }
             }
         },
         "avgscore": {
-            "value": 0.23379283673368242,
+            "value": 0.19753066193400945,
             "explain": {
+                "Male": {
+                    "value": 0.30384649781747625,
+                    "explain": {
+                        "samples": 10860.0,
+                        "sum_scores": 3299.7729662977918,
+                        "curve": null
+                    }
+                },
                 "Female": {
                     "value": 0.11023017696989586,
                     "explain": {
@@ -618,19 +819,27 @@
                         "curve": null
                     }
                 },
-                "Male": {
-                    "value": 0.30384649781747625,
+                "Any": {
+                    "value": 0.2393790771851605,
                     "explain": {
-                        "samples": 10860.0,
-                        "sum_scores": 3299.7729662977918,
+                        "samples": 16281.0,
+                        "sum_scores": 3897.330755651598,
                         "curve": null
                     }
                 }
             }
         },
         "tophr": {
-            "value": 0.01648351648351647,
+            "value": 0.014492753623188394,
             "explain": {
+                "Male": {
+                    "value": 0.94,
+                    "explain": {
+                        "top": 50,
+                        "true_top": 47.0,
+                        "samples": 10860.0
+                    }
+                },
                 "Female": {
                     "value": 0.88,
                     "explain": {
@@ -639,19 +848,28 @@
                         "samples": 5421.0
                     }
                 },
-                "Male": {
+                "Any": {
                     "value": 0.94,
                     "explain": {
                         "top": 50,
                         "true_top": 47.0,
-                        "samples": 10860.0
+                        "samples": 16281.0
                     }
                 }
             }
         },
         "toprec": {
-            "value": 0.33783056715440307,
+            "value": 0.4106474784074476,
             "explain": {
+                "Male": {
+                    "value": 0.014434889434889435,
+                    "explain": {
+                        "top": 50,
+                        "true_top": 47.0,
+                        "true_all": 3256.0,
+                        "samples": 10860.0
+                    }
+                },
                 "Female": {
                     "value": 0.07457627118644068,
                     "explain": {
@@ -661,20 +879,28 @@
                         "samples": 5421.0
                     }
                 },
-                "Male": {
-                    "value": 0.014434889434889435,
+                "Any": {
+                    "value": 0.012220488819552781,
                     "explain": {
                         "top": 50,
                         "true_top": 47.0,
-                        "true_all": 3256.0,
-                        "samples": 10860.0
+                        "true_all": 3846.0,
+                        "samples": 16281.0
                     }
                 }
             }
         },
         "avghr": {
-            "value": 0.0008272437700056845,
+            "value": 0.0008985658877125783,
             "explain": {
+                "Male": {
+                    "value": 0.8426674907186243,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 10860.0
+                    }
+                },
                 "Female": {
                     "value": 0.8398837306873772,
                     "explain": {
@@ -683,19 +909,27 @@
                         "samples": 5421.0
                     }
                 },
-                "Male": {
-                    "value": 0.8426674907186243,
+                "Any": {
+                    "value": 0.8432881803737967,
                     "explain": {
                         "top": 50,
                         "curve": null,
-                        "samples": 10860.0
+                        "samples": 16281.0
                     }
                 }
             }
         },
         "avgrepr": {
-            "value": 0.4571472420242888,
+            "value": 0.368804088543441,
             "explain": {
+                "Male": {
+                    "value": 1.466399352087304,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 10860.0
+                    }
+                },
                 "Female": {
                     "value": 0.06565265381514034,
                     "explain": {
@@ -704,12 +938,12 @@
                         "samples": 5421.0
                     }
                 },
-                "Male": {
-                    "value": 1.466399352087304,
+                "Any": {
+                    "value": 1.0,
                     "explain": {
                         "top": 50,
                         "curve": null,
-                        "samples": 10860.0
+                        "samples": 16281.0
                     }
                 }
             }
@@ -719,18 +953,18 @@
         "accuracy": {
             "value": 0.8722922386936296,
             "explain": {
-                "Female": {
-                    "value": 0.9153292750415053,
-                    "explain": {
-                        "samples": 5421.0,
-                        "true": 459.0
-                    }
-                },
                 "Male": {
                     "value": 0.7984346224677716,
                     "explain": {
                         "samples": 10860.0,
                         "true": 2189.0
+                    }
+                },
+                "Female": {
+                    "value": 0.9153292750415053,
+                    "explain": {
+                        "samples": 5421.0,
+                        "true": 459.0
                     }
                 }
             }
@@ -738,18 +972,18 @@
         "pr": {
             "value": 0.1908264546188456,
             "explain": {
-                "Female": {
-                    "value": 0.04925290536801328,
-                    "explain": {
-                        "samples": 5421.0,
-                        "positives": 267.0
-                    }
-                },
                 "Male": {
                     "value": 0.25810313075506447,
                     "explain": {
                         "samples": 10860.0,
                         "positives": 2803.0
+                    }
+                },
+                "Female": {
+                    "value": 0.04925290536801328,
+                    "explain": {
+                        "samples": 5421.0,
+                        "positives": 267.0
                     }
                 }
             }
@@ -757,14 +991,6 @@
         "tpr": {
             "value": 0.5675504751894188,
             "explain": {
-                "Female": {
-                    "value": 0.33728813559322035,
-                    "explain": {
-                        "positives": 590.0,
-                        "true_positives": 199.0,
-                        "samples": 5421.0
-                    }
-                },
                 "Male": {
                     "value": 0.5942874692874693,
                     "explain": {
@@ -772,20 +998,20 @@
                         "true_positives": 1935.0,
                         "samples": 10860.0
                     }
+                },
+                "Female": {
+                    "value": 0.33728813559322035,
+                    "explain": {
+                        "positives": 590.0,
+                        "true_positives": 199.0,
+                        "samples": 5421.0
+                    }
                 }
             }
         },
         "tnr": {
             "value": 0.8984965756666077,
             "explain": {
-                "Female": {
-                    "value": 0.9859242392879322,
-                    "explain": {
-                        "negatives": 4831.0,
-                        "true_negatives": 4763.0,
-                        "samples": 5421.0
-                    }
-                },
                 "Male": {
                     "value": 0.8858495528669121,
                     "explain": {
@@ -793,24 +1019,32 @@
                         "true_negatives": 6736.0,
                         "samples": 10860.0
                     }
+                },
+                "Female": {
+                    "value": 0.9859242392879322,
+                    "explain": {
+                        "negatives": 4831.0,
+                        "true_negatives": 4763.0,
+                        "samples": 5421.0
+                    }
                 }
             }
         },
         "auc": {
             "value": 0.9478232399487593,
             "explain": {
-                "Female": {
-                    "value": 0.9088561163951738,
-                    "explain": {
-                        "curve": null,
-                        "samples": 5421.0
-                    }
-                },
                 "Male": {
                     "value": 0.8614349488889204,
                     "explain": {
                         "curve": null,
                         "samples": 10860.0
+                    }
+                },
+                "Female": {
+                    "value": 0.9088561163951738,
+                    "explain": {
+                        "curve": null,
+                        "samples": 5421.0
                     }
                 }
             }
@@ -818,19 +1052,19 @@
         "avgscore": {
             "value": 0.36278245022298156,
             "explain": {
-                "Female": {
-                    "value": 0.11023017696989586,
-                    "explain": {
-                        "samples": 5421.0,
-                        "sum_scores": 597.5577893538054,
-                        "curve": null
-                    }
-                },
                 "Male": {
                     "value": 0.30384649781747625,
                     "explain": {
                         "samples": 10860.0,
                         "sum_scores": 3299.7729662977918,
+                        "curve": null
+                    }
+                },
+                "Female": {
+                    "value": 0.11023017696989586,
+                    "explain": {
+                        "samples": 5421.0,
+                        "sum_scores": 597.5577893538054,
                         "curve": null
                     }
                 }
@@ -839,14 +1073,6 @@
         "tophr": {
             "value": 0.9361702127659575,
             "explain": {
-                "Female": {
-                    "value": 0.88,
-                    "explain": {
-                        "top": 50,
-                        "true_top": 44.0,
-                        "samples": 5421.0
-                    }
-                },
                 "Male": {
                     "value": 0.94,
                     "explain": {
@@ -854,21 +1080,20 @@
                         "true_top": 47.0,
                         "samples": 10860.0
                     }
+                },
+                "Female": {
+                    "value": 0.88,
+                    "explain": {
+                        "top": 50,
+                        "true_top": 44.0,
+                        "samples": 5421.0
+                    }
                 }
             }
         },
         "toprec": {
             "value": 0.1935587446951083,
             "explain": {
-                "Female": {
-                    "value": 0.07457627118644068,
-                    "explain": {
-                        "top": 50,
-                        "true_top": 44.0,
-                        "true_all": 590.0,
-                        "samples": 5421.0
-                    }
-                },
                 "Male": {
                     "value": 0.014434889434889435,
                     "explain": {
@@ -877,20 +1102,21 @@
                         "true_all": 3256.0,
                         "samples": 10860.0
                     }
+                },
+                "Female": {
+                    "value": 0.07457627118644068,
+                    "explain": {
+                        "top": 50,
+                        "true_top": 44.0,
+                        "true_all": 590.0,
+                        "samples": 5421.0
+                    }
                 }
             }
         },
         "avghr": {
             "value": 0.996696490535225,
             "explain": {
-                "Female": {
-                    "value": 0.8398837306873772,
-                    "explain": {
-                        "top": 50,
-                        "curve": null,
-                        "samples": 5421.0
-                    }
-                },
                 "Male": {
                     "value": 0.8426674907186243,
                     "explain": {
@@ -898,26 +1124,34 @@
                         "curve": null,
                         "samples": 10860.0
                     }
+                },
+                "Female": {
+                    "value": 0.8398837306873772,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 5421.0
+                    }
                 }
             }
         },
         "avgrepr": {
             "value": 0.04477133307627895,
             "explain": {
-                "Female": {
-                    "value": 0.06565265381514034,
-                    "explain": {
-                        "top": 50,
-                        "curve": null,
-                        "samples": 5421.0
-                    }
-                },
                 "Male": {
                     "value": 1.466399352087304,
                     "explain": {
                         "top": 50,
                         "curve": null,
                         "samples": 10860.0
+                    }
+                },
+                "Female": {
+                    "value": 0.06565265381514034,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 5421.0
                     }
                 }
             }
@@ -927,18 +1161,18 @@
         "accuracy": {
             "value": 0.11689465257373366,
             "explain": {
-                "Female": {
-                    "value": 0.9153292750415053,
-                    "explain": {
-                        "samples": 5421.0,
-                        "true": 459.0
-                    }
-                },
                 "Male": {
                     "value": 0.7984346224677716,
                     "explain": {
                         "samples": 10860.0,
                         "true": 2189.0
+                    }
+                },
+                "Female": {
+                    "value": 0.9153292750415053,
+                    "explain": {
+                        "samples": 5421.0,
+                        "true": 459.0
                     }
                 }
             }
@@ -946,18 +1180,18 @@
         "pr": {
             "value": 0.2088502253870512,
             "explain": {
-                "Female": {
-                    "value": 0.04925290536801328,
-                    "explain": {
-                        "samples": 5421.0,
-                        "positives": 267.0
-                    }
-                },
                 "Male": {
                     "value": 0.25810313075506447,
                     "explain": {
                         "samples": 10860.0,
                         "positives": 2803.0
+                    }
+                },
+                "Female": {
+                    "value": 0.04925290536801328,
+                    "explain": {
+                        "samples": 5421.0,
+                        "positives": 267.0
                     }
                 }
             }
@@ -965,14 +1199,6 @@
         "tpr": {
             "value": 0.256999333694249,
             "explain": {
-                "Female": {
-                    "value": 0.33728813559322035,
-                    "explain": {
-                        "positives": 590.0,
-                        "true_positives": 199.0,
-                        "samples": 5421.0
-                    }
-                },
                 "Male": {
                     "value": 0.5942874692874693,
                     "explain": {
@@ -980,20 +1206,20 @@
                         "true_positives": 1935.0,
                         "samples": 10860.0
                     }
+                },
+                "Female": {
+                    "value": 0.33728813559322035,
+                    "explain": {
+                        "positives": 590.0,
+                        "true_positives": 199.0,
+                        "samples": 5421.0
+                    }
                 }
             }
         },
         "tnr": {
             "value": 0.10007468642102002,
             "explain": {
-                "Female": {
-                    "value": 0.9859242392879322,
-                    "explain": {
-                        "negatives": 4831.0,
-                        "true_negatives": 4763.0,
-                        "samples": 5421.0
-                    }
-                },
                 "Male": {
                     "value": 0.8858495528669121,
                     "explain": {
@@ -1001,24 +1227,32 @@
                         "true_negatives": 6736.0,
                         "samples": 10860.0
                     }
+                },
+                "Female": {
+                    "value": 0.9859242392879322,
+                    "explain": {
+                        "negatives": 4831.0,
+                        "true_negatives": 4763.0,
+                        "samples": 5421.0
+                    }
                 }
             }
         },
         "auc": {
             "value": 0.04742116750625347,
             "explain": {
-                "Female": {
-                    "value": 0.9088561163951738,
-                    "explain": {
-                        "curve": null,
-                        "samples": 5421.0
-                    }
-                },
                 "Male": {
                     "value": 0.8614349488889204,
                     "explain": {
                         "curve": null,
                         "samples": 10860.0
+                    }
+                },
+                "Female": {
+                    "value": 0.9088561163951738,
+                    "explain": {
+                        "curve": null,
+                        "samples": 5421.0
                     }
                 }
             }
@@ -1026,19 +1260,19 @@
         "avgscore": {
             "value": 0.1936163208475804,
             "explain": {
-                "Female": {
-                    "value": 0.11023017696989586,
-                    "explain": {
-                        "samples": 5421.0,
-                        "sum_scores": 597.5577893538054,
-                        "curve": null
-                    }
-                },
                 "Male": {
                     "value": 0.30384649781747625,
                     "explain": {
                         "samples": 10860.0,
                         "sum_scores": 3299.7729662977918,
+                        "curve": null
+                    }
+                },
+                "Female": {
+                    "value": 0.11023017696989586,
+                    "explain": {
+                        "samples": 5421.0,
+                        "sum_scores": 597.5577893538054,
                         "curve": null
                     }
                 }
@@ -1047,14 +1281,6 @@
         "tophr": {
             "value": 0.05999999999999994,
             "explain": {
-                "Female": {
-                    "value": 0.88,
-                    "explain": {
-                        "top": 50,
-                        "true_top": 44.0,
-                        "samples": 5421.0
-                    }
-                },
                 "Male": {
                     "value": 0.94,
                     "explain": {
@@ -1062,21 +1288,20 @@
                         "true_top": 47.0,
                         "samples": 10860.0
                     }
+                },
+                "Female": {
+                    "value": 0.88,
+                    "explain": {
+                        "top": 50,
+                        "true_top": 44.0,
+                        "samples": 5421.0
+                    }
                 }
             }
         },
         "toprec": {
             "value": 0.060141381751551246,
             "explain": {
-                "Female": {
-                    "value": 0.07457627118644068,
-                    "explain": {
-                        "top": 50,
-                        "true_top": 44.0,
-                        "true_all": 590.0,
-                        "samples": 5421.0
-                    }
-                },
                 "Male": {
                     "value": 0.014434889434889435,
                     "explain": {
@@ -1085,20 +1310,21 @@
                         "true_all": 3256.0,
                         "samples": 10860.0
                     }
+                },
+                "Female": {
+                    "value": 0.07457627118644068,
+                    "explain": {
+                        "top": 50,
+                        "true_top": 44.0,
+                        "true_all": 590.0,
+                        "samples": 5421.0
+                    }
                 }
             }
         },
         "avghr": {
             "value": 0.00278376003124714,
             "explain": {
-                "Female": {
-                    "value": 0.8398837306873772,
-                    "explain": {
-                        "top": 50,
-                        "curve": null,
-                        "samples": 5421.0
-                    }
-                },
                 "Male": {
                     "value": 0.8426674907186243,
                     "explain": {
@@ -1106,26 +1332,34 @@
                         "curve": null,
                         "samples": 10860.0
                     }
+                },
+                "Female": {
+                    "value": 0.8398837306873772,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 5421.0
+                    }
                 }
             }
         },
         "avgrepr": {
             "value": 1.4007466982721637,
             "explain": {
-                "Female": {
-                    "value": 0.06565265381514034,
-                    "explain": {
-                        "top": 50,
-                        "curve": null,
-                        "samples": 5421.0
-                    }
-                },
                 "Male": {
                     "value": 1.466399352087304,
                     "explain": {
                         "top": 50,
                         "curve": null,
                         "samples": 10860.0
+                    }
+                },
+                "Female": {
+                    "value": 0.06565265381514034,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 5421.0
                     }
                 }
             }
@@ -1139,18 +1373,18 @@
         "auc": {
             "value": 0.047602531285052554,
             "explain": {
-                "Female": {
-                    "value": 0.9088561163951738,
-                    "explain": {
-                        "curve": null,
-                        "samples": 5421.0
-                    }
-                },
                 "Male": {
                     "value": 0.8614349488889204,
                     "explain": {
                         "curve": null,
                         "samples": 10860.0
+                    }
+                },
+                "Female": {
+                    "value": 0.9088561163951738,
+                    "explain": {
+                        "curve": null,
+                        "samples": 5421.0
                     }
                 }
             }
@@ -1158,19 +1392,19 @@
         "avgscore": {
             "value": 0.6811749248813438,
             "explain": {
-                "Female": {
-                    "value": 0.11023017696989586,
-                    "explain": {
-                        "samples": 5421.0,
-                        "sum_scores": 597.5577893538054,
-                        "curve": null
-                    }
-                },
                 "Male": {
                     "value": 0.30384649781747625,
                     "explain": {
                         "samples": 10860.0,
                         "sum_scores": 3299.7729662977918,
+                        "curve": null
+                    }
+                },
+                "Female": {
+                    "value": 0.11023017696989586,
+                    "explain": {
+                        "samples": 5421.0,
+                        "sum_scores": 597.5577893538054,
                         "curve": null
                     }
                 }
@@ -1181,14 +1415,6 @@
         "avghr": {
             "value": 0.20118525185192038,
             "explain": {
-                "Female": {
-                    "value": 0.8398837306873772,
-                    "explain": {
-                        "top": 50,
-                        "curve": null,
-                        "samples": 5421.0
-                    }
-                },
                 "Male": {
                     "value": 0.8426674907186243,
                     "explain": {
@@ -1196,26 +1422,34 @@
                         "curve": null,
                         "samples": 10860.0
                     }
+                },
+                "Female": {
+                    "value": 0.8398837306873772,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 5421.0
+                    }
                 }
             }
         },
         "avgrepr": {
             "value": 1.400746698272164,
             "explain": {
-                "Female": {
-                    "value": 0.06565265381514034,
-                    "explain": {
-                        "top": 50,
-                        "curve": null,
-                        "samples": 5421.0
-                    }
-                },
                 "Male": {
                     "value": 1.466399352087304,
                     "explain": {
                         "top": 50,
                         "curve": null,
                         "samples": 10860.0
+                    }
+                },
+                "Female": {
+                    "value": 0.06565265381514034,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 5421.0
                     }
                 }
             }
@@ -1229,18 +1463,18 @@
         "auc": {
             "value": 0.07083114319691494,
             "explain": {
-                "Female": {
-                    "value": 0.9088561163951738,
-                    "explain": {
-                        "curve": null,
-                        "samples": 5421.0
-                    }
-                },
                 "Male": {
                     "value": 0.8614349488889204,
                     "explain": {
                         "curve": null,
                         "samples": 10860.0
+                    }
+                },
+                "Female": {
+                    "value": 0.9088561163951738,
+                    "explain": {
+                        "curve": null,
+                        "samples": 5421.0
                     }
                 }
             }
@@ -1248,19 +1482,19 @@
         "avgscore": {
             "value": 0.6289968811428195,
             "explain": {
-                "Female": {
-                    "value": 0.11023017696989586,
-                    "explain": {
-                        "samples": 5421.0,
-                        "sum_scores": 597.5577893538054,
-                        "curve": null
-                    }
-                },
                 "Male": {
                     "value": 0.30384649781747625,
                     "explain": {
                         "samples": 10860.0,
                         "sum_scores": 3299.7729662977918,
+                        "curve": null
+                    }
+                },
+                "Female": {
+                    "value": 0.11023017696989586,
+                    "explain": {
+                        "samples": 5421.0,
+                        "sum_scores": 597.5577893538054,
                         "curve": null
                     }
                 }
@@ -1271,14 +1505,6 @@
         "avghr": {
             "value": 0.21028588247080365,
             "explain": {
-                "Female": {
-                    "value": 0.8398837306873772,
-                    "explain": {
-                        "top": 50,
-                        "curve": null,
-                        "samples": 5421.0
-                    }
-                },
                 "Male": {
                     "value": 0.8426674907186243,
                     "explain": {
@@ -1286,26 +1512,34 @@
                         "curve": null,
                         "samples": 10860.0
                     }
+                },
+                "Female": {
+                    "value": 0.8398837306873772,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 5421.0
+                    }
                 }
             }
         },
         "avgrepr": {
             "value": 0.9538816220955074,
             "explain": {
-                "Female": {
-                    "value": 0.06565265381514034,
-                    "explain": {
-                        "top": 50,
-                        "curve": null,
-                        "samples": 5421.0
-                    }
-                },
                 "Male": {
                     "value": 1.466399352087304,
                     "explain": {
                         "top": 50,
                         "curve": null,
                         "samples": 10860.0
+                    }
+                },
+                "Female": {
+                    "value": 0.06565265381514034,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 5421.0
                     }
                 }
             }
@@ -1319,18 +1553,18 @@
         "auc": {
             "value": 0.05473918450966673,
             "explain": {
-                "Female": {
-                    "value": 0.9088561163951738,
-                    "explain": {
-                        "curve": null,
-                        "samples": 5421.0
-                    }
-                },
                 "Male": {
                     "value": 0.8614349488889204,
                     "explain": {
                         "curve": null,
                         "samples": 10860.0
+                    }
+                },
+                "Female": {
+                    "value": 0.9088561163951738,
+                    "explain": {
+                        "curve": null,
+                        "samples": 5421.0
                     }
                 }
             }
@@ -1338,19 +1572,19 @@
         "avgscore": {
             "value": 0.7481398602434398,
             "explain": {
-                "Female": {
-                    "value": 0.11023017696989586,
-                    "explain": {
-                        "samples": 5421.0,
-                        "sum_scores": 597.5577893538054,
-                        "curve": null
-                    }
-                },
                 "Male": {
                     "value": 0.30384649781747625,
                     "explain": {
                         "samples": 10860.0,
                         "sum_scores": 3299.7729662977918,
+                        "curve": null
+                    }
+                },
+                "Female": {
+                    "value": 0.11023017696989586,
+                    "explain": {
+                        "samples": 5421.0,
+                        "sum_scores": 597.5577893538054,
                         "curve": null
                     }
                 }
@@ -1361,6 +1595,284 @@
         "avghr": {
             "value": 0.2591242207313785,
             "explain": {
+                "Male": {
+                    "value": 0.8426674907186243,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 10860.0
+                    }
+                },
+                "Female": {
+                    "value": 0.8398837306873772,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 5421.0
+                    }
+                }
+            }
+        },
+        "avgrepr": {
+            "value": 1.427684297747653,
+            "explain": {
+                "Male": {
+                    "value": 1.466399352087304,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 10860.0
+                    }
+                },
+                "Female": {
+                    "value": 0.06565265381514034,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 5421.0
+                    }
+                }
+            }
+        }
+    },
+    "minratio[vsAny]": {
+        "accuracy": {
+            "value": 0.9535182343136354,
+            "explain": {
+                "Male": {
+                    "value": 0.7984346224677716,
+                    "explain": {
+                        "samples": 10860.0,
+                        "true": 2189.0
+                    }
+                },
+                "Female": {
+                    "value": 0.9153292750415053,
+                    "explain": {
+                        "samples": 5421.0,
+                        "true": 459.0
+                    }
+                },
+                "Any": {
+                    "value": 0.8373564277378539,
+                    "explain": {
+                        "samples": 16281.0,
+                        "true": 2648.0
+                    }
+                }
+            }
+        },
+        "pr": {
+            "value": 0.2612008313669786,
+            "explain": {
+                "Male": {
+                    "value": 0.25810313075506447,
+                    "explain": {
+                        "samples": 10860.0,
+                        "positives": 2803.0
+                    }
+                },
+                "Female": {
+                    "value": 0.04925290536801328,
+                    "explain": {
+                        "samples": 5421.0,
+                        "positives": 267.0
+                    }
+                },
+                "Any": {
+                    "value": 0.18856335605921012,
+                    "explain": {
+                        "samples": 16281.0,
+                        "positives": 3070.0
+                    }
+                }
+            }
+        },
+        "tpr": {
+            "value": 0.6078773052912491,
+            "explain": {
+                "Male": {
+                    "value": 0.5942874692874693,
+                    "explain": {
+                        "positives": 3256.0,
+                        "true_positives": 1935.0,
+                        "samples": 10860.0
+                    }
+                },
+                "Female": {
+                    "value": 0.33728813559322035,
+                    "explain": {
+                        "positives": 590.0,
+                        "true_positives": 199.0,
+                        "samples": 5421.0
+                    }
+                },
+                "Any": {
+                    "value": 0.5548621944877795,
+                    "explain": {
+                        "positives": 3846.0,
+                        "true_positives": 2134.0,
+                        "samples": 16281.0
+                    }
+                }
+            }
+        },
+        "tnr": {
+            "value": 0.957956273580316,
+            "explain": {
+                "Male": {
+                    "value": 0.8858495528669121,
+                    "explain": {
+                        "negatives": 7604.0,
+                        "true_negatives": 6736.0,
+                        "samples": 10860.0
+                    }
+                },
+                "Female": {
+                    "value": 0.9859242392879322,
+                    "explain": {
+                        "negatives": 4831.0,
+                        "true_negatives": 4763.0,
+                        "samples": 5421.0
+                    }
+                },
+                "Any": {
+                    "value": 0.9247285886610374,
+                    "explain": {
+                        "negatives": 12435.0,
+                        "true_negatives": 11499.0,
+                        "samples": 16281.0
+                    }
+                }
+            }
+        },
+        "auc": {
+            "value": 0.971523327925581,
+            "explain": {
+                "Male": {
+                    "value": 0.8614349488889204,
+                    "explain": {
+                        "curve": null,
+                        "samples": 10860.0
+                    }
+                },
+                "Female": {
+                    "value": 0.9088561163951738,
+                    "explain": {
+                        "curve": null,
+                        "samples": 5421.0
+                    }
+                },
+                "Any": {
+                    "value": 0.8866847806200147,
+                    "explain": {
+                        "curve": null,
+                        "samples": 16281.0
+                    }
+                }
+            }
+        },
+        "avgscore": {
+            "value": 0.46048375767040184,
+            "explain": {
+                "Male": {
+                    "value": 0.30384649781747625,
+                    "explain": {
+                        "samples": 10860.0,
+                        "sum_scores": 3299.7729662977918,
+                        "curve": null
+                    }
+                },
+                "Female": {
+                    "value": 0.11023017696989586,
+                    "explain": {
+                        "samples": 5421.0,
+                        "sum_scores": 597.5577893538054,
+                        "curve": null
+                    }
+                },
+                "Any": {
+                    "value": 0.2393790771851605,
+                    "explain": {
+                        "samples": 16281.0,
+                        "sum_scores": 3897.330755651598,
+                        "curve": null
+                    }
+                }
+            }
+        },
+        "tophr": {
+            "value": 0.9361702127659575,
+            "explain": {
+                "Male": {
+                    "value": 0.94,
+                    "explain": {
+                        "top": 50,
+                        "true_top": 47.0,
+                        "samples": 10860.0
+                    }
+                },
+                "Female": {
+                    "value": 0.88,
+                    "explain": {
+                        "top": 50,
+                        "true_top": 44.0,
+                        "samples": 5421.0
+                    }
+                },
+                "Any": {
+                    "value": 0.94,
+                    "explain": {
+                        "top": 50,
+                        "true_top": 47.0,
+                        "samples": 16281.0
+                    }
+                }
+            }
+        },
+        "toprec": {
+            "value": 1.1812039312039313,
+            "explain": {
+                "Male": {
+                    "value": 0.014434889434889435,
+                    "explain": {
+                        "top": 50,
+                        "true_top": 47.0,
+                        "true_all": 3256.0,
+                        "samples": 10860.0
+                    }
+                },
+                "Female": {
+                    "value": 0.07457627118644068,
+                    "explain": {
+                        "top": 50,
+                        "true_top": 44.0,
+                        "true_all": 590.0,
+                        "samples": 5421.0
+                    }
+                },
+                "Any": {
+                    "value": 0.012220488819552781,
+                    "explain": {
+                        "top": 50,
+                        "true_top": 47.0,
+                        "true_all": 3846.0,
+                        "samples": 16281.0
+                    }
+                }
+            }
+        },
+        "avghr": {
+            "value": 0.995962886987328,
+            "explain": {
+                "Male": {
+                    "value": 0.8426674907186243,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 10860.0
+                    }
+                },
                 "Female": {
                     "value": 0.8398837306873772,
                     "explain": {
@@ -1369,19 +1881,27 @@
                         "samples": 5421.0
                     }
                 },
-                "Male": {
-                    "value": 0.8426674907186243,
+                "Any": {
+                    "value": 0.8432881803737967,
                     "explain": {
                         "top": 50,
                         "curve": null,
-                        "samples": 10860.0
+                        "samples": 16281.0
                     }
                 }
             }
         },
         "avgrepr": {
-            "value": 1.427684297747653,
+            "value": 0.06565265381514034,
             "explain": {
+                "Male": {
+                    "value": 1.466399352087304,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 10860.0
+                    }
+                },
                 "Female": {
                     "value": 0.06565265381514034,
                     "explain": {
@@ -1390,12 +1910,661 @@
                         "samples": 5421.0
                     }
                 },
+                "Any": {
+                    "value": 1.0,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 16281.0
+                    }
+                }
+            }
+        }
+    },
+    "maxdiff[vsAny]": {
+        "accuracy": {
+            "value": 0.0779728473036514,
+            "explain": {
+                "Male": {
+                    "value": 0.7984346224677716,
+                    "explain": {
+                        "samples": 10860.0,
+                        "true": 2189.0
+                    }
+                },
+                "Female": {
+                    "value": 0.9153292750415053,
+                    "explain": {
+                        "samples": 5421.0,
+                        "true": 459.0
+                    }
+                },
+                "Any": {
+                    "value": 0.8373564277378539,
+                    "explain": {
+                        "samples": 16281.0,
+                        "true": 2648.0
+                    }
+                }
+            }
+        },
+        "pr": {
+            "value": 0.13931045069119685,
+            "explain": {
+                "Male": {
+                    "value": 0.25810313075506447,
+                    "explain": {
+                        "samples": 10860.0,
+                        "positives": 2803.0
+                    }
+                },
+                "Female": {
+                    "value": 0.04925290536801328,
+                    "explain": {
+                        "samples": 5421.0,
+                        "positives": 267.0
+                    }
+                },
+                "Any": {
+                    "value": 0.18856335605921012,
+                    "explain": {
+                        "samples": 16281.0,
+                        "positives": 3070.0
+                    }
+                }
+            }
+        },
+        "tpr": {
+            "value": 0.21757405889455916,
+            "explain": {
+                "Male": {
+                    "value": 0.5942874692874693,
+                    "explain": {
+                        "positives": 3256.0,
+                        "true_positives": 1935.0,
+                        "samples": 10860.0
+                    }
+                },
+                "Female": {
+                    "value": 0.33728813559322035,
+                    "explain": {
+                        "positives": 590.0,
+                        "true_positives": 199.0,
+                        "samples": 5421.0
+                    }
+                },
+                "Any": {
+                    "value": 0.5548621944877795,
+                    "explain": {
+                        "positives": 3846.0,
+                        "true_positives": 2134.0,
+                        "samples": 16281.0
+                    }
+                }
+            }
+        },
+        "tnr": {
+            "value": 0.061195650626894804,
+            "explain": {
+                "Male": {
+                    "value": 0.8858495528669121,
+                    "explain": {
+                        "negatives": 7604.0,
+                        "true_negatives": 6736.0,
+                        "samples": 10860.0
+                    }
+                },
+                "Female": {
+                    "value": 0.9859242392879322,
+                    "explain": {
+                        "negatives": 4831.0,
+                        "true_negatives": 4763.0,
+                        "samples": 5421.0
+                    }
+                },
+                "Any": {
+                    "value": 0.9247285886610374,
+                    "explain": {
+                        "negatives": 12435.0,
+                        "true_negatives": 11499.0,
+                        "samples": 16281.0
+                    }
+                }
+            }
+        },
+        "auc": {
+            "value": 0.025249831731094297,
+            "explain": {
+                "Male": {
+                    "value": 0.8614349488889204,
+                    "explain": {
+                        "curve": null,
+                        "samples": 10860.0
+                    }
+                },
+                "Female": {
+                    "value": 0.9088561163951738,
+                    "explain": {
+                        "curve": null,
+                        "samples": 5421.0
+                    }
+                },
+                "Any": {
+                    "value": 0.8866847806200147,
+                    "explain": {
+                        "curve": null,
+                        "samples": 16281.0
+                    }
+                }
+            }
+        },
+        "avgscore": {
+            "value": 0.12914890021526465,
+            "explain": {
+                "Male": {
+                    "value": 0.30384649781747625,
+                    "explain": {
+                        "samples": 10860.0,
+                        "sum_scores": 3299.7729662977918,
+                        "curve": null
+                    }
+                },
+                "Female": {
+                    "value": 0.11023017696989586,
+                    "explain": {
+                        "samples": 5421.0,
+                        "sum_scores": 597.5577893538054,
+                        "curve": null
+                    }
+                },
+                "Any": {
+                    "value": 0.2393790771851605,
+                    "explain": {
+                        "samples": 16281.0,
+                        "sum_scores": 3897.330755651598,
+                        "curve": null
+                    }
+                }
+            }
+        },
+        "tophr": {
+            "value": 0.05999999999999994,
+            "explain": {
+                "Male": {
+                    "value": 0.94,
+                    "explain": {
+                        "top": 50,
+                        "true_top": 47.0,
+                        "samples": 10860.0
+                    }
+                },
+                "Female": {
+                    "value": 0.88,
+                    "explain": {
+                        "top": 50,
+                        "true_top": 44.0,
+                        "samples": 5421.0
+                    }
+                },
+                "Any": {
+                    "value": 0.94,
+                    "explain": {
+                        "top": 50,
+                        "true_top": 47.0,
+                        "samples": 16281.0
+                    }
+                }
+            }
+        },
+        "toprec": {
+            "value": 0.0623557823668879,
+            "explain": {
+                "Male": {
+                    "value": 0.014434889434889435,
+                    "explain": {
+                        "top": 50,
+                        "true_top": 47.0,
+                        "true_all": 3256.0,
+                        "samples": 10860.0
+                    }
+                },
+                "Female": {
+                    "value": 0.07457627118644068,
+                    "explain": {
+                        "top": 50,
+                        "true_top": 44.0,
+                        "true_all": 590.0,
+                        "samples": 5421.0
+                    }
+                },
+                "Any": {
+                    "value": 0.012220488819552781,
+                    "explain": {
+                        "top": 50,
+                        "true_top": 47.0,
+                        "true_all": 3846.0,
+                        "samples": 16281.0
+                    }
+                }
+            }
+        },
+        "avghr": {
+            "value": 0.0034044496864195084,
+            "explain": {
+                "Male": {
+                    "value": 0.8426674907186243,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 10860.0
+                    }
+                },
+                "Female": {
+                    "value": 0.8398837306873772,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 5421.0
+                    }
+                },
+                "Any": {
+                    "value": 0.8432881803737967,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 16281.0
+                    }
+                }
+            }
+        },
+        "avgrepr": {
+            "value": 0.9343473461848597,
+            "explain": {
                 "Male": {
                     "value": 1.466399352087304,
                     "explain": {
                         "top": 50,
                         "curve": null,
                         "samples": 10860.0
+                    }
+                },
+                "Female": {
+                    "value": 0.06565265381514034,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 5421.0
+                    }
+                },
+                "Any": {
+                    "value": 1.0,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 16281.0
+                    }
+                }
+            }
+        }
+    },
+    "maxbarea[vsAny]": {
+        "accuracy": null,
+        "pr": null,
+        "tpr": null,
+        "tnr": null,
+        "auc": {
+            "value": 0.025230640631104532,
+            "explain": {
+                "Male": {
+                    "value": 0.8614349488889204,
+                    "explain": {
+                        "curve": null,
+                        "samples": 10860.0
+                    }
+                },
+                "Female": {
+                    "value": 0.9088561163951738,
+                    "explain": {
+                        "curve": null,
+                        "samples": 5421.0
+                    }
+                },
+                "Any": {
+                    "value": 0.8866847806200147,
+                    "explain": {
+                        "curve": null,
+                        "samples": 16281.0
+                    }
+                }
+            }
+        },
+        "avgscore": {
+            "value": 0.45395782139720325,
+            "explain": {
+                "Male": {
+                    "value": 0.30384649781747625,
+                    "explain": {
+                        "samples": 10860.0,
+                        "sum_scores": 3299.7729662977918,
+                        "curve": null
+                    }
+                },
+                "Female": {
+                    "value": 0.11023017696989586,
+                    "explain": {
+                        "samples": 5421.0,
+                        "sum_scores": 597.5577893538054,
+                        "curve": null
+                    }
+                },
+                "Any": {
+                    "value": 0.2393790771851605,
+                    "explain": {
+                        "samples": 16281.0,
+                        "sum_scores": 3897.330755651598,
+                        "curve": null
+                    }
+                }
+            }
+        },
+        "tophr": null,
+        "toprec": null,
+        "avghr": {
+            "value": 0.2378059415070928,
+            "explain": {
+                "Male": {
+                    "value": 0.8426674907186243,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 10860.0
+                    }
+                },
+                "Female": {
+                    "value": 0.8398837306873772,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 5421.0
+                    }
+                },
+                "Any": {
+                    "value": 0.8432881803737967,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 16281.0
+                    }
+                }
+            }
+        },
+        "avgrepr": {
+            "value": 0.9343473461848595,
+            "explain": {
+                "Male": {
+                    "value": 1.466399352087304,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 10860.0
+                    }
+                },
+                "Female": {
+                    "value": 0.06565265381514034,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 5421.0
+                    }
+                },
+                "Any": {
+                    "value": 1.0,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 16281.0
+                    }
+                }
+            }
+        }
+    },
+    "maxrarea[vsAny]": {
+        "accuracy": null,
+        "pr": null,
+        "tpr": null,
+        "tnr": null,
+        "auc": {
+            "value": 0.038138147292223895,
+            "explain": {
+                "Male": {
+                    "value": 0.8614349488889204,
+                    "explain": {
+                        "curve": null,
+                        "samples": 10860.0
+                    }
+                },
+                "Female": {
+                    "value": 0.9088561163951738,
+                    "explain": {
+                        "curve": null,
+                        "samples": 5421.0
+                    }
+                },
+                "Any": {
+                    "value": 0.8866847806200147,
+                    "explain": {
+                        "curve": null,
+                        "samples": 16281.0
+                    }
+                }
+            }
+        },
+        "avgscore": {
+            "value": 0.5481886407388089,
+            "explain": {
+                "Male": {
+                    "value": 0.30384649781747625,
+                    "explain": {
+                        "samples": 10860.0,
+                        "sum_scores": 3299.7729662977918,
+                        "curve": null
+                    }
+                },
+                "Female": {
+                    "value": 0.11023017696989586,
+                    "explain": {
+                        "samples": 5421.0,
+                        "sum_scores": 597.5577893538054,
+                        "curve": null
+                    }
+                },
+                "Any": {
+                    "value": 0.2393790771851605,
+                    "explain": {
+                        "samples": 16281.0,
+                        "sum_scores": 3897.330755651598,
+                        "curve": null
+                    }
+                }
+            }
+        },
+        "tophr": null,
+        "toprec": null,
+        "avghr": {
+            "value": 0.2495715967565179,
+            "explain": {
+                "Male": {
+                    "value": 0.8426674907186243,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 10860.0
+                    }
+                },
+                "Female": {
+                    "value": 0.8398837306873772,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 5421.0
+                    }
+                },
+                "Any": {
+                    "value": 0.8432881803737967,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 16281.0
+                    }
+                }
+            }
+        },
+        "avgrepr": {
+            "value": 0.9343473461848595,
+            "explain": {
+                "Male": {
+                    "value": 1.466399352087304,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 10860.0
+                    }
+                },
+                "Female": {
+                    "value": 0.06565265381514034,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 5421.0
+                    }
+                },
+                "Any": {
+                    "value": 1.0,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 16281.0
+                    }
+                }
+            }
+        }
+    },
+    "maxbdcg[vsAny]": {
+        "accuracy": null,
+        "pr": null,
+        "tpr": null,
+        "tnr": null,
+        "auc": {
+            "value": 0.028331350392416726,
+            "explain": {
+                "Male": {
+                    "value": 0.8614349488889204,
+                    "explain": {
+                        "curve": null,
+                        "samples": 10860.0
+                    }
+                },
+                "Female": {
+                    "value": 0.9088561163951738,
+                    "explain": {
+                        "curve": null,
+                        "samples": 5421.0
+                    }
+                },
+                "Any": {
+                    "value": 0.8866847806200147,
+                    "explain": {
+                        "curve": null,
+                        "samples": 16281.0
+                    }
+                }
+            }
+        },
+        "avgscore": {
+            "value": 0.49869812676089864,
+            "explain": {
+                "Male": {
+                    "value": 0.30384649781747625,
+                    "explain": {
+                        "samples": 10860.0,
+                        "sum_scores": 3299.7729662977918,
+                        "curve": null
+                    }
+                },
+                "Female": {
+                    "value": 0.11023017696989586,
+                    "explain": {
+                        "samples": 5421.0,
+                        "sum_scores": 597.5577893538054,
+                        "curve": null
+                    }
+                },
+                "Any": {
+                    "value": 0.2393790771851605,
+                    "explain": {
+                        "samples": 16281.0,
+                        "sum_scores": 3897.330755651598,
+                        "curve": null
+                    }
+                }
+            }
+        },
+        "tophr": null,
+        "toprec": null,
+        "avghr": {
+            "value": 0.28792032022929975,
+            "explain": {
+                "Male": {
+                    "value": 0.8426674907186243,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 10860.0
+                    }
+                },
+                "Female": {
+                    "value": 0.8398837306873772,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 5421.0
+                    }
+                },
+                "Any": {
+                    "value": 0.8432881803737967,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 16281.0
+                    }
+                }
+            }
+        },
+        "avgrepr": {
+            "value": 0.9523156730876181,
+            "explain": {
+                "Male": {
+                    "value": 1.466399352087304,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 10860.0
+                    }
+                },
+                "Female": {
+                    "value": 0.06565265381514034,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 5421.0
+                    }
+                },
+                "Any": {
+                    "value": 1.0,
+                    "explain": {
+                        "top": 50,
+                        "curve": null,
+                        "samples": 16281.0
                     }
                 }
             }
@@ -1409,22 +2578,17 @@
                 return colors[level % colors.length];
             }
 
-            function toggleAllLabels(labelText) {
-                // Find all labels with the same text and toggle their associated children
-                const labels = document.querySelectorAll('.label');
-                labels.forEach(label => {
-                    if (label.textContent === labelText) {
-                        const parentDiv = label.parentElement;
-                        const childrenDiv = parentDiv.querySelector('.children');
-                        if (childrenDiv) {
-                            childrenDiv.classList.toggle('hidden');
-                            const icon = parentDiv.querySelector('.expand-icon');
-                            if (icon) {
-                                icon.innerHTML = childrenDiv.classList.contains('hidden') ? '&#8250;' : '-';
-                            }
-                        }
+            function toggleLabel(element) {
+                // Toggle the associated children of the clicked label
+                const parentDiv = element.parentElement;
+                const childrenDiv = parentDiv.querySelector('.children');
+                if (childrenDiv) {
+                    childrenDiv.classList.toggle('hidden');
+                    const icon = parentDiv.querySelector('.expand-icon');
+                    if (icon) {
+                        icon.innerHTML = childrenDiv.classList.contains('hidden') ? '&#8250;' : '-';
                     }
-                });
+                }
             }
 
             function createVisualization(data, container, expand=true, level=0) {
@@ -1511,7 +2675,7 @@
 
                             expandIcon.onclick = labelDiv.onclick = function (e) {
                                 e.stopPropagation(); // Prevent clicking from affecting parent elements
-                                toggleAllLabels(key);
+                                toggleLabel(labelDiv);
                             };
                         }
                     } else if (typeof value === 'object' && value !== null) {
@@ -1528,7 +2692,7 @@
 
                         expandIcon.onclick = labelDiv.onclick = function (e) {
                             e.stopPropagation(); // Prevent clicking from affecting parent elements
-                            toggleAllLabels(key);
+                            toggleLabel(labelDiv);
                         };
                     }
 

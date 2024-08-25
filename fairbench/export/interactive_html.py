@@ -11,11 +11,22 @@ from fairbench.core import (
 )
 
 
+def _desc(v):
+    ret = None
+    if isinstance(v, Forklike):
+        ret = v.role()
+    if isinstance(v, Fork):
+        ret = v.role()
+    if ret is None:
+        return ""
+    return ret
+
+
 def fork_to_dict(fork):
     if isinstance(fork, Fork):
-        return {k: fork_to_dict(v) for k, v in fork.branches().items()}
+        return {k + _desc(v): fork_to_dict(v) for k, v in fork.branches().items()}
     if isinstance(fork, Forklike):
-        return {k: fork_to_dict(v) for k, v in fork.items()}
+        return {k + _desc(v): fork_to_dict(v) for k, v in fork.items()}
     if isinstance(fork, ExplainableError):
         return None
     if isinstance(fork, Explainable):
@@ -95,6 +106,7 @@ def interactive_html(fork, name="Report", filename=None, show=True):
             .children {{
                 margin-left: 20px; /* Indent child elements */
                 margin-top: 10px;
+                margin-bottom: 10px;
             }}
             .bar-container {{
                 display: inline-block;
@@ -120,8 +132,7 @@ def interactive_html(fork, name="Report", filename=None, show=True):
     <body>
         <div id="container">
             <h1>{name}</h1>
-            <p>Click on an entry to expand into explanations or collapse the explanation.<br>All entries with the 
-            same name are expanded simultaneously.</p>
+            <p>Click on an entry to expand collapse explanations.</p>
             <button id="collapseButton">Collapse all</button>
             <div id="visualization"></div>
         </div>
@@ -135,22 +146,17 @@ def interactive_html(fork, name="Report", filename=None, show=True):
                 return colors[level % colors.length];
             }}
 
-            function toggleAllLabels(labelText) {{
-                // Find all labels with the same text and toggle their associated children
-                const labels = document.querySelectorAll('.label');
-                labels.forEach(label => {{
-                    if (label.textContent === labelText) {{
-                        const parentDiv = label.parentElement;
-                        const childrenDiv = parentDiv.querySelector('.children');
-                        if (childrenDiv) {{
-                            childrenDiv.classList.toggle('hidden');
-                            const icon = parentDiv.querySelector('.expand-icon');
-                            if (icon) {{
-                                icon.innerHTML = childrenDiv.classList.contains('hidden') ? '&#8250;' : '-';
-                            }}
-                        }}
+            function toggleLabel(element) {{
+                // Toggle the associated children of the clicked label
+                const parentDiv = element.parentElement;
+                const childrenDiv = parentDiv.querySelector('.children');
+                if (childrenDiv) {{
+                    childrenDiv.classList.toggle('hidden');
+                    const icon = parentDiv.querySelector('.expand-icon');
+                    if (icon) {{
+                        icon.innerHTML = childrenDiv.classList.contains('hidden') ? '&#8250;' : '-';
                     }}
-                }});
+                }}
             }}
 
             function createVisualization(data, container, expand=true, level=0) {{
@@ -237,7 +243,7 @@ def interactive_html(fork, name="Report", filename=None, show=True):
 
                             expandIcon.onclick = labelDiv.onclick = function (e) {{
                                 e.stopPropagation(); // Prevent clicking from affecting parent elements
-                                toggleAllLabels(key);
+                                toggleLabel(labelDiv);
                             }};
                         }}
                     }} else if (typeof value === 'object' && value !== null) {{
@@ -254,7 +260,7 @@ def interactive_html(fork, name="Report", filename=None, show=True):
 
                         expandIcon.onclick = labelDiv.onclick = function (e) {{
                             e.stopPropagation(); // Prevent clicking from affecting parent elements
-                            toggleAllLabels(key);
+                            toggleLabel(labelDiv);
                         }};
                     }}
 
@@ -301,7 +307,7 @@ def interactive_html(fork, name="Report", filename=None, show=True):
             file.write(html_content)
         if show:
             webbrowser.open_new_tab(filename)
-    else:
+    elif show:
         with tempfile.NamedTemporaryFile("w", delete=False, suffix=".html") as tmp_file:
             tmp_file.write(html_content)
             temp_filename = tmp_file.name
