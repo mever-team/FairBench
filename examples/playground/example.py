@@ -9,10 +9,10 @@ report = fb.multireport(
 )
 fb.describe(report)
 
-report = fb.accreport(
-    predictions=(yhat > 0.5), labels=y, sensitive=s, metrics=fb.common_adhoc_metrics
-)
-fb.describe(report)
+#report = fb.accreport(
+#    predictions=(yhat > 0.5), labels=y, sensitive=s, metrics=fb.common_adhoc_metrics
+#)
+#fb.describe(report)
 # report2 = fb.unireport(predictions=(yhat > 0.5), labels=y, sensitive=s, top=50)
 # report = fb.combine(report, report2)
-# fb.interactive(report)
+fb.interactive_html(report)

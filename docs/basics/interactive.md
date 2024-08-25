@@ -4,13 +4,13 @@ Here we describe how to explore reports or other complex
 objects created with FairBench. These objects are organized
 as forks (reports are also forks) whose branches correspond to
 column names. The main mechanism to access parts of reports
-is the perspective notation below. For example, you can write
-`report.minratio` to obtain a Fork of all minimum ratio reductions
-for all base measures, `report.auc` to obtain all the reductions
+programmatically is the perspective notation below. For example, 
+`report.minratio` is a Fork of all minimum ratio reductions
+for all base measures, `report.auc` contains all the reductions
 for the base auc measure, and
-`report.auc.minratio` to obtain the (explainable) value of the
+`report.auc.minratio` retrieves the (explainable) value of the
 minratio reduction for auc. 
-Once you get a hang of how perspectives can be obtained, you
+Once you get a hang on perspectives, you
 can explore reports or comparisons of reports across
 different algorithms and classes programmatically.
 You can also perform the exploration via an
@@ -41,7 +41,7 @@ For instance, if a `fairbench.isecreport` is made, both
 empirical and bayesian evaluations arise from the underlying
 data branches of multi-attribute fairness forks. More 
 on exploration based on explainable objects can be found in
-our introduction to programmatic [interactive exporation](interactive.md)
+our introduction to programmatic [interactive exploration](interactive.md)
 
 Whenever possible, the data branches that are converted
 into final reports are preserved by having report values
@@ -250,6 +250,29 @@ values.
     or data gathering issues
     that eventually give rise to bias.<br><br>
     ![Explanations of explanations](../images/interactive_internal_explanations.png)
+
+
+## Serverless report exploration
+
+Sometimes, you might want to store a report in a format that allows some degree
+of interactive exploration but. Enter a conversion to html methods that embeds
+some Javacript for interactive visualization. This conversion is demonstrated
+in the following snippet, where it is implemented by `interactive_html`.
+This method returns the HTML code as a string, but can also directly save it as a 
+file by adding the `filename`. Furthermore, a name/title is provided, and
+`show=False` can be added to prevent a new browser tab from opening.
+The outcome of using the visualization for an example report is
+provided [here](example_html.html).
+
+```python
+import fairbench as fb
+
+obj = ...  # the object to explore (e.g., a report, or fork of reports)
+fb.interactive_html(obj, name="Report", filename="myreport.html", show=True)
+```
+
+
+
 
 
 

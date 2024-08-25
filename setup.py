@@ -32,7 +32,6 @@ setuptools.setup(
     install_requires=[
         "numpy",
         "eagerpy",
-        "distributed",
         "makefun",
         "matplotlib",
         "wget",
