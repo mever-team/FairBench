@@ -1,8 +1,8 @@
 import os
-import wget
 import pandas as pd
 import zipfile
 import re
+from fairbench.bench import wget
 
 
 def _extract_nested_zip(file, folder):

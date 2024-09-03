@@ -16,7 +16,7 @@ long_description = (
 
 setuptools.setup(
     name="fairbench",
-    version="0.3.6",
+    version="0.3.9",
     author="Emmanouil (Manios) Krasanakis",
     author_email="maniospas@hotmail.com",
     description="A fairness assessment framework",
@@ -34,7 +34,6 @@ setuptools.setup(
         "eagerpy",
         "makefun",
         "matplotlib",
-        "wget",
         "scikit-learn",
         "pandas",
         "objwrap",
