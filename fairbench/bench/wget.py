@@ -36,6 +36,6 @@ def download(url, path=None):
                             end="",
                         )
 
-        print(f"Downloaded {url}"+" "*50)
+        print(f"Downloaded {url}" + " " * 50)
     except Exception as e:
         print(f"Error downloading file: {e}")
