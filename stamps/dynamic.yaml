@@ -12,11 +12,14 @@ four_fifths:
     is at worst four fifths that of {COMPARISON} (i.e., the p-rule is 0.8 or greater
     for any pairwise group comparison)."
   caveats:
-    - "Disparate impact may not always be an appropriate fairness consideration."
+    - "Disparate impact may not always be an appropriate fairness consideration, and may obscure other important fairness concerns or create new disparities."
   caveats_accept:
     - "Consider input from affected stakeholders to determine whether 
       the 4/5 threshold is appropriate."
-    - "Satisfying the 4/5 rule is not a legally accepted indication of disparate impact mitigation."
+    - "Satisfying the 4/5 rule is not a legally accepted indication of disparate impact mitigation. 
+       Different groups may have different positive value distributions."
+    - "Ensure continuous monitoring and re-evaluation as group dynamics and external factors evolve."
+    - "The 4/5 rule is affected by group size when positive samples remain the same."
 
 accuracy:
   title: "worst accuracy"
@@ -27,6 +30,9 @@ accuracy:
   caveats:
     - "The worst accuracy is a lower bound but not an estimation of overall accuracy.
       There may be different distributions of benefits that could be protected."
+    - "Ensure continuous monitoring and re-evaluation as group dynamics and external factors evolve."
+    - "Ensure that high worst accuracy translates to meaningful benefits across all groups in the real-world context."
+    - "Seek input from affected groups to understand the impact of errors and to inform remediation strategies."
 
 prule:
   title: "p-rule"
@@ -41,7 +47,8 @@ prule:
     The worst ratio is reported, so that value of 0 indicates 
     disparate impact, and value of 1 disparate impact mitigation."
   caveats:
-    - "Disparate impact may not always be an appropriate fairness consideration."
+    - "Disparate impact may not always be an appropriate fairness consideration, and may obscure other important fairness concerns or create new disparities."
+    - "Ensure continuous monitoring and re-evaluation as group dynamics and external factors evolve."
 
 dfpr:
   title: "dfpr"
@@ -56,8 +63,12 @@ dfpr:
     The maximum difference is reported, so that value of 1 indicates
     disparate mistreatment, and value of 0 disparate mistreatment mitigation."
   caveats:
-    - "Disparate mistreatment may not always be an appropriate fairness consideration."
+    - "Disparate mistreatment may not always be an appropriate fairness consideration, and may obscure other important fairness concerns or create new disparities."
     - "Consider input from affected stakeholders to determine whether dfpr is an appropriate fairness measure."
+    - "Ensure continuous monitoring and re-evaluation as group dynamics and external factors evolve."
+    - "Variations in FPR could be influenced by factors unrelated to the fairness of the system, such as data quality or representation."
+    - "Mitigating DFPR tends to mitigate DFNR, and conversely."
+    - "Seek input from affected groups to understand the impact of errors and to inform remediation strategies."
 
 dfnr:
   title: "dfnr"
@@ -72,8 +83,11 @@ dfnr:
     The maximum difference is reported, so that value of 1 indicates
     disparate mistreatment, and value of 0 disparate mistreatment mitigation."
   caveats:
-    - "Disparate mistreatment may not always be an appropriate fairness consideration."
+    - "Disparate mistreatment may not always be an appropriate fairness consideration, and may obscure other important fairness concerns or create new disparities."
     - "Consider input from affected stakeholders to determine whether dfnr is an appropriate fairness measure."
+    - "Variations in FNR could be influenced by factors unrelated to the fairness of the system, such as data quality or representation."
+    - "Mitigating DFPR tends to mitigate DFNR, and conversely."
+    - "Seek input from affected groups to understand the impact of errors and to inform remediation strategies."
 
 auc:
   title: "worst AUC"
@@ -97,7 +111,7 @@ abroca:
     "Compares the area between ROC curves. This comparison is made between {COMPARISON}
     and is a type of disparate mistreatment for recommendation systems."
   caveats:
-    - "Disparate mistreatment may not always be an appropriate fairness consideration."
+    - "Disparate mistreatment may not always be an appropriate fairness consideration, and may obscure other important fairness concerns or create new disparities."
     - "Consider input from affected stakeholders to determine whether abroca is an appropriate fairness measure."
 
 rbroca:
@@ -112,7 +126,7 @@ rbroca:
     "Compares the relative area between ROC curves. This comparison is made between {COMPARISON}
     and is a type of disparate mistreatment for recommendation systems."
   caveats:
-    - "Disparate mistreatment may not always be an appropriate fairness consideration."
+    - "Disparate mistreatment may not always be an appropriate fairness consideration, and may obscure other important fairness concerns or create new disparities."
     - "Consider input from affected stakeholders to determine whether abroca is an appropriate fairness measure."
 
 maxbdcg:
@@ -129,4 +143,4 @@ maxbdcg:
     represented at different top-k predictions, and this measure 
     is a type of disparate impact for recommendation systems."
   caveats:
-    - "Disparate impact may not always be an appropriate fairness consideration."
+    - "Disparate impact may not always be an appropriate fairness consideration, and may obscure other important fairness concerns or create new disparities."

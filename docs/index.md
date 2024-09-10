@@ -97,7 +97,7 @@ fb.describe(report, show=False)  # returned value is printed anyway</textarea>
         run.disabled = true;
         restart.disabled = true;
         let pyodide = await pyodideReadyPromise;
-        output.value += ">>> " + code.value.replace("\n", ">>>") + "\n";
+        output.value += ">>> " + code.value.replace("\n", "\n>>> ") + "\n";
 
         var logBackup = console.log;
 
