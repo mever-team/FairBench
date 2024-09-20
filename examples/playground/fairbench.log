@@ -3145,3 +3145,30 @@ Traceback (most recent call last):  File "C:\Users\manio\PycharmProjects\FairBen
   File "C:\Users\manio\PycharmProjects\FairBench\fairbench\core\explanation\error.py", line 140, in reraise
     stack_trace = "".join(traceback.format_stack())
 ------------------------------------------------------------------------------------------------------------------------
+2024-09-20 05:12:51,477 - root - ERROR - There was an attempt to call computations that encountered an ExplainabeError
+This is the full stack trace of the ExplainableError that includes FairBench internals
+Traceback (most recent call last):
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\blocks\framework.py", line 31, in _tryorexplainable
+    return method(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\blocks\expanders\expanders.py", line 16, in expand
+    return method(values, base, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\blocks\expanders\expanders.py", line 50, in barea
+    raise ExplainableError("Explanation absent or does not store `curve`")
+fairbench.core.explanation.error.ExplainableError: ---
+Ignored error getting __notes__: ExplainableError: Explanation absent or does not store `curve`
+2024-09-20 05:12:51,480 - root - ERROR - This is the full stack trace of the computations where the ExplainableError was encountered
+Traceback (most recent call last):  File "C:\Users\manio\PycharmProjects\FairBench\examples\playground\example.py", line 22, in <module>
+    fb.interactive_html(report)
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\export\interactive_html.py", line 49, in interactive_html
+    print(fork_to_dict(fork))
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\export\interactive_html.py", line 27, in fork_to_dict
+    return {k + _desc(v): fork_to_dict(v) for k, v in fork.branches().items()}
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\export\interactive_html.py", line 29, in fork_to_dict
+    return {k + _desc(v): fork_to_dict(v) for k, v in fork.items() if v is not None and v!=""}
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\core\explanation\error.py", line 122, in __ne__
+    self.reraise()
+  File "C:\Users\manio\PycharmProjects\FairBench\fairbench\core\explanation\error.py", line 145, in reraise
+    stack_trace = "".join(traceback.format_stack())
+------------------------------------------------------------------------------------------------------------------------
