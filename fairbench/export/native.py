@@ -1,6 +1,8 @@
+import math
+
+from fairbench import ExplainableError
 from fairbench.core.fork import Fork, Forklike
 from fairbench.reports.accumulate import todict
-from matplotlib import pyplot as plt
 import json
 from fairbench.core.explanation.base import tofloat
 from fairbench.core import ExplanationCurve
@@ -25,6 +27,8 @@ def tojson(report: Fork):
         report = {k: {"": v} for k, v in report.items()}
     data["header"] = ["Metric"] + [key for key in report]
     for value in report.values():
+        if isinstance(value, ExplainableError) or isinstance(value, str):
+            raise Exception("Some entries in the report your are converting to json (either directly or as part of visualization) are strings or explainable errors.")
         for metric in value:
             if metric not in data:
                 data[metric] = list()
@@ -68,9 +72,48 @@ def describe(
     return ret
 
 
+def text_visualize(report: Fork):
+    report = json.loads(tojson(report))
+    num_metrics = len([metric for metric in report if metric != "header"])
+    i = 1
+    for metric in report:
+        if metric != "header":
+            if num_metrics > 1:
+                print("---------------------"+(f"_{metric}_").center(10).replace(" ", "-").replace("_", " ")+"---------------------")
+            max_value = 1
+            for j, case in enumerate(report["header"][1:]):
+                val = report[metric][j]
+                if math.isnan(val):
+                    continue
+                val = abs(val)
+                if val > max_value:
+                    max_value = val
+            for j, case in enumerate(report["header"][1:]):
+                if isinstance(report[metric][j], float):
+                    #plt.bar(j, report[metric][j])
+                    if len(case)>30:
+                        case = case[:28]+".."
+                    if math.isnan(report[metric][j]):
+                        continue
+                    value = f"{float(report[metric][j]):.3f}"
+                    print(case.ljust(30)+value.ljust(7)+" | "+"█"*int(report[metric][j]/max_value*10))
+                else:
+                    raise Exception("fairbench.text_visualize does not yet support curve visualization")
+            i += 1
+
+
+
 def visualize(
     report: Fork, hold: bool = False, xrotation: int = None, legend: bool = True
 ):
+    try:
+        from matplotlib import pyplot as plt
+    except:
+        print(
+        "Matplotlib visualization not supported if fairbench[minimized] is installed."
+        "\nRun `pip install matplotlib` to enable `fairbench.visualize`."
+        "\nFor now, `fairbench.text_visualize` is used.")
+        return text_visualize(report)
     report = json.loads(tojson(report))
     num_metrics = len([metric for metric in report if metric != "header"])
     i = 1

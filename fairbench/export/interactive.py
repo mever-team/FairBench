@@ -58,6 +58,10 @@ def interactive(
     :param spacing: The minimum spacing between bars of bar plots. If None, internally set to 30 for horizontal mode and 80 otherwise.
     :param horizontal: Whether bar plots should be horizontally or vertically aligned.
     """
+    try:
+        import bokeh
+    except:
+        raise Exception("Interactive visualization not supported if fairbench[minimized] is installed. Pip install bokeh to enable it.")
     from bokeh.models import (
         ColumnDataSource,
         Select,

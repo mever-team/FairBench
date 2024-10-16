@@ -1,0 +1,8 @@
+numpy
+eagerpy
+makefun
+scikit-learn
+pandas
+objwrap
+pyyaml
+requests

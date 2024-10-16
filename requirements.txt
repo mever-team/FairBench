@@ -1,0 +1,10 @@
+numpy
+eagerpy
+makefun
+matplotlib
+scikit-learn
+pandas
+objwrap
+bokeh
+pyyaml
+requests
