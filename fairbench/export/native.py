@@ -112,7 +112,7 @@ def visualize(
         print(
         "Matplotlib visualization not supported if fairbench[minimized] is installed."
         "\nRun `pip install matplotlib` to enable `fairbench.visualize`."
-        "\nFor now, `fairbench.text_visualize` is used.")
+        "\nFor now, `fairbench.text_visualize` is used as a fallback.")
         return text_visualize(report)
     report = json.loads(tojson(report))
     num_metrics = len([metric for metric in report if metric != "header"])

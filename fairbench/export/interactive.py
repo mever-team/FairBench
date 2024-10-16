@@ -61,7 +61,11 @@ def interactive(
     try:
         import bokeh
     except:
-        raise Exception("Interactive visualization not supported if fairbench[minimized] is installed. Pip install bokeh to enable it.")
+        print("Interactive visualization not supported if fairbench[minimized] is installed."
+              "\nRun `pip install bokeh` to enable `fairbench.interactive`."
+              "\nFor now, `fairbench.interactive_html` is used as a fallback.")
+        from fairbench.export.interactive_html import interactive_html
+        return interactive_html(report, name=name)
     from bokeh.models import (
         ColumnDataSource,
         Select,
