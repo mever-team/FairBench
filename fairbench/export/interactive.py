@@ -60,7 +60,7 @@ def interactive(
     """
     try:
         import bokeh
-    except:
+    except ImportError:
         print("Interactive visualization not supported if fairbench[minimized] is installed."
               "\nRun `pip install bokeh` to enable `fairbench.interactive`."
               "\nFor now, `fairbench.interactive_html` is used as a fallback.")

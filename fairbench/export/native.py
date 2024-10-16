@@ -108,7 +108,7 @@ def visualize(
 ):
     try:
         from matplotlib import pyplot as plt
-    except:
+    except ImportError:
         print(
         "Matplotlib visualization not supported if fairbench[minimized] is installed."
         "\nRun `pip install matplotlib` to enable `fairbench.visualize`."
