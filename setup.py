@@ -14,15 +14,15 @@ long_description = (
     "**Repository:** https://github.com/mever-team/FairBench"
 )
 
-with open("requirements[minimized].txt", "r") as file:
-    minimized_requirements = file.read().splitlines()
-
 with open("requirements.txt", "r") as file:
     requirements = file.read().splitlines()
 
+with open("requirements[interactive].txt", "r") as file:
+    interactive_requirements = file.read().splitlines()
+
 setuptools.setup(
     name="fairbench",
-    version="0.3.12",
+    version="0.3.14",
     author="Emmanouil (Manios) Krasanakis",
     author_email="maniospas@hotmail.com",
     description="A fairness assessment framework",
@@ -36,5 +36,5 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     install_requires=requirements,
-    extras_require={"deployment": minimized_requirements},
+    extras_require={"interactive": interactive_requirements},
 )
