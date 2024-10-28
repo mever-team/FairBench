@@ -219,6 +219,7 @@ def test_rates():
             sensitive=sensitive,
             metrics=[fb.tpr, fb.tnr, fb.fpr, fb.fnr],
         )
+
         assert report.men.tpr == 1
         assert report.men.tnr == 1
         assert report.men.fpr == 0
