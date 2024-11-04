@@ -50,7 +50,6 @@ def fork_to_dict(fork):
         }
     return float(tobackend(fork).numpy())
 
-
 def interactive_html(fork, name="Report", filename=None, show=True):
     import json
     import tempfile
@@ -58,6 +57,38 @@ def interactive_html(fork, name="Report", filename=None, show=True):
 
     # Convert the fork structure to a JSON string
     json_data = json.dumps(fork_to_dict(fork), indent=4)
+
+    tooltip = {
+        "accuracy": "The fraction of correct predictions",
+        "pr": "The fraction of positive predictions",
+        "tpr": "The false positive rates",
+        "tnr": "The true negative rates",
+        "fpr": "The false positive rates",
+        "fnr": "The false negative rates",
+        "min": "The minimum value for metrics across all groups",
+        "minratio": "THe minimum when dividing the metric values of groups",
+        "maxdiff": "Themaximum difference between groups",
+        "wmean": "The mean metric value weighted by group size",
+        "max": "The maximum value across all comparisons",
+        "gini": "The gini score of metric valeus across groups",
+        "maxbarea": "The maximum betweeness area of group curves",
+        "maxbdcg": "The maximum ndcg-weighted difference of group curves",
+        "maxrarea": "The maximum integral of 1-value ratio of group curves",
+        "avgscore": "The average of scores",
+        "avgrepr": "The average representations in top-k recommendations",
+        "tophr": "The hit rate among the top-k recommendations",
+        "toprec": "The number in the top-k recommend items",
+        "auc": "THe area under curve of the receiver operating characteristics",
+        "samples": "The number of groups samples",
+        "true": "The number of true labels",
+        "true_positives": "The number of positives that are actually so",
+        "true_negatives": "The number of negatives that are actually so",
+        "false": "The number of false labels",
+        "curve": "The curve used to compute values",
+    }
+    tooltip_vsany = {k+"[vsAny]": v for k, v in tooltip.items()}
+    tooltip = {**tooltip, **tooltip_vsany}
+    tooltip_json = json.dumps(tooltip, indent=4)
 
     # Generate HTML Content
     html_content = f"""
@@ -68,6 +99,14 @@ def interactive_html(fork, name="Report", filename=None, show=True):
     <title>{name}</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script>
+        document.addEventListener(\DOMContentLoaded", function() {{
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.forEach(function(tooltipTriggerEl) {{
+                new bootstrap.Tooltip(tooltipTriggerEl);
+            }});
+        }});
+    </script>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -78,12 +117,18 @@ def interactive_html(fork, name="Report", filename=None, show=True):
                 <ol id="breadcrumb" class="breadcrumb"></ol>
             </nav>
         </h3>
+        The main report contains a summary that gets
+        progressively into more details as you focus on specific (sub)entries by selecting them.
+        Hover over the entries to get a proper description of what the acronyms mean.
+        Use <i>expand all</i> to compare the contents of all currently visible info, and click on
+        the path above to go back to a previous step.<br><br>
         <div id="chart"></div>
         <button id="compareButton" class="btn btn-info mt-3" style="display: none;">Expand all</button>
     </div>
 
     <script>
         const data = {json_data};
+        const tooltip = {tooltip_json}; 
 
         let historyStack = [];
         let currentData = data;
@@ -186,6 +231,11 @@ def interactive_html(fork, name="Report", filename=None, show=True):
                 labelButton.style.textDecoration = 'none';
                 labelButton.style.padding = '0';
                 labelButton.textContent = key;
+                
+                // Set tooltip based on key
+                labelButton.setAttribute('data-bs-toggle', 'tooltip');
+                labelButton.setAttribute('data-bs-placement', 'top');  // Position tooltip on top
+                labelButton.title = tooltip[key] || "Sensitive dimension";
 
                 // Check if the value can be navigated further
                 let isNavigable = false;
@@ -373,7 +423,7 @@ def interactive_html(fork, name="Report", filename=None, show=True):
 
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'col-12 mb-2 d-flex align-items-center';
-
+                
                 // Create label button
                 const labelButton = document.createElement('button');
                 labelButton.className = 'btn btn-light me-2 text-start';
@@ -381,6 +431,11 @@ def interactive_html(fork, name="Report", filename=None, show=True):
                 labelButton.style.textDecoration = 'none';
                 labelButton.style.padding = '0';
                 labelButton.textContent = key;
+                
+                // Set tooltip based on key
+                labelButton.setAttribute('data-bs-toggle', 'tooltip');
+                labelButton.setAttribute('data-bs-placement', 'top');  // Position tooltip on top
+                labelButton.title = tooltip[key] || "Sensitive dimension";
 
                 // Check if the value can be navigated further
                 let isNavigable = false;
