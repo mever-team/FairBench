@@ -1,4 +1,10 @@
-from fairbench.core.compute import comparator, parallel_primitive, asprimitive, astensor, istensor
+from fairbench.core.compute import (
+    comparator,
+    parallel_primitive,
+    asprimitive,
+    astensor,
+    istensor,
+)
 import numpy as np
 import eagerpy as ep
 from makefun import wraps
@@ -6,6 +12,7 @@ from makefun import wraps
 
 def _result(ret):
     from fairbench import DotDict
+
     if ret.__class__.__name__ == "Future":
         ret = ret.result()
     if isinstance(ret, dict):
@@ -47,6 +54,7 @@ def simplify(fork):
 
 def _str_foreign(v, tabs=0):
     from fairbench import Fork
+
     if isinstance(v, Fork):
         v = v.branches()
     if isinstance(v, dict):
@@ -66,8 +74,10 @@ def _str_foreign(v, tabs=0):
         return f"{v:.3f}"
     return str(v)
 
+
 def multibranch_tensors(_wrapped_method):
     from fairbench import Fork
+
     @wraps(_wrapped_method)
     def wrapper(*args, **kwargs):
         branches = set(
@@ -106,12 +116,14 @@ def multibranch_tensors(_wrapped_method):
 @parallel_primitive
 def merge(dict1, dict2):
     from fairbench import DotDict
+
     return DotDict({**dict1, **dict2})
 
 
 @comparator
 def combine(*args, _role=None, _cast=None):
     from fairbench import Fork, DotDict
+
     if _cast is None:
         _cast = Fork
     ret = {}

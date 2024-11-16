@@ -6,6 +6,7 @@ class DotDict(dict):
     Defines a dictionary whose elements can be accessed with the dot notation.
     For example `dict.name` translates to `dict["name"]`.
     """
+
     def __init__(self, *args, _role=None, **kwargs):
         super().__init__(*args, **kwargs)
         self._role = _role
