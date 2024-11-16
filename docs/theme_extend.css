@@ -1,3 +1,11 @@
 .code-block {
     border: 0px;
 }
+
+.jp-InputPrompt, .jp-OutputPrompt {
+    display: none !important;
+}
+
+.hl-python {
+    margin: 0 !important;
+}

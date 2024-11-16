@@ -21,11 +21,8 @@ nav:
           - 'record/stamps.md'
     - Material:
       - Notebooks:
-          - 'demos/overview.ipynb'
-          #- 'demos/showcase.ipynb'
-          - 'demos/classification_binary.ipynb'
-          #- 'demos/forks.ipynb'
-          - 'demos/modelcards.ipynb'
+          - 'demos/tabular.ipynb'
+          - 'demos/intersectional.ipynb'
           - 'demos/recommendations.ipynb'
           - 'demos/vision.ipynb'
           - 'demos/graphs.ipynb'
@@ -77,9 +74,6 @@ theme:
     - toc.integrate
     #- navigation.footer
 
-extra_css:
-  - theme_extend.css
-
 extra_javascript:
   - mathjax.js
   - https://polyfill.io/v3/polyfill.min.js?features=es6
@@ -88,10 +82,12 @@ extra_javascript:
 plugins:
   - search
   - mkdocstrings
-  - mkdocs-jupyter:
-      include_source: True
+  - mkdocs-jupyter
       #include_requirejs: true
       #highlight_extra_classes: "custom-css-classes"
+
+extra_css:
+  - theme_extend.css
 
 extra:
   social:

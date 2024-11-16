@@ -81,6 +81,8 @@ def interactive_html(fork, name="Report", filename=None, show=True):
         "toprec": "The number in the top-k recommend items",
         "auc": "THe area under curve of the receiver operating characteristics",
         "samples": "The number of groups samples",
+        "positive": "The number of positive samples",
+        "negatives": "The number of negative sample",
         "true": "The number of true labels",
         "true_positives": "The number of positives that are actually so",
         "true_negatives": "The number of negatives that are actually so",
@@ -548,6 +550,8 @@ def interactive_html(fork, name="Report", filename=None, show=True):
 
         render(currentData);
     </script>
+    <br>
+    <br>
 </body>
 </html>
     """
