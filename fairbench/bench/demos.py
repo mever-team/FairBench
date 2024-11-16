@@ -1,6 +1,10 @@
 from fairbench.bench.loader import read_csv, features
 import sklearn
 
+import sklearn.linear_model
+import sklearn.preprocessing
+import numpy as np
+
 
 def adult(
     classifier=sklearn.linear_model.LogisticRegression(max_iter=1000).fit,
@@ -28,13 +32,22 @@ def adult(
         skiprows=[0],
     )
     numeric = [0, 4, 11, 12]
-    categorical = [1, 3, 5, 6, 8, 9]
+    categorical = [
+        3,
+        5,
+        6,
+        8,
+        9,
+    ]  # column 1 is also categorical but yields different get_dummies between train and test
     x_train = features(train, numeric, categorical)
     y_train = (train[14] == ">50K").values
     x = features(test, numeric, categorical)
     y = (test[14] == ">50K.").values
-    x_train = scaler(x_train)
-    x = scaler(x)
+
+    # Apply scaler and replace None values with zero
+    x_train = np.nan_to_num(scaler(x_train), nan=0.0)
+    x = np.nan_to_num(scaler(x), nan=0.0)
+
     if predict == "data":
         return x_train, y_train, x, y, train, test
     classifier = classifier(x_train, y_train)

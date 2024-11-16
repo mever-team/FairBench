@@ -44,6 +44,7 @@ def wmean(values: List[ep.Tensor]) -> ep.Tensor:
             or "samples" not in value.explain.branches()
         ):
             raise ExplainableError("Explanation absent or does not store `samples`")
+    #print([(value, value.explain.samples) for value in values])  # TODO: this is an issue with jax
     nom = _sum([value * value.explain.samples for value in values])
     denom = _sum([value.explain.samples for value in values])
     return nom if denom == 0 else nom / denom

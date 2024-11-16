@@ -18,6 +18,15 @@ nav:
         - 'record/metrics.md'
         - 'record/comparisons.md'
         - 'record/stamps.md'
+    - Recipes:
+        - 'demos/overview.ipynb'
+        #- 'demos/showcase.ipynb'
+        - 'demos/classification_binary.ipynb'
+        #- 'demos/forks.ipynb'
+        - 'demos/modelcards.ipynb'
+        - 'demos/recommendations.ipynb'
+        - 'demos/vision.ipynb'
+        - 'demos/graphs.ipynb'
     - 'cite.md'
 
 markdown_extensions:
@@ -77,7 +86,10 @@ extra_javascript:
 plugins:
   - search
   - mkdocstrings
-
+  - mkdocs-jupyter:
+      include_source: True
+      #include_requirejs: true
+      highlight_extra_classes: "custom-css-classes"
 
 extra:
   social:

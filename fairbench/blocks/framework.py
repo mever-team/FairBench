@@ -83,16 +83,15 @@ def reduce(
         else:
             if base_fields is None:
                 base_fields = {f: list() for f in v} if isinstance(v, dict) else list()
-            if isinstance(v, dict):
-                for f in v:
-                    base_fields[f].append(
-                        astensor(v[f])
-                        if transform is None
-                        else transform(astensor(v[f]))
-                    )
-            else:
+            if not isinstance(v, dict):
                 raise Exception(
                     "The base argument is supported only in the reduction of forks of dicts"
+                )
+            for f in v:
+                base_fields[f].append(
+                    astensor(v[f])
+                    if transform is None
+                    else transform(astensor(v[f]))
                 )
     if expand is not None:
         fields = (

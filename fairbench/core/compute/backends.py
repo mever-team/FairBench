@@ -3,17 +3,17 @@ from typing import Union
 import numpy as np
 import sys
 
-_backend = "numpy"
+__fairbench_backend = "numpy"
 
 
 def setbackend(backend_name: str):
     assert backend_name in ["torch", "tensorflow", "jax", "numpy"]
-    global _backend
-    _backend = backend_name
+    global __fairbench_backend
+    __fairbench_backend = backend_name
 
 
 def tobackend(value):
-    global _backend
+    global __fairbench_backend
     if value.__class__.__name__ == "Fork":
         from fairbench import Fork
 
@@ -29,22 +29,22 @@ def tobackend(value):
     if isinstance(value, list):
         value = np.array(value)
     if isinstance(value, float) or isinstance(value, np.float64):
-        if _backend == "numpy":
+        if __fairbench_backend == "numpy":
             return ep.NumPyTensor(value)
         value = float(value)
-        if _backend == "torch":
+        if __fairbench_backend == "torch":
             import torch
 
             value = torch.tensor(value)
-        elif _backend == "tensorflow":
+        elif __fairbench_backend == "tensorflow":
             import tensorflow
 
             value = tensorflow.convert_to_tensor(value)
-        elif _backend == "jax":
+        elif __fairbench_backend == "jax":
             import jax.numpy as jnp
 
             value = jnp.array(value)
-    elif name != _backend:
+    elif name != __fairbench_backend:
         value = value.raw if isinstance(value, ep.Tensor) else value
         if name == "torch" and isinstance(value, m[name].Tensor):  # type: ignore
             value = value.detach().numpy()
@@ -52,15 +52,15 @@ def tobackend(value):
             value = value.numpy()
         if (name == "jax" or name == "jaxlib") and isinstance(value, m["jax"].numpy.ndarray):  # type: ignore
             value = np.array(value)
-        if _backend == "torch":
+        if __fairbench_backend == "torch":
             import torch
 
             value = torch.tensor(value)
-        elif _backend == "tensorflow":
+        elif __fairbench_backend == "tensorflow":
             import tensorflow
 
             value = tensorflow.convert_to_tensor(value)
-        elif _backend == "jax":
+        elif __fairbench_backend == "jax":
             import jax.numpy as jnp
 
             value = jnp.array(value)
@@ -96,6 +96,7 @@ def astensor(value, _allow_explanation=True) -> Union["Explainable", ep.Tensor]:
         "tensor" not in value.__class__.__name__.lower()
         and "array" not in value.__class__.__name__.lower()
         and not isinstance(value, np.float64)
+        and not isinstance(value, np.float32)
         and not isinstance(value, list)
     ):
         return value
@@ -103,6 +104,8 @@ def astensor(value, _allow_explanation=True) -> Union["Explainable", ep.Tensor]:
         value = np.array(value, dtype=np.float64)
     # if isinstance(value, np.float64):
     #    value = float(value)
+    if isinstance(value, np.float32):
+        value = np.array(value, np.float64)  # eagerpy can't handle float32
     value = tobackend(value)
     if value.ndim != 0:
         value = value.flatten()

@@ -34,7 +34,7 @@ def _str_foreign(v, tabs=0):
             + _str_foreign(asprimitive(v), tabs + 1)
             for k, v in v.items()
         )
-    if isinstance(v, float) or isinstance(v, np.float64):
+    if isinstance(v, float) or isinstance(v, np.float64) or isinstance(v, np.float32):
         return f"{v:.3f}"
     return str(v)
 
@@ -370,7 +370,7 @@ class Fork(Mapping):
 
 
 def role(rolename):
-    """Sets the _role attribute of returned Fork or Forklike."""
+    """Sets the _role attribute of any returned Fork or Forklike."""
 
     def decorator(_wrapped_method):
         @wraps(_wrapped_method)

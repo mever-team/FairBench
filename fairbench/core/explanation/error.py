@@ -9,7 +9,7 @@ import warnings
 logging.basicConfig(
     level=logging.ERROR,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[logging.FileHandler("fairbench.log")],
+    handlers=[logging.FileHandler("fairbench.log", delay=True)],
 )
 
 

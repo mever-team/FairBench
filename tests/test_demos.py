@@ -33,5 +33,6 @@ def test_curve_visualization(monkeypatch):
             monkeypatch.setattr(plt, "show", lambda: None)
             test, y, yhat = setting(predict="probabilities")
             s = fb.Fork(fb.categories @ test[protected])
+
             report = fb.multireport(scores=yhat, labels=y, sensitive=s)
             fb.visualize(report.min.auc.explain.explain)

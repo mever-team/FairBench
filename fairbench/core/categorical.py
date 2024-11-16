@@ -87,7 +87,7 @@ def categories(x):
     assert isinstance(x, Iterable)
     if isinstance(x, Mapping):
         return Categorical(x)
-    vals = list(set(x))
+    vals = list(set(x) - {np.nan})  # ignores nones
     return {
         str(val.numpy()) if istensor(val) else str(val): tobackend(
             [1 if val == xval else 0 for xval in x]

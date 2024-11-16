@@ -50,6 +50,7 @@ def fork_to_dict(fork):
         }
     return float(tobackend(fork).numpy())
 
+
 def interactive_html(fork, name="Report", filename=None, show=True):
     import json
     import tempfile
@@ -67,7 +68,7 @@ def interactive_html(fork, name="Report", filename=None, show=True):
         "fnr": "The false negative rates",
         "min": "The minimum value for metrics across all groups",
         "minratio": "THe minimum when dividing the metric values of groups",
-        "maxdiff": "Themaximum difference between groups",
+        "maxdiff": "The maximum difference between groups",
         "wmean": "The mean metric value weighted by group size",
         "max": "The maximum value across all comparisons",
         "gini": "The gini score of metric valeus across groups",
@@ -86,7 +87,7 @@ def interactive_html(fork, name="Report", filename=None, show=True):
         "false": "The number of false labels",
         "curve": "The curve used to compute values",
     }
-    tooltip_vsany = {k+"[vsAny]": v for k, v in tooltip.items()}
+    tooltip_vsany = {k + "[vsAny]": v for k, v in tooltip.items()}
     tooltip = {**tooltip, **tooltip_vsany}
     tooltip_json = json.dumps(tooltip, indent=4)
 

@@ -4,3 +4,4 @@ pymdown-extensions
 mkdocs-material-extensions
 mkdocs-material
 mkdocstrings
+mkdocs-jupyter
