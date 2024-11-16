@@ -18,7 +18,7 @@ def tobackend(value):
         from fairbench import Fork
 
         return Fork({k: tobackend(v) for k, v in value.branches().items()})
-    if value.__class__.__name__ == "Forklike":
+    if value.__class__.__name__ == "DotDict":
         from fairbench import DotDict
 
         return DotDict({k: tobackend(v) for k, v in value.items()})

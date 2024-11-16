@@ -21,7 +21,7 @@ def _result(ret):
 
 
 def role(rolename):
-    """Sets the _role attribute of any returned Fork or Forklike."""
+    """Sets the _role attribute of any returned Fork or DotDict."""
     from fairbench.core.fork.dotdict import DotDict
     from fairbench.core.fork.fork import Fork
 

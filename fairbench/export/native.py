@@ -13,9 +13,9 @@ def _is_fork_of_dicts(report):
 
 
 def tojson(report: Fork):
-    if isinstance(report, dict):  # includes Forklike
+    if isinstance(report, dict):  # includes DotDict
         report = todict(**report)
-    if isinstance(report, dict):  # if it's still a Forklike
+    if isinstance(report, dict):  # if it's still a DotDict
         report = Fork(report)
     assert isinstance(report, Fork)
     report = {
