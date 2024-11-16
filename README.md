@@ -17,13 +17,7 @@ A comprehensive AI fairness exploration framework.
 - :hammer_and_wrench: Measure building blocks
 - :gear: ML integration (`numpy`,`torch`,`tensorflow`,`jax`)
 
-Learn more in the [documentation](https://fairbench.readthedocs.io/).
-
-## Recipes
-
-[<img alt="branches" width="20%" src="docs/images/tabular.png" />](examples/demos/demo.ipynb)
-[<img alt="branches" width="20%" src="docs/images/graphs.png" />](examples/demos/graphs.ipynb)
-[<img alt="branches" width="20%" src="docs/images/vision.png" />](examples/demos/vision.ipynb)
+## [Documentation](https://fairbench.readthedocs.io/)
 
 ## Citation
 
