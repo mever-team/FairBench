@@ -8,7 +8,7 @@ codebase is welcome. :smile:
 For a timely processing of a new pull request,
 it is preferred (but not mandatory) to have a discussion
 in the repository's issues first. You can also e-mail
-the project's current maintainer: *Manios Krasanakis*
+the project's current maintainer: *Emmanouil (Manios) Krasanakis*
 at *maniospas@hotmail.com* .
 
 ## Pull checklist
