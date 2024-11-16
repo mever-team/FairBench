@@ -6,28 +6,30 @@ copyright: Copyright &copy; 2024 Emmanouil Krasanakis
 nav:
     - Home: 'index.md'
     - 'quickstart.md'
-    - Basics:
-        - 'basics/forks.md'
-        - 'basics/reports.md'
-        - 'basics/interactive.md'
-    - Advanced:
-        - 'advanced/modelcards.md'
-        - 'advanced/ml_integration.md'
-        - 'advanced/manipulation.md'
-    - Report entries:
-        - 'record/metrics.md'
-        - 'record/comparisons.md'
-        - 'record/stamps.md'
-    - Recipes:
-        - 'demos/overview.ipynb'
-        #- 'demos/showcase.ipynb'
-        - 'demos/classification_binary.ipynb'
-        #- 'demos/forks.ipynb'
-        - 'demos/modelcards.ipynb'
-        - 'demos/recommendations.ipynb'
-        - 'demos/vision.ipynb'
-        - 'demos/graphs.ipynb'
-    - 'cite.md'
+    - Documentation:
+      - Basics:
+          - 'basics/forks.md'
+          - 'basics/reports.md'
+          - 'basics/interactive.md'
+      - Advanced:
+          - 'advanced/modelcards.md'
+          - 'advanced/ml_integration.md'
+          - 'advanced/manipulation.md'
+      - Report entries:
+          - 'record/metrics.md'
+          - 'record/comparisons.md'
+          - 'record/stamps.md'
+    - Material:
+      - Notebooks:
+          - 'demos/overview.ipynb'
+          #- 'demos/showcase.ipynb'
+          - 'demos/classification_binary.ipynb'
+          #- 'demos/forks.ipynb'
+          - 'demos/modelcards.ipynb'
+          - 'demos/recommendations.ipynb'
+          - 'demos/vision.ipynb'
+          - 'demos/graphs.ipynb'
+      - 'cite.md'
 
 markdown_extensions:
   - admonition
@@ -48,7 +50,7 @@ markdown_extensions:
       emoji_generator: !!python/name:pymdownx.emoji.to_svg
 
 theme:
-  name: material
+  name: readthedocs
   logo: fairbench.png
   favicon: favicon.ico
   palette:
@@ -89,7 +91,7 @@ plugins:
   - mkdocs-jupyter:
       include_source: True
       #include_requirejs: true
-      highlight_extra_classes: "custom-css-classes"
+      #highlight_extra_classes: "custom-css-classes"
 
 extra:
   social:

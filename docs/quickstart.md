@@ -88,6 +88,6 @@ fb.modelcards.tohtml(stamps, file="output.html", show=True)
 
 
 !!! danger
-    Blindly stamping systems is not 
-    always a good idea. Consult with stakeholders to determine
-    what actually matters.
+    Blindly stamping systems is not always a good idea.
+    Find out risks be reading the caveats and recommendations
+    accompanying the stamps.
