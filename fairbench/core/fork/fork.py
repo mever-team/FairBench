@@ -1,8 +1,6 @@
-from makefun import wraps
 from collections.abc import Mapping
 from fairbench.core.compute.backends import *
-from fairbench.core.fork.utils import call, _result, _str_foreign, role
-from fairbench.core.fork.forklike import Forklike
+from fairbench.core.fork.utils import call, _result, _str_foreign
 
 
 class Fork(Mapping):

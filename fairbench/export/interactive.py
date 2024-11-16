@@ -1,5 +1,5 @@
 import fairbench
-from fairbench.core.fork import Fork, Forklike
+from fairbench.core.fork import Fork, DotDict
 from fairbench.core.explanation.base import tofloat
 from fairbench.core.explanation import ExplainableError
 
@@ -11,12 +11,12 @@ def _clean(fork):  # pragma: no cover
         if not branches:
             return None
         return Fork(branches)
-    if isinstance(fork, Forklike):
+    if isinstance(fork, DotDict):
         branches = {k: _clean(v) for k, v in fork.items()}
         branches = {k: v for k, v in branches.items() if v is not None}
         if not branches:
             return None
-        return Forklike(branches)
+        return DotDict(branches)
     if isinstance(fork, ExplainableError):
         return None
     return fork
@@ -136,7 +136,7 @@ def interactive(
             branches = _asdict(previous[-1])
             if selected_branch in branches:
                 return branches[selected_branch]
-            return getattr(Forklike(branches), selected_branch)
+            return getattr(DotDict(branches), selected_branch)
 
         def _depth(obj):
             if obj is None:
@@ -156,7 +156,7 @@ def interactive(
                 select_branch.labels = ["ALL"]
                 return
 
-            if isinstance(previous[-1], Forklike) or isinstance(previous[-1], Fork):
+            if isinstance(previous[-1], DotDict) or isinstance(previous[-1], Fork):
                 val = (
                     ""
                     if not hasattr(list(branches.values())[0], "role")

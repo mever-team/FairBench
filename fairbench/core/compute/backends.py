@@ -19,9 +19,9 @@ def tobackend(value):
 
         return Fork({k: tobackend(v) for k, v in value.branches().items()})
     if value.__class__.__name__ == "Forklike":
-        from fairbench import Forklike
+        from fairbench import DotDict
 
-        return Forklike({k: tobackend(v) for k, v in value.items()})
+        return DotDict({k: tobackend(v) for k, v in value.items()})
     name = type(value.raw if isinstance(value, ep.Tensor) else value).__module__.split(
         "."
     )[0]
@@ -124,7 +124,7 @@ def asprimitive(value, _allow_explanation=True):
             desc=value.desc,
             units=value.units,
         )
-    # TODO: maybe applying this as a wrapper to methods instead of submitting to dask can be faster
+    # TODO: maybe applying this as a wrapper to methods can be faster
     if isinstance(value, ep.Tensor):
         return value.raw
 

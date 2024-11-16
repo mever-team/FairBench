@@ -1,7 +1,7 @@
 import math
 
 from fairbench import ExplainableError
-from fairbench.core.fork import Fork, Forklike
+from fairbench.core.fork import Fork, DotDict
 from fairbench.reports.accumulate import todict
 import json
 from fairbench.core.explanation.base import tofloat

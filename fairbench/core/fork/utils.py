@@ -5,24 +5,24 @@ from makefun import wraps
 
 
 def _result(ret):
-    from fairbench import Forklike
+    from fairbench import DotDict
     if ret.__class__.__name__ == "Future":
         ret = ret.result()
     if isinstance(ret, dict):
-        return Forklike(ret)
+        return DotDict(ret)
     return ret
 
 
 def role(rolename):
     """Sets the _role attribute of any returned Fork or Forklike."""
-    from fairbench.core.fork.forklike import Forklike
+    from fairbench.core.fork.dotdict import DotDict
     from fairbench.core.fork.fork import Fork
 
     def decorator(_wrapped_method):
         @wraps(_wrapped_method)
         def wrapper(*args, **kwargs):
             ret = _wrapped_method(*args, **kwargs)
-            if isinstance(ret, Forklike) or isinstance(ret, Fork):
+            if isinstance(ret, DotDict) or isinstance(ret, Fork):
                 object.__setattr__(ret, "_role", rolename)
             return ret
 
@@ -32,17 +32,17 @@ def role(rolename):
 
 
 def simplify(fork):
-    from fairbench import Explainable, ExplainableError, Fork, Forklike
+    from fairbench import Explainable, ExplainableError, Fork, DotDict
 
     branches = fork.branches() if isinstance(fork, Fork) else fork
     branches = {
-        k: simplify(v) if isinstance(v, Fork) or isinstance(v, Forklike) else v
+        k: simplify(v) if isinstance(v, Fork) or isinstance(v, DotDict) else v
         for k, v in branches.items()
         if not isinstance(v, ExplainableError)
     }
     if not branches:
         return ExplainableError("Branch holds no values.")
-    return Fork(branches) if isinstance(fork, Fork) else Forklike(**branches)
+    return Fork(branches) if isinstance(fork, Fork) else DotDict(**branches)
 
 
 def _str_foreign(v, tabs=0):
@@ -105,18 +105,18 @@ def multibranch_tensors(_wrapped_method):
 
 @parallel_primitive
 def merge(dict1, dict2):
-    from fairbench import Forklike
-    return Forklike({**dict1, **dict2})
+    from fairbench import DotDict
+    return DotDict({**dict1, **dict2})
 
 
 @comparator
 def combine(*args, _role=None, _cast=None):
-    from fairbench import Fork, Forklike
+    from fairbench import Fork, DotDict
     if _cast is None:
         _cast = Fork
     ret = {}
     for arg in args:
-        assert isinstance(arg, Fork) or isinstance(arg, Forklike)
+        assert isinstance(arg, Fork) or isinstance(arg, DotDict)
         ret = merge(ret, arg._branches if isinstance(arg, Fork) else arg)
     return _cast(ret)
 

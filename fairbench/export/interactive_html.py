@@ -3,7 +3,7 @@ import tempfile
 import webbrowser
 from fairbench.core import (
     Fork,
-    Forklike,
+    DotDict,
     Explainable,
     ExplainableError,
     tobackend,
@@ -13,7 +13,7 @@ from fairbench.core import (
 
 def _desc(v):
     ret = None
-    if isinstance(v, Forklike):
+    if isinstance(v, DotDict):
         ret = v.role()
     if isinstance(v, Fork):
         ret = v.role()
@@ -29,7 +29,7 @@ def fork_to_dict(fork):
             for k, v in fork.branches().items()
             if v is not None
         }
-    if isinstance(fork, Forklike):
+    if isinstance(fork, DotDict):
         return {k + _desc(v): fork_to_dict(v) for k, v in fork.items() if v is not None}
     if isinstance(fork, ExplainableError):
         return None
@@ -101,7 +101,7 @@ def interactive_html(fork, name="Report", filename=None, show=True):
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script>
-        document.addEventListener(\DOMContentLoaded", function() {{
+        document.addEventListener(\\DOMContentLoaded", function() {{
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
             tooltipTriggerList.forEach(function(tooltipTriggerEl) {{
                 new bootstrap.Tooltip(tooltipTriggerEl);

@@ -3,7 +3,7 @@ import tempfile
 import webbrowser
 from fairbench.core import (
     Fork,
-    Forklike,
+    DotDict,
     Explainable,
     ExplainableError,
     tobackend,
@@ -13,7 +13,7 @@ from fairbench.core import (
 
 def _desc(v):
     ret = None
-    if isinstance(v, Forklike):
+    if isinstance(v, DotDict):
         ret = v.role()
     if isinstance(v, Fork):
         ret = v.role()
@@ -25,7 +25,7 @@ def _desc(v):
 def fork_to_dict(fork):
     if isinstance(fork, Fork):
         return {k + _desc(v): fork_to_dict(v) for k, v in fork.branches().items()}
-    if isinstance(fork, Forklike):
+    if isinstance(fork, DotDict):
         return {k + _desc(v): fork_to_dict(v) for k, v in fork.items()}
     if isinstance(fork, ExplainableError):
         return None

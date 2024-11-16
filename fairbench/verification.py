@@ -1,4 +1,4 @@
-from fairbench.core import Fork, Forklike, Explainable, ExplainableError
+from fairbench.core import Fork, DotDict, Explainable, ExplainableError
 from typing import Iterable
 import requests
 import yaml
@@ -92,7 +92,7 @@ class Stamp:
                     }
                 ),
             )
-        return Forklike({self.name: result})
+        return DotDict({self.name: result})
 
     def __call_once(self, fields, report):
         silent = ExplainableError.silent
@@ -109,7 +109,7 @@ class Stamp:
             ExplainableError.silent = False
         if (
             isinstance(report, Fork)
-            or isinstance(report, Forklike)
+            or isinstance(report, DotDict)
             or (callable(report) and not isinstance(report, Explainable))
         ):
             return ExplainableError(f"Report does not contain {'.'.join(fields)}")
