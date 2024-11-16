@@ -89,9 +89,7 @@ def reduce(
                 )
             for f in v:
                 base_fields[f].append(
-                    astensor(v[f])
-                    if transform is None
-                    else transform(astensor(v[f]))
+                    astensor(v[f]) if transform is None else transform(astensor(v[f]))
                 )
     if expand is not None:
         fields = (
