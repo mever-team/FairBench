@@ -73,6 +73,8 @@ def concat(cols, axis=1):
 
 
 def convert_to_number(value):
+    if value and value[0]=="\"" and value[-1]=="\"":
+        value = value[1:-1]
     try:
         return int(value) if value.isdigit() else float(value)
     except ValueError:

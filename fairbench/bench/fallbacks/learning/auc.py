@@ -33,4 +33,4 @@ def roc_curve(labels, scores):
 
 def auc(fpr, tpr):
     # Use trapezoidal rule to calculate AUC
-    return np.trapz(tpr, fpr)
+    return np.trapz(tpr, fpr)  # TODO: this is deprecated but we need to avoid scipy calls

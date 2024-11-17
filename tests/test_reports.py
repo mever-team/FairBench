@@ -101,6 +101,42 @@ def test_binreport():
         assert report.prule.nonbin == 0
 
 
+def test_biasreport():
+    for _ in environment():
+        men = np.array([1, 1, 1, 0, 0, 0, 0, 0])
+        women = np.array([0, 0, 0, 1, 1, 1, 0, 0])
+        nonbin = np.array([0, 0, 0, 0, 0, 0, 1, 1])
+        sensitive = fb.Fork(men=men, women=women, nonbin=nonbin)
+        predictions = np.array([1, 0, 1, 1, 0, 1, 0, 0])
+        labels = np.array([1, 0, 1, 0, 1, 0, 1, 0])
+        report = fb.biasreport(
+            predictions=predictions, labels=labels, sensitive=sensitive
+        )
+        assert report.notone.accuracy.value == 1
+        assert report.gini.accuracy.explain.men == 1
+        assert report.maxrdiff.pr.value == 1
+        assert report.maxdiff.pr.value < 0.7
+
+
+def test_fuzzyreport():
+    for _ in environment():
+        men = np.array([1, 1, 1, 0, 0, 0, 0, 0])
+        women = np.array([0, 0, 0, 1, 1, 1, 0, 0])
+        nonbin = np.array([0, 0, 0, 0, 0, 0, 1, 1])
+        sensitive = fb.Fork(men=men, women=women, nonbin=nonbin)
+        predictions = np.array([1, 0, 1, 1, 0, 1, 0, 0])
+        labels = np.array([1, 0, 1, 0, 1, 0, 1, 0])
+        report = fb.fuzzyreport(
+            predictions=predictions, labels=labels, sensitive=sensitive
+        )
+        assert abs(report.notone.accuracy - 1) < 1.0e-6
+        assert abs(report["tprodrdiff[vsAny]"].accuracy - 1) < 1.0e-6
+        assert abs(report["tprodrdiff[vsAny]"].pr - 1) < 1.0e-6
+        assert abs(report["tprodrdiff[vsAny]"].tpr - 1) < 1.0e-6
+        assert abs(report["tprodrdiff[vsAny]"].tnr - 1) < 1.0e-6
+        assert report["tlukadiff[vsAny]"].pr < 0.9
+
+
 def test_accreport():
     for _ in environment():
         men = np.array([1, 1, 1, 0, 0, 0, 0, 0])
