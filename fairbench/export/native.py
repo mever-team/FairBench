@@ -86,6 +86,8 @@ def text_visualize(report: Fork):
                     + (f"_{metric}_").center(10).replace(" ", "-").replace("_", " ")
                     + "---------------------"
                 )
+            else:
+                print("-"*50)
             max_value = 1
             for j, case in enumerate(report["header"][1:]):
                 val = report[metric][j]

@@ -1,18 +1,28 @@
-try:
-    from sklearn.linear_model import LogisticRegression
-    from sklearn.preprocessing import MinMaxScaler
-    from sklearn.metrics import auc, roc_curve
-    from sklearn.model_selection import train_test_split
-except ModuleNotFoundError:
-    print("sklearn not found (it is not a mandatory dependency): when needed, FairBench will resort to custom numpy implementations")
+import os
+
+if os.environ.get("FBCONNECT_sklearn", False):
+    try:
+        from sklearn.linear_model import LogisticRegression
+        from sklearn.preprocessing import MinMaxScaler
+        from sklearn.metrics import auc, roc_curve
+        from sklearn.model_selection import train_test_split
+    except ModuleNotFoundError:
+        print("FBCONNECT_sklearn was set but sklearn was not installed, FairBench will fallback to numpy implementations")
+        del os.environ['FBCONNECT_sklearn']
+
+if not os.environ.get("FBCONNECT_sklearn", False):
     from fairbench.bench.fallbacks.learning.logistic_regression import LogisticRegression
     from fairbench.bench.fallbacks.learning.min_max_scaler import MinMaxScaler
     from fairbench.bench.fallbacks.learning.auc import auc, roc_curve
     from fairbench.bench.fallbacks.read_csv import train_test_split
 
-try:
-    from pandas import read_csv, get_dummies, concat
-except ModuleNotFoundError:
-    print("pandas not found (it is not a mandatory dependency): when needed, FairBench will resort to a simpler CSV reader")
-    from fairbench.bench.fallbacks.read_csv import read_csv, get_dummies, concat
 
+if os.environ.get("FBCONNECT_pandas", False):
+    try:
+        from pandas import read_csv, get_dummies, concat
+    except ModuleNotFoundError:
+        print("FBCONNECT_pandas was set but pandas was not installed, FairBench will fallback to a simpler CSV reader")
+        del os.environ['FBCONNECT_pandas']
+
+if not os.environ.get("FBCONNECT_pandas", False):
+    from fairbench.bench.fallbacks.read_csv import read_csv, get_dummies, concat
