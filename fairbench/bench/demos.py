@@ -1,14 +1,11 @@
 from fairbench.bench.loader import read_csv, features
-import sklearn
-
-import sklearn.linear_model
-import sklearn.preprocessing
+from fairbench.bench.fallbacks import LogisticRegression, MinMaxScaler, train_test_split
 import numpy as np
 
 
 def adult(
-    classifier=sklearn.linear_model.LogisticRegression(max_iter=1000).fit,
-    scaler=sklearn.preprocessing.MinMaxScaler().fit_transform,
+    classifier=LogisticRegression(max_iter=1000).fit,
+    scaler=MinMaxScaler().fit_transform,
     predict="predict",
 ):
     """
@@ -61,8 +58,8 @@ def adult(
 
 
 def bank(
-    classifier=sklearn.linear_model.LogisticRegression(max_iter=1000).fit,
-    scaler=sklearn.preprocessing.MinMaxScaler().fit_transform,
+    classifier=LogisticRegression(max_iter=1000).fit,
+    scaler=MinMaxScaler().fit_transform,
     predict="predict",
     seed=None,
 ):
@@ -79,7 +76,7 @@ def bank(
         "https://archive.ics.uci.edu/static/public/222/bank+marketing.zip/bank/bank.csv",
         delimiter=";",
     )
-    train, test = sklearn.model_selection.train_test_split(data, random_state=seed)
+    train, test = train_test_split(data, random_state=seed)
     numeric = ["age", "duration", "campaign", "pdays", "previous"]
     categorical = [
         "job",
@@ -110,8 +107,8 @@ def bank(
 
 
 def compas(
-    classifier=sklearn.linear_model.LogisticRegression(max_iter=1000).fit,
-    scaler=sklearn.preprocessing.MinMaxScaler().fit_transform,
+    classifier=LogisticRegression(max_iter=1000).fit,
+    scaler=MinMaxScaler().fit_transform,
     predict="predict",
     seed=None,
 ):
@@ -128,7 +125,7 @@ def compas(
         "https://raw.githubusercontent.com/propublica/compas-analysis/master/compas-scores-two-years.csv",
         delimiter=",",
     )
-    train, test = sklearn.model_selection.train_test_split(data, random_state=seed)
+    train, test = train_test_split(data, random_state=seed)
     numeric = [
         "age",
         # "juv_fel_count",

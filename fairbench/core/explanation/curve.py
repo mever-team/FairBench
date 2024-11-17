@@ -1,5 +1,4 @@
 import numpy as np
-from scipy import interpolate
 
 
 class ExplanationCurve:
@@ -13,8 +12,8 @@ class ExplanationCurve:
 
     def togrid(self, grid):
         new_x = np.linspace(self.x.min(), self.x.max(), num=grid)
-        approx = interpolate.interp1d(x=self.x, y=self.y)
-        return ExplanationCurve(new_x, approx(new_x))
+        approx_y = np.interp(new_x, self.x, self.y)
+        return ExplanationCurve(new_x, approx_y)
 
     @property
     def points(self):

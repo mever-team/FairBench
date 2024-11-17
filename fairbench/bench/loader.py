@@ -1,7 +1,9 @@
-import pandas as pd
 import zipfile
 import os
 import urllib.request
+from fairbench.bench.fallbacks import read_csv as _read_csv
+from fairbench.bench.fallbacks import get_dummies as _get_dummies
+from fairbench.bench.fallbacks import concat as _concat
 
 
 def _download(url, path=None):
@@ -75,11 +77,11 @@ def read_csv(url, *args, **kwargs):
         if not os.path.exists(path):
             os.makedirs("/".join(path.split("/")[:-1]), exist_ok=True)
             _download(url, path)
-    return pd.read_csv(path, *args, **kwargs)
+    return _read_csv(path, *args, **kwargs)
 
 
 def features(df, numeric, categorical):
     dfs = [df[col] for col in numeric] + [
-        pd.get_dummies(df[col]) for col in categorical
+        _get_dummies(df[col]) for col in categorical
     ]
-    return pd.concat(dfs, axis=1).values
+    return _concat(dfs, axis=1).values

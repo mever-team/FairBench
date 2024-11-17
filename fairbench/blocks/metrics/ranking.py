@@ -5,6 +5,7 @@ from eagerpy import Tensor
 import numpy as np
 from typing import Optional
 import math
+from fairbench.bench.fallbacks import auc as _auc, roc_curve as _roc_curve
 
 
 @role("metric")
@@ -41,14 +42,12 @@ def avgscore(scores: Tensor, sensitive: Optional[Tensor] = None, bins: int = 100
 @parallel
 @unit_bounded
 def auc(scores: Tensor, labels: Tensor, sensitive: Tensor = None):
-    import sklearn
-
     if sensitive is None:
         sensitive = scores.ones_like()
     scores = scores[sensitive == 1]
     labels = labels[sensitive == 1]
-    fpr, tpr, _ = sklearn.metrics.roc_curve(labels.numpy(), scores.numpy())
-    value = sklearn.metrics.auc(fpr, tpr)
+    fpr, tpr, _ = _roc_curve(labels.numpy(), scores.numpy())
+    value = _auc(fpr, tpr)
     verify(
         not math.isnan(value),
         f"Cannot compute AUC when all instances have the same label for branch",

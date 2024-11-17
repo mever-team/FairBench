@@ -1,6 +1,6 @@
 from fairbench.blocks import framework, todata, identical
 from fairbench.core.fork import Fork, multibranch_tensors
-from sklearn.linear_model import LogisticRegression
+from fairbench.bench.fallbacks import LogisticRegression
 import numpy as np
 
 
