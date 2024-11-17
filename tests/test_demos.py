@@ -30,7 +30,7 @@ def test_curve_visualization(monkeypatch):
             (fb.demos.bank, "marital"),
             (fb.demos.compas, "sex"),
         ]:
-            #monkeypatch.setattr(plt, "show", lambda: None)
+            # monkeypatch.setattr(plt, "show", lambda: None)
             test, y, yhat = setting(predict="probabilities")
             s = fb.Fork(fb.categories @ test[protected])
 
