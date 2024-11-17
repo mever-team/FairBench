@@ -17,6 +17,51 @@ def _sum(values):
     return ret
 
 
+def tprod(values: List[ep.Tensor]) -> ep.Tensor:
+    verify(
+        isinstance(values, list),
+        "fairbench.tproduct can only reduce lists.",
+    )
+    ret = 0
+    for value in values:
+        verify(
+            value >= 0 and value <= 1,
+            "fairbench.tproduct can only reduce values in the range [0,1].",
+        )
+        ret = ret + value - ret * value
+    return ret
+
+
+def tluka(values: List[ep.Tensor]) -> ep.Tensor:
+    verify(
+        isinstance(values, list),
+        "fairbench.tlukasiewicz can only reduce lists.",
+    )
+    ret = 1
+    for value in values:
+        verify(
+            value >= 0 and value <= 1,
+            "fairbench.tlukasiewicz can only reduce values in the range [0,1].",
+        )
+        value = 1 - value
+        ret = ret + value - 1
+        if ret < 0:
+            ret = ret - ret
+    return 1 - ret
+
+
+def notone(values: List[ep.Tensor]) -> ep.Tensor:
+    verify(
+        isinstance(values, list),
+        "fairbench.min can only reduce lists. Maybe you meant to use eagerpy.minimum?",
+    )
+    ret = float("inf")
+    for value in values:
+        if value < ret:
+            ret = value
+    return abs(1 - ret)
+
+
 def identical(values: List[ep.Tensor]) -> ep.Tensor:
     verify(
         isinstance(values, list),

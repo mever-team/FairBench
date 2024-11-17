@@ -1,32 +1,36 @@
 from collections.abc import Mapping
+
 from fairbench.core.compute.backends import *
+from fairbench.core.explanation.error import verify
 from fairbench.core.fork.utils import call, _result, _str_foreign
 
 
 class Fork(Mapping):
-    def __init__(self, *args, _separator="", _role=None, **branches):
+    """
+    A dictionary-like container that applies element-by-element operations to its contents.
+    """
+
+    def __init__(self, *args, _separator="", _role=None, **kwargs):
         self._role = _role
-        for arg in args:
-            if not isinstance(arg, dict):
-                raise TypeError(
-                    "Forks can only support dicts (holding branch values) as positional arguments"
-                )
-            for k, v in arg.items():
-                if k in branches:
-                    raise TypeError(f"Branch {k} provided multiple times")
-                branches[k] = v
         self._branches = dict()
-        for k, v in branches.items():
+        # expand keyword arguments
+        for arg in args:
+            verify(isinstance(arg, dict), "Fork positional arguments can only be dicts")
+            for k, v in arg.items():
+                verify(k not in kwargs, f"Branch {k} provided multiple times")
+                kwargs[k] = v
+        # get all keyword arguments while unpacking Categorical data
+        for k, v in kwargs.items():
+            verify(isinstance(k, str), "Fork branches can only have string names")
             if isinstance(v, dict) and v.__class__.__name__ == "Categorical":
-                for k2, v2 in v.items():
-                    self._branches[
-                        str(k2) if _separator is None else k + _separator + str(k2)
-                    ] = v2
-            else:
-                self._branches[k] = v
+                for attrk, attrv in v.items():
+                    name = str(attrk) if _separator is None else k + _separator + str(attrk)
+                    self._branches[name] = attrv
+                continue
+            self._branches[k] = v
 
     def role(self):
-        return object.__getattribute__(self, "_role")
+        return getattr(self, "_role")
 
     def __getattribute__(self, name):
         if name in ["_branches", "_repr_html_"] or name in dir(Fork):
@@ -37,22 +41,20 @@ class Fork(Mapping):
             ret = self._branches[name]
             return _result(ret)
 
-        # def method(*args, **kwargs):
-        #    return call(self, name, *args, **kwargs)
-        # return method
+        ret = dict()
+        for k, v in self._branches.items():
+            ret[k] = (
+                v.__getattribute__(name)
+                if isinstance(v, Fork)
+                else call(v, "__getattribute__", name)
+            )
 
-        return Fork(
-            {
-                k: (
-                    v.__getattribute__(name)
-                    if isinstance(v, Fork)
-                    else call(v, "__getattribute__", name)
-                )
-                for k, v in self._branches.items()
-            }
-        )
+        return Fork(ret)
 
-    def extract(self, *args):
+    def _extract(self, *args: list[str]):
+        """
+        Get a view for all the provided arguments, and merge them side-by-side.
+        """
         import fairbench as fb
 
         ret = dict()
@@ -120,9 +122,6 @@ class Fork(Mapping):
             classifier.fit(X, branch)
             new_branches[name] = classifier.predict_proba(X)[:, 0].ravel()
             new_branches[name] = new_branches[name] / new_branches[name].max()
-            # new_branches[name] = new_branches[name]*(branch.sum()/new_branches[name].sum())
-            # print(new_branches[name])
-        # print(new_branches)
         return Fork(new_branches)
 
     def intersectional(self, delimiter="&"):
@@ -168,6 +167,8 @@ class Fork(Mapping):
         return call(self, "__delitem__", name)
 
     def __getitem__(self, name):
+        if isinstance(name, list):
+            return self._extract(*name)
         if name in self._branches:
             return _result(self._branches[name])
         return call(self, "__getitem__", name)
@@ -270,34 +271,22 @@ class Fork(Mapping):
         return self.__repr_html__()
 
     def __repr_html__(self, override=None):
-        if (
-            override is not None
-            and not isinstance(override, dict)
-            and not isinstance(override, Fork)
-        ):
+        if override is not None and not isinstance(override, (dict, Fork)):
             return override
-
-        complex_contents = any(
-            isinstance(v, dict)
-            for k, v in (self.branches() if override is None else override).items()
-        )
-        if complex_contents:
-            html = ""
-            for k, v in (self.branches() if override is None else override).items():
-                html += '<div style="display: inline-block; float: left;">'
-                html += "<h3>{}</h3>".format(k)
-                html += "{}".format(self.__repr_html__(v))
-                html += "</div>"
+        items = (self.branches() if override is None else override).items()
+        if any(isinstance(v, dict) for k, v in items):
+            html = "".join(
+                f'<div style="display: inline-block; float: left;">'
+                f"<h3>{k}</h3>{self.__repr_html__(v)}</div>"
+                for k, v in items
+            )
             return html
-
-        html = "<table>"
-        for k, v in (self.branches() if override is None else override).items():
-            html += "<tr>"
-            html += "<td><strong>{}</strong></td>".format(k)
-            if isinstance(v, dict):
-                html += "<td>{}</td>".format(self.__repr_html__(v))
-            else:
-                html += "<td>{}</td>".format(asprimitive(v))
-            html += "</tr>"
-        html += "</table>"
+        html = (
+            "<table>"
+            + "".join(
+                f"<tr><td><strong>{k}</strong></td><td>{self.__repr_html__(v) if isinstance(v, dict) else asprimitive(v)}</td></tr>"
+                for k, v in items
+            )
+            + "</table>"
+        )
         return html

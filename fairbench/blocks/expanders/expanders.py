@@ -26,6 +26,15 @@ def ratio(
 
 
 @expander
+def rdiff(
+    values: Iterable[ep.Tensor], base: Iterable[ep.Tensor]
+) -> Iterable[ep.Tensor]:
+    return [
+        abs(1 - value1 / value2) for value1 in values for value2 in base if value2 != 0
+    ]
+
+
+@expander
 def diff(values: Iterable[ep.Tensor], base: Iterable[ep.Tensor]) -> Iterable[ep.Tensor]:
     return [abs(value1 - value2) for value1 in values for value2 in base]
 

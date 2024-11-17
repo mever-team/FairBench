@@ -13,7 +13,10 @@ class MinMaxScaler:
 
     def transform(self, X):
         X_std = (X - self.min) / (self.max - self.min)
-        X_scaled = X_std * (self.feature_range[1] - self.feature_range[0]) + self.feature_range[0]
+        X_scaled = (
+            X_std * (self.feature_range[1] - self.feature_range[0])
+            + self.feature_range[0]
+        )
         return X_scaled
 
     def fit_transform(self, X):

@@ -563,7 +563,8 @@ def interactive_html(fork, name="Report", filename=None, show=True):
         if show:
             webbrowser.open_new_tab(filename)
     elif show:
-        with tempfile.NamedTemporaryFile("w", delete=False, suffix=".html") as tmp_file:
+        # with tempfile.NamedTemporaryFile("w", delete=False, suffix=".html") as tmp_file:
+        with open("temp.html", "w") as tmp_file:
             tmp_file.write(html_content)
             temp_filename = tmp_file.name
         webbrowser.open_new_tab(temp_filename)

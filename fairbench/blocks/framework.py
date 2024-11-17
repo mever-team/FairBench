@@ -1,19 +1,8 @@
 from fairbench.core.fork import Fork, astensor, asprimitive, role
 from fairbench.core.compute import comparator
 from fairbench.core.explanation import Explainable, ExplainableError
+from fairbench.core.explanation.error import verify
 from typing import Optional
-
-# from fairbench.reports.accumulate import todict as tokwargs
-
-"""
-def _stopatexplainableerror(value):
-    if isinstance(value, ExplainableError):
-        raise value.reraise()
-    if isinstance(value, list):
-        for v in value:
-            _stopatexplainableerror(v)
-    return value
-"""
 
 
 def areduce(fork: Fork, reducer, expand=None, transform=None, branches=None):
@@ -61,6 +50,10 @@ def reduce(
 ):
     if name == "":
         name = reduce_namefinder(reducer, expand, transform, branches, base)
+    from fairbench.core.fork import DotDict
+
+    if isinstance(fork, DotDict):
+        fork = Fork(fork)
     fields = None
     base_fields = None
     for branch, v in fork.branches().items():
@@ -83,14 +76,10 @@ def reduce(
         else:
             if base_fields is None:
                 base_fields = {f: list() for f in v} if isinstance(v, dict) else list()
-            if not isinstance(v, dict):
-                raise Exception(
-                    "The base argument is supported only in the reduction of forks of dicts"
-                )
+            verify(isinstance(v, dict), "The base argument is supported only in the reduction of forks of dicts")
             for f in v:
-                base_fields[f].append(
-                    astensor(v[f]) if transform is None else transform(astensor(v[f]))
-                )
+                value = astensor(v[f])
+                base_fields[f].append(value if transform is None else transform(value))
     if expand is not None:
         fields = (
             {

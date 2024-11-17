@@ -2,11 +2,10 @@ import fairbench as fb
 import numpy as np
 from .test_forks import environment
 
-
 def test_batch_accumulation():
     for _ in environment():
         import torch
-        import sklearn
+        from sklearn import linear_model
 
         fb.setbackend("torch")
         x = [
@@ -33,7 +32,7 @@ def test_batch_accumulation():
         s2 = 1 - s
         sensitive = fb.Fork(gender=s, ehtnicity=s2, ethinicity2=s3)
 
-        classifier = sklearn.linear_model.LogisticRegression()
+        classifier = linear_model.LogisticRegression(max_iter=1000)
         classifier = classifier.fit(x, y)
         yhat = classifier.predict(x)
 

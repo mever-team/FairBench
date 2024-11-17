@@ -8,3 +8,4 @@ objwrap
 bokeh
 pyyaml
 requests
+ansiplot

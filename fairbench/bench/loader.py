@@ -81,7 +81,5 @@ def read_csv(url, *args, **kwargs):
 
 
 def features(df, numeric, categorical):
-    dfs = [df[col] for col in numeric] + [
-        _get_dummies(df[col]) for col in categorical
-    ]
+    dfs = [df[col] for col in numeric] + [_get_dummies(df[col]) for col in categorical]
     return _concat(dfs, axis=1).values

@@ -46,6 +46,23 @@ common_reduction = (
     # {"reducer": reducers.max, "expand": expanders.jsdcg},
 )
 
+bias_reduction = (
+    {"reducer": reducers.notone},
+    {"reducer": reducers.gini},
+    {"reducer": reducers.max, "expand": expanders.rdiff},
+    {"reducer": reducers.max, "expand": expanders.diff},
+    {"reducer": reducers.max, "expand": expanders.barea},
+    {"reducer": reducers.max, "expand": expanders.rarea},
+)
+
+fuzzy_reduction = (
+    {"reducer": reducers.notone},
+    {"reducer": reducers.tprod, "expand": expanders.rdiff},
+    {"reducer": reducers.tluka, "expand": expanders.diff},
+    {"reducer": reducers.tprod, "expand": expanders.barea},
+    {"reducer": reducers.tluka, "expand": expanders.rarea},
+)
+
 
 def accreport(*args, metrics=common_performance_metrics, **kwargs):
     return report(*args, metrics=metrics, **kwargs)
@@ -69,6 +86,25 @@ def multireport(
             framework.reduce(base, **scheme, base=compare_all_to)
             for scheme in reduction_schemes
         ]
+    )
+
+
+def biasreport(*args, compare_all_to=None, **kwargs):
+    return multireport(
+        *args,
+        metrics=common_performance_metrics,
+        reduction_schemes=bias_reduction,
+        compare_all_to=compare_all_to,
+        **kwargs
+    )
+
+
+def fuzzyreport(*args, **kwargs):
+    return unireport(
+        *args,
+        metrics=common_performance_metrics,
+        reduction_schemes=fuzzy_reduction,
+        **kwargs
     )
 
 

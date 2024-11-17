@@ -2,6 +2,7 @@ import traceback
 import sys
 import logging
 import os
+from fileinput import filename
 from io import StringIO
 import warnings
 
@@ -157,11 +158,14 @@ class ExplainableError(Exception):
             warnings.warn(self.format_traceback(False))
             _ipy_exit()  # immediately stop for cell
         else:
-            print(self.format_traceback(), file=sys.stderr)
+            pass
+            # print("A complicated ExplainableError occurred. Find details in fairbench.log")
+            # print(self.format_traceback(), file=sys.stderr)
             # remove this to print full errors for fairbench's internal debugging
         raise self
 
 
-def verify(condition, message):
+def verify(condition: bool, message: str):
+    """Raises an ExplainableError exception if the condition is False."""
     if not condition:
         raise ExplainableError(message)

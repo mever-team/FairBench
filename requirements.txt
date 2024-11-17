@@ -4,3 +4,4 @@ makefun
 objwrap
 pyyaml
 requests
+ansiplot

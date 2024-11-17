@@ -6,6 +6,8 @@ from fairbench.reports.accumulate import todict
 import json
 from fairbench.core.explanation.base import tofloat
 from fairbench.core import ExplanationCurve
+from typing import Optional
+import re
 
 
 def _is_fork_of_dicts(report):
@@ -48,7 +50,7 @@ def tojson(report: Fork):
 
 def describe(
     report: Fork,
-    spacing: int = 15,
+    spacing: int = 20,
     show: bool = True,
     separator: str = " ",
     newline="\n",
@@ -74,51 +76,59 @@ def describe(
     return ret
 
 
-def text_visualize(report: Fork):
+def text_visualize(report: Fork, show: bool=True, save: Optional[str] = None):
+    import ansiplot
+
     report = json.loads(tojson(report))
     num_metrics = len([metric for metric in report if metric != "header"])
     i = 1
+    ret = ""
     for metric in report:
         if metric != "header":
             if num_metrics > 1:
-                print(
-                    "---------------------"
-                    + (f"_{metric}_").center(10).replace(" ", "-").replace("_", " ")
-                    + "---------------------"
-                )
+                ret += "---------------------"
+                ret += (f"_{metric}_").center(10).replace(" ", "-").replace("_", " ")
+                ret += "---------------------\n"
             else:
-                print("-"*50)
+                ret += "-" * 50 + "\n"
             max_value = 1
             for j, case in enumerate(report["header"][1:]):
                 val = report[metric][j]
-                if math.isnan(val):
+                if isinstance(val, dict) or math.isnan(val):
                     continue
                 val = abs(val)
                 if val > max_value:
                     max_value = val
+            plotter = None
             for j, case in enumerate(report["header"][1:]):
-                if isinstance(report[metric][j], float):
+                value = report[metric][j]
+                if isinstance(value, float):
                     # plt.bar(j, report[metric][j])
                     if len(case) > 30:
                         case = case[:28] + ".."
                     if math.isnan(report[metric][j]):
                         continue
-                    value = f"{float(report[metric][j]):.3f}"
-                    print(
-                        case.ljust(30)
-                        + value.ljust(7)
-                        + " | "
-                        + "█" * int(report[metric][j] / max_value * 10)
-                    )
+                    progress = int(value / max_value * 10)
+                    value = f"{float(value):.3f}"
+                    ret += case.ljust(30)+value.ljust(7)+" | "+ "█"*progress + "\n"
                 else:
-                    raise Exception(
-                        "fairbench.text_visualize does not yet support curve visualization"
-                    )
+                    if plotter is None:
+                        plotter = ansiplot.Scaled(60, 10)
+                    plotter.plot(value["x"], value["y"], title=case)
+            if plotter is not None:
+                ret += "\n"+plotter.text()+"\n"
             i += 1
+    if show:
+        print(ret)
+    if save is not None:
+        save = f"{save}.txt"
+        with open(save, "w") as file:
+            file.write(re.sub(r'\x1B\[[0-?]*[ -/]*[@-~]', '', ret))
+        print(f"Plot saved to: {save}")
 
 
 def visualize(
-    report: Fork, hold: bool = False, xrotation: int = None, legend: bool = True
+    report: Fork, show: bool = True, xrotation: int = None, legend: bool = True, save: Optional[str] = None
 ):
     try:
         from matplotlib import pyplot as plt
@@ -127,7 +137,7 @@ def visualize(
             "Interactive visualization dependencies are installed by `pip install fairbench[interactive]`."
             "\nRun `pip install matplotlib` to enable `fairbench.visualize`. For now, `fairbench.text_visualize` is used as a fallback."
         )
-        return text_visualize(report)
+        text_visualize(report, show=show, save=save)
     report = json.loads(tojson(report))
     num_metrics = len([metric for metric in report if metric != "header"])
     i = 1
@@ -155,7 +165,11 @@ def visualize(
                 plt.legend()
             plt.title(metric)
             i += 1
-    if num_metrics > 1:
+    if num_metrics > 1 and xrotation!=0:
         plt.tight_layout()
-    if not hold:
+    if show:
         plt.show()
+    if save is not None:
+        save = f"{save}.png"
+        plt.savefig(save)
+        print(f"Plot saved to: {save}")

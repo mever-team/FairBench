@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def train_test_split(X, y, test_size=0.25, random_state=None):
     if random_state is not None:
         np.random.seed(random_state)

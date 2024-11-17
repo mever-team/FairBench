@@ -1,7 +1,16 @@
 import numpy as np
 
+
 class LogisticRegression:
-    def __init__(self, learning_rate=0.1, max_iter=1000, tol=1e-6, beta1=0.9, beta2=0.999, epsilon=1e-8):
+    def __init__(
+        self,
+        learning_rate=0.1,
+        max_iter=1000,
+        tol=1e-6,
+        beta1=0.9,
+        beta2=0.999,
+        epsilon=1e-8,
+    ):
         self.learning_rate = learning_rate
         self.max_iter = max_iter
         self.tol = tol
@@ -20,7 +29,9 @@ class LogisticRegression:
         self.bias = 0
 
         # Adam parameters
-        m_w, v_w = np.zeros(num_features), np.zeros(num_features)  # Moment vectors for weights
+        m_w, v_w = np.zeros(num_features), np.zeros(
+            num_features
+        )  # Moment vectors for weights
         m_b, v_b = 0, 0  # Moment vectors for bias
         t = 0  # Time step
 
@@ -38,17 +49,21 @@ class LogisticRegression:
 
             # Update weights with Adam
             m_w = self.beta1 * m_w + (1 - self.beta1) * dw
-            v_w = self.beta2 * v_w + (1 - self.beta2) * (dw ** 2)
-            m_w_hat = m_w / (1 - self.beta1 ** t)
-            v_w_hat = v_w / (1 - self.beta2 ** t)
-            self.weights -= self.learning_rate * m_w_hat / (np.sqrt(v_w_hat) + self.epsilon)
+            v_w = self.beta2 * v_w + (1 - self.beta2) * (dw**2)
+            m_w_hat = m_w / (1 - self.beta1**t)
+            v_w_hat = v_w / (1 - self.beta2**t)
+            self.weights -= (
+                self.learning_rate * m_w_hat / (np.sqrt(v_w_hat) + self.epsilon)
+            )
 
             # Update bias with Adam
             m_b = self.beta1 * m_b + (1 - self.beta1) * db
-            v_b = self.beta2 * v_b + (1 - self.beta2) * (db ** 2)
-            m_b_hat = m_b / (1 - self.beta1 ** t)
-            v_b_hat = v_b / (1 - self.beta2 ** t)
-            self.bias -= self.learning_rate * m_b_hat / (np.sqrt(v_b_hat) + self.epsilon)
+            v_b = self.beta2 * v_b + (1 - self.beta2) * (db**2)
+            m_b_hat = m_b / (1 - self.beta1**t)
+            v_b_hat = v_b / (1 - self.beta2**t)
+            self.bias -= (
+                self.learning_rate * m_b_hat / (np.sqrt(v_b_hat) + self.epsilon)
+            )
 
         return self
 
