@@ -3,6 +3,7 @@ from collections.abc import Mapping
 from fairbench.core.compute.backends import *
 from fairbench.core.explanation.error import verify
 from fairbench.core.fork.utils import call, _result, _str_foreign
+from typing import List
 
 
 class Fork(Mapping):
@@ -55,7 +56,7 @@ class Fork(Mapping):
 
         return Fork(ret)
 
-    def _extract(self, *args: list[str]):
+    def _extract(self, *args: List[str]):
         """
         Get a view for all the provided arguments, and merge them side-by-side.
         """
