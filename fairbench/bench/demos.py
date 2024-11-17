@@ -75,7 +75,7 @@ def bank(
     data = read_csv(
         "https://archive.ics.uci.edu/static/public/222/bank+marketing.zip/bank/bank.csv",
         delimiter=";",
-        header=True
+        header=True,
     )
     train, test = train_test_split(data, random_state=seed)
     numeric = ["age", "duration", "campaign", "pdays", "previous"]
@@ -125,7 +125,7 @@ def compas(
     data = read_csv(
         "https://raw.githubusercontent.com/propublica/compas-analysis/master/compas-scores-two-years.csv",
         delimiter=",",
-        header=True
+        header=True,
     )
     train, test = train_test_split(data, random_state=seed)
     numeric = [

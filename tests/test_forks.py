@@ -3,7 +3,7 @@ import numpy as np
 
 
 def environment():
-    for env in ["jax","torch","numpy"]:  # testing in Python 3.13
+    for env in ["jax", "torch", "numpy"]:  # testing in Python 3.13
         # for env in ["torch", "tensorflow", "jax", "numpy"]:
         fb.setbackend(env)
         yield env

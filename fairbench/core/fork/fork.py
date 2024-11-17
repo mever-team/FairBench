@@ -24,7 +24,11 @@ class Fork(Mapping):
             verify(isinstance(k, str), "Fork branches can only have string names")
             if isinstance(v, dict) and v.__class__.__name__ == "Categorical":
                 for attrk, attrv in v.items():
-                    name = str(attrk) if _separator is None else k + _separator + str(attrk)
+                    name = (
+                        str(attrk)
+                        if _separator is None
+                        else k + _separator + str(attrk)
+                    )
                     self._branches[name] = attrv
                 continue
             self._branches[k] = v

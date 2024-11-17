@@ -76,7 +76,7 @@ def describe(
     return ret
 
 
-def text_visualize(report: Fork, show: bool=True, save: Optional[str] = None):
+def text_visualize(report: Fork, show: bool = True, save: Optional[str] = None):
     import ansiplot
 
     report = json.loads(tojson(report))
@@ -110,25 +110,31 @@ def text_visualize(report: Fork, show: bool=True, save: Optional[str] = None):
                         continue
                     progress = int(value / max_value * 10)
                     value = f"{float(value):.3f}"
-                    ret += case.ljust(30)+value.ljust(7)+" | "+ "█"*progress + "\n"
+                    ret += (
+                        case.ljust(30) + value.ljust(7) + " | " + "█" * progress + "\n"
+                    )
                 else:
                     if plotter is None:
                         plotter = ansiplot.Scaled(60, 10)
                     plotter.plot(value["x"], value["y"], title=case)
             if plotter is not None:
-                ret += "\n"+plotter.text()+"\n"
+                ret += "\n" + plotter.text() + "\n"
             i += 1
     if show:
         print(ret)
     if save is not None:
         save = f"{save}.txt"
         with open(save, "w") as file:
-            file.write(re.sub(r'\x1B\[[0-?]*[ -/]*[@-~]', '', ret))
+            file.write(re.sub(r"\x1B\[[0-?]*[ -/]*[@-~]", "", ret))
         print(f"Plot saved to: {save}")
 
 
 def visualize(
-    report: Fork, show: bool = True, xrotation: int = None, legend: bool = True, save: Optional[str] = None
+    report: Fork,
+    show: bool = True,
+    xrotation: int = None,
+    legend: bool = True,
+    save: Optional[str] = None,
 ):
     try:
         from matplotlib import pyplot as plt
@@ -138,6 +144,7 @@ def visualize(
             "\nRun `pip install matplotlib` to enable `fairbench.visualize`. For now, `fairbench.text_visualize` is used as a fallback."
         )
         text_visualize(report, show=show, save=save)
+        return
     report = json.loads(tojson(report))
     num_metrics = len([metric for metric in report if metric != "header"])
     i = 1
@@ -165,7 +172,7 @@ def visualize(
                 plt.legend()
             plt.title(metric)
             i += 1
-    if num_metrics > 1 and xrotation!=0:
+    if num_metrics > 1 and xrotation != 0:
         plt.tight_layout()
     if show:
         plt.show()

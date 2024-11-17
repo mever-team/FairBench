@@ -2,6 +2,7 @@ import fairbench as fb
 import numpy as np
 from .test_forks import environment
 
+
 def test_batch_accumulation():
     for _ in environment():
         import torch

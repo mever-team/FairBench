@@ -76,7 +76,10 @@ def reduce(
         else:
             if base_fields is None:
                 base_fields = {f: list() for f in v} if isinstance(v, dict) else list()
-            verify(isinstance(v, dict), "The base argument is supported only in the reduction of forks of dicts")
+            verify(
+                isinstance(v, dict),
+                "The base argument is supported only in the reduction of forks of dicts",
+            )
             for f in v:
                 value = astensor(v[f])
                 base_fields[f].append(value if transform is None else transform(value))
