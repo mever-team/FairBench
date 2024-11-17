@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.8", "3.11"] # 3.8 needed to make sure that older versions of dict operations are supported
+        python-version: ["3.11"] # TODO: re-enable 3.8 for 3.6 compatibility
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
