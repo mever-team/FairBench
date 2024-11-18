@@ -5,7 +5,6 @@ from eagerpy import Tensor
 import numpy as np
 from typing import Optional
 import math
-from fairbench.bench.fallbacks import auc as _auc, roc_curve as _roc_curve
 
 
 @role("metric")
@@ -42,6 +41,7 @@ def avgscore(scores: Tensor, sensitive: Optional[Tensor] = None, bins: int = 100
 @parallel
 @unit_bounded
 def auc(scores: Tensor, labels: Tensor, sensitive: Tensor = None):
+    from fairbench.fallbacks import auc as _auc, roc_curve as _roc_curve
     if sensitive is None:
         sensitive = scores.ones_like()
     scores = scores[sensitive == 1]

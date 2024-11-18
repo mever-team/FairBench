@@ -1,5 +1,5 @@
 from fairbench.bench.loader import read_csv, features
-from fairbench.bench.fallbacks import LogisticRegression, MinMaxScaler, train_test_split
+from fairbench.fallbacks import LogisticRegression, MinMaxScaler, train_test_split
 import numpy as np
 
 

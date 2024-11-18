@@ -136,9 +136,12 @@ def visualize(
     legend: bool = True,
     save: Optional[str] = None,
 ):
+    fallback = False
     try:
         from matplotlib import pyplot as plt
     except ImportError:
+        fallback = True
+    if fallback:
         print(
             "Interactive visualization dependencies are installed by `pip install fairbench[interactive]`."
             "\nRun `pip install matplotlib` to enable `fairbench.visualize`. For now, `fairbench.text_visualize` is used as a fallback."

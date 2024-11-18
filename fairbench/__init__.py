@@ -8,6 +8,7 @@ from fairbench.core import (
     simplify,
     tobackend,
 )
+from fairbench import fallbacks
 from fairbench.blocks import *
 from fairbench.reports import *
 from fairbench.export import *

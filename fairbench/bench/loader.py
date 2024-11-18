@@ -1,9 +1,9 @@
 import zipfile
 import os
 import urllib.request
-from fairbench.bench.fallbacks import read_csv as _read_csv
-from fairbench.bench.fallbacks import get_dummies as _get_dummies
-from fairbench.bench.fallbacks import concat as _concat
+from fairbench.fallbacks import read_csv as _read_csv
+from fairbench.fallbacks import get_dummies as _get_dummies
+from fairbench.fallbacks import concat as _concat
 
 
 def _download(url, path=None):

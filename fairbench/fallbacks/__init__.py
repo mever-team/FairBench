@@ -13,12 +13,10 @@ if os.environ.get("FBCONNECT_sklearn", False):
         del os.environ["FBCONNECT_sklearn"]
 
 if not os.environ.get("FBCONNECT_sklearn", False):
-    from fairbench.bench.fallbacks.learning.logistic_regression import (
-        LogisticRegression,
-    )
-    from fairbench.bench.fallbacks.learning.min_max_scaler import MinMaxScaler
-    from fairbench.bench.fallbacks.learning.auc import auc, roc_curve
-    from fairbench.bench.fallbacks.read_csv import train_test_split
+    from fairbench.fallbacks.learning.logistic_regression import (LogisticRegression,)
+    from fairbench.fallbacks.learning.min_max_scaler import MinMaxScaler
+    from fairbench.fallbacks.learning.auc import auc, roc_curve
+    from fairbench.fallbacks.read_csv import train_test_split
 
 
 if os.environ.get("FBCONNECT_pandas", False):
@@ -31,4 +29,4 @@ if os.environ.get("FBCONNECT_pandas", False):
         del os.environ["FBCONNECT_pandas"]
 
 if not os.environ.get("FBCONNECT_pandas", False):
-    from fairbench.bench.fallbacks.read_csv import read_csv, get_dummies, concat
+    from fairbench.fallbacks.read_csv import read_csv, get_dummies, concat
