@@ -35,7 +35,7 @@ class Fork(Mapping):
             self._branches[k] = v
 
     def role(self):
-        return getattr(self, "_role")
+        return object.__getattribute__(self, "_role")
 
     def __getattribute__(self, name):
         if name in ["_branches", "_repr_html_"] or name in dir(Fork):

@@ -2,13 +2,13 @@ from fairbench.blocks import framework, todata, identical
 from fairbench.core.fork import Fork, multibranch_tensors
 import numpy as np
 
+
 # TODO: LR with 10 iterations to stop overtraining is a half-measure, switch to something stable
 @multibranch_tensors
-def surrogate_positives(
-    predictions, sensitive, surrogate_model=None
-):
+def surrogate_positives(predictions, sensitive, surrogate_model=None):
     if surrogate_model is None:
         from fairbench.fallbacks import LogisticRegression
+
         surrogate_model = LogisticRegression(max_iter=10)
     predictions = np.round(framework.reduce(predictions, identical, name=None).numpy())
     X = framework.reduce(sensitive, todata, name=None).numpy()

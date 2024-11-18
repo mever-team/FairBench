@@ -2,6 +2,19 @@ import fairbench as fb
 from .test_forks import environment
 
 
+
+def test_interactive_report_html(monkeypatch):
+    import webbrowser
+
+    for _ in environment():
+        monkeypatch.setattr(webbrowser, "open_new", lambda: None)
+        for setting, protected in [(fb.demos.adult, 8), (fb.demos.bank, "marital")]:
+            test, y, yhat = setting()
+            sensitive = fb.Fork(fb.categories @ test[protected])
+            report = fb.fuzzyreport(predictions=yhat, labels=y, sensitive=sensitive)
+            fb.interactive_html(report, show=False)
+
+
 def test_modelcards(monkeypatch):
     import webbrowser
 

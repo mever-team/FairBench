@@ -13,7 +13,9 @@ if os.environ.get("FBCONNECT_sklearn", False):
         del os.environ["FBCONNECT_sklearn"]
 
 if not os.environ.get("FBCONNECT_sklearn", False):
-    from fairbench.fallbacks.learning.logistic_regression import (LogisticRegression,)
+    from fairbench.fallbacks.learning.logistic_regression import (
+        LogisticRegression,
+    )
     from fairbench.fallbacks.learning.min_max_scaler import MinMaxScaler
     from fairbench.fallbacks.learning.auc import auc, roc_curve
     from fairbench.fallbacks.read_csv import train_test_split

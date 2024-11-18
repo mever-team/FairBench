@@ -42,6 +42,7 @@ def avgscore(scores: Tensor, sensitive: Optional[Tensor] = None, bins: int = 100
 @unit_bounded
 def auc(scores: Tensor, labels: Tensor, sensitive: Tensor = None):
     from fairbench.fallbacks import auc as _auc, roc_curve as _roc_curve
+
     if sensitive is None:
         sensitive = scores.ones_like()
     scores = scores[sensitive == 1]

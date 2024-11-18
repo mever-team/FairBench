@@ -28,6 +28,11 @@ def roc_curve(labels, scores):
     tpr = np.array(tpr)
     fpr = np.array(fpr)
 
+    sorted_indices = np.argsort(fpr)
+    fpr = fpr[sorted_indices]
+    tpr = tpr[sorted_indices]
+    # sorted_scores = sorted_scores[sorted_indices]
+
     return fpr, tpr, sorted_scores
 
 

@@ -39,7 +39,7 @@ the library in action at the bottom of this page.
 <br>
 <h1 style="margin-bottom: 0px;">Try it here</h1>
 Run FairBench from your browser in console integration mode (fallbacks to ascii visualization). Read more in the documentation.
-Edit the snippet to be executed and run it bellow. The minimal library installation only contain textual visualization.
+Edit the snippet to be executed and run it bellow. The minimal library installation only contains textual visualization.
 
 <textarea class="code-block" id="code" style="width: 100%;overflow: hidden;resize: none;" rows="10">sensitive = fb.Fork(fb.categories@["Male", "Female", "Male", "Female", "Male", "Female", "Male"])
 y, yhat, scores = [1, 1, 0, 0, 1, 0, 1], [1, 1, 1, 0, 0, 0, 0], [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
