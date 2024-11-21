@@ -22,7 +22,7 @@ with open("requirements[interactive].txt", "r") as file:
 
 setuptools.setup(
     name="fairbench",
-    version="0.4.2",
+    version="0.4.3",
     author="Emmanouil (Manios) Krasanakis",
     author_email="maniospas@hotmail.com",
     description="A fairness assessment framework",
