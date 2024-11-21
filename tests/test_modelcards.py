@@ -2,7 +2,6 @@ import fairbench as fb
 from .test_forks import environment
 
 
-
 def test_interactive_report_html(monkeypatch):
     import webbrowser
 
