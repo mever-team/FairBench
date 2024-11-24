@@ -199,7 +199,7 @@ latex tables.
 ```python
 import fairbench as fb
 
-test, y, yhat = fb.demos.adult(predict="probabilities")
+test, y, yhat = fb.tabular.adult(predict="probabilities")
 s = fb.Fork(fb.categories @ test[9])
 report = fb.unireport(scores=yhat, labels=y, sensitive=s)
 

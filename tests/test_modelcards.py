@@ -7,7 +7,7 @@ def test_interactive_report_html(monkeypatch):
 
     for _ in environment():
         monkeypatch.setattr(webbrowser, "open_new", lambda: None)
-        for setting, protected in [(fb.demos.adult, 8), (fb.demos.bank, "marital")]:
+        for setting, protected in [(fb.tabular.adult, 8), (fb.tabular.bank, "marital")]:
             test, y, yhat = setting()
             sensitive = fb.Fork(fb.categories @ test[protected])
             report = fb.fuzzyreport(predictions=yhat, labels=y, sensitive=sensitive)
@@ -19,7 +19,7 @@ def test_modelcards(monkeypatch):
 
     for _ in environment():
         monkeypatch.setattr(webbrowser, "open_new", lambda: None)
-        for setting, protected in [(fb.demos.adult, 8), (fb.demos.bank, "marital")]:
+        for setting, protected in [(fb.tabular.adult, 8), (fb.tabular.bank, "marital")]:
             test, y, yhat = setting()
             sensitive = fb.Fork(fb.categories @ test[protected])
             report = fb.multireport(predictions=yhat, labels=y, sensitive=sensitive)

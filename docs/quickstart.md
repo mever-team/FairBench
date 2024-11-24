@@ -23,7 +23,7 @@ predictions to play with:
 
 ```python
 import fairbench as fb
-test, y, yhat = fb.demos.adult()  # test is a Pandas dataframe
+test, y, yhat = fb.tabular.adult()  # test is a Pandas dataframe
 ```
 
 ## 2. Set    sensitive attribute [fork](basics/forks.md)

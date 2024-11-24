@@ -20,6 +20,12 @@ with open("requirements.txt", "r") as file:
 with open("requirements[interactive].txt", "r") as file:
     interactive_requirements = file.read().splitlines()
 
+with open("requirements[vision].txt", "r") as file:
+    vision_requirements = file.read().splitlines()
+
+with open("requirements[graph].txt", "r") as file:
+    graph_requirements = file.read().splitlines()
+
 setuptools.setup(
     name="fairbench",
     version="0.4.3",
@@ -36,5 +42,7 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     install_requires=requirements,
-    extras_require={"interactive": interactive_requirements},
+    extras_require={"interactive": interactive_requirements,
+                    "vision": vision_requirements,
+                    "graph": graph_requirements},
 )

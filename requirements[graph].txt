@@ -1,0 +1,9 @@
+numpy
+eagerpy
+makefun
+scikit-learn
+objwrap
+pyyaml
+requests
+ansiplot
+fairbench

@@ -19,5 +19,8 @@ from fairbench import blocks
 from fairbench import reports
 from fairbench import export
 from fairbench import bench
-from fairbench.bench import demos
+from fairbench.bench import tabular
+from fairbench.bench import graph
+from fairbench.bench import vision
+from fairbench.bench import text
 from fairbench.verification import stamps

@@ -8,9 +8,9 @@ def test_settings(monkeypatch):
     monkeypatch.setattr(plt, "show", lambda: None)
     for _ in environment():
         for setting, protected in [
-            (fb.demos.adult, 8),
-            (fb.demos.bank, "marital"),
-            (fb.demos.compas, "sex"),
+            (fb.tabular.adult, 8),
+            (fb.tabular.bank, "marital"),
+            (fb.tabular.compas, "sex"),
         ]:
             test, y, yhat = setting()
             sensitive = fb.Fork(fb.categories @ test[protected])
@@ -26,9 +26,9 @@ def test_curve_visualization(monkeypatch):
 
     for _ in environment():
         for setting, protected in [
-            (fb.demos.adult, 9),
-            (fb.demos.bank, "marital"),
-            (fb.demos.compas, "sex"),
+            (fb.tabular.adult, 9),
+            (fb.tabular.bank, "marital"),
+            (fb.tabular.compas, "sex"),
         ]:
             # monkeypatch.setattr(plt, "show", lambda: None)
             test, y, yhat = setting(predict="probabilities")
