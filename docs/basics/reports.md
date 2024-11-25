@@ -45,15 +45,17 @@ sensitive attribute values.
 Out-of-the box, you can use one of the following
 report generation methods:
 
-| Report      | Description                                                                                   | Best for                                                                     |
-|-------------|-----------------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
-| accreport   | Provides popular performance evaluation measures to be viewed between branches.               | Just metrics: accuracy, positives, true positive rates, true negative rates. |
-| binreport   | Conducts a suite of popular binary fairness assessments on each variable branch.               | Branches that do *not* correspond to sensitive attributes.                   |
-| multireport | Ideal for multi-fairness approaches, where the `sensitive` fork has many branches.             | Multidimensional analysis                                                    |
-| unireport   | Similar to `multireport`, but each group or subgroup is compared to the whole population.      | Group-vs-population comparisons.                                             |
-| isecreport  | Tackles multi-fairness with many intersectional groups.                                        | Bayesian analysis for small or empty intersections.                          |
+| Report      | Description                                                                   | Best for                                                                        |
+|-------------|-------------------------------------------------------------------------------|---------------------------------------------------------------------------------|
+| accreport   | Popular performance evaluation measures to be viewed between branches.        | Just metrics: accuracy, positives, true positive rates, true negative rates.    |
+| binreport   | Popular binary fairness and bias assessments on each variable branch.         | Branches that do *not* correspond to sensitive attributes.                      |
+| multireport | Multi-fairness approaches where the `sensitive` fork has many branches.       | Multidimensional analysis.                                                      |
+| unireport   | Similar to `multireport`, but each group is compared to the whole population. | Group-vs-population comparisons.                                                |
+| biasreport  | Netrics and reductions where large values indicate bias or bad performance.   | Multidimensional analysis that reveal at a glance non-performant system values. |
+| fuzzyreport | Metrics and reductions compatible with reasoning in basic fuzzy logic.        | Fairness definitions of group vs population that adhere to logical reasoning.   |
+| isecreport  | Multi-fairness with many potentially empty intersectional groups.             | Bayesian analysis for small or empty intersections.                             |
 
-As an example, let's create a simple report
+As an example, create a simple report
 based on binary predictions, binary
 ideal predictions and multiclass
 sensitive attribute `sensitive`. The
@@ -65,11 +67,13 @@ when displayed:
 
 ```python
 import fairbench as fb
+
 sensitive = fb.Fork(men=[1, 1, 0, 0, 0], women=[0, 0, 1, 1, 1])
 report = fb.multireport(
     predictions=[1, 0, 1, 0, 0], 
     labels=[1, 0, 0, 1, 0], 
-    sensitive=sensitive)
+    sensitive=sensitive
+)
 ```
 
 
@@ -139,7 +143,7 @@ argument. This should hold either
 a dictionary mapping names to metrics
 or a list of metrics, where
 in the last case their names are automatically inferred.
-You can also add customly defined metrics.
+You can also add custom metrics.
 
 <div id="metricsarg" class="code-block" style="display:none;">
 
@@ -150,6 +154,11 @@ report = fb.accreport( # just print performance metrics
     labels=[1, 0, 0, 1, 0], 
     metrics=[fb.accuracy, fb.pr, fb.fpr, fb.fnr])
 fb.describe(report)  # pretty print - more on this later
+```
+
+```bash
+Metric               accuracy             pr                   fpr                  fnr                 
+                     0.600                0.400                0.333                0.500             
 ```
 
 </div>
@@ -172,22 +181,36 @@ distributions, used to compute the metrics.
 Given a report, you can find what its comparisons mean
 [here](../record/comparisons.md).
 
+
+<button onclick="toggleCode('plaintex')" class="toggle-button">>></button>
 Several methods are provided to
 work with the report data format, namely 
 forks of dictionaries. First, you can show 
 reports in the `stdout` console in the form
-of tables:
+of tables with `fb.describe(report)`.
+
+<div id="plaintex" class="code-block" style="display:none;">
 
 ```python
-fb.describe(report)  
+import fairbench as fb
 
-Metric          min             minratio        maxdiff        
-accuracy        0.938           1.000           0.000          
-pr              0.812           0.857           0.125          
-fpr             0.063           0.778           0.016          
-fnr             0.333           0.333           0.333  
+test, y, yhat = fb.tabular.adult(predict="probabilities")
+s = fb.Fork(fb.categories @ test[9])
+report = fb.multireport(scores=yhat, labels=y, sensitive=s)
+
+fb.describe(report)
 ```
 
+```plaintext
+Metric               min                  wmean                gini                 minratio             maxdiff              maxbarea             maxrarea             maxbdcg             
+auc                  0.832                0.840                0.007                0.972                0.024                0.026                0.050                0.030               
+avgscore             0.087                0.212                0.260                0.316                0.188                0.642                0.656                0.707               
+tophr                0.667                0.778                0.100                0.667                0.333                nan                  nan                  nan                 
+toprec               0.001                0.002                0.392                0.121                0.004                nan                  nan                  nan                 
+avghr                0.667                0.778                0.100                0.667                0.333                0.333                0.333                0.235               
+avgrepr              0.000                1.000                0.500                0.000                1.499                1.499                1.000                1.499                  
+```
+</div>
 
 <button onclick="toggleCode('latex')" class="toggle-button">>></button>
 You can use the arguments to make `describe`
@@ -208,7 +231,9 @@ text = fb.describe(report,
     separator=" & ", # separator between columns
     newline="\\\\\n") # use \\ and then the newline character
 print(text)
+```
 
+```plaintext
 Metric          & min             & wmean           & gini            & minratio[vsAny] & maxdiff[vsAny]  & maxbarea[vsAny] & maxrarea[vsAny] & maxbdcg[vsAny] \\
 auc             & 0.861           & 0.882           & 0.012           & 0.972           & 0.025           & 0.025           & 0.038           & 0.028          \\
 avgscore        & 0.110           & 0.239           & 0.197           & 0.461           & 0.129           & 0.454           & 0.548           & 0.499          \\
@@ -238,13 +263,88 @@ print(fb.tojson(report))
 
 ## Plotting
 
-You can plot reports with the command `fb.visualize(report)`.
+<button onclick="toggleCode('matplotlib-vis')" class="toggle-button">>></button>
+You can plot reports with the command `fb.visualize(report)`. This creates a separate
+plot for each measure to explore its numerical assessment. You can also visualize
+the data of columns or rows. Install FairBench with `pip install fairbench[interactive]`
+to enable visualization with graphs. If the necessary dependencies installed this
+way are not found, the library will fallback to console visualization described below.
 
+
+<div id="matplotlib-vis" class="code-block" style="display:none;">
 
 ```python
 fb.visualize(report)
 ```
+
 <img src="../reports.png" alt="report example">
+
+</div>
+
+
+<button onclick="toggleCode('console-vis')" class="toggle-button">>></button>
+You can also visualize a report or row/column data in the console with `fb.text_visualize(report)`.
+This creates comprehensive barplots using ASCII and uses [ansiplot](https://github.com/maniospas/ansiplot)
+to show curves, such as ROC. Depending on your setup, this may be more convenient. For example,
+FairBench's documentation has a minimized installation without extras that uses this method.
+You may also make visualization or text visualization export the outcome to a file (do not give the
+extension, as this will be appended to be either *txt* or png).
+
+<div id="console-vis" class="code-block" style="display:none;">
+
+```python
+test, y, scores = fb.bench.tabular.adult(predict="probabilities")
+yhat = scores>0.5
+sensitive = fb.Fork(fb.categories@test[8], fb.categories@test[9])
+
+report = fb.multireport(predictions=yhat, labels=y, scores=scores, sensitive=sensitive, top=20)
+fb.text_visualize(report.min.auc.explain.explain, save="plot")
+```
+
+```plaintext
+---------------------- curve -----------------------
+
+(0.0, 1.0)
+▎                          -----+-+-+-+-+-+-+-+-+-+-+-x-◇-◇-
+▎             x-x-x+□+□◇□◇□◇□◇□◇□◇□◇□◇□◇□◇□◇□◇□◇□◇□◇□◇□◇□o* 
+▎     x-x-□-◇-◇o◇o◇o◇o◇o                                    
+▎   x□x□x◇o◇oooo                                            
+▎+-□-□◇o◇oo                                                 
+▎x□◇o◇oo                                                    
++□◇*o                                                       
+□◇*                                                         
+◇*                                                          
+◇▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
+                                                  (1.0, 0.0)
+
+ * White
+ - Other
+ + Amer-Indian-Eskimo
+ x Black
+ o Male
+ □ Female
+ ◇ Asian-Pac-Islander
+--------------------- samples ----------------------
+White                         13946.000 | ██████████
+Other                         135.000   | 
+Amer-Indian-Eskimo            159.000   | 
+Black                         1561.000  | █
+Male                          10860.000 | ███████
+Female                        5421.000  | ███
+Asian-Pac-Islander            480.000   | 
+
+Plot saved to: plot.txt
+----------------------- top ------------------------
+White                         20.000  | ██████████
+Other                         20.000  | ██████████
+Amer-Indian-Eskimo            20.000  | ██████████
+Black                         20.000  | ██████████
+Male                          20.000  | ██████████
+Female                        20.000  | ██████████
+Asian-Pac-Islander            20.000  | ██████████
+```
+
+</div>
 
 
 <button onclick="toggleCode('matplotlib')" class="toggle-button">>></button>

@@ -6,4 +6,4 @@ objwrap
 pyyaml
 requests
 ansiplot
-fairbench
+pygrank

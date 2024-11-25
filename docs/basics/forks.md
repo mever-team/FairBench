@@ -115,9 +115,10 @@ sensitive = fb.Fork(gender={"1": np.array([0, 0, 1, 1, 0]),
 To create forks by analyzing categorical 
 values found in iterables, use the 
 `categories@` operator.
-For example, appled on a list with entries "Man" and "Woman"
-this operator creates two branches storing 
-binary membership for each.
+For example, when applied on a list whose entries are among
+"Man". "Woman", "Nonbin"
+this operator creates three branches storing binary membership for each
+of those declared genders.
 
 <div id="code5" class="code-block" style="display:none;">
 ```python
@@ -137,7 +138,7 @@ to a fork. Use named keyword arguments to prepend the
 that name to branch names, or put all category analyses
 as positional arguments to just merge their branches.
 Any Python iterable can be analyzed into categories.
-This includes lists, pandas datafragme
+This includes lists, pandas dataframe
 columns, categorical tensors, or numpy arrays.
 
 <div id="code6" class="code-block" style="display:none;">

@@ -42,7 +42,9 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     install_requires=requirements,
-    extras_require={"interactive": interactive_requirements,
-                    "vision": vision_requirements,
-                    "graph": graph_requirements},
+    extras_require={
+        "interactive": interactive_requirements,
+        "vision": vision_requirements,
+        "graph": graph_requirements,
+    },
 )
