@@ -11,3 +11,10 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+
+
+   Portions of this software are licensed under the MIT License:
+
+      - ReBias. (Copyright © 2020-present NAVER Corp)
+        Modifications © 2024 Emmanouil Krasanakis.
+        See fairbench/bench/vision/datasets/mnist/ for details.

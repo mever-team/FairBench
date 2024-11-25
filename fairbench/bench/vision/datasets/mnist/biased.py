@@ -1,8 +1,17 @@
-"""ReBias
+"""
+This file contains code originally licensed under the MIT License:
+
+ReBias
 Copyright (c) 2020-present NAVER Corp.
 MIT license
 
 Python implementation of Biased-MNIST.
+
+Modifications to this code have been made by:
+- Emmanouil Krasanakis, © 2024.
+
+Modifications consist of only source code remodularization
+without altering base functionality.
 """
 
 import logging
@@ -13,8 +22,7 @@ from pathlib import Path
 import numpy as np
 import torch
 from PIL import Image
-from datasets.utils import (
-    TwoCropTransform,
+from fairbench.bench.vision.datasets.downloaders import (
     get_confusion_matrix,
     get_unsup_confusion_matrix,
 )

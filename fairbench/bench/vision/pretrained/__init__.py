@@ -1,14 +1,14 @@
 import os
 
-import torch
-from models.resnet import ResNet18
-from models.resnet import BAddResNet50
-from torchvision.models.resnet import resnet50
-import gdown
-from torch import nn
-
 
 def load_celeba_flac_model(device):
+    import torch
+    from fairbench.bench.vision.pretrained.resnet import ResNet18
+    from fairbench.bench.vision.pretrained.resnet import BAddResNet50
+    from torchvision.models.resnet import resnet50
+    import gdown
+    from torch import nn
+
     model_dir = "./pretrained/flac"
     model_file = "celeba_blonde.pth"
     model_path = os.path.join(model_dir, model_file)
@@ -44,6 +44,13 @@ def load_celeba_badd_model(device):
 
 
 def load_celeba_mavias_model(device):
+    import torch
+    from fairbench.bench.vision.pretrained.resnet import ResNet18
+    from fairbench.bench.vision.pretrained.resnet import BAddResNet50
+    from torchvision.models.resnet import resnet50
+    import gdown
+    from torch import nn
+
     model_dir = "./pretrained/mavias"
     model_file = "celeba_blonde.pth"
     model_path = os.path.join(model_dir, model_file)
@@ -75,6 +82,13 @@ def load_celeba_mavias_model(device):
 
 
 def load_utkface_flac_model(device):
+    import torch
+    from fairbench.bench.vision.pretrained.resnet import ResNet18
+    from fairbench.bench.vision.pretrained.resnet import BAddResNet50
+    from torchvision.models.resnet import resnet50
+    import gdown
+    from torch import nn
+
     model_dir = "./pretrained/flac"
     model_file = "utkface_race.pth"
     model_path = os.path.join(model_dir, model_file)
@@ -110,6 +124,13 @@ def load_utkface_mavias_model(device):
 
 
 def load_utkface_badd_model(device):
+    import torch
+    from fairbench.bench.vision.pretrained.resnet import ResNet18
+    from fairbench.bench.vision.pretrained.resnet import BAddResNet50
+    from torchvision.models.resnet import resnet50
+    import gdown
+    from torch import nn
+
     model_dir = "./pretrained/badd"
     model_file = "utkface_race.pth"
     model_path = os.path.join(model_dir, model_file)
@@ -140,6 +161,13 @@ def load_utkface_badd_model(device):
 
 
 def load_waterbirds_mavias_model(device):
+    import torch
+    from fairbench.bench.vision.pretrained.resnet import ResNet18
+    from fairbench.bench.vision.pretrained.resnet import BAddResNet50
+    from torchvision.models.resnet import resnet50
+    import gdown
+    from torch import nn
+
     model_dir = "./pretrained/mavias"
     model_file = "waterbirds.pt"
     model_path = os.path.join(model_dir, model_file)
@@ -176,6 +204,13 @@ def load_waterbirds_flac_model(device):
 
 
 def load_waterbirds_badd_model(device):
+    import torch
+    from fairbench.bench.vision.pretrained.resnet import ResNet18
+    from fairbench.bench.vision.pretrained.resnet import BAddResNet50
+    from torchvision.models.resnet import resnet50
+    import gdown
+    from torch import nn
+
     model_dir = "./pretrained/badd"
     model_file = "waterbirds.pth"
     model_path = os.path.join(model_dir, model_file)

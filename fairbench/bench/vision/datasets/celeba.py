@@ -4,7 +4,11 @@ from pathlib import Path
 
 import numpy as np
 import torch
-from fairbench.bench.vision.datasets.downloaders import TwoCropTransform, get_confusion_matrix, download_celeba
+from fairbench.bench.vision.datasets.downloaders import (
+    TwoCropTransform,
+    get_confusion_matrix,
+    download_celeba,
+)
 from torch.utils.data import WeightedRandomSampler
 from torch.utils.data.dataloader import DataLoader
 from torchvision import transforms as T

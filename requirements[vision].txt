@@ -9,3 +9,4 @@ ansiplot
 gdown
 torch
 torchvision
+tqdm

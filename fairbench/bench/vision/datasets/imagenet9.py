@@ -5,7 +5,7 @@ import torch
 from fairbench.bench.vision.datasets.downloaders import download_imagenet9
 
 
-def get_imagenet9(root, bench, batch_size=64, workers=4) -> None:
+def get_imagenet9(root, bench, batch_size=64, workers=4):
     scale = 256.0 / 224.0
     target_resolution = (224, 224)
     transform_test = transforms.Compose(

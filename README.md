@@ -7,20 +7,20 @@
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md) 
 
 A comprehensive AI fairness exploration framework.
-
-**Author:** Emmanouil (Manios) Krasanakis <br>
-**License:** Apache Software License 2
-
-## Features
-
 - :chart_with_upwards_trend: Fairness reports and stamps
 - :flags: Multivalue multiattribute
 - :hammer_and_wrench: Measure building blocks
 - :gear: ML integration (`numpy`,`torch`,`tensorflow`,`jax`)
 
+*FairBench always strives to be compatible with the latest Python release, 
+but rolling rollouts of ML libraries usually make them compatible
+with the language previous release (currently 3.12).*
+
 ## [Documentation](https://fairbench.readthedocs.io/)
 
-## Citation
+## [Benchmarks](benchmarks/README.md)
+
+## Attributions
 
 ```
 @article{krasanakis2024standardizing,
@@ -32,3 +32,14 @@ A comprehensive AI fairness exploration framework.
       primaryClass={cs.LG}
 }
 ```
+
+**Maintainer:** Emmanouil (Manios) Krasanakis (maniospas@hotmail.com)<br>
+**License:** Apache 2.0<br>
+**Contributors:** Giannis Sarridis
+
+
+This project includes modified code originally licensed under the MIT License:
+
+- ReBias. (Copyright © 2020-present NAVER Corp)<br>
+Modifications © 2024 Emmanouil Krasanakis.<br>
+See [fairbench/bench/vision/datasets/mnist/](fairbench/bench/vision/datasets/mnist/) for details.
