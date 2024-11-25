@@ -7,7 +7,7 @@ from torch.utils.data.dataset import Dataset
 from PIL import Image
 import torch
 from torchvision import transforms
-from datasets.utils import (
+from fairbench.bench.vision.datasets.downloaders import (
     TwoCropTransform,
     get_confusion_matrix,
     get_unsup_confusion_matrix,

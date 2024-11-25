@@ -4,13 +4,12 @@ from pathlib import Path
 
 import numpy as np
 import torch
-from datasets.utils import TwoCropTransform, get_confusion_matrix
+from fairbench.bench.vision.datasets.downloaders import TwoCropTransform, get_confusion_matrix, download_celeba
 from torch.utils.data import WeightedRandomSampler
 from torch.utils.data.dataloader import DataLoader
 from torchvision import transforms as T
 from torchvision.datasets.celeba import CelebA
 import os
-from datasets.utils import download_celeba
 
 
 class BiasedCelebASplit:

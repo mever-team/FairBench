@@ -7,10 +7,9 @@ import PIL
 import numpy as np
 import torch
 import torch.utils.data
-from datasets.utils import TwoCropTransform, get_confusion_matrix
+from fairbench.bench.vision.datasets.downloaders import TwoCropTransform, get_confusion_matrix, download_utkface
 from torch.utils.data.sampler import WeightedRandomSampler
 from torchvision import transforms
-from datasets.utils import download_utkface
 
 
 class UTKFace:

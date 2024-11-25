@@ -7,9 +7,8 @@ from torch.utils.data import Dataset
 from glob import glob
 from PIL import Image
 from tqdm import tqdm
-import pandas as pd
 from torchvision import transforms
-from datasets.utils import download_waterbirds
+from fairbench.bench.vision.datasets.downloaders import download_waterbirds
 
 data_split = {0: "train", 1: "val", 2: "test"}
 

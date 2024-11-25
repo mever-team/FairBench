@@ -13,7 +13,7 @@ from pathlib import Path
 import numpy as np
 import torch
 from PIL import Image
-from datasets.utils import (
+from fairbench.bench.vision.datasets.downloaders import (
     TwoCropTransform,
     get_confusion_matrix,
     get_unsup_confusion_matrix,
@@ -21,10 +21,9 @@ from datasets.utils import (
 from torch.utils import data
 from torchvision import transforms
 from torchvision.datasets import MNIST
-import random
 
 
-class BiasedMNIST(MNIST):
+class BiasedMNISTSingle(MNIST):
     """A base class for Biased-MNIST.
     We manually select ten colours to synthetic colour bias. (See `COLOUR_MAP` for the colour configuration)
     Usage is exactly same as torchvision MNIST dataset class.
@@ -71,19 +70,6 @@ class BiasedMNIST(MNIST):
         [128, 128, 128],
     ]
 
-    COLOUR_MAP2 = [
-        [255, 50, 50],
-        [50, 255, 50],
-        [50, 50, 255],
-        [225, 225, 50],
-        [225, 50, 225],
-        [50, 255, 255],
-        [255, 128, 50],
-        [255, 50, 128],
-        [128, 50, 255],
-        [50, 50, 50],
-    ]
-
     def __init__(
         self,
         root,
@@ -92,8 +78,7 @@ class BiasedMNIST(MNIST):
         transform=None,
         target_transform=None,
         download=False,
-        data_label_correlation1=1.0,
-        data_label_correlation2=1.0,
+        data_label_correlation=1.0,
         n_confusing_labels=9,
         seed=1,
         load_bias_feature=False,
@@ -112,12 +97,12 @@ class BiasedMNIST(MNIST):
         self.load_bias_feature = load_bias_feature
         if self.load_bias_feature:
             if train_corr:
-                bias_feature_dir = f"{bias_feature_root}/train{train_corr}-corrA{data_label_correlation1}-corrB{data_label_correlation2}-seed{seed}"
+                bias_feature_dir = f"{bias_feature_root}/train{train_corr}-corr{data_label_correlation}-seed{seed}"
                 logging.info(f"load bias feature: {bias_feature_dir}")
                 self.bias_features = torch.load(f"{bias_feature_dir}/bias_feats.pt")
                 self.marginal = torch.load(f"{bias_feature_dir}/marginal.pt")
             else:
-                bias_feature_dir = f"{bias_feature_root}/color_mnist-corrA{data_label_correlation1}-corrB{data_label_correlation2}-seed{seed}"
+                bias_feature_dir = f"{bias_feature_root}/color_mnist-corr{data_label_correlation}-seed{seed}"
                 logging.info(f"load bias feature: {bias_feature_dir}")
                 self.bias_features = torch.load(f"{bias_feature_dir}/bias_feats.pt")
                 self.marginal = torch.load(f"{bias_feature_dir}/marginal.pt")
@@ -125,7 +110,7 @@ class BiasedMNIST(MNIST):
         save_path = (
             Path(root)
             / "pickles"
-            / f"color_mnist-corrA{data_label_correlation1}-corrB{data_label_correlation2}-seed{seed}"
+            / f"color_mnist-corr{data_label_correlation}-seed{seed}"
             / split
         )
         if save_path.is_dir():
@@ -135,30 +120,19 @@ class BiasedMNIST(MNIST):
             self.biased_targets = pickle.load(
                 open(save_path / "biased_targets.pkl", "rb")
             )
-            self.biased_targets2 = pickle.load(
-                open(save_path / "biased_targets2.pkl", "rb")
-            )
         else:
             self.random = True
 
-            self.data_label_correlation1 = data_label_correlation1
-            self.data_label_correlation2 = data_label_correlation2
+            self.data_label_correlation = data_label_correlation
             self.n_confusing_labels = n_confusing_labels
-            self.biased_targets = torch.zeros_like(self.targets)
-            self.biased_targets2 = torch.zeros_like(self.targets)
-            self.data = self.data.unsqueeze(-1).expand(-1, -1, -1, 3)
+            self.data, self.targets, self.biased_targets = self.build_biased_mnist()
 
-            self.build_biased_mnist("bg")
-
-            self.build_biased_mnist("fg")
-            # self.biased_targets2 = self.biased_targets
             indices = np.arange(len(self.data))
             self._shuffle(indices)
 
             self.data = self.data[indices].numpy()
             self.targets = self.targets[indices]
             self.biased_targets = self.biased_targets[indices]
-            self.biased_targets2 = self.biased_targets2[indices]
 
             logging.info(f"save color_mnist to {save_path}")
             save_path.mkdir(parents=True, exist_ok=True)
@@ -166,9 +140,6 @@ class BiasedMNIST(MNIST):
             pickle.dump(self.targets, open(save_path / "targets.pkl", "wb"))
             pickle.dump(
                 self.biased_targets, open(save_path / "biased_targets.pkl", "wb")
-            )
-            pickle.dump(
-                self.biased_targets2, open(save_path / "biased_targets2.pkl", "wb")
             )
 
         if load_bias_feature:
@@ -189,13 +160,6 @@ class BiasedMNIST(MNIST):
             ) = get_confusion_matrix(
                 num_classes=10, targets=self.targets, biases=self.biased_targets
             )
-            (
-                self.confusion_matrix_org2,
-                self.confusion_matrix2,
-                self.confusion_matrix_by2,
-            ) = get_confusion_matrix(
-                num_classes=10, targets=self.targets, biases=self.biased_targets2
-            )
 
     @property
     def raw_folder(self):
@@ -209,10 +173,10 @@ class BiasedMNIST(MNIST):
         if self.random:
             np.random.shuffle(iteratable)
 
-    def _make_biased_mnist(self, indices, label, attribute):
+    def _make_biased_mnist(self, indices, label):
         raise NotImplementedError
 
-    def _update_bias_indices(self, bias_indices, label, data_label_correlation):
+    def _update_bias_indices(self, bias_indices, label):
         if self.n_confusing_labels > 9 or self.n_confusing_labels < 1:
             raise ValueError(self.n_confusing_labels)
 
@@ -221,7 +185,7 @@ class BiasedMNIST(MNIST):
         indices = torch.LongTensor(indices)
 
         n_samples = len(indices)
-        n_correlated_samples = int(n_samples * data_label_correlation)
+        n_correlated_samples = int(n_samples * self.data_label_correlation)
         n_decorrelated_per_class = int(
             np.ceil((n_samples - n_correlated_samples) / (self.n_confusing_labels))
         )
@@ -243,38 +207,32 @@ class BiasedMNIST(MNIST):
             _label = other_labels[idx]
             bias_indices[_label] = torch.cat([bias_indices[_label], _indices])
 
-    def build_biased_mnist(self, attribute="fg"):
+    def build_biased_mnist(self):
         """Build biased MNIST."""
         n_labels = self.targets.max().item() + 1
 
         bias_indices = {label: torch.LongTensor() for label in range(n_labels)}
-        if attribute == "fg":
-            data_label_correlation = self.data_label_correlation1
-        elif attribute == "bg":
-            data_label_correlation = self.data_label_correlation2
         for label in range(n_labels):
-            self._update_bias_indices(bias_indices, label, data_label_correlation)
-        cloned_data = self.data.clone()
+            self._update_bias_indices(bias_indices, label)
+
+        data = torch.ByteTensor()
+        targets = torch.LongTensor()
+        biased_targets = []
+
         for bias_label, indices in bias_indices.items():
-            _data, _ = self._make_biased_mnist(indices, bias_label, attribute)
-            cloned_data[indices] = _data
-            if attribute == "bg":
-                self.biased_targets[indices] = torch.LongTensor(
-                    [bias_label] * len(indices)
-                )
-            else:
-                self.biased_targets2[indices] = torch.LongTensor(
-                    [bias_label] * len(indices)
-                )
-        self.data = cloned_data
-        return
+            _data, _targets = self._make_biased_mnist(indices, bias_label)
+            data = torch.cat([data, _data])
+            targets = torch.cat([targets, _targets])
+            biased_targets.extend([bias_label] * len(indices))
+
+        biased_targets = torch.LongTensor(biased_targets)
+        return data, targets, biased_targets
 
     def __getitem__(self, index):
-        img, target, bias, bias2 = (
+        img, target, bias = (
             self.data[index],
             int(self.targets[index]),
             int(self.biased_targets[index]),
-            int(self.biased_targets2[index]),
         )
         img = Image.fromarray(img.astype(np.uint8), mode="RGB")
 
@@ -286,9 +244,9 @@ class BiasedMNIST(MNIST):
 
         if self.load_bias_feature:
             bias_feat = self.bias_features[index]
-            return img, target, bias, bias2, index, bias_feat
+            return img, target, bias, index, bias_feat
         else:
-            return img, target, bias, bias2, index
+            return img, target, bias, index
 
 
 class ColourBiasedMNIST(BiasedMNIST):
@@ -300,8 +258,7 @@ class ColourBiasedMNIST(BiasedMNIST):
         transform=None,
         target_transform=None,
         download=False,
-        data_label_correlation1=1.0,
-        data_label_correlation2=1.0,
+        data_label_correlation=1.0,
         n_confusing_labels=9,
         seed=1,
         load_bias_feature=False,
@@ -314,8 +271,7 @@ class ColourBiasedMNIST(BiasedMNIST):
             transform=transform,
             target_transform=target_transform,
             download=download,
-            data_label_correlation1=data_label_correlation1,
-            data_label_correlation2=data_label_correlation2,
+            data_label_correlation=data_label_correlation,
             n_confusing_labels=n_confusing_labels,
             seed=seed,
             load_bias_feature=load_bias_feature,
@@ -323,111 +279,32 @@ class ColourBiasedMNIST(BiasedMNIST):
         )
 
     def _binary_to_colour(self, data, colour):
-        # fg_data = torch.zeros_like(data)
-        # fg_data[data != 0] = 255
-        # fg_data[data == 0] = 0
-        # fg_data = torch.stack([fg_data, fg_data, fg_data], dim=1)
         fg_data = torch.zeros_like(data)
-        fg_pixel_indices = data != 0
-        # fg_pixel_indices = (
-        #     fg_pixel_indices[:, :, :, 0]
-        #     & fg_pixel_indices[:, :, :, 1]
-        #     & fg_pixel_indices[:, :, :, 2]
-        # )
-        fg_data[fg_pixel_indices] = 255
-
-        # bg_data = torch.zeros_like(data)
-        # bg_data[data == 0] = 1
-        # bg_data[data != 0] = 0
-        # bg_data = torch.stack([bg_data, bg_data, bg_data], dim=3)
+        fg_data[data != 0] = 255
+        fg_data[data == 0] = 0
+        fg_data = torch.stack([fg_data, fg_data, fg_data], dim=1)
 
         bg_data = torch.zeros_like(data)
-        bg_pixel_indices_0 = data == 0
-        # bg_pixel_indices_0 = (
-        #     bg_pixel_indices_0[:, :, :, 0]
-        #     & bg_pixel_indices_0[:, :, :, 1]
-        #     & bg_pixel_indices_0[:, :, :, 2]
-        # )
-        bg_data[bg_pixel_indices_0] = 1
-
-        # bg_pixel_indices_1 = data != 0
-        # # bg_pixel_indices_1 = (
-        # #     bg_pixel_indices_1[:, :, :, 0]
-        # #     & bg_pixel_indices_1[:, :, :, 1]
-        # #     & bg_pixel_indices_1[:, :, :, 2]
-        # # )
-        # bg_data[bg_pixel_indices_1] = 0
-
-        bg_data = bg_data * torch.ByteTensor(colour).view(1, 1, 1, 3)
+        bg_data[data == 0] = 1
+        bg_data[data != 0] = 0
+        bg_data = torch.stack([bg_data, bg_data, bg_data], dim=3)
+        bg_data = bg_data * torch.ByteTensor(colour)
+        bg_data = bg_data.permute(0, 3, 1, 2)
 
         data = fg_data + bg_data
-        # first_image = data[0].numpy()  # .transpose(1, 2, 0)
-        # import matplotlib.pyplot as plt
+        return data.permute(0, 2, 3, 1)
 
-        # # Display the image
-        # plt.imshow(first_image)
-        # plt.savefig("temp.png")
-        # plt.show()
-        return data
-
-    def _binary_to_colour2(self, data, colour):
-        fg_data = torch.zeros_like(data)
-        white_pixel_indices = data == 255
-
-        white_pixel_indices = (
-            white_pixel_indices[:, :, :, 0]
-            & white_pixel_indices[:, :, :, 1]
-            & white_pixel_indices[:, :, :, 2]
+    def _make_biased_mnist(self, indices, label):
+        return (
+            self._binary_to_colour(self.data[indices], self.COLOUR_MAP[label]),
+            self.targets[indices],
         )
-
-        fg_data[white_pixel_indices] = 1
-
-        black_pixel_indices = fg_data == 0
-        black_pixel_indices = (
-            black_pixel_indices[:, :, :, 0]
-            & black_pixel_indices[:, :, :, 1]
-            & black_pixel_indices[:, :, :, 2]
-        )
-
-        bg_data = torch.zeros_like(data)
-        bg_data[black_pixel_indices] = data[black_pixel_indices]
-        fg_data = fg_data * torch.ByteTensor(colour)
-        # print(torch.sum(white_pixel_indices), torch.sum(black_pixel_indices))
-        data = fg_data + bg_data
-        # import matplotlib.pyplot as plt
-
-        # first_image = data[0].numpy()  # .transpose(1, 2, 0)
-
-        # # Display the image
-        # plt.imshow(first_image)
-        # plt.savefig("temp.png")
-        # plt.show()
-        # data[-11111111111111111111]
-        return data
-
-    def _make_biased_mnist(self, indices, label, attribute):
-        if attribute == "bg":
-            return (
-                self._binary_to_colour(self.data[indices], self.COLOUR_MAP[label]),
-                self.targets[indices],
-            )
-        elif attribute == "fg":
-            return (
-                self._binary_to_colour2(
-                    self.data[indices],
-                    self.COLOUR_MAP2[(label + 1) % 10],
-                ),
-                self.targets[indices],
-            )
-        else:
-            raise ValueError(attribute)
 
 
 def get_color_mnist(
     root,
     batch_size,
-    data_label_correlation1,
-    data_label_correlation2,
+    data_label_correlation,
     n_confusing_labels=9,
     split="train",
     num_workers=4,
@@ -445,7 +322,10 @@ def get_color_mnist(
     )
     normalize = transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
     if aug:
-        prob = 0.5
+        if data_label_correlation == 0.999:
+            prob = 0.1
+        else:
+            prob = 0.5
         train_transform = transforms.Compose(
             [
                 transforms.RandomApply(
@@ -482,8 +362,7 @@ def get_color_mnist(
             split="train",
             transform=train_transform,
             download=True,
-            data_label_correlation1=data_label_correlation1,
-            data_label_correlation2=data_label_correlation2,
+            data_label_correlation=data_label_correlation,
             n_confusing_labels=n_confusing_labels,
             seed=seed,
             load_bias_feature=load_bias_feature,
@@ -515,8 +394,7 @@ def get_color_mnist(
             split=split,
             transform=train_transform,
             download=True,
-            data_label_correlation1=data_label_correlation1,
-            data_label_correlation2=data_label_correlation2,
+            data_label_correlation=data_label_correlation,
             n_confusing_labels=n_confusing_labels,
             seed=seed,
             load_bias_feature=load_bias_feature,
@@ -525,7 +403,6 @@ def get_color_mnist(
 
         def clip_max_ratio(score):
             upper_bd = score.min() * ratio
-            # print(upper_bd)
             return np.clip(score, None, upper_bd)
 
         if ratio != 0:
@@ -537,21 +414,11 @@ def get_color_mnist(
                         1 / dataset.confusion_matrix_by[c, b]
                         for c, b in zip(dataset.targets, dataset.biased_targets)
                     ]
-                    weights2 = [
-                        1 / dataset.confusion_matrix_by2[c, b]
-                        for c, b in zip(dataset.targets, dataset.biased_targets2)
-                    ]
-                    weights = weights + weights2
                 else:
                     weights = [
                         1 / dataset.confusion_matrix[b, c]
                         for c, b in zip(dataset.targets, dataset.biased_targets)
                     ]
-                    weights2 = [
-                        1 / dataset.confusion_matrix2[b, c]
-                        for c, b in zip(dataset.targets, dataset.biased_targets2)
-                    ]
-                weights = [max(w1, w2) for w1, w2 in zip(weights, weights2)]
 
             if ratio > 0:
                 weights = clip_max_ratio(np.array(weights))

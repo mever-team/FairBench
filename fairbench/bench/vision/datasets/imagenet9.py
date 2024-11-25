@@ -2,7 +2,7 @@ from torchvision import transforms
 from torchvision.datasets import ImageFolder
 import os
 import torch
-from datasets.utils import download_imagenet9
+from fairbench.bench.vision.datasets.downloaders import download_imagenet9
 
 
 def get_imagenet9(root, bench, batch_size=64, workers=4) -> None:
