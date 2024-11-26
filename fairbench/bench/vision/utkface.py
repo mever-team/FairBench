@@ -25,7 +25,7 @@ def utkface(
             model_file="utkface_race.pth",
             model_url="https://drive.google.com/uc?id=1SL_AGaUaxI_NziWFjsRjBY56ROAsa8qN",
             model_class=ResNet18,
-        )
+        ),
     }
     test_loader = get_vision_dataset("utk_face")(
         data_root, batch_size=64, bias_attr="race", split="test", aug=False

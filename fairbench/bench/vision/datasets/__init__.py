@@ -7,7 +7,7 @@ def get_vision_dataset(name):
     options = {
         "celeba": get_celeba,
         "utk_face": get_utk_face,
-        "waterbirds": get_waterbirds
+        "waterbirds": get_waterbirds,
     }
 
     if isinstance(name, torch.nn.Module):
