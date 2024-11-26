@@ -30,6 +30,7 @@ from fairbench.bench.vision.datasets.downloaders import (
 from torch.utils import data
 from torchvision import transforms
 from torchvision.datasets import MNIST
+from fairbench.bench.vision.datasets.mnist.color import BiasedMNIST
 
 
 class BiasedMNISTSingle(MNIST):
@@ -258,7 +259,7 @@ class BiasedMNISTSingle(MNIST):
             return img, target, bias, index
 
 
-class ColourBiasedMNIST(BiasedMNIST):
+class ColorBiasedMNIST(BiasedMNIST):
     def __init__(
         self,
         root,
@@ -273,7 +274,7 @@ class ColourBiasedMNIST(BiasedMNIST):
         load_bias_feature=False,
         train_corr=None,
     ):
-        super(ColourBiasedMNIST, self).__init__(
+        super(ColorBiasedMNIST, self).__init__(
             root,
             bias_feature_root=bias_feature_root,
             split=split,
@@ -366,7 +367,7 @@ def get_color_mnist(
         train_transform = TwoCropTransform(train_transform)
 
     if split == "train_val":
-        dataset = ColourBiasedMNIST(
+        dataset = ColorBiasedMNIST(
             root,
             split="train",
             transform=train_transform,
@@ -397,7 +398,7 @@ def get_color_mnist(
         return dataloader
 
     else:
-        dataset = ColourBiasedMNIST(
+        dataset = ColorBiasedMNIST(
             root,
             bias_feature_root=bias_feature_root,
             split=split,

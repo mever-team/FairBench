@@ -6,7 +6,6 @@ from fairbench.reports.surrogate import surrogate_positives
 from fairbench.blocks.reducers import identical
 import numpy as np
 import math
-from makefun import wraps
 
 # TODO: create a differentiable report (and maybe separate metrics into subpackages of diffs vs normal)
 # TODO: have to check which values are differentiable

@@ -18,17 +18,9 @@ import logging
 
 import numpy as np
 import torch
-from PIL import Image
-from datasets.utils import (
-    TwoCropTransform,
-    get_confusion_matrix,
-    get_unsup_confusion_matrix,
-)
+from fairbench.bench.vision.datasets.downloaders import TwoCropTransform
 from torch.utils import data
 from torchvision import transforms
-from torchvision.datasets import MNIST
-import random
-
 from fairbench.bench.vision.datasets.mnist.biased import BiasedMNIST
 
 

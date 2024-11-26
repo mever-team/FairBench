@@ -1,22 +1,17 @@
 def get_vision_dataset(name):
-    from fairbench.bench.vision.datasets.mnist import (
-        BiasedMNIST,
-        BiasedMNISTColor,
-        BiasedMNISTSingle,
-    )
     from fairbench.bench.vision.datasets.celeba import get_celeba
-    from fairbench.bench.vision.datasets.utk_face import UTKFace, BiasedUTKFace
-    from fairbench.bench.vision.datasets.waterbirds import WaterbirdsDataset
-    from fairbench.bench.vision.datasets.imagenet9 import get_imagenet9
+    from fairbench.bench.vision.datasets.utk_face import get_utk_face
+    from fairbench.bench.vision.datasets.waterbirds import get_waterbirds
+    import torch
 
     options = {
-        "biased_mnist": BiasedMNIST,
-        "biased_mnist_color": BiasedMNISTColor,
-        "biased_mnist_single": BiasedMNISTSingle,
-        "biased_celeba": get_celeba,
-        "utk_face": UTKFace,
-        "imagenet9": get_imagenet9,
+        "celeba": get_celeba,
+        "utk_face": get_utk_face,
+        "waterbirds": get_waterbirds
     }
+
+    if isinstance(name, torch.nn.Module):
+        return name
 
     if name not in options:
         raise RuntimeError(

@@ -1,7 +1,6 @@
 import torch.nn as nn
-
 from torchvision.models import resnet18
-from torchvision.models.resnet import ResNet, Bottleneck
+from torchvision.models.resnet import Bottleneck
 import torch.nn.functional as F
 import torchvision.models as models
 import torch
@@ -28,10 +27,9 @@ class ResNet18(nn.Module):
 
 class BAddResNet50(models.ResNet):
     def __init__(self):
-        super(BAddResNet50, self).__init__(Bottleneck, [3, 4, 6, 3])
+        super().__init__(Bottleneck, [3, 4, 6, 3])
 
     def _forward_impl(self, x):
-        # See note [TorchScript super()]
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu(x)

@@ -1,4 +1,5 @@
 data/
+pretrained/
 coverage/
 .coverage
 examples/research/
@@ -8,6 +9,7 @@ colour_mnist.py
 flac.py
 .log
 playground/
+**/*.log
 
 # =================== PYCHARM ===================
 # idea

@@ -92,6 +92,7 @@ class BiasedUTKFace:
                 # print(save_path.resolve(), "paok")
                 if not save_path.exists():
                     rand_indices = torch.randperm(len(self.targets))
+                    save_path.parent.mkdir(exist_ok=True, parents=True)
                     pickle.dump(rand_indices, open(save_path.resolve(), "wb"))
                 else:
                     rand_indices = pickle.load(open(save_path.resolve(), "rb"))
@@ -134,21 +135,6 @@ class BiasedUTKFace:
         ) = get_confusion_matrix(
             num_classes=2, targets=self.targets, biases=self.bias_targets
         )
-
-        # print(f"Use BiasedUTKFace - target_attr: {target_attr}")
-
-        # print(
-        #     f"BiasedUTKFace -- total: {len(self.files)}, target_attr: {self.target_attr}, bias_attr: {self.bias_attr} "
-        #     f"bias_rate: {self.bias_rate}"
-        # )
-
-        # print(
-        #     [
-        #         f"[{split}] target_{i}-bias_{j}: {sum((self.targets == i) & (self.bias_targets == j))}"
-        #         for i in (0, 1)
-        #         for j in (0, 1)
-        #     ]
-        # )
 
     def build(self, filenames, train=False):
         attr_dict = {
