@@ -26,7 +26,7 @@ jobs:
           if [ -f requirements[vision].txt ]; then pip install -r requirements[vision].txt; fi
           if [ -f requirements[graph].txt ]; then pip install -r requirements[graph].txt; fi
           if [ -f requirements[interactive].txt ]; then pip install -r requirements[interactive].txt; fi
-          if [ -f requirements[text].txt ]; then pip install -r requirements[text].txt; fi
+          if [ -f requirements[llm].txt ]; then pip install -r requirements[llm].txt; fi
       - name: Test with pytest
         run: pytest -x --cov=fairbench --cov-report=xml --cov-report=html
       - name: Generate coverage badge
