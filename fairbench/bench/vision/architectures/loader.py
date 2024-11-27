@@ -1,11 +1,12 @@
 import os
-import torch
-import gdown
 
 
 def get_model(
     device, model_dir, model_file, model_url, model_class, model_in_state_dict="model"
 ):
+    import torch
+    import gdown
+
     os.makedirs(model_dir, exist_ok=True)
     model_path = os.path.join(model_dir, model_file)
 

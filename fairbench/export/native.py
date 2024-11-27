@@ -144,7 +144,7 @@ def visualize(
     if fallback:
         print(
             "Interactive visualization dependencies are installed by `pip install fairbench[interactive]`."
-            "\nRun `pip install matplotlib` to enable `fairbench.visualize`. For now, `fairbench.text_visualize` is used as a fallback."
+            "\nFor now, `fairbench.text_visualize` is used as a fallback."
         )
         text_visualize(report, show=show, save=save)
         return

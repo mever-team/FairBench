@@ -63,7 +63,7 @@ def interactive(
     except ImportError:
         print(
             "Interactive visualization dependencies are installed by `pip install fairbench[interactive]`."
-            "\nRun `pip install bokeh` to enable `fairbench.interactive`. For now, `fairbench.interactive_html` is used as a fallback."
+            "\nFor now, `fairbench.interactive_html` is used as a fallback."
         )
         from fairbench.export.interactive_html import interactive_html
 
