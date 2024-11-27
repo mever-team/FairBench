@@ -71,6 +71,34 @@ def test_fnr():
         )
 
 
+def test_frr():
+    for _ in environment():
+        assert fb.frr(fb.astensor([1, 1, 0, 0]), fb.astensor([1, 1, 1, 0])) > 0
+        assert fb.frr(fb.astensor([1, 1, 0, 0]), fb.astensor([1, 0, 0, 0])) == 0
+        assert (
+            fb.fnr(
+                fb.astensor([1, 1, 0, 0]),
+                fb.astensor([1, 1, 1, 0]),
+                fb.astensor([1, 1, 0, 1]),
+            )
+            == 0
+        )
+
+
+def test_far():
+    for _ in environment():
+        assert fb.far(fb.astensor([1, 1, 0, 0]), fb.astensor([1, 1, 1, 0])) == 0
+        assert fb.far(fb.astensor([1, 1, 1, 0]), fb.astensor([1, 1, 0, 0])) > 0
+        assert (
+            fb.far(
+                fb.astensor([1, 1, 1, 0]),
+                fb.astensor([1, 1, 0, 0]),
+                fb.astensor([1, 1, 0, 1]),
+            )
+            == 0
+        )
+
+
 def test_auc():
     for _ in environment():
         assert (

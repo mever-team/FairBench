@@ -1,7 +1,5 @@
 import random
-import re
 import numpy as np
-import re
 
 
 class FairBenchCSVColumn:

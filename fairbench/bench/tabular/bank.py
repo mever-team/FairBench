@@ -1,5 +1,6 @@
 from fairbench.bench.loader import read_csv, features
 from fairbench.fallbacks import LogisticRegression, MinMaxScaler, train_test_split
+from fairbench.bench.loader import cache
 
 
 def bank(
@@ -23,6 +24,7 @@ def bank(
         scaler = MinMaxScaler().fit_transform
     data = read_csv(
         "https://archive.ics.uci.edu/static/public/222/bank+marketing.zip/bank/bank.csv",
+        root=cache(),
         delimiter=";",
         header=True,
     )

@@ -1,5 +1,4 @@
 import fairbench as fb
-from playground.llm.main import report
 
 
 def test_utkface_predict():
@@ -17,7 +16,7 @@ def test_utkface_probabilities():
     y, yhat, sens = fb.bench.vision.utkface(classifier="badd", predict="probabilities")
     badd_report = fb.biasreport(predictions=yhat, labels=y, sensitive=fb.Fork(fb.categories @ sens))
     report = fb.Fork(badd=badd_report, flac=flac_report)
-    fb.text_visualize(report.auc)
+    fb.describe(report)
 
 
 """

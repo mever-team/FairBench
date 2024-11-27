@@ -57,11 +57,11 @@ def tpr(
     if sensitive is None:
         sensitive = predictions.ones_like()
     true_positives = (predictions * labels * sensitive).sum()
-    sum_positives = (predictions * sensitive).sum()
-    tpr_value = 0 if sum_positives == 0 else true_positives / sum_positives
+    desired_positives = (labels * sensitive).sum()
+    tpr_value = 0 if desired_positives == 0 else true_positives / desired_positives
     return Explainable(
         tpr_value,
-        positives=sum_positives.item(),
+        desired_positives=desired_positives.item(),
         true_positives=true_positives.item(),
         samples=sensitive.sum().item(),
     )
@@ -79,11 +79,11 @@ def fpr(
     if sensitive is None:
         sensitive = predictions.ones_like()
     false_positives = (predictions * (max_prediction - labels) * sensitive).sum()
-    sum_negatives = ((max_prediction - predictions) * sensitive).sum()
-    fpr_value = 1 if sum_negatives == 0 else false_positives / sum_negatives
+    desired_positives = (labels * sensitive).sum()
+    fpr_value = 1 if desired_positives == 0 else false_positives / desired_positives
     return Explainable(
         fpr_value,
-        negatives=sum_negatives.item(),
+        desired_positives=desired_positives.item(),
         false_positives=false_positives.item(),
         samples=sensitive.sum().item(),
     )
@@ -103,11 +103,11 @@ def tnr(
     true_negatives = (
         (max_prediction - predictions) * (max_prediction - labels) * sensitive
     ).sum()
-    sum_negatives = ((max_prediction - predictions) * sensitive).sum()
-    tnr_value = 0 if sum_negatives == 0 else true_negatives / sum_negatives
+    desired_negatives = ((max_prediction - labels) * sensitive).sum()
+    tnr_value = 0 if desired_negatives == 0 else true_negatives / desired_negatives
     return Explainable(
         tnr_value,
-        negatives=sum_negatives.item(),
+        desired_negatives=desired_negatives.item(),
         true_negatives=true_negatives.item(),
         samples=sensitive.sum().item(),
     )
@@ -125,11 +125,11 @@ def fnr(
     if sensitive is None:
         sensitive = predictions.ones_like()
     false_negatives = ((max_prediction - predictions) * labels * sensitive).sum()
-    sum_positives = (predictions * sensitive).sum()
-    fnr_value = 1 if sum_positives == 0 else false_negatives / sum_positives
+    desired_negatives = ((max_prediction - labels) * sensitive).sum()
+    fnr_value = 1 if desired_negatives == 0 else false_negatives / desired_negatives
     return Explainable(
         fnr_value,
-        positives=sum_positives.item(),
+        desired_negatives=desired_negatives.item(),
         false_negatives=false_negatives.item(),
         samples=sensitive.sum().item(),
     )
@@ -147,13 +147,11 @@ def far(
     if sensitive is None:
         sensitive = predictions.ones_like()
     false_positives = (predictions * (max_prediction - labels) * sensitive).sum()
-    sum_positives = (predictions * sensitive).sum()
     samples = sensitive.sum()
-    far_value = false_positives / samples
+    far_value = 0 if samples==0 else false_positives / samples
     return Explainable(
         far_value,
         false_positives=false_positives.item(),
-        positives=sum_positives.item(),
         samples=samples.item(),
     )
 
@@ -170,12 +168,10 @@ def frr(
     if sensitive is None:
         sensitive = predictions.ones_like()
     false_negatives = ((max_prediction - predictions) * labels * sensitive).sum()
-    sum_negatives = ((max_prediction - predictions) * sensitive).sum()
     samples = sensitive.sum()
     frr_value = 1 if positives == 0 else false_negatives / samples
     return Explainable(
         frr_value,
         false_negatives=false_negatives.item(),
-        negatives=sum_negatives.item(),
         samples=samples.item(),
     )

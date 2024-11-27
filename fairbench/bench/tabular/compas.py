@@ -1,6 +1,6 @@
 from fairbench.bench.loader import read_csv, features
 from fairbench.fallbacks import LogisticRegression, MinMaxScaler, train_test_split
-import numpy as np
+from fairbench.bench.loader import cache
 
 
 def compas(
@@ -24,6 +24,7 @@ def compas(
         scaler = MinMaxScaler().fit_transform
     data = read_csv(
         "https://raw.githubusercontent.com/propublica/compas-analysis/master/compas-scores-two-years.csv",
+        root=cache(),
         delimiter=",",
         header=True,
     )

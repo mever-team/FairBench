@@ -1,8 +1,7 @@
-from torch.autograd import variable
-
 from fairbench.bench.vision.datasets import get_vision_dataset
 from fairbench.bench.vision.architectures.runner import run_dataset
 from fairbench.bench.vision.architectures.loader import get_model
+from fairbench.bench.loader import cache
 
 
 def waterbirds(
@@ -23,7 +22,7 @@ def waterbirds(
     classifiers = {
         "badd": lambda device: get_model(
             device=device,
-            model_dir="./pretrained/badd",
+            model_dir=cache("pretrained/badd"),
             model_file="waterbirds.pth",
             model_url="https://drive.google.com/uc?id=1BMAis2LSuiQQK7OUn0T4lqKAMuHkfWm1",
             model_class=baddresnet50,
@@ -31,7 +30,7 @@ def waterbirds(
         ),
         "mavias": lambda device: get_model(
             device=device,
-            model_dir="./pretrained/mavias",
+            model_dir=cache("pretrained/mavias"),
             model_file="waterbirds.pt",
             model_url="https://drive.google.com/uc?id=1N5bz67XwkjdC1nliA6onGDt-mSNepNeP",
             model_class=resnet50,

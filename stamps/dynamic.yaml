@@ -25,10 +25,23 @@ accuracy:
   title: "worst accuracy"
   alias: ["min.accuracy", "accuracy"]
   description:
-    "Computes the worst performance among protected groups; this is the minimum
+    "Computes the worst (smallest) accuracy performance among protected groups; this is the minimum
     benefit the system brings to any group."
   caveats:
-    - "The worst accuracy is a lower bound but not an estimation of overall accuracy.
+    - "The worst case is a lower bound but not an estimation of overall performance.
+      There may be different distributions of benefits that could be protected."
+    - "Ensure continuous monitoring and re-evaluation as group dynamics and external factors evolve."
+    - "Ensure that high worst accuracy translates to meaningful benefits across all groups in the real-world context."
+    - "Seek input from affected groups to understand the impact of errors and to inform remediation strategies."
+
+frr:
+  title: "worst false rejection ratio"
+  alias: ["max.frr", "frr"]
+  description:
+    "Computes the worst (largest) false rejection ratio among protected groups; this is the minimum
+    benefit the system brings to any group."
+  caveats:
+    - "The worst case is a lower bound but not an estimation of overall performance.
       There may be different distributions of benefits that could be protected."
     - "Ensure continuous monitoring and re-evaluation as group dynamics and external factors evolve."
     - "Ensure that high worst accuracy translates to meaningful benefits across all groups in the real-world context."

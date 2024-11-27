@@ -6,6 +6,13 @@ from fairbench.fallbacks import get_dummies as _get_dummies
 from fairbench.fallbacks import concat as _concat
 
 
+def cache(arg: str = ""):
+    ret = os.path.join(os.path.expanduser("~"), ".fairbench")
+    if arg:
+        ret = os.path.join(ret, arg)
+    return ret
+
+
 def _download(url, path=None):
     # Get the file name from the URL
     if path is None:
@@ -56,24 +63,25 @@ def _extract_nested_zip(file, folder):
                 )
 
 
-def read_csv(url, *args, **kwargs):
+def read_csv(url: str, root: str = "", *args, **kwargs):
     url = url.replace("\\", "/")
+    root = os.path.join(root, "data")
     if ".zip/" in url:
         url, path = url.split(".zip/", 1)
-        extract_to = "data/"
+        extract_to = root
         if "/" not in path:
-            extract_to += url.split("/")[-1]
+            extract_to = os.path.join(extract_to, url.split("/")[-1])
             path = os.path.join(url.split("/")[-1], path)
-        path = os.path.join("data", path)
+        path = os.path.join(root, path)
         url += ".zip"
-        temp = "data/" + url.split("/")[-1]
+        temp = os.path.join(root, url.split("/")[-1])
         if not os.path.exists(path):
             os.makedirs(os.path.join(*path.split("/")[:-1]), exist_ok=True)
             _download(url, temp)
             _extract_nested_zip(temp, extract_to)
     else:
         shortened = "/".join(url.split("/")[-4:])
-        path = "data/" + shortened
+        path = os.path.join(root, shortened)
         if not os.path.exists(path):
             os.makedirs("/".join(path.split("/")[:-1]), exist_ok=True)
             _download(url, path)

@@ -1,6 +1,7 @@
 from fairbench.bench.loader import read_csv, features
 from fairbench.fallbacks import LogisticRegression, MinMaxScaler, train_test_split
 import numpy as np
+from fairbench.bench.loader import cache
 
 
 def adult(
@@ -23,11 +24,13 @@ def adult(
         scaler = MinMaxScaler().fit_transform
     train = read_csv(
         "https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data",
+        root=cache(),
         header=None,
         skipinitialspace=True,
     )
     test = read_csv(
         "https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.test",
+        root=cache(),
         header=None,
         skipinitialspace=True,
         skiprows=[0],
