@@ -12,9 +12,10 @@ A comprehensive AI fairness exploration framework.
 - :hammer_and_wrench: Measure building blocks
 - :gear: ML integration (`numpy`,`torch`,`tensorflow`,`jax`)
 
-*FairBench always strives to be compatible with the latest Python release, 
-but rolling rollouts of ML libraries usually make them compatible
-with the language's previous release (currently 3.12).*
+*FairBench strives to be compatible with the latest Python release, 
+but compatibility delays of third-party ML libraries usually 
+means that only the language's previous release is tested and
+stable (currently 3.12).*
 
 ## [Documentation](https://fairbench.readthedocs.io/)
 

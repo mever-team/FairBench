@@ -30,7 +30,7 @@ def rdiff(
     values: Iterable[ep.Tensor], base: Iterable[ep.Tensor]
 ) -> Iterable[ep.Tensor]:
     return [
-        abs(1 - value1 / value2) for value1 in values for value2 in base if value2 != 0
+        abs(1 - value1 / value2) for value1 in values for value2 in base if value2 != 0 and value1<=value2
     ]
 
 

@@ -5,7 +5,7 @@ from fairbench.bench.vision.architectures.loader import get_model
 
 def celeba(
     classifier="flac",
-    data_root="./data/celeba",
+    data_root="./data/celeba_biased",
     predict="predict",
     device=None,
 ):

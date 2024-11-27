@@ -22,6 +22,8 @@ common_performance_metrics = (
     metrics.pr,
     metrics.tpr,
     metrics.tnr,
+    metrics.frr,
+    metrics.far,
     metrics.auc,
     metrics.avgscore,
     metrics.tophr,
