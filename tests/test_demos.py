@@ -23,6 +23,7 @@ def test_settings(monkeypatch):
 
 def test_curve_visualization(monkeypatch):
     from matplotlib import pyplot as plt
+
     monkeypatch.setattr(plt, "show", lambda: None)
 
     for _ in environment():

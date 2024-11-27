@@ -148,7 +148,7 @@ def far(
         sensitive = predictions.ones_like()
     false_positives = (predictions * (max_prediction - labels) * sensitive).sum()
     samples = sensitive.sum()
-    far_value = 0 if samples==0 else false_positives / samples
+    far_value = 0 if samples == 0 else false_positives / samples
     return Explainable(
         far_value,
         false_positives=false_positives.item(),

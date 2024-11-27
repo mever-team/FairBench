@@ -1,7 +1,9 @@
 from tqdm import tqdm
 
 
-def run_dataset(classifiers, test_loader, classifier, predict, device, unpacking=(0,1,2)):
+def run_dataset(
+    classifiers, test_loader, classifier, predict, device, unpacking=(0, 1, 2)
+):
     import torch
 
     if device is None:
@@ -27,9 +29,11 @@ def run_dataset(classifiers, test_loader, classifier, predict, device, unpacking
             if predict == "predict":
                 preds = outputs.data.max(1, keepdim=True)[1].squeeze(1)
             elif predict == "probabilities":
-                preds = torch.softmax(outputs, dim=1)[:,1]
+                preds = torch.softmax(outputs, dim=1)[:, 1]
             else:
-                raise Exception("Invalid predict value. Use 'predict' or 'probabilities'.")
+                raise Exception(
+                    "Invalid predict value. Use 'predict' or 'probabilities'."
+                )
 
             yhat.extend(preds.cpu().tolist())
 

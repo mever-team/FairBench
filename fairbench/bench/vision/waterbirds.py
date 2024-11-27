@@ -37,4 +37,6 @@ def waterbirds(
         ),
     }
     test_loader = get_vision_dataset("waterbirds")(data_root, batch_size=64)
-    return run_dataset(classifiers, test_loader, classifier, predict, device, unpacking=[0, 2, 3])
+    return run_dataset(
+        classifiers, test_loader, classifier, predict, device, unpacking=[0, 2, 3]
+    )
