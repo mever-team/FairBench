@@ -14,7 +14,7 @@ A comprehensive AI fairness exploration framework.
 
 *FairBench always strives to be compatible with the latest Python release, 
 but rolling rollouts of ML libraries usually make them compatible
-with the language previous release (currently 3.12).*
+with the language's previous release (currently 3.12).*
 
 ## [Documentation](https://fairbench.readthedocs.io/)
 
