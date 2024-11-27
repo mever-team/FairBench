@@ -24,7 +24,7 @@ def test_utkface_probabilities():
         predictions=yhat, labels=y, sensitive=fb.Fork(fb.categories @ sens)
     )
     report = fb.Fork(badd=badd_report, flac=flac_report)
-    fb.describe(report)
+    fb.describe(report.accuracy)
 
 
 """

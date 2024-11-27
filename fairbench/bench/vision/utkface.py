@@ -6,7 +6,7 @@ from fairbench.bench.loader import cache
 
 def utkface(
     classifier="flac",
-    data_root="./data/utk_face",
+    data_root=None,
     predict="predict",
     device=None,
 ):
@@ -28,6 +28,8 @@ def utkface(
             model_class=ResNet18,
         ),
     }
+    if data_root is None:
+        data_root = cache("data/utk_face")
     test_loader = get_vision_dataset("utk_face")(
         data_root, batch_size=64, bias_attr="race", split="test", aug=False
     )

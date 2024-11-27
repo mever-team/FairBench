@@ -6,7 +6,7 @@ from fairbench.bench.loader import cache
 
 def waterbirds(
     classifier="flac",
-    data_root="./data/waterbirds",
+    data_root=None,
     predict="predict",
     device=None,
 ):
@@ -36,6 +36,8 @@ def waterbirds(
             model_class=resnet50,
         ),
     }
+    if data_root is None:
+        data_root = cache("data/waterbirds")
     test_loader = get_vision_dataset("waterbirds")(data_root, batch_size=64)
     return run_dataset(
         classifiers, test_loader, classifier, predict, device, unpacking=[0, 2, 3]

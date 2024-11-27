@@ -6,7 +6,7 @@ from fairbench.bench.loader import cache
 
 def celeba(
     classifier="flac",
-    data_root=cache("data/celeba_biased"),
+    data_root=None,
     predict="predict",
     device=None,
 ):
@@ -28,6 +28,8 @@ def celeba(
             model_class=ResNet18,
         ),
     }
+    if data_root is None:
+        data_root = cache("data/celeba_biased")
     test_loader = get_vision_dataset("celeba")(
         data_root, batch_size=64, target_attr="blonde", split="valid", aug=False
     )
