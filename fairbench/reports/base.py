@@ -6,13 +6,11 @@ from typing import Union, Iterable, Callable
 
 def reportargsparse(*args, **kwargs):
     for arg in args:
-        if not isinstance(arg, dict) and not isinstance(arg, Fork):
-            raise TypeError(
-                "Reports only support dicts of arguments as positional arguments"
-            )
+        assert isinstance(arg, dict) or isinstance(
+            arg, Fork
+        ), "Reports only support dicts of arguments as positional arguments"
         for k, v in arg.items():
-            if k in kwargs:
-                raise TypeError(f"Report argument {k} provided multiple times")
+            assert k not in kwargs, f"Report argument {k} provided multiple times"
             kwargs[k] = v
     return kwargs
 

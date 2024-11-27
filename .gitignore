@@ -10,6 +10,7 @@ flac.py
 .log
 playground/
 **/*.log
+temp.html
 
 # =================== PYCHARM ===================
 # idea
