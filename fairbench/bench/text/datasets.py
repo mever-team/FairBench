@@ -26,8 +26,9 @@ def simplequestions(
     cache="dataset.json",
     query_prototype=None,
     n=1000,
+    overwrite=False,
 ):
-    if os.path.exists(cache):
+    if os.path.exists(cache) and not overwrite:
         with open(cache, "r") as file:
             dataset = json.load(file)
         return dataset, dataset["reply"]
@@ -58,8 +59,9 @@ def simplequestions(
             dataset[attr].append(value)
         dataset["query"].append(query)
         dataset["reply"].append(reply)
-        print(description, reply)
+        # print(description, reply)
 
+    os.makedirs(os.path.dirname(cache), exist_ok=True)
     with open(cache, "w") as file:
         json.dump(dataset, file, indent=2)
 

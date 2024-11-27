@@ -1,6 +1,6 @@
-class LLM:
+"""class LLM:
     def __init__(
-        self, model_name="facebook/opt-2.7b", quantization="8bit", device=None
+        self, model_name, quantization="none", device=None
     ):
         from transformers import AutoModelForCausalLM, AutoTokenizer
         import torch
@@ -30,6 +30,7 @@ class LLM:
         self.model = model
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         self.device = device
+        print("Model laoded")
 
     def __call__(self, query):
         inputs = self.tokenizer(query, return_tensors="pt").to(self.device)
@@ -38,3 +39,11 @@ class LLM:
         )
         response = self.tokenizer.decode(output_tokens[0], skip_special_tokens=True)
         return response
+"""
+
+
+def Generator(name):
+    from transformers import pipeline
+
+    generator = pipeline("text-generation", model=name, max_length=47)
+    return lambda prompt: generator(prompt)[0]["generated_text"]

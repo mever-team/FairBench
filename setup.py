@@ -23,6 +23,9 @@ with open("requirements[interactive].txt", "r") as file:
 with open("requirements[vision].txt", "r") as file:
     vision_requirements = file.read().splitlines()
 
+with open("requirements[llm].txt", "r") as file:
+    llm_requirements = file.read().splitlines()
+
 with open("requirements[graph].txt", "r") as file:
     graph_requirements = file.read().splitlines()
 
@@ -46,5 +49,6 @@ setuptools.setup(
         "interactive": interactive_requirements,
         "vision": vision_requirements,
         "graph": graph_requirements,
+        "llm": llm_requirements,
     },
 )

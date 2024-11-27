@@ -1,0 +1,8 @@
+numpy
+eagerpy
+makefun
+objwrap
+pyyaml
+requests
+ansiplot
+transformers
