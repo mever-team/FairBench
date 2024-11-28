@@ -1,3 +1,5 @@
+from sympy.liealgebras.type_e import TypeE
+
 from fairbench.core_v2.values import Descriptor
 from fairbench.core_v2.sensitive import Sensitive, DataError, NotComputable
 
@@ -23,4 +25,6 @@ def report(sensitive: Sensitive, measures, reductions, **kwargs):
     except AssertionError as e:
         raise ValueError(str(e)) from None
     except ValueError as e:
+        raise ValueError(str(e)) from None
+    except TypeError as e:
         raise ValueError(str(e)) from None

@@ -19,4 +19,4 @@ def ratio(values: Iterable[Value]) -> list[float]:
 
 def relative(values: Iterable[Value]) -> list[float]:
     values = number(values)
-    return [abs(1 - i / j) for i in values for j in values if i <= j]
+    return [abs(1 - i / j) for i in values for j in values if i <= j != 0]

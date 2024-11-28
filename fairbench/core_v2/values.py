@@ -38,7 +38,7 @@ class Value:
         self.depends = (
             {}
             if depends is None
-            else {dep.descriptor.name: dep for dep in depends if dep.exists()}
+            else {dep.descriptor.alias: dep for dep in depends if dep.exists()}
         )
 
     def __float__(self):
@@ -63,7 +63,18 @@ class Value:
         assert (
             len(self.depends) == 1
         ), f"There were multiple value candidates for dimension `{self.descriptor}`"
-        return next(iter(self.depends.values())).single()
+        ret = next(iter(self.depends.values())).single()
+        item = ret.descriptor
+        return Value(
+            value=ret.value,
+            descriptor=Descriptor(
+                self.descriptor.name + " " + item.name,
+                self.descriptor.role + " " + item.role,
+                item.details + " of " + self.descriptor.details,
+                alias=item.alias,
+            ),
+            depends=list(ret.depends.values()),
+        )
 
     def flatten(self, to_float=False):
         assert (
@@ -79,7 +90,7 @@ class Value:
 
     def exists(self) -> bool:
         if self.value is not None:
-            return self.value
+            return True
         for dep in self.depends.values():
             if dep.exists():
                 return True
@@ -128,7 +139,12 @@ class Value:
     def __str__(self):
         return self.tostring()
 
-    def __getitem__(self, item: Descriptor) -> "Value":
+    def __getitem__(self, item: Descriptor | str) -> "Value":
+        if isinstance(item, str):
+            assert (
+                item in self.depends
+            ), f"Key '{item}' must be either in {list(self.depends.keys())} or a descriptor."
+            item = self.depends[item]
         item = item.descriptor
         item_hasher = item.alias
         if item_hasher in self.depends:
