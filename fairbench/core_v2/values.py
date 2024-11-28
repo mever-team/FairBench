@@ -1,8 +1,20 @@
-from transformers.pipelines import values
-
+class TargetedNumber:
+    def __init__(self, value, target):
+        value = float(value)
+        target = float(target)
+        self.value = value
+        self.target = target
+    def __float__(self):
+        return self.value
 
 class Descriptor:
-    def __init__(self, name, role, details: str | None = None, alias: str = None):
+    def __init__(
+        self,
+        name,
+        role,
+        details: str | None = None,
+        alias: str = None,
+    ):
         self.name = name
         self.role = role
         self.details = name + " " + role if details is None else details
@@ -63,7 +75,7 @@ class Value:
     def values(self, role):
         assert role is not None
         keys = self.keys(role)
-        return [self|key for key in keys]
+        return [self | key for key in keys]
 
     def single(self):
         if self.value is not None:
@@ -73,16 +85,18 @@ class Value:
         ), f"There were multiple value candidates for dimension `{self.descriptor}`"
         ret = next(iter(self.depends.values())).single()
         item = ret.descriptor
-        return Value(
+        """return Value(
             value=ret.value,
             descriptor=Descriptor(
                 self.descriptor.name + " " + item.name,
                 self.descriptor.role + " " + item.role,
                 item.details + " of " + self.descriptor.details,
                 alias=item.alias,
+                ideal_value=item.ideal_value
             ),
             depends=list(ret.depends.values()),
-        )
+        )"""
+        return item(depends=list(ret.depends.values()))
 
     def flatten(self, to_float=False):
         assert (
@@ -118,6 +132,8 @@ class Value:
         if self.value is not None:
             ret += f" {self.value:.3f}"
             depth -= 1
+            if details and self.descriptor.ideal_value is not None:
+                ret += f" ideally {self.descriptor.ideal_value:.3f}"
         if details:
             ret += f" ({self.descriptor.details})"
         if depth >= 0:
@@ -162,15 +178,19 @@ class Value:
             return self.depends[item_hasher]
         if item_hasher == self.descriptor.alias:
             return self
-        ret = Value(
+        """ret = Value(
             None,
             descriptor=Descriptor(
                 self.descriptor.name + " " + item.name,
                 self.descriptor.role + " " + item.role,
                 item.details + " of " + self.descriptor.details,
                 alias=item.alias,
+                ideal_value=item.ideal_value
             ),
             depends=[dep[item].rebase(dep.descriptor) for dep in self.depends.values()],
+        )"""
+        ret = item(
+            depends=[dep[item].rebase(dep.descriptor) for dep in self.depends.values()]
         )
         return ret
 

@@ -20,7 +20,7 @@ def pr(predictions, sensitive=None):
     samples = sensitive.sum()
     value = 0 if samples == 0 else positives / samples
     return c.Value(
-        value, depends=[quantities.positives(positives), quantities.samples(samples)]
+        c.TargetedNumber(value, 1), depends=[quantities.positives(positives), quantities.samples(samples)]
     )
 
 

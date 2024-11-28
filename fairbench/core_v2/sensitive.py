@@ -16,13 +16,16 @@ class DataError(Exception):
 
 
 multidimensional = Descriptor(
-    "multidimensional", "analysis", "analysis that accounts for several groups"
+    "multidimensional", "analysis", "analysis for several groups"
 )
 
 
 class Sensitive:
     def __init__(self, branches):
-        self.descriptors = {key: Descriptor(key, "group", "the value for group '"+key+"'") for key in branches}
+        self.descriptors = {
+            key: Descriptor(key, "group", "the value for group '" + key + "'")
+            for key in branches
+        }
         self.branches = {key: np.array(value) for key, value in branches.items()}
         self.descriptor = multidimensional
 
@@ -43,7 +46,7 @@ class Sensitive:
             for measure in measures:
                 try:
                     sig = inspect.signature(measure)
-                    valid_params = set(sig.parameters.keys())
+                    valid_params = set(sig.parameters)
                     valid_kwargs = {
                         k: v for k, v in kwargs.items() if k in valid_params
                     }
