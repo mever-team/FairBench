@@ -1,10 +1,14 @@
 class Descriptor:
-    def __init__(self, name, role, details="", hash_name: str=None):
+    def __init__(self, name, role, details: str | None = None, alias: str = None):
         self.name = name
         self.role = role
-        self.descriptor = self
-        self.details = details
-        self.hasher = name if hash_name is None else hash_name  # use this to search for the descriptor
+        self.details = name + " " + role if details is None else details
+        self.alias = (
+            name if alias is None else alias
+        )  # use this to search for the descriptor
+        self.descriptor: "Descriptor" = (
+            self  # for interoperability with functions that set descriptors
+        )
 
     def __str__(self):
         return f"[{self.role}] {self.name}"
@@ -16,10 +20,11 @@ class Descriptor:
         return Value(value, self, depends)
 
     def __repr__(self):
-        return self.__str__()+" "+str(hex(id(self)))
+        return self.__str__() + " " + str(hex(id(self)))
 
 
 missing_descriptor = Descriptor("unknown", "any role")
+
 
 class Value:
     def __init__(
@@ -29,7 +34,7 @@ class Value:
         depends: list["Value"] = (),
     ):
         self.value = value
-        self.descriptor = descriptor.descriptor
+        self.descriptor: Descriptor = descriptor.descriptor
         self.depends = (
             {}
             if depends is None
@@ -45,7 +50,7 @@ class Value:
             add_to = dict()
         for dep in self.depends.values():
             if role is None or dep.descriptor.role == role:
-                add_to[dep.descriptor.hasher] = dep.descriptor
+                add_to[dep.descriptor.alias] = dep.descriptor
             dep._keys(role, add_to)
         return add_to
 
@@ -83,35 +88,61 @@ class Value:
     def rebase(self, dep: Descriptor):
         return Value(self.value, dep, list(self.depends.values()))
 
-    def tostring(self, tab="", depth=0):
+    def tostring(self, tab="", depth=0, details: bool = False):
         ret = tab + str(self.descriptor.descriptor)
         ret = ret.ljust(40)
         if not self.depends and self.value is None:
-            return f"{ret} ---"
+            ret += " ---"
+            if details:
+                ret += f" ({self.descriptor.details})"
+            return ret
         if self.value is not None:
             ret += f" {self.value:.3f}"
             depth -= 1
+        if details:
+            ret += f" ({self.descriptor.details})"
         if depth >= 0:
             for dep in self.depends.values():
-                ret += f"\n{dep.tostring(tab+'  ', depth)}"
+                ret += f"\n{dep.tostring(tab+'  ', depth, details)}"
         return ret
+
+    def serialize(self, depth=0, details: bool = False):
+        result = {
+            "descriptor": str(self.descriptor.descriptor),
+            "value": None if self.value is None else round(self.value, 3),
+            "depends": [],
+        }
+        if not self.depends and self.value is None:
+            if details:
+                result["details"] = self.descriptor.details
+            return result
+        if self.value is not None:
+            depth -= 1
+        if details:
+            result["details"] = self.descriptor.details
+        if depth >= 0:
+            for dep in self.depends.values():
+                result["depends"].append(dep.serialize(depth, details))
+        return result
 
     def __str__(self):
         return self.tostring()
 
     def __getitem__(self, item: Descriptor) -> "Value":
         item = item.descriptor
-        item_hasher = item.hasher
+        item_hasher = item.alias
         if item_hasher in self.depends:
             return self.depends[item_hasher]
-        if item_hasher == self.descriptor.hasher:
+        if item_hasher == self.descriptor.alias:
             return self
         ret = Value(
             None,
-            descriptor=Descriptor(self.descriptor.name + " " + item.name,
-                       self.descriptor.role + " " + item.role,
-                       item.details + " of "+self.descriptor.details,
-                       hash_name=item.hasher),
+            descriptor=Descriptor(
+                self.descriptor.name + " " + item.name,
+                self.descriptor.role + " " + item.role,
+                item.details + " of " + self.descriptor.details,
+                alias=item.alias,
+            ),
             depends=[dep[item].rebase(dep.descriptor) for dep in self.depends.values()],
         )
         return ret

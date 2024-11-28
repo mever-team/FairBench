@@ -1,15 +1,21 @@
 from fairbench.core_v2.values import Descriptor
 import numpy as np
 
+
 class NotComputable(Exception):
     def __init__(self, description="Not computable"):
         super().__init__(description)
+
 
 class DataError(Exception):
     def __init__(self, description):
         super().__init__(description)
 
-assessment = Descriptor("assessment", "results")
+
+multidimensional = Descriptor(
+    "multidimensional", "assessment", "multi-dimensional analysis"
+)
+
 
 class Sensitive:
     def __init__(self, branches):
@@ -23,7 +29,7 @@ class Sensitive:
         if isinstance(item, str):
             return self.descriptors[item]
         item = item.descriptor
-        return self.branches[item.hasher]
+        return self.branches[item.alias]
 
     def assessment(self, measures, **kwargs):
         assessment_values = list()
@@ -37,4 +43,4 @@ class Sensitive:
                     pass
             if measure_values:
                 assessment_values.append(descriptor(depends=measure_values))
-        return assessment(depends=assessment_values)
+        return multidimensional(depends=assessment_values)
