@@ -26,12 +26,12 @@ missing_descriptor = Descriptor("unknown", "any role")
 class Value:
     def __init__(
         self,
-        value: any,
+        value: any = None,
         descriptor: Descriptor = missing_descriptor,
         depends: list["Value"] = (),
     ):
         self.value = value
-        self.descriptor = descriptor
+        self.descriptor = descriptor.descriptor
         self.depends = (
             {}
             if depends is None
@@ -39,7 +39,7 @@ class Value:
         )
 
     def __float__(self):
-        assert self.value is not None
+        assert self.value is not None, "Tried to convert a None value content to float"
         return float(self.value)
 
     def keys(self, role=None, add_to: set[Descriptor] = None):
@@ -82,16 +82,17 @@ class Value:
     def rebase(self, dep: Descriptor):
         return Value(self.value, dep, list(self.depends.values()))
 
-    def tostring(self, tab="", depth=MAXINT):
+    def tostring(self, tab="", depth=0):
         ret = tab + str(self.descriptor.descriptor)
         ret = ret.ljust(35)
         if not self.depends and self.value is None:
             return f"{ret} ---"
         if self.value is not None:
             ret += f" {self.value:.3f}"
-        if depth > 0:
+            depth -= 1
+        if depth >= 0:
             for dep in self.depends.values():
-                ret += f"\n{dep.tostring(tab+'  ', depth-1)}"
+                ret += f"\n{dep.tostring(tab+'  ', depth)}"
         return ret
 
     def __str__(self):

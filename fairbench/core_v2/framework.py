@@ -17,8 +17,8 @@ def measure(description):
             value = func(**kwargs)
             if not isinstance(value, Value):
                 value = Value(value, descriptor, [])
-            assert isinstance(value.value, float)
-            assert 0 <= value.value <= 1
+            assert isinstance(value.value, float), f"{descriptor} computed {type(value.value)} instead of float"
+            assert 0 <= value.value <= 1, f"{descriptor} computed {value.value} that is not in [0,1]"
             return value.rebase(descriptor)
         wrapper.descriptor = descriptor
         return wrapper
@@ -48,7 +48,7 @@ def reduction(description):
                 value = func(arg)
                 ret.append(Value(value, descriptors, dependencies))
             return Value(None, descriptor, ret)
-
+        wrapper.descriptor = descriptor
         return wrapper
 
     return strategy
