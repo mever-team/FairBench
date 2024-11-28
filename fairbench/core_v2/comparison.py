@@ -7,8 +7,10 @@ class Comparison:
         self.depends = list()
 
     def instance(self, name, report: Value):
-        instance_descriptor = Descriptor(name, "instance")
-        self.depends.append(report.rebase(instance_descriptor))
+        instance_descriptor = Descriptor(name+" "+report.descriptor.details, report.descriptor.role+" instance", report.descriptor.details)
+        report = report.rebase(instance_descriptor)
+        #report = instance_descriptor(depends=[report])
+        self.depends.append(report)
         return self
 
     def clear(self):

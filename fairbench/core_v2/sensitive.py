@@ -16,14 +16,15 @@ class DataError(Exception):
 
 
 multidimensional = Descriptor(
-    "multidimensional", "assessment", "multi-dimensional analysis"
+    "multidimensional", "analysis", "analysis that accounts for several groups"
 )
 
 
 class Sensitive:
     def __init__(self, branches):
-        self.descriptors = {key: Descriptor(key, "attribute") for key in branches}
+        self.descriptors = {key: Descriptor(key, "group", "the value for group '"+key+"'") for key in branches}
         self.branches = {key: np.array(value) for key, value in branches.items()}
+        self.descriptor = multidimensional
 
     def keys(self):
         return self.branches.keys()
@@ -51,4 +52,4 @@ class Sensitive:
                     pass
             if measure_values:
                 assessment_values.append(descriptor(depends=measure_values))
-        return multidimensional(depends=assessment_values)
+        return self.descriptor(depends=assessment_values)

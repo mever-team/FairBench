@@ -1,10 +1,4 @@
-from sympy.liealgebras.type_e import TypeE
-
-from fairbench.core_v2.values import Descriptor
 from fairbench.core_v2.sensitive import Sensitive, DataError, NotComputable
-
-
-report_descriptor = Descriptor("report", "results")
 
 
 def report(sensitive: Sensitive, measures, reductions, **kwargs):
@@ -19,7 +13,7 @@ def report(sensitive: Sensitive, measures, reductions, **kwargs):
                 reduction_results.append(value)
             except NotComputable:
                 pass
-        return report_descriptor(depends=reduction_results)
+        return sensitive.descriptor(depends=reduction_results)
     except DataError as e:
         raise DataError(str(e)) from None
     except AssertionError as e:

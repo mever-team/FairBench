@@ -17,8 +17,8 @@ def measure(description):
             value = func(**kwargs)
             if not isinstance(value, Value):
                 value = Value(value, descriptor, [])
-            assert isinstance(
-                value.value, float
+            assert isinstance(value.value, float) or isinstance(
+                value.value, int
             ), f"{descriptor} computed {type(value.value)} instead of float"
             assert (
                 0 <= value.value <= 1

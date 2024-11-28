@@ -1,3 +1,6 @@
+from transformers.pipelines import values
+
+
 class Descriptor:
     def __init__(self, name, role, details: str | None = None, alias: str = None):
         self.name = name
@@ -56,6 +59,11 @@ class Value:
 
     def keys(self, role=None):
         return list(self._keys(role).values())
+
+    def values(self, role):
+        assert role is not None
+        keys = self.keys(role)
+        return [self|key for key in keys]
 
     def single(self):
         if self.value is not None:
@@ -136,6 +144,9 @@ class Value:
                 result["depends"].append(dep.serialize(depth, details))
         return result
 
+    def reshape(self, dim: Descriptor):
+        return next(iter(dim.descriptor(depends=[self | dim]).depends.values()))
+
     def __str__(self):
         return self.tostring()
 
@@ -167,3 +178,6 @@ class Value:
         if other is float:
             return float(self)
         return self.__getitem__(other)
+
+    def __and__(self, other):
+        return self.reshape(other)
