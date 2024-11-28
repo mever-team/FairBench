@@ -20,6 +20,9 @@ class Descriptor:
     def __call__(self, value: any = None, depends: list["Value"] = None):
         return Value(value, self, depends)
 
+    def __repr__(self):
+        return self.__str__()+" "+str(hex(id(self)))
+
 
 missing_descriptor = Descriptor("unknown", "any role")
 
@@ -39,7 +42,7 @@ class Value:
         )
 
     def __float__(self):
-        assert self.value is not None, "Tried to convert a None value content to float"
+        assert self.value is not None, "Tried to represent None as a float"
         return float(self.value)
 
     def keys(self, role=None, add_to: set[Descriptor] = None):
@@ -109,4 +112,6 @@ class Value:
         )
 
     def __or__(self, other):
+        if other is float:
+            return float(self)
         return self.__getitem__(other)
