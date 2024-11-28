@@ -1,15 +1,10 @@
-from xmlrpc.client import MAXINT
-
-
 class Descriptor:
-    def __init__(self, name, role, details=""):
+    def __init__(self, name, role, details="", hash_name: str=None):
         self.name = name
         self.role = role
         self.descriptor = self
         self.details = details
-
-    def __hash__(self):
-        return self.name.__hash__()
+        self.hasher = name if hash_name is None else hash_name  # use this to search for the descriptor
 
     def __str__(self):
         return f"[{self.role}] {self.name}"
@@ -45,14 +40,17 @@ class Value:
         assert self.value is not None, "Tried to represent None as a float"
         return float(self.value)
 
-    def keys(self, role=None, add_to: set[Descriptor] = None):
+    def _keys(self, role=None, add_to: dict[str, Descriptor] = None):
         if add_to is None:
-            add_to = set()
+            add_to = dict()
         for dep in self.depends.values():
             if role is None or dep.descriptor.role == role:
-                add_to.add(dep.descriptor)
-            dep.keys(role, add_to)
+                add_to[dep.descriptor.hasher] = dep.descriptor
+            dep._keys(role, add_to)
         return add_to
+
+    def keys(self, role=None):
+        return list(self._keys(role).values())
 
     def single(self):
         if self.value is not None:
@@ -87,7 +85,7 @@ class Value:
 
     def tostring(self, tab="", depth=0):
         ret = tab + str(self.descriptor.descriptor)
-        ret = ret.ljust(35)
+        ret = ret.ljust(40)
         if not self.depends and self.value is None:
             return f"{ret} ---"
         if self.value is not None:
@@ -102,14 +100,21 @@ class Value:
         return self.tostring()
 
     def __getitem__(self, item: Descriptor) -> "Value":
-        item_name = item.descriptor.name
-        if item_name in self.depends:
-            return self.depends[item_name]
-        return Value(
+        item = item.descriptor
+        item_hasher = item.hasher
+        if item_hasher in self.depends:
+            return self.depends[item_hasher]
+        if item_hasher == self.descriptor.hasher:
+            return self
+        ret = Value(
             None,
-            item,
-            [dep[item].rebase(dep.descriptor) for dep in self.depends.values()],
+            descriptor=Descriptor(self.descriptor.name + " " + item.name,
+                       self.descriptor.role + " " + item.role,
+                       item.details + " of "+self.descriptor.details,
+                       hash_name=item.hasher),
+            depends=[dep[item].rebase(dep.descriptor) for dep in self.depends.values()],
         )
+        return ret
 
     def __or__(self, other):
         if other is float:

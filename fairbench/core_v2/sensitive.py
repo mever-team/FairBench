@@ -14,7 +14,7 @@ assessment = Descriptor("assessment", "results")
 class Sensitive:
     def __init__(self, branches):
         self.descriptors = {key: Descriptor(key, "attribute") for key in branches}
-        self.branches = {self.descriptors[key]: np.array(value) for key, value in branches.items()}
+        self.branches = {key: np.array(value) for key, value in branches.items()}
 
     def keys(self):
         return self.branches.keys()
@@ -23,11 +23,12 @@ class Sensitive:
         if isinstance(item, str):
             return self.descriptors[item]
         item = item.descriptor
-        return self.branches[item]
+        return self.branches[item.hasher]
 
     def assessment(self, measures, **kwargs):
         assessment_values = list()
-        for descriptor, sensitive in self.branches.items():
+        for key, sensitive in self.branches.items():
+            descriptor = self.descriptors[key]
             measure_values = list()
             for measure in measures:
                 try:
