@@ -1,9 +1,15 @@
+from xmlrpc.client import MAXINT
+
+
 class Descriptor:
     def __init__(self, name, role, details=""):
         self.name = name
         self.role = role
         self.descriptor = self
         self.details = details
+
+    def __hash__(self):
+        return self.name.__hash__()
 
     def __str__(self):
         return f"[{self.role}] {self.name}"
@@ -25,13 +31,22 @@ class Value:
         assert self.value is not None
         return float(self.value)
 
+    def keys(self, role=None, add_to: set[Descriptor]=None):
+        if add_to is None:
+            add_to = set()
+        for dep in self.depends.values():
+            if role is None or dep.descriptor.role == role:
+                add_to.add(dep.descriptor)
+            dep.keys(role, add_to)
+        return add_to
+
     def single(self):
         if self.value is not None:
             return self
         assert len(self.depends) == 1, f"There were multiple value candidates for dimension `{self.descriptor}`"
         return next(iter(self.depends.values())).single()
 
-    def flatten(self, to_float=True):
+    def flatten(self, to_float=False):
         assert self.value is None, f"Cannot flatten a numeric value for dimension {self.descriptor}"
         assert self.depends, f"There were no retrieved computations to flatten for dimension `{self.descriptor}`"
         ret = [dep.single() for dep in self.depends.values()]
@@ -50,15 +65,16 @@ class Value:
     def rebase(self, dep: Descriptor):
         return Value(self.value, dep, list(self.depends.values()))
 
-    def tostring(self, tab=""):
+    def tostring(self, tab="", depth=MAXINT):
         ret = tab+str(self.descriptor)
-        ret = ret.ljust(30)
+        ret = ret.ljust(35)
         if not self.depends and self.value is None:
             return f"{ret} ---"
         if self.value is not None:
             ret += f" {self.value:.3f}"
-        for dep in self.depends.values():
-            ret += f"\n{dep.tostring(tab+'  ')}"
+        if depth > 0:
+            for dep in self.depends.values():
+                ret += f"\n{dep.tostring(tab+'  ', depth-1)}"
         return ret
 
     def __str__(self):
@@ -69,5 +85,3 @@ class Value:
         if item_name in self.depends:
             return self.depends[item_name]
         return Value(None, item, [dep[item].rebase(dep.descriptor) for dep in self.depends.values()])
-
-
