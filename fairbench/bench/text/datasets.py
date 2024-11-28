@@ -29,7 +29,6 @@ def simplequestions(
 ):
     import tqdm
 
-
     if os.path.exists(cache) and not overwrite:
         with open(cache, "r") as file:
             dataset = json.load(file)

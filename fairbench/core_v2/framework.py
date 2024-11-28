@@ -8,8 +8,10 @@ def measure(description):
     Measures compute a float value that is wrapped with their own descriptor
     and dependencies.
     """
+
     def strategy(func):
-        descriptor = Descriptor(func.__name, "measure", description)
+        descriptor = Descriptor(func.__name__, "measure", description)
+
         @wraps(func)
         def wrapper(**kwargs) -> Value:
             value = func(**kwargs)
@@ -18,7 +20,9 @@ def measure(description):
             assert isinstance(value.value, float)
             assert 0 <= value.value <= 1
             return value.rebase(descriptor)
+        wrapper.descriptor = descriptor
         return wrapper
+
     return strategy
 
 
@@ -29,8 +33,10 @@ def reduction(description):
     A wrapped method runs to aggregate the list of numbers into one number.
     The resulting numbers are all packed as the dependencies of one big value.
     """
+
     def strategy(func):
         descriptor = Descriptor(func.__name__, "reduction", description)
+
         @wraps(func)
         def wrapper(values: Iterable[Value]) -> Value:
             values = list(values)
@@ -42,5 +48,7 @@ def reduction(description):
                 value = func(arg)
                 ret.append(Value(value, descriptors, dependencies))
             return Value(None, descriptor, ret)
+
         return wrapper
+
     return strategy

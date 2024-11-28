@@ -4,7 +4,6 @@ def run_dataset(
     import torch
     from tqdm import tqdm
 
-
     if device is None:
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
