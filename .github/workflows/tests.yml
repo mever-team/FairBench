@@ -23,14 +23,12 @@ jobs:
           pip install pytest pytest-cov coverage-badge
           pip install objwrap numpy eagerpy distributed makefun matplotlib wget scikit-learn pandas requests pyyaml
           pip install torch
-          pip install tensorflow
-          pip install keras
           pip install jax[cpu]
+          pip install "transformers>=4.0,<5.0" "tensorflow>=2.0,<3.0" tf-keras
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           if [ -f requirements[vision].txt ]; then pip install -r requirements[vision].txt; fi
           if [ -f requirements[graph].txt ]; then pip install -r requirements[graph].txt; fi
           if [ -f requirements[interactive].txt ]; then pip install -r requirements[interactive].txt; fi
-          if [ -f requirements[llm].txt ]; then pip install -r requirements[llm].txt; fi
       - name: Test with pytest
         run: pytest -x --cov=fairbench --cov-report=xml --cov-report=html
       - name: Generate coverage badge
