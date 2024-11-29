@@ -1,4 +1,4 @@
-from fairbench import v2 as fb
+from fairbench.experimental import v2 as fb
 import fairbench as deprecated
 
 x, yhat, y = deprecated.bench.tabular.bank()

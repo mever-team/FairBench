@@ -1,4 +1,4 @@
-from fairbench import core_v2 as c
+from fairbench.experimental import core_v2 as c
 import numpy as np
 
 
@@ -28,7 +28,7 @@ def mean(values):
 
 @c.reduction("the weighted average")
 def wmean(values):
-    from fairbench.v2 import measures
+    from fairbench.experimental.v2 import measures
 
     weights = [value | measures.quantities.samples | float for value in values]
     values = c.transform.number(values)

@@ -1,4 +1,4 @@
-from fairbench.core_v2.sensitive import Sensitive, DataError, NotComputable
+from fairbench.experimental.core_v2 import Sensitive, DataError, NotComputable
 
 
 def report(sensitive: Sensitive, measures, reductions, **kwargs):

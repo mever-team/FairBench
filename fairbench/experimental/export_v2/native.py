@@ -1,8 +1,8 @@
-from fairbench.core_v2.values import Value, TargetedNumber
-from fairbench.export_v2.ansi import ansi
+from fairbench.experimental.core_v2 import Value, TargetedNumber, Descriptor, Comparison
+from fairbench.experimental.export_v2.ansi import ansi
 import json
 
-def _generate_details(descriptor):
+def _generate_details(descriptor: Descriptor):
     roles = descriptor.role.split(" ")
     roles = [role for role in roles if role not in descriptor.details]
     roles = " of a ".join(roles)
@@ -18,6 +18,9 @@ def _generate_details(descriptor):
         )
     details = details.replace(
         " of ", ansi.colorize(" of ", ansi.white, ansi.reset + ansi.italic)
+    )
+    details = details.replace(
+        " in ", ansi.colorize(" in ", ansi.white, ansi.reset + ansi.italic)
     )
     details = details.replace(
         " for ", ansi.colorize(" for ", ansi.white, ansi.reset + ansi.italic)
@@ -105,9 +108,40 @@ def console(value: Value, depth=0, tab=" |"):
     print()
 
 
-def help(value: Value, details=True):
+def help(value: any, details=True):
+    if isinstance(value, Comparison) or value==Comparison:
+        ansi.print("#" * 5 + " FairBench help " + "#" * 5, ansi.green + ansi.bold)
+        ansi.print("Comparison", ansi.bold+ansi.blue)
+        print("This is a comparison builder.")
+        ansi.print("Usage:", ansi.bold)
+        if value==Comparison:
+            print("- cmp = Comparison(name)".ljust(27), "Creates a comparison with the given name.")
+        print("- cmp.instance(name, value)".ljust(27), "Accumulates a new instance holding the given value.")
+        print("- cmp.build()".ljust(27), "Creates a value from accumulated instances and clears cmp.")
+        print("- cmp.clear()".ljust(27), "Clears cmp by removing all accumulated instances.")
+        print()
+        return
+    if not isinstance(value, Value):
+        if hasattr(value, "descriptor"):
+            descriptor = value.descriptor
+            if isinstance(descriptor, Descriptor):
+                alias = descriptor.name
+                ansi.print("#" * 5 + " FairBench help " + "#" * 5, ansi.green + ansi.bold)
+                ansi.print(alias, ansi.bold+ansi.blue)
+                print(_generate_details(descriptor))
+                ansi.print("Usage:", ansi.bold)
+                print(f"- value | {alias}".ljust(27), f"Filters a value so that {alias} is the primary focus.")
+                if "measure" in descriptor.role:
+                    print(f"- {alias}(**kwargs)".ljust(27), "Computes the measure given appropriate arguments.")
+                    print(f"- report(measures=[{alias}, ...], ...)")
+                if "reduction" in descriptor.role:
+                    print(f"- {alias}(values)".ljust(27), "Computes the reduction from an iterable of numeric values.")
+                    print(f"- report(reductions=[{alias}, ...], ...)")
+                print()
+                return
     assert isinstance(value, Value), (
-        "You did not provide a core.Value. Perhaps you accidentally accessed a property of core.Value instead."
+        "You did not provide a fairbench method or value for help. "
+        + "Perhaps you accidentally accessed a property of core.Value instead. "
         + "Use the full dict notation (e.g., value['branch'] instead of value.branch to avoid this."
     )
     ansi.print("#"*5 + " FairBench help " + "#"*5, ansi.green+ansi.bold)

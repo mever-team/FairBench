@@ -1,6 +1,6 @@
 from typing import Iterable
 from makefun import wraps
-from fairbench.core_v2.values import Descriptor, Value, TargetedNumber
+from fairbench.experimental.core_v2 import Descriptor, Value, TargetedNumber
 
 
 def measure(description):
@@ -59,7 +59,7 @@ def reduction(description):
                 dependencies = list(arg.depends.values())
                 arg = arg.flatten(to_float=False)
                 value = func(arg)
-                ret.append(Value(value, descriptors, dependencies))
+                ret.append(descriptors(value, dependencies))
             return descriptor(depends=ret)
 
         wrapper.descriptor = descriptor

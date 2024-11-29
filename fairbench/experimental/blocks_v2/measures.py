@@ -1,4 +1,4 @@
-from fairbench import core_v2 as c
+from fairbench.experimental import core_v2 as c
 import numpy as np
 
 

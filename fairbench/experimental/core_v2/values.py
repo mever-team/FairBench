@@ -161,8 +161,25 @@ class Value:
                 result["depends"].append(dep.serialize(depth, details))
         return result
 
-    def reshape(self, dim: Descriptor):
-        return next(iter(dim.descriptor(depends=[self | dim]).depends.values()))
+    def reshape(self, item: Descriptor):
+        if isinstance(item, str):
+            if item in self.depends:
+                item = self.depends[item]
+            else:
+                # TODO: accelerate this code path in the future
+                keys = self._keys()
+                assert item in keys, f"Key '{item}' is not one of {list(keys.keys())}. Run fb.help(value) for details."
+                if item in keys:
+                    item = keys[item]
+        ret = next(iter(item.descriptor(depends=[self | item]).depends.values()))
+        item = ret.descriptor
+        ret.descriptor = Descriptor(
+            self.descriptor.name + " " + item.name,
+            self.descriptor.role + " " + item.role,
+            item.details + " in " + self.descriptor.details,
+            alias=self.descriptor.alias+" "+item.alias,
+        )
+        return ret
 
     def __str__(self):
         return self.tostring()
@@ -174,10 +191,11 @@ class Value:
             else:
                 # TODO: accelerate this code path in the future
                 keys = self._keys()
-                assert item in keys, f"Key '{item}' is not one of {list(keys.keys())}."
+                assert item in keys, f"Key '{item}' is not one of {list(keys.keys())}. Run fb.help(value) for details."
                 if item in keys:
                     item = keys[item]
-        item = item.descriptor.prototype
+                item = item.descriptor.prototype
+        item = item.descriptor
         item_hasher = item.alias
         if item_hasher in self.depends:
             return self.depends[item_hasher]

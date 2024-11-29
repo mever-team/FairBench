@@ -1,4 +1,4 @@
-from fairbench import v2 as fb
+from fairbench.experimental import v2 as fb
 import fairbench as deprecated
 
 x, yhat, y = deprecated.bench.tabular.bank()
@@ -33,11 +33,13 @@ comparison.instance("Day 3", report1)
 comparison = comparison.build()
 
 
-comparison = comparison & fb.reduction.min
+comparison = comparison & fb.reduction.maxrelative
 comparison = fb.reduction.mean(comparison.values("reduction measure"))
 
-fb.export.help(comparison)
-fb.export.console(comparison)
+fb.help(fb.Comparison)
+fb.help(fb.measures.tpr)
+fb.help(comparison)
+fb.export.console(comparison.pr)
 
 """
 print(comparison)

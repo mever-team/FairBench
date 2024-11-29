@@ -1,4 +1,4 @@
-from fairbench.core_v2.values import Value, Descriptor
+from fairbench.experimental.core_v2 import Value, Descriptor
 
 
 class Comparison:

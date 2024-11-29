@@ -1,5 +1,5 @@
 from typing import Iterable
-from fairbench.core_v2.values import Value
+from fairbench.experimental.core_v2 import Value
 
 
 def number(values: Iterable[Value]) -> list[float]:
