@@ -3,7 +3,7 @@ import fairbench as deprecated
 
 x, yhat, y = deprecated.bench.tabular.bank()
 
-cats = deprecated.categories@x["marital"]
+cats = deprecated.categories @ x["marital"]
 cats = {k: v.numpy() for k, v in cats.items()}
 
 sensitive = fb.Sensitive(cats)
@@ -12,7 +12,8 @@ report = fb.report(
     predictions=yhat,
     labels=y,
     measures=[fb.measures.pr, fb.measures.tpr, fb.measures.tnr],
-    reductions=[fb.reduction.min, fb.reduction.maxrelative, fb.reduction.wmean]
+    reductions=[fb.reduction.min, fb.reduction.maxrelative, fb.reduction.wmean],
 )
 
-fb.export.console(report, depth=1)
+fb.export.help(report.pr.single)
+fb.export.console(report.pr.single)

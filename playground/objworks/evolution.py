@@ -3,7 +3,7 @@ import fairbench as deprecated
 
 x, yhat, y = deprecated.bench.tabular.bank()
 
-cats = deprecated.categories@x["marital"]
+cats = deprecated.categories @ x["marital"]
 cats = {k: v.numpy() for k, v in cats.items()}
 
 sensitive = fb.Sensitive(cats)
@@ -12,29 +12,31 @@ report1 = fb.report(
     predictions=yhat,
     labels=y,
     measures=[fb.measures.pr, fb.measures.tpr, fb.measures.tnr],
-    reductions=[fb.reduction.min, fb.reduction.maxrelative]
+    reductions=[fb.reduction.min, fb.reduction.maxrelative],
 )
-yhat = 1-yhat
+yhat = 1 - yhat
 report2 = fb.report(
     sensitive=sensitive,
     predictions=yhat,
     labels=y,
     measures=[fb.measures.pr, fb.measures.tpr, fb.measures.tnr],
-    reductions=[fb.reduction.min, fb.reduction.maxrelative]
+    reductions=[fb.reduction.min, fb.reduction.maxrelative],
 )
 
-#fb.export.console(report, depth=1)
+# fb.export.console(report, depth=1)
 
 
 comparison = fb.Comparison("time")
 comparison.instance("Day 1", report1)
 comparison.instance("Day 2", report2)
+comparison.instance("Day 3", report1)
 comparison = comparison.build()
 
 
 comparison = comparison & fb.reduction.min
-comparison = fb.reduction.std(comparison.values("reduction measure"))
+comparison = fb.reduction.mean(comparison.values("reduction measure"))
 
+fb.export.help(comparison)
 fb.export.console(comparison)
 
 """
@@ -50,4 +52,4 @@ for v in value.flatten():
     print(v)
 """
 
-#print(json.dumps((report_over_time|pr|minimum).serialize(), indent="  "))
+# print(json.dumps((report_over_time|pr|minimum).serialize(), indent="  "))

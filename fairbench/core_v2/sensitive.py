@@ -16,7 +16,7 @@ class DataError(Exception):
 
 
 multidimensional = Descriptor(
-    "multidimensional", "analysis", "analysis for several groups"
+    "multidim", "analysis", "analysis for several groups"
 )
 
 

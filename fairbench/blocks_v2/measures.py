@@ -3,13 +3,13 @@ import numpy as np
 
 
 class quantities:
-    samples = c.Descriptor("samples", "quantity")
-    positives = c.Descriptor("positives", "quantity", "positive predictions")
-    negatives = c.Descriptor("negatives", "quantity", "negative predictions")
-    tp = c.Descriptor("tp", "quantity", "true positive predictions")
-    tn = c.Descriptor("tn", "quantity", "true negative predictions")
-    ap = c.Descriptor("ap", "quantity", "actual positive labels")
-    an = c.Descriptor("an", "quantity", "actual positive labels")
+    samples = c.Descriptor("samples", "count")
+    positives = c.Descriptor("positives", "count", "positive predictions")
+    negatives = c.Descriptor("negatives", "count", "negative predictions")
+    tp = c.Descriptor("tp", "count", "true positive predictions")
+    tn = c.Descriptor("tn", "count", "true negative predictions")
+    ap = c.Descriptor("ap", "count", "actual positive labels")
+    an = c.Descriptor("an", "count", "actual positive labels")
 
 
 @c.measure("the positive rate")
@@ -20,7 +20,7 @@ def pr(predictions, sensitive=None):
     samples = sensitive.sum()
     value = 0 if samples == 0 else positives / samples
     return c.Value(
-        c.TargetedNumber(value, 1), depends=[quantities.positives(positives), quantities.samples(samples)]
+        value, depends=[quantities.positives(positives), quantities.samples(samples)]
     )
 
 

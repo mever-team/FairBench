@@ -17,8 +17,10 @@ def measure(description):
             value = func(**kwargs)
             if not isinstance(value, Value):
                 value = Value(value, descriptor, [])
-            assert isinstance(value.value, TargetedNumber) or isinstance(value.value, float) or isinstance(
-                value.value, int
+            assert (
+                isinstance(value.value, TargetedNumber)
+                or isinstance(value.value, float)
+                or isinstance(value.value, int)
             ), f"{descriptor} computed {type(value.value)} instead of float, int, or TargetedNumber"
             assert (
                 0 <= float(value) <= 1
@@ -52,6 +54,7 @@ def reduction(description):
                     descriptor.role + " " + arg.descriptor.role,
                     descriptor.details + " of " + arg.descriptor.details,
                     arg.descriptor.alias,
+                    prototype=arg.descriptor
                 )
                 dependencies = list(arg.depends.values())
                 arg = arg.flatten(to_float=False)

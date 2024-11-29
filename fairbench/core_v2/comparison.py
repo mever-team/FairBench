@@ -8,9 +8,9 @@ class Comparison:
 
     def instance(self, name, report: Value):
         instance_descriptor = Descriptor(
-            name + " " + report.descriptor.details,
+            name + " " + report.descriptor.name,
             report.descriptor.role + " instance",
-            report.descriptor.details,
+            details=report.descriptor.details,
         )
         report = report.rebase(instance_descriptor)
         # report = instance_descriptor(depends=[report])

@@ -1,11 +1,16 @@
+from typing import Optional
+
+
 class TargetedNumber:
     def __init__(self, value, target):
         value = float(value)
         target = float(target)
         self.value = value
         self.target = target
+
     def __float__(self):
         return self.value
+
 
 class Descriptor:
     def __init__(
@@ -14,16 +19,14 @@ class Descriptor:
         role,
         details: str | None = None,
         alias: str = None,
+        prototype: Optional["Descriptor"] = None,
     ):
         self.name = name
         self.role = role
         self.details = name + " " + role if details is None else details
-        self.alias = (
-            name if alias is None else alias
-        )  # use this to search for the descriptor
-        self.descriptor: "Descriptor" = (
-            self  # for interoperability with functions that set descriptors
-        )
+        self.alias =  name if alias is None else alias
+        self.descriptor = self  # interoperability with methods
+        self.prototype = self if prototype is None else prototype
 
     def __str__(self):
         return f"[{self.role}] {self.name}"
@@ -35,10 +38,10 @@ class Descriptor:
         return Value(value, self, depends)
 
     def __repr__(self):
-        return self.__str__() + " " + str(hex(id(self)))
+        return self.alias #self.__str__() + " " + str(hex(id(self)))
 
 
-missing_descriptor = Descriptor("unknown", "any role")
+missing_descriptor = Descriptor("unknown", "any role", prototype=None)
 
 
 class Value:
@@ -77,13 +80,13 @@ class Value:
         keys = self.keys(role)
         return [self | key for key in keys]
 
-    def single(self):
+    def single_entry(self):
         if self.value is not None:
             return self
         assert (
             len(self.depends) == 1
         ), f"There were multiple value candidates for dimension `{self.descriptor}`"
-        ret = next(iter(self.depends.values())).single()
+        ret = next(iter(self.depends.values())).single_entry()
         item = ret.descriptor
         """return Value(
             value=ret.value,
@@ -105,7 +108,7 @@ class Value:
         assert (
             self.depends
         ), f"There were no retrieved computations to flatten for dimension `{self.descriptor}`"
-        ret = [dep.single() for dep in self.depends.values()]
+        ret = [dep.single_entry() for dep in self.depends.values()]
         if to_float:
             ret = [float(value) for value in ret]
         return ret
@@ -130,10 +133,8 @@ class Value:
                 ret += f" ({self.descriptor.details})"
             return ret
         if self.value is not None:
-            ret += f" {self.value:.3f}"
+            ret += f" {float(self.value):.3f}"
             depth -= 1
-            if details and self.descriptor.ideal_value is not None:
-                ret += f" ideally {self.descriptor.ideal_value:.3f}"
         if details:
             ret += f" ({self.descriptor.details})"
         if depth >= 0:
@@ -168,11 +169,15 @@ class Value:
 
     def __getitem__(self, item: Descriptor | str) -> "Value":
         if isinstance(item, str):
-            assert (
-                item in self.depends
-            ), f"Key '{item}' must be either in {list(self.depends.keys())} or a descriptor."
-            item = self.depends[item]
-        item = item.descriptor
+            if item in self.depends:
+                item = self.depends[item]
+            else:
+                # TODO: accelerate this code path in the future
+                keys = self._keys()
+                assert item in keys, f"Key '{item}' is not one of {list(keys.keys())}."
+                if item in keys:
+                    item = keys[item]
+        item = item.descriptor.prototype
         item_hasher = item.alias
         if item_hasher in self.depends:
             return self.depends[item_hasher]
@@ -201,3 +206,8 @@ class Value:
 
     def __and__(self, other):
         return self.reshape(other)
+
+    def __getattr__(self, item):
+        if item in dir(self):
+            return self.__getattribute__(item)
+        return self.__getitem__(item)
