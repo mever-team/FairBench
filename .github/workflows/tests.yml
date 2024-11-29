@@ -24,7 +24,7 @@ jobs:
           pip install objwrap numpy eagerpy distributed makefun matplotlib wget scikit-learn pandas requests pyyaml
           pip install torch
           pip install jax[cpu]
-          pip install transformers>=4.0,<5.0 tensorflow>=2.0,<3.0 tf-keras
+          pip install "transformers>=4.0,<5.0" "tensorflow>=2.0,<3.0" tf-keras
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           if [ -f requirements[vision].txt ]; then pip install -r requirements[vision].txt; fi
           if [ -f requirements[graph].txt ]; then pip install -r requirements[graph].txt; fi
