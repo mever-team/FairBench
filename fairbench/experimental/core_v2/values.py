@@ -38,7 +38,7 @@ class Descriptor:
         return Value(value, self, depends)
 
     def __repr__(self):
-        return self.alias #self.__str__() + " " + str(hex(id(self)))
+        return self.alias+" ["+self.role+"]" #self.__str__() + " " + str(hex(id(self)))
 
 
 missing_descriptor = Descriptor("unknown", "any role", prototype=None)

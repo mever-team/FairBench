@@ -1,6 +1,8 @@
 from fairbench.experimental.core_v2 import Value, TargetedNumber, Descriptor, Comparison
-from fairbench.experimental.export_v2.ansi import ansi
+from fairbench.experimental.export_v2.formats.ansi import ansi
 import json
+from fairbench.experimental.export_v2.formats.console import Console
+
 
 def _generate_details(descriptor: Descriptor):
     roles = descriptor.role.split(" ")
@@ -8,24 +10,9 @@ def _generate_details(descriptor: Descriptor):
     roles = " of a ".join(roles)
     details = descriptor.details
     if not roles:
-        details = "This" + ansi.colorize(" is ", ansi.white, ansi.reset + ansi.italic) + details + "."
+        details = f"This is {details}."
     else:
-        details = (
-                f"This {roles}"
-                + ansi.colorize(" is ", ansi.white, ansi.reset + ansi.italic)
-                + details
-                + "."
-        )
-    details = details.replace(
-        " of ", ansi.colorize(" of ", ansi.white, ansi.reset + ansi.italic)
-    )
-    details = details.replace(
-        " in ", ansi.colorize(" in ", ansi.white, ansi.reset + ansi.italic)
-    )
-    details = details.replace(
-        " for ", ansi.colorize(" for ", ansi.white, ansi.reset + ansi.italic)
-    )
-    details = ansi.colorize(details, ansi.italic)
+        details = f"This {roles} is {details}."
     return details
 
 
@@ -33,9 +20,7 @@ def tojson(value: Value, indent="  "):
     return json.dumps(value.serialize(), indent=indent)
 
 
-def _console(value: Value, depth=0, max_depth=6, tab_delim="", symbol_depth=0):
-    symbols = {0: "#", 1: "*", 2: "=", 3: "-", 4: "^", 5: '"'}  # sphinx format
-    tab = "" if symbol_depth == 0 else (symbol_depth - 1) * len(tab_delim) * " " + tab_delim
+def _console(env: Console, value: Value, depth=0, max_depth=6, symbol_depth=0):
     title = value.descriptor.name
 
     def get_ideal():
@@ -47,68 +32,43 @@ def _console(value: Value, depth=0, max_depth=6, tab_delim="", symbol_depth=0):
         depth += 1
 
     if (not value.depends or depth > max_depth or symbol_depth>max_depth) and value.value is not None:
-        tab = tab[:-2]
-        title = title.ljust(40)
         val = float(value)
-        barplot = (
-            f"{int(val)}"
-            if val > 1  # TODO: make an IntNumber class (like TargetedNumber)
-            else ansi.colorize(
-                f"{val:.3f}"
-                + "█" * int(val * 10)
-                + ("▌" if int(val * 10 + 0.5) > int(val * 10) else "")
-                + " ",
-                abs(val - get_ideal()),
-            )
-        )
-        print(f"{tab}|{title} {barplot}")
+        env.bar(title, val, get_ideal())
         return
     if depth > max_depth:
-        tab = tab[:-2]
-        title = title.ljust(40)
-        print(f"{tab}|{title} ...")
+        env.text(f"{title} [use the alias {value.descriptor.alias} for more info]")
         return
-    symbol = symbols[symbol_depth]
-    if symbol_depth:
-        print()
-    ansi.print(tab + symbol * 5 + f" {title} " + symbol * 5, ansi.bold + ansi.blue)
-    print(tab + _generate_details(value.descriptor))
+    env.title(title, level=symbol_depth)
+    env.first().quote(_generate_details(value.descriptor), (" is ", " in ", " of ", " for ")).p()
     if value.value is not None:
-        val = f"{float(value):.3f}"
-        val = ansi.colorize(val, abs(float(value) - get_ideal()))
-        print(
-            ansi.colorize(f"{tab}Value: " + val, ansi.bold)
-            + ansi.colorize(
-                (
-                    f" where ideal is {value.value.target:.3f}"
-                    if isinstance(value.value, TargetedNumber)
-                    else ""
-                ),
-                ansi.dim,
-            )
-        )
+        env.first().result("Value:", float(value), get_ideal())
+        if isinstance(value.value, TargetedNumber):
+            env.text(f" where ideal is {value.value.target:.3f}")
+        env.p()
     elif value.depends:
-        print(
-            tab
-            + ansi.colorize("A value is computed in the following cases.", ansi.bold)
-        )
+        env.first().bold("A value is computed in the following cases.").p()
     for dep in value.depends.values():
-        _console(dep, depth, max_depth=max_depth, tab_delim=tab_delim, symbol_depth=symbol_depth+1)
+        _console(env, dep, depth, max_depth=max_depth, symbol_depth=symbol_depth+1)
     if not value.depends and value.value is None:
-        print(tab + "| Nothing has been computed.")
+        env.bold("Nothing has been computed").p()
 
 
-def console(value: Value, depth=0, tab=" |"):
+def static(value: Value, depth=0, env=None):
     # depth=0 gets the minimal details that allow exploration of the next step
     assert isinstance(value, Value), (
         "You did not provide a core.Value. Perhaps you accidentally accessed a property of core.Value instead."
         + "Use the full dict notation (e.g., value['branch'] instead of value.branch to avoid this."
     )
-    _console(value, max_depth=depth, tab_delim=tab)
-    print()
+    if env is None:
+        env = Console()
+    _console(env, value, max_depth=depth)
+    return env
 
 
 def help(value: any, details=True):
+    def console_details(descriptor):
+        return Console().quote(_generate_details(descriptor.prototype), (" is ", " in ", " of ", " for ")).contents
+
     if isinstance(value, Comparison) or value==Comparison:
         ansi.print("#" * 5 + " FairBench help " + "#" * 5, ansi.green + ansi.bold)
         ansi.print("Comparison", ansi.bold+ansi.blue)
@@ -128,7 +88,7 @@ def help(value: any, details=True):
                 alias = descriptor.name
                 ansi.print("#" * 5 + " FairBench help " + "#" * 5, ansi.green + ansi.bold)
                 ansi.print(alias, ansi.bold+ansi.blue)
-                print(_generate_details(descriptor))
+                print(console_details(descriptor))
                 ansi.print("Usage:", ansi.bold)
                 print(f"- value | {alias}".ljust(27), f"Filters a value so that {alias} is the primary focus.")
                 if "measure" in descriptor.role:
@@ -154,7 +114,7 @@ def help(value: any, details=True):
         else:
             alias = "value."+alias
         if details:
-            print("-", ansi.colorize(alias.ljust(25), ansi.blue) + " " + _generate_details(descriptor))
+            print("-", ansi.colorize(alias.ljust(25), ansi.blue) + " " + console_details(descriptor))
         else:
             print("-", ansi.colorize(alias.ljust(25), ansi.blue) + " " + descriptor.role)
     print()

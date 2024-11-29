@@ -39,7 +39,7 @@ comparison = fb.reduction.mean(comparison.values("reduction measure"))
 fb.help(fb.Comparison)
 fb.help(fb.measures.tpr)
 fb.help(comparison)
-fb.export.console(comparison.pr)
+fb.export.static(comparison.pr).display()
 
 """
 print(comparison)
