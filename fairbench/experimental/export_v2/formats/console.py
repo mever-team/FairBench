@@ -56,5 +56,9 @@ class Console:
         self.contents += "\n" + tab
         return self
 
+    def end(self):
+        self.contents += "\n"
+        return self
+
     def display(self):
         print(self.p().contents)

@@ -15,4 +15,4 @@ report = fb.report(
     reductions=[fb.reduction.min, fb.reduction.maxrelative, fb.reduction.wmean],
 )
 
-fb.export.static(report).display()
+fb.export.static(report, depth=2, env=fb.export.formats.Html()).display()

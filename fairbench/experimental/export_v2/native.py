@@ -42,8 +42,8 @@ def _console(env: Console, value: Value, depth=0, max_depth=6, symbol_depth=0):
     env.first().quote(_generate_details(value.descriptor), (" is ", " in ", " of ", " for ")).p()
     if value.value is not None:
         env.first().result("Value:", float(value), get_ideal())
-        if isinstance(value.value, TargetedNumber):
-            env.text(f" where ideal is {value.value.target:.3f}")
+        #if isinstance(value.value, TargetedNumber):
+        #    env.text(f" where ideal is {value.value.target:.3f}")
         env.p()
     elif value.depends:
         env.first().bold("A value is computed in the following cases.").p()
@@ -62,7 +62,7 @@ def static(value: Value, depth=0, env=None):
     if env is None:
         env = Console()
     _console(env, value, max_depth=depth)
-    return env
+    return env.end()
 
 
 def help(value: any, details=True):
