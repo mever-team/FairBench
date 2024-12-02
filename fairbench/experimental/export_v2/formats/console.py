@@ -20,10 +20,10 @@ class Console:
 
     def bar(self, title, val, target, units=""):
         self.contents += ("  |" + title).ljust(40 - 2 * self.level)
-        if units==title:
+        if units == title:
             units = ""
         if val > 1:
-            self.contents += str(int(val))+" "+units
+            self.contents += str(int(val)) + " " + units
         else:
             self.contents += ansi.colorize(
                 f"{val:.3f} {units.ljust(len(units)//4*4+4)} "

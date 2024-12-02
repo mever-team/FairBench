@@ -16,12 +16,12 @@ class WebApp(Html):
         self.routes = dict()
 
     def navigation(self, text, routes: dict):
-        #if self.prev_max_level != 1:
+        # if self.prev_max_level != 1:
         #    return self
-        #if self.prev_level == 3:
+        # if self.prev_level == 3:
         #    self.contents += "\n" + text + "<br>"
         for key, text in routes.items():
-            #if self.prev_max_level == 3:
+            # if self.prev_max_level == 3:
             #    self.contents += f'<a href="{key}">{text}</a> '
             self.routes[key] = key
         return self
@@ -43,7 +43,10 @@ class WebApp(Html):
             value = self.routes[method]
             self._clear_all()
             self.rerun(value)
-            self.contents = '<h2><a href="/" class="text-danger">Clear selection</a></h2>' + self.contents
+            self.contents = (
+                '<h2><a href="/" class="text-danger">Clear selection</a></h2>'
+                + self.contents
+            )
             return self._create_text()
 
         def open_browser():
@@ -51,8 +54,6 @@ class WebApp(Html):
 
         Timer(1, open_browser).start()
         app.run(debug=False, port=self.port)
-
-
 
     def title(self, text, level=0, link=None):
         if self.bars:

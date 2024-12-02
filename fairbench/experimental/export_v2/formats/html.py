@@ -50,8 +50,8 @@ class Html:
         if units == title:
             units = ""
         if units:
-            units = "\n("+units+")"
-        self.bars.append((title+units, val, target))
+            units = "\n(" + units + ")"
+        self.bars.append((title + units, val, target))
         return self
 
     def _embed_bars(self):

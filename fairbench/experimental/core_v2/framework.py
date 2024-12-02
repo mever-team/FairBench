@@ -26,7 +26,9 @@ def measure(description):
             assert (
                 0 <= float(value) <= 1
             ), f"{descriptor} computed {float(value)} that is not in [0,1]"
-            if isinstance(value.value, Number) or isinstance(value.value, TargetedNumber):
+            if isinstance(value.value, Number) or isinstance(
+                value.value, TargetedNumber
+            ):
                 if not value.value.units:
                     value.value.units = func.__name__
             return value.rebase(descriptor)

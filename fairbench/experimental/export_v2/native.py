@@ -75,8 +75,11 @@ def static(value: Value, depth=0, env=None):
         env._attached_value = value
 
     def rerun(val):
-        attached = value #env._attached_value
-        return static(env._attached_value if val is None else attached[val], env=env, depth=depth)
+        attached = value  # env._attached_value
+        return static(
+            env._attached_value if val is None else attached[val], env=env, depth=depth
+        )
+
     env.rerun = rerun
 
     return env.end()

@@ -2,15 +2,16 @@ from typing import Optional
 
 
 class Number:
-    def __init__(self, value, units: str=""):
+    def __init__(self, value, units: str = ""):
         self.value = float(value)
         self.units = units
 
     def __float__(self):
         return self.value
 
+
 class TargetedNumber:
-    def __init__(self, value, target, units: str=""):
+    def __init__(self, value, target, units: str = ""):
         value = float(value)
         target = float(target)
         self.value = value
@@ -61,9 +62,13 @@ class Value:
         value: any = None,
         descriptor: Descriptor = missing_descriptor,
         depends: list["Value"] = (),
-        units: str = ""  # this is only used if a number is automatically created
+        units: str = "",  # this is only used if a number is automatically created
     ):
-        if value is not None and not isinstance(value, TargetedNumber) and not isinstance(value, Number):
+        if (
+            value is not None
+            and not isinstance(value, TargetedNumber)
+            and not isinstance(value, Number)
+        ):
             value = Number(value, units)
         self.value = value
         self.descriptor: Descriptor = descriptor.descriptor
@@ -239,8 +244,8 @@ class Value:
             depends=[dep[item].rebase(dep.descriptor) for dep in self.depends.values()],
         )"""
         # TODO: fix the following
-        #depends = [dep[item] for dep in self.depends.values()]
-        #if depends and all(dep.value==depends[0].value for dep in depends):
+        # depends = [dep[item] for dep in self.depends.values()]
+        # if depends and all(dep.value==depends[0].value for dep in depends):
         #    return item(depends=[depends[0][item].rebase(depends[0].descriptor)])#depends[0][item]
 
         item = Descriptor(
