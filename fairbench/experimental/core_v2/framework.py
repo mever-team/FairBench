@@ -1,6 +1,6 @@
 from typing import Iterable
 from makefun import wraps
-from fairbench.experimental.core_v2 import Descriptor, Value, TargetedNumber
+from fairbench.experimental.core_v2 import Descriptor, Value, Number, TargetedNumber
 
 
 def measure(description):
@@ -19,12 +19,16 @@ def measure(description):
                 value = Value(value, descriptor, [])
             assert (
                 isinstance(value.value, TargetedNumber)
+                or isinstance(value.value, Number)
                 or isinstance(value.value, float)
                 or isinstance(value.value, int)
-            ), f"{descriptor} computed {type(value.value)} instead of float, int, or TargetedNumber"
+            ), f"{descriptor} computed {type(value.value)} instead of float, int, Number, or TargetedNumber"
             assert (
                 0 <= float(value) <= 1
             ), f"{descriptor} computed {float(value)} that is not in [0,1]"
+            if isinstance(value.value, Number) or isinstance(value.value, TargetedNumber):
+                if not value.value.units:
+                    value.value.units = func.__name__
             return value.rebase(descriptor)
 
         wrapper.descriptor = descriptor
@@ -54,11 +58,13 @@ def reduction(description):
                     descriptor.role + " " + arg.descriptor.role,
                     descriptor.details + " of " + arg.descriptor.details,
                     arg.descriptor.alias,
-                    prototype=arg.descriptor
+                    prototype=arg.descriptor,
                 )
                 dependencies = list(arg.depends.values())
                 arg = arg.flatten(to_float=False)
                 value = func(arg)
+                if not isinstance(value, TargetedNumber):
+                    value = Number(value)
                 ret.append(descriptors(value, dependencies))
             return descriptor(depends=ret)
 

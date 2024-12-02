@@ -7,21 +7,26 @@ class Console:
         self.symbols = {0: "#", 1: "*", 2: "=", 3: "-", 4: "^", 5: '"'}  # sphinx format
         self.level = 0
 
-    def title(self, text, level=0):
+    def navigation(self, text, routes: dict):
+        return self
+
+    def title(self, text, level=0, link=None):
         self.level = level
         symbol = self.symbols[level]
-        text = symbol*5 + " " + text + " " + symbol*5
+        text = symbol * 5 + " " + text + " " + symbol * 5
         self.p()
-        self.contents += ansi.colorize(text, ansi.blue+ansi.bold)
+        self.contents += ansi.colorize(text, ansi.blue + ansi.bold)
         return self.p()
 
-    def bar(self, title, val, target):
-        self.contents += ("  |"+title).ljust(40-2*self.level)
+    def bar(self, title, val, target, units=""):
+        self.contents += ("  |" + title).ljust(40 - 2 * self.level)
+        if units==title:
+            units = ""
         if val > 1:
-            self.contents += str(int(val))
+            self.contents += str(int(val))+" "+units
         else:
             self.contents += ansi.colorize(
-                f"{val:.3f} "
+                f"{val:.3f} {units.ljust(len(units)//4*4+4)} "
                 + "█" * int(val * 10)
                 + ("▌" if int(val * 10 + 0.5) > int(val * 10) else "")
                 + " ",
@@ -35,12 +40,16 @@ class Console:
 
     def quote(self, text, keywords=()):
         for keyword in keywords:
-            text = text.replace(keyword, ansi.colorize(keyword, ansi.white, ansi.reset+ansi.italic))
-        self.contents += ansi.italic+text+ansi.reset
+            text = text.replace(
+                keyword, ansi.colorize(keyword, ansi.white, ansi.reset + ansi.italic)
+            )
+        self.contents += ansi.italic + text + ansi.reset
         return self
 
-    def result(self, title, val, target):
-        self.contents += ansi.bold + title + ansi.colorize(f"{val:.3f}", abs(val - target))
+    def result(self, title, val, target, units=""):
+        self.contents += (
+            ansi.bold + title + ansi.colorize(f" {val:.3f} {units}", abs(val - target))
+        )
         return self
 
     def bold(self, text):

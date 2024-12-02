@@ -11,16 +11,40 @@ report1 = fb.report(
     sensitive=sensitive,
     predictions=yhat,
     labels=y,
-    measures=[fb.measures.pr, fb.measures.tpr, fb.measures.tnr],
-    reductions=[fb.reduction.min, fb.reduction.maxrelative],
+    measures=[
+        fb.measures.pr,
+        fb.measures.tpr,
+        fb.measures.tnr,
+        fb.measures.tpr,
+        fb.measures.trr,
+    ],
+    reductions=[
+        fb.reduction.min,
+        fb.reduction.wmean,
+        fb.reduction.maxrel,
+        fb.reduction.maxdiff,
+        fb.reduction.std,
+    ],
 )
 yhat = 1 - yhat
 report2 = fb.report(
     sensitive=sensitive,
     predictions=yhat,
     labels=y,
-    measures=[fb.measures.pr, fb.measures.tpr, fb.measures.tnr],
-    reductions=[fb.reduction.min, fb.reduction.maxrelative],
+    measures=[
+        fb.measures.pr,
+        fb.measures.tpr,
+        fb.measures.tnr,
+        fb.measures.tpr,
+        fb.measures.trr,
+    ],
+    reductions=[
+        fb.reduction.min,
+        fb.reduction.wmean,
+        fb.reduction.maxrel,
+        fb.reduction.maxdiff,
+        fb.reduction.std,
+    ],
 )
 
 # fb.export.console(report, depth=1)
@@ -33,13 +57,13 @@ comparison.instance("Day 3", report1)
 comparison = comparison.build()
 
 
-comparison = comparison & fb.reduction.maxrelative
+comparison = comparison & fb.reduction.maxrel
 comparison = fb.reduction.mean(comparison.values("reduction measure"))
 
 fb.help(fb.Comparison)
 fb.help(fb.measures.tpr)
 fb.help(comparison)
-fb.export.static(comparison.pr).display()
+fb.export.static(comparison, depth=1, env=fb.export.formats.WebApp()).display()
 
 """
 print(comparison)

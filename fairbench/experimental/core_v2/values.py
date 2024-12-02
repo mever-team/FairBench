@@ -1,11 +1,20 @@
 from typing import Optional
 
 
+class Number:
+    def __init__(self, value, units: str=""):
+        self.value = float(value)
+        self.units = units
+
+    def __float__(self):
+        return self.value
+
 class TargetedNumber:
-    def __init__(self, value, target):
+    def __init__(self, value, target, units: str=""):
         value = float(value)
         target = float(target)
         self.value = value
+        self.units = units
         self.target = target
 
     def __float__(self):
@@ -24,7 +33,7 @@ class Descriptor:
         self.name = name
         self.role = role
         self.details = name + " " + role if details is None else details
-        self.alias =  name if alias is None else alias
+        self.alias = name if alias is None else alias
         self.descriptor = self  # interoperability with methods
         self.prototype = self if prototype is None else prototype
 
@@ -35,10 +44,12 @@ class Descriptor:
         return other.descriptor.name == self.name
 
     def __call__(self, value: any = None, depends: list["Value"] = None):
-        return Value(value, self, depends)
+        return Value(value, self, depends, units=self.prototype.alias)
 
     def __repr__(self):
-        return self.alias+" ["+self.role+"]" #self.__str__() + " " + str(hex(id(self)))
+        return (
+            self.alias + " [" + self.role + "]"
+        )  # self.__str__() + " " + str(hex(id(self)))
 
 
 missing_descriptor = Descriptor("unknown", "any role", prototype=None)
@@ -50,7 +61,10 @@ class Value:
         value: any = None,
         descriptor: Descriptor = missing_descriptor,
         depends: list["Value"] = (),
+        units: str = ""  # this is only used if a number is automatically created
     ):
+        if value is not None and not isinstance(value, TargetedNumber) and not isinstance(value, Number):
+            value = Number(value, units)
         self.value = value
         self.descriptor: Descriptor = descriptor.descriptor
         self.depends = (
@@ -68,7 +82,7 @@ class Value:
             add_to = dict()
         for dep in self.depends.values():
             if role is None or dep.descriptor.role == role:
-                add_to[dep.descriptor.alias] = dep.descriptor
+                add_to[dep.descriptor.alias] = dep.descriptor.prototype
             dep._keys(role, add_to)
         return add_to
 
@@ -99,6 +113,14 @@ class Value:
             ),
             depends=list(ret.depends.values()),
         )"""
+
+        item = Descriptor(
+            self.descriptor.name + " " + item.name,
+            self.descriptor.role + " " + item.role,
+            item.details + " of " + self.descriptor.details,
+            alias=item.alias,
+        )
+
         return item(depends=list(ret.depends.values()))
 
     def flatten(self, to_float=False):
@@ -168,7 +190,9 @@ class Value:
             else:
                 # TODO: accelerate this code path in the future
                 keys = self._keys()
-                assert item in keys, f"Key '{item}' is not one of {list(keys.keys())}. Run fb.help(value) for details."
+                assert (
+                    item in keys
+                ), f"Key '{item}' is not one of {list(keys.keys())}. Run fb.help(value) for details."
                 if item in keys:
                     item = keys[item]
         ret = next(iter(item.descriptor(depends=[self | item]).depends.values()))
@@ -177,7 +201,7 @@ class Value:
             self.descriptor.name + " " + item.name,
             self.descriptor.role + " " + item.role,
             item.details + " in " + self.descriptor.details,
-            alias=self.descriptor.alias+" "+item.alias,
+            alias=self.descriptor.alias + " " + item.alias,
         )
         return ret
 
@@ -191,10 +215,12 @@ class Value:
             else:
                 # TODO: accelerate this code path in the future
                 keys = self._keys()
-                assert item in keys, f"Key '{item}' is not one of {list(keys.keys())}. Run fb.help(value) for details."
+                assert (
+                    item in keys
+                ), f"Key '{item}' is not one of {list(keys.keys())}. Run fb.help(value) for details."
                 if item in keys:
                     item = keys[item]
-                item = item.descriptor.prototype
+                item = item.descriptor.prototype  # TODO: decide on the prototype
         item = item.descriptor
         item_hasher = item.alias
         if item_hasher in self.depends:
@@ -212,6 +238,18 @@ class Value:
             ),
             depends=[dep[item].rebase(dep.descriptor) for dep in self.depends.values()],
         )"""
+        # TODO: fix the following
+        #depends = [dep[item] for dep in self.depends.values()]
+        #if depends and all(dep.value==depends[0].value for dep in depends):
+        #    return item(depends=[depends[0][item].rebase(depends[0].descriptor)])#depends[0][item]
+
+        item = Descriptor(
+            self.descriptor.name + " " + item.name,
+            self.descriptor.role + " " + item.role,
+            item.details + " of " + self.descriptor.details,
+            alias=item.alias,
+        )
+
         ret = item(
             depends=[dep[item].rebase(dep.descriptor) for dep in self.depends.values()]
         )

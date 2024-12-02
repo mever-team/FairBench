@@ -47,6 +47,6 @@ def maxdiff(values):
 
 
 @c.reduction("the maximum relative difference")
-def maxrelative(values):
+def maxrel(values):
     values = c.transform.relative(values)
     return c.TargetedNumber(np.max(values), 0)

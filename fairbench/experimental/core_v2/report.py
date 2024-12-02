@@ -1,7 +1,10 @@
 from fairbench.experimental.core_v2 import Sensitive, DataError, NotComputable
+from fairbench import core as deprecated
 
 
 def report(sensitive: Sensitive, measures, reductions, **kwargs):
+    if isinstance(sensitive, deprecated.Fork):
+        sensitive = Sensitive({k: v.numpy() for k,v in sensitive.branches().items})
     try:
         results = sensitive.assessment(measures, **kwargs)
         reduction_results = list()

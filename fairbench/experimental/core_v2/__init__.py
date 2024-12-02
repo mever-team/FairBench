@@ -1,4 +1,4 @@
-from fairbench.experimental.core_v2.values import Value, Descriptor, TargetedNumber
+from fairbench.experimental.core_v2.values import Value, Descriptor, TargetedNumber, Number
 from fairbench.experimental.core_v2.sensitive import Sensitive, NotComputable, DataError
 from fairbench.experimental.core_v2.framework import measure, reduction
 from fairbench.experimental.core_v2 import transform
