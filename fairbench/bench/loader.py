@@ -14,7 +14,7 @@ def cache(arg: str = ""):
 
 
 def _download(url, path=None):
-    file_name = os.path.basename(url)if path is None else path
+    file_name = os.path.basename(url) if path is None else path
 
     try:
         with urllib.request.urlopen(url) as response:
@@ -52,6 +52,7 @@ def _extract_nested_zip(file, folder):
                 _extract_nested_zip(
                     os.path.join(root, filename), os.path.join(root, filename[:-4])
                 )
+
 
 def read_csv(url: str, root: str = "", *args, **kwargs):
     url = url.replace("\\", "/")

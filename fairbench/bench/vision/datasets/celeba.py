@@ -66,7 +66,11 @@ class BiasedCelebASplit:
 
             num_total = len(rand_indices)
             num_train = int(0.8 * num_total)
-            indices = rand_indices[:num_train] if split == "train" else rand_indices[num_train:]
+            indices = (
+                rand_indices[:num_train]
+                if split == "train"
+                else rand_indices[num_train:]
+            )
             self.indices = self.indices[indices]
             self.attr = self.attr[indices]
 
