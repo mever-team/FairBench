@@ -52,27 +52,14 @@ def get_unsup_confusion_matrix(num_classes, targets, biases, marginals):
 
 
 def download_celeba(root):
-    """
-    Downloads the CelebA dataset and extracts it to the directory `root/celeba`.
-
-    Args:
-        root (str): Root directory where the CelebA dataset will be extracted.
-
-    Raises:
-        Exception: If the download or extraction fails.
-    """
-    # Define URLs and paths
     dataset_url = (
         "https://www.kaggle.com/api/v1/datasets/download/jessicali9530/celeba-dataset"
     )
     download_path = os.path.join(root, "celeba.zip")
     extract_path = root
-
-    # Ensure the root directory exists
     os.makedirs(root, exist_ok=True)
 
     try:
-        # Download the dataset with a progress bar
         print("Downloading CelebA dataset...")
         response = requests.get(dataset_url, stream=True)
         response.raise_for_status()  # Raise HTTPError for bad responses (4xx and 5xx)
@@ -82,7 +69,6 @@ def download_celeba(root):
         chunk_size = 1024
         num_chunks = total_size // chunk_size + 1
 
-        # Write the dataset to a file with a progress bar
         with open(download_path, "wb") as file, tqdm(
             desc="Downloading",
             unit="KB",
@@ -93,8 +79,6 @@ def download_celeba(root):
                     file.write(chunk)
                     pbar.update(len(chunk))
         print(f"Downloaded CelebA dataset to {download_path}.")
-
-        # Extract the dataset
         print(f"Extracting CelebA dataset to {extract_path}...")
         with zipfile.ZipFile(download_path, "r") as zip_ref:
             zip_ref.extractall(extract_path)
@@ -105,7 +89,6 @@ def download_celeba(root):
             os.rename(extracted_dir, final_path)
         print(f"Extraction complete. Dataset available at {final_path}.")
 
-        # Optionally delete the zip file
         os.remove(download_path)
         print(f"Deleted the downloaded zip file: {download_path}.")
 

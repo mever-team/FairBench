@@ -3,7 +3,6 @@ from objwrap import ClosedWrapper
 import numpy as np
 import eagerpy as ep
 from fairbench.core.explanation.error import ExplainableError
-import math
 
 
 def tofloat(value: Any) -> float:

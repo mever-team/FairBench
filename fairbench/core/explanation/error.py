@@ -2,7 +2,6 @@ import traceback
 import sys
 import logging
 import os
-from fileinput import filename
 from io import StringIO
 import warnings
 

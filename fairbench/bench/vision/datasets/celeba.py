@@ -49,7 +49,6 @@ class BiasedCelebASplit:
             else:
                 self.attr = self.celeba.attr
                 self.indices = torch.arange(len(self.celeba))
-
         elif target_attr == "makeup":
             self.target_idx = 18
             self.attr = self.celeba.attr
@@ -67,12 +66,7 @@ class BiasedCelebASplit:
 
             num_total = len(rand_indices)
             num_train = int(0.8 * num_total)
-
-            if split == "train":
-                indices = rand_indices[:num_train]
-            elif split == "train_valid":
-                indices = rand_indices[num_train:]
-
+            indices = rand_indices[:num_train] if split == "train" else rand_indices[num_train:]
             self.indices = self.indices[indices]
             self.attr = self.attr[indices]
 
@@ -86,10 +80,6 @@ class BiasedCelebASplit:
         ) = get_confusion_matrix(
             num_classes=2, targets=self.targets, biases=self.biases
         )
-
-        # print(
-        #     f"Use BiasedCelebASplit \n target_attr: {target_attr} split: {split} \n {self.confusion_matrix_org}"
-        # )
 
     def build_blonde(self):
         biases = self.celeba.attr[:, self.bias_idx]
