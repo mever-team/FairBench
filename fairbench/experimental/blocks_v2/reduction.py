@@ -41,12 +41,14 @@ def wmean(values):
 
 
 @c.reduction("the maximum difference")
-def maxdiff(values):
-    values = c.transform.diff(values)
+def maxdiff(values, *args, compared_to=None):
+    assert not args, "compared_to can only be a keyword argument"
+    values = c.transform.diff(values, compared_to=compared_to)
     return c.TargetedNumber(np.max(values), 0)
 
 
 @c.reduction("the maximum relative difference")
-def maxrel(values):
-    values = c.transform.relative(values)
+def maxrel(values, *args, compared_to=None):
+    assert not args, "compared_to can only be a keyword argument"
+    values = c.transform.relative(values, compared_to=compared_to)
     return c.TargetedNumber(np.max(values), 0)

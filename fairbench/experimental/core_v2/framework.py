@@ -3,7 +3,7 @@ from makefun import wraps
 from fairbench.experimental.core_v2 import Descriptor, Value, Number, TargetedNumber
 
 
-def measure(description):
+def measure(description, unit=True):
     """
     Measures compute a float value that is wrapped with their own descriptor
     and dependencies.
@@ -23,7 +23,7 @@ def measure(description):
                 or isinstance(value.value, float)
                 or isinstance(value.value, int)
             ), f"{descriptor} computed {type(value.value)} instead of float, int, Number, or TargetedNumber"
-            assert (
+            assert not unit or (
                 0 <= float(value) <= 1
             ), f"{descriptor} computed {float(value)} that is not in [0,1]"
             if isinstance(value.value, Number) or isinstance(
@@ -51,7 +51,7 @@ def reduction(description):
         descriptor = Descriptor(func.__name__, "reduction", description)
 
         @wraps(func)
-        def wrapper(values: Iterable[Value]) -> Value:
+        def wrapper(values: Iterable[Value], **kwargs) -> Value:
             values = list(values)
             ret = list()
             for arg in values:
@@ -64,7 +64,7 @@ def reduction(description):
                 )
                 dependencies = list(arg.depends.values())
                 arg = arg.flatten(to_float=False)
-                value = func(arg)
+                value = func(arg, **kwargs)
                 if not isinstance(value, TargetedNumber):
                     value = Number(value)
                 ret.append(descriptors(value, dependencies))

@@ -1,15 +1,6 @@
 from fairbench.experimental import core_v2 as c
+from fairbench.experimental.blocks_v2.quantities import quantities
 import numpy as np
-
-
-class quantities:
-    samples = c.Descriptor("samples", "count")
-    positives = c.Descriptor("positives", "count", "positive predictions")
-    negatives = c.Descriptor("negatives", "count", "negative predictions")
-    tp = c.Descriptor("tp", "count", "true positive predictions")
-    tn = c.Descriptor("tn", "count", "true negative predictions")
-    ap = c.Descriptor("ap", "count", "actual positive labels")
-    an = c.Descriptor("an", "count", "actual positive labels")
 
 
 @c.measure("the positive rate")
