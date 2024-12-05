@@ -19,9 +19,9 @@ def report(sensitive: Sensitive, measures, reductions, **kwargs):
         return sensitive.descriptor(depends=reduction_results)
     except DataError as e:
         raise DataError(str(e)) from None
-    """except AssertionError as e:
+    except AssertionError as e:
         raise ValueError(str(e)) from None
     except ValueError as e:
         raise ValueError(str(e)) from None
     except TypeError as e:
-        raise ValueError(str(e)) from None"""
+        raise ValueError(str(e)) from None

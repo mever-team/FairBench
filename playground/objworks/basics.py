@@ -35,3 +35,5 @@ report = fb.report(
 # fb.export.static(report, depth=10).display()
 
 fb.export.static(report, env=fb.export.formats.WebApp(), depth=1).display()
+#print(report.keys())
+#fb.export.static(report.samples).display()

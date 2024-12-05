@@ -51,6 +51,8 @@ class Sensitive:
                     measure_values.append(measure(**valid_kwargs, sensitive=sensitive))
                 except NotComputable:
                     pass
+                except TypeError:
+                    pass
             if measure_values:
                 assessment_values.append(descriptor(depends=measure_values))
         return self.descriptor(depends=assessment_values)

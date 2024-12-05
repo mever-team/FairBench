@@ -15,8 +15,11 @@ report1 = fb.report(
         fb.measures.pr,
         fb.measures.tpr,
         fb.measures.tnr,
-        fb.measures.tpr,
+        fb.measures.tar,
         fb.measures.trr,
+        fb.measures.mabs,
+        fb.measures.rmse,
+        fb.measures.pinball,
     ],
     reductions=[
         fb.reduction.min,
@@ -57,13 +60,18 @@ comparison.instance("Day 3", report1)
 comparison = comparison.build()
 
 
-comparison = comparison & fb.reduction.maxrel
+comparison = comparison | fb.reduction.maxrel
+
+
+fb.export.static(comparison).display()
 comparison = fb.reduction.mean(comparison.values("reduction measure"))
 
 fb.help(fb.Comparison)
 fb.help(fb.measures.tpr)
 fb.help(comparison)
-fb.export.static(comparison, depth=1, env=fb.export.formats.WebApp()).display()
+#fb.export.static(comparison, depth=1, env=fb.export.formats.WebApp()).display()
+
+fb.export.static(comparison).display()
 
 """
 print(comparison)

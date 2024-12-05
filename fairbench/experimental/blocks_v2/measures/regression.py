@@ -12,7 +12,7 @@ def mabs(scores, targets, sensitive=None):
     samples = sensitive.sum()
     value = 0 if samples == 0.0 else error / samples
     return c.Value(
-        value,
+        c.TargetedNumber(value, 0),
         depends=[
             quantities.samples(samples),
         ],
@@ -27,7 +27,7 @@ def rmse(scores, targets, sensitive=None):
     samples = sensitive.sum()
     value = 0 if samples == 0.0 else error / samples
     return c.Value(
-        value**0.5,
+        c.TargetedNumber(value**0.5, 0),
         depends=[
             quantities.samples(samples),
         ],
@@ -42,7 +42,7 @@ def mse(scores, targets, sensitive=None):
     samples = sensitive.sum()
     value = 0 if samples == 0.0 else error / samples
     return c.Value(
-        value,
+        c.TargetedNumber(value, 0),
         depends=[
             quantities.samples(samples),
         ],
@@ -64,7 +64,7 @@ def r2(scores, targets, sensitive=None, deg_freedom=0):
         else (1 - (true / target_variance)) * ((num_sensitive - 1) / (num_sensitive - 1 - deg_freedom))
     )
     return c.Value(
-        value,
+        c.TargetedNumber(value, 0),
         depends=[
             quantities.samples(num_sensitive),
             quantities.freedom(deg_freedom),
@@ -81,7 +81,7 @@ def pinball(scores, targets, sensitive=None, slope: float = 0.5):
     filtered = (loss * sensitive).sum()
     value = 0 if num_sensitive == 0 else filtered / num_sensitive
     return c.Value(
-        value,
+        c.TargetedNumber(value, 0),
         depends=[
             quantities.samples(num_sensitive),
             quantities.slope(slope),
