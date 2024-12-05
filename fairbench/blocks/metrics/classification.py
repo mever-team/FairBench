@@ -6,16 +6,15 @@ from typing import Optional
 
 @role("metric")
 @parallel
-@unit_bounded
 def accuracy(
     predictions: Tensor, labels: Tensor, sensitive: Optional[Tensor] = None
 ) -> Explainable:
     if sensitive is None:
         sensitive = predictions.ones_like()
     num_sensitive = sensitive.sum()
-    true = ((predictions - labels) * sensitive).abs().sum()
+    true = ((predictions == labels) * sensitive).abs().sum()
     return Explainable(
-        0 if num_sensitive == 0 else 1 - true / num_sensitive,
+        0 if num_sensitive == 0 else true / num_sensitive,
         samples=num_sensitive,
         true=true,
     )
