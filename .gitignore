@@ -8,7 +8,6 @@ examples/research/
 colour_mnist.py
 flac.py
 .log
-playground/
 **/*.log
 temp.html
 
