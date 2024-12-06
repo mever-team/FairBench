@@ -140,7 +140,9 @@ class Html:
             emphasis = "warning"
         else:
             emphasis = "danger"
-        self.contents += f'<div class="alert alert-{emphasis} mt-3">{title} {val:.3f} {units}</div>'
+        self.contents += (
+            f'<div class="alert alert-{emphasis} mt-3">{title} {val:.3f} {units}</div>'
+        )
         return self
 
     def first(self):

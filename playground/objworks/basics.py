@@ -4,7 +4,7 @@ import fairbench as deprecated
 x, yhat, y = deprecated.bench.tabular.bank()
 sensitive = deprecated.Fork(deprecated.categories @ x["marital"])
 
-report = fb.reports.pairwise(
+report = fb.reports.vsall(
     sensitive=sensitive,
     predictions=yhat,
     labels=y,
@@ -13,7 +13,4 @@ report = fb.reports.pairwise(
 )
 
 report.show()
-# fb.export.static(report, depth=10).display()
-#report.show(fb.export.WebApp())
-#print(report.keys())
-#fb.export.static(report.samples).display()
+report.show(fb.export.WebApp())

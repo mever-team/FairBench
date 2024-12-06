@@ -8,7 +8,7 @@ def mabs(scores, targets, sensitive=None):
     scores = np.array(scores, dtype=np.float64)
     targets = np.array(targets, dtype=np.float64)
     sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
-    error = (np.abs(scores-targets)*sensitive).sum()
+    error = (np.abs(scores - targets) * sensitive).sum()
     samples = sensitive.sum()
     value = 0 if samples == 0.0 else error / samples
     return c.Value(
@@ -18,12 +18,13 @@ def mabs(scores, targets, sensitive=None):
         ],
     )
 
+
 @c.measure("root mean square error")
 def rmse(scores, targets, sensitive=None):
     scores = np.array(scores, dtype=np.float64)
     targets = np.array(targets, dtype=np.float64)
     sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
-    error = ((scores-targets)**2 * sensitive).sum()
+    error = ((scores - targets) ** 2 * sensitive).sum()
     samples = sensitive.sum()
     value = 0 if samples == 0.0 else error / samples
     return c.Value(
@@ -33,12 +34,13 @@ def rmse(scores, targets, sensitive=None):
         ],
     )
 
+
 @c.measure("mean square error")
 def mse(scores, targets, sensitive=None):
     scores = np.array(scores, dtype=np.float64)
     targets = np.array(targets, dtype=np.float64)
     sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
-    error = ((scores-targets)**2 * sensitive).sum()
+    error = ((scores - targets) ** 2 * sensitive).sum()
     samples = sensitive.sum()
     value = 0 if samples == 0.0 else error / samples
     return c.Value(
@@ -47,6 +49,7 @@ def mse(scores, targets, sensitive=None):
             quantities.samples(samples),
         ],
     )
+
 
 @c.measure("coefficient of determination", unit=False)
 def r2(scores, targets, sensitive=None, deg_freedom=0):
@@ -61,7 +64,8 @@ def r2(scores, targets, sensitive=None, deg_freedom=0):
     value = (
         0
         if num_sensitive == 0
-        else (1 - (true / target_variance)) * ((num_sensitive - 1) / (num_sensitive - 1 - deg_freedom))
+        else (1 - (true / target_variance))
+        * ((num_sensitive - 1) / (num_sensitive - 1 - deg_freedom))
     )
     return c.Value(
         c.TargetedNumber(value, 0),
@@ -70,6 +74,7 @@ def r2(scores, targets, sensitive=None, deg_freedom=0):
             quantities.freedom(deg_freedom),
         ],
     )
+
 
 @c.measure("pinball deviation")
 def pinball(scores, targets, sensitive=None, slope: float = 0.5):

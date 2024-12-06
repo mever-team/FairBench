@@ -14,19 +14,20 @@ def pr(predictions, sensitive=None):
         value, depends=[quantities.positives(positives), quantities.samples(samples)]
     )
 
+
 @c.measure("the true positive rate")
 def acc(predictions, labels, sensitive=None):
     predictions = np.array(predictions)
     labels = np.array(labels)
     sensitive = np.ones_like(predictions) if sensitive is None else np.array(sensitive)
     ap = (sensitive * labels).sum()
-    an = (sensitive * (1-labels)).sum()
+    an = (sensitive * (1 - labels)).sum()
     tp = (predictions * sensitive * labels).sum()
     tn = ((1 - predictions) * sensitive * (1 - labels)).sum()
     samples = sensitive.sum()
-    value = 0 if samples == 0 else (tp+tn) / samples
+    value = 0 if samples == 0 else (tp + tn) / samples
     return c.Value(
-        value,
+        c.TargetedNumber(value, 1),
         depends=[
             quantities.samples(samples),
             quantities.ap(ap),
@@ -35,6 +36,7 @@ def acc(predictions, labels, sensitive=None):
             quantities.tn(tn),
         ],
     )
+
 
 @c.measure("the true positive rate")
 def tpr(predictions, labels, sensitive=None):
@@ -47,7 +49,7 @@ def tpr(predictions, labels, sensitive=None):
     samples = sensitive.sum()
     value = 0 if ap == 0 else tp / ap
     return c.Value(
-        value,
+        c.TargetedNumber(value, 1),
         depends=[
             quantities.samples(samples),
             quantities.positives(positives),
@@ -68,7 +70,7 @@ def tnr(predictions, labels, sensitive=None):
     samples = sensitive.sum()
     value = 0 if an == 0.0 else tn / an
     return c.Value(
-        value,
+        c.TargetedNumber(value, 1),
         depends=[
             quantities.samples(samples),
             quantities.negatives(negatives),
@@ -87,7 +89,7 @@ def tar(predictions, labels, sensitive=None):
     samples = sensitive.sum()
     value = 0 if samples == 0 else tp / samples
     return c.Value(
-        value,
+        c.TargetedNumber(value, 1),
         depends=[
             quantities.samples(samples),
             quantities.tp(tp),
@@ -104,7 +106,7 @@ def trr(predictions, labels, sensitive=None):
     samples = sensitive.sum()
     value = 0 if samples == 0.0 else tn / samples
     return c.Value(
-        value,
+        c.TargetedNumber(value, 1),
         depends=[
             quantities.samples(samples),
             quantities.tn(tn),

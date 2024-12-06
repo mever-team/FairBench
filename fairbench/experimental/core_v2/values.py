@@ -81,6 +81,7 @@ class Value:
     def __float__(self):
         if self.value is None:
             from fairbench.experimental.core_v2 import NotComputable
+
             raise NotComputable("Tried to represent None as a float")
         return float(self.value)
 
@@ -277,6 +278,7 @@ class Value:
 
     def show(self, env=None, depth=0):
         from fairbench.experimental.export_v2.native import format as fmt
+
         return fmt(self, env=env, depth=depth).show()
 
     def explain(self):
@@ -284,5 +286,10 @@ class Value:
         from fairbench.experimental.export_v2.formats.ansi import ansi
 
         help(self)
-        print(ansi.colorize("#" * 5 + " Numerical details " + "#" * 5, ansi.green + ansi.bold), end="")
+        print(
+            ansi.colorize(
+                "#" * 5 + " Numerical details " + "#" * 5, ansi.green + ansi.bold
+            ),
+            end="",
+        )
         return self.show(depth=2)

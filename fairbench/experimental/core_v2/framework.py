@@ -1,6 +1,12 @@
 from typing import Iterable
 from makefun import wraps
-from fairbench.experimental.core_v2 import Descriptor, Value, Number, TargetedNumber, NotComputable
+from fairbench.experimental.core_v2 import (
+    Descriptor,
+    Value,
+    Number,
+    TargetedNumber,
+    NotComputable,
+)
 
 
 def measure(description, unit=True):

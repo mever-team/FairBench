@@ -19,7 +19,7 @@ multidimensional = Descriptor("multidim", "analysis", "analysis for several grou
 
 
 class Sensitive:
-    def __init__(self, branches):
+    def __init__(self, branches, multidimensional=multidimensional):
         self.descriptors = {
             key: Descriptor(key, "group", "the value for group '" + key + "'")
             for key in branches

@@ -3,7 +3,12 @@ from fairbench import core as deprecated
 from typing import Iterable
 
 
-def report(sensitive: Sensitive | deprecated.Fork, measures: Iterable, reductions: Iterable, **kwargs):
+def report(
+    sensitive: Sensitive | deprecated.Fork,
+    measures: Iterable,
+    reductions: Iterable,
+    **kwargs
+):
     if isinstance(sensitive, deprecated.Fork):
         sensitive = Sensitive({k: v.numpy() for k, v in sensitive.branches().items()})
     try:
