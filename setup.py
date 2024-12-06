@@ -31,7 +31,7 @@ with open("requirements[graph].txt", "r") as file:
 
 setuptools.setup(
     name="fairbench",
-    version="0.5.4",
+    version="0.5.6",
     author="Emmanouil (Manios) Krasanakis",
     author_email="maniospas@hotmail.com",
     description="A fairness assessment framework",
