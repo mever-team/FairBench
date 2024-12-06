@@ -1,4 +1,5 @@
 from typing import Optional
+complicated_mode = False
 
 
 class Number:
@@ -251,12 +252,13 @@ class Value:
         # if depends and all(dep.value==depends[0].value for dep in depends):
         #    return item(depends=[depends[0][item].rebase(depends[0].descriptor)])#depends[0][item]
 
-        item = Descriptor(
-            self.descriptor.name + " " + item.name,
-            self.descriptor.role + " " + item.role,
-            item.details + " of " + self.descriptor.details,
-            alias=item.alias,
-        )
+        if complicated_mode:
+            item = Descriptor(
+                self.descriptor.name + " " + item.name,
+                self.descriptor.role + " " + item.role,
+                item.details + " of " + self.descriptor.details,
+                alias=item.alias,
+            )
 
         ret = item(
             depends=[dep[item].rebase(dep.descriptor) for dep in self.depends.values()]
