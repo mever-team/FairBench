@@ -2,38 +2,18 @@ from fairbench.experimental import v2 as fb
 import fairbench as deprecated
 
 x, yhat, y = deprecated.bench.tabular.bank()
+sensitive = deprecated.Fork(deprecated.categories @ x["marital"])
 
-cats = deprecated.categories @ x["marital"]
-cats = {k: v.numpy() for k, v in cats.items()}
-
-sensitive = fb.Sensitive(cats)
-report = fb.report(
+report = fb.reports.pairwise(
     sensitive=sensitive,
     predictions=yhat,
     labels=y,
     scores=yhat,
     targets=y,
-    measures=[
-        fb.measures.pr,
-        fb.measures.tpr,
-        fb.measures.tnr,
-        fb.measures.tar,
-        fb.measures.trr,
-        fb.measures.mabs,
-        fb.measures.rmse,
-        fb.measures.pinball,
-    ],
-    reductions=[
-        fb.reduction.min,
-        fb.reduction.wmean,
-        fb.reduction.maxrel,
-        fb.reduction.maxdiff,
-        fb.reduction.std,
-    ],
 )
 
+report.show()
 # fb.export.static(report, depth=10).display()
-
-fb.export.static(report, env=fb.export.formats.WebApp(), depth=1).display()
+#report.show(fb.export.WebApp())
 #print(report.keys())
 #fb.export.static(report.samples).display()

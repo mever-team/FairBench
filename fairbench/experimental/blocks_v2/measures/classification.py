@@ -14,6 +14,27 @@ def pr(predictions, sensitive=None):
         value, depends=[quantities.positives(positives), quantities.samples(samples)]
     )
 
+@c.measure("the true positive rate")
+def acc(predictions, labels, sensitive=None):
+    predictions = np.array(predictions)
+    labels = np.array(labels)
+    sensitive = np.ones_like(predictions) if sensitive is None else np.array(sensitive)
+    ap = (sensitive * labels).sum()
+    an = (sensitive * (1-labels)).sum()
+    tp = (predictions * sensitive * labels).sum()
+    tn = ((1 - predictions) * sensitive * (1 - labels)).sum()
+    samples = sensitive.sum()
+    value = 0 if samples == 0 else (tp+tn) / samples
+    return c.Value(
+        value,
+        depends=[
+            quantities.samples(samples),
+            quantities.ap(ap),
+            quantities.an(an),
+            quantities.tp(tp),
+            quantities.tn(tn),
+        ],
+    )
 
 @c.measure("the true positive rate")
 def tpr(predictions, labels, sensitive=None):
@@ -41,7 +62,7 @@ def tnr(predictions, labels, sensitive=None):
     predictions = np.array(predictions)
     labels = np.array(labels)
     sensitive = np.ones_like(predictions) if sensitive is None else np.array(sensitive)
-    positives = (predictions * sensitive).sum()
+    negatives = ((1 - predictions) * sensitive).sum()
     tn = ((1 - predictions) * sensitive * (1 - labels)).sum()
     an = ((1 - labels) * sensitive).sum()
     samples = sensitive.sum()
@@ -50,7 +71,7 @@ def tnr(predictions, labels, sensitive=None):
         value,
         depends=[
             quantities.samples(samples),
-            quantities.positives(positives),
+            quantities.negatives(negatives),
             quantities.an(an),
             quantities.tn(tn),
         ],

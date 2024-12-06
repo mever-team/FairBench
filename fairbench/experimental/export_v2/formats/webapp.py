@@ -26,7 +26,7 @@ class WebApp(Html):
             self.routes[key] = key
         return self
 
-    def display(self):
+    def show(self):
         from flask import Flask
         import webbrowser
 

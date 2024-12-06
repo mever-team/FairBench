@@ -61,7 +61,7 @@ def _console(env: Console, value: Value, depth=0, max_depth=6, symbol_depth=0):
         env.bold("Nothing has been computed").p()
 
 
-def static(value: Value, depth=0, env=None):
+def format(value: Value, depth=0, env=None):
     # depth=0 gets the minimal details that allow exploration of the next step
     assert isinstance(value, Value), (
         "You did not provide a core.Value. Perhaps you accidentally accessed a property of core.Value instead."
@@ -76,7 +76,7 @@ def static(value: Value, depth=0, env=None):
 
     def rerun(val):
         attached = value  # env._attached_value
-        return static(
+        return format(
             env._attached_value if val is None else attached[val], env=env, depth=depth
         )
 

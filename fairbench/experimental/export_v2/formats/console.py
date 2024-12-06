@@ -1,3 +1,5 @@
+import math
+
 from fairbench.experimental.export_v2.formats.ansi import ansi
 
 
@@ -18,7 +20,7 @@ class Console:
         self.contents += ansi.colorize(text, ansi.blue + ansi.bold)
         return self.p()
 
-    def bar(self, title, val, target, units=""):
+    def bar(self, title, val: float, target: float, units: str = ""):
         self.contents += ("  |" + title).ljust(40 - 2 * self.level)
         if units == title:
             units = ""
@@ -69,5 +71,5 @@ class Console:
         self.contents += "\n"
         return self
 
-    def display(self):
+    def show(self):
         print(self.p().contents)

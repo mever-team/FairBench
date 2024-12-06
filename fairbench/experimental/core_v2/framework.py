@@ -1,6 +1,6 @@
 from typing import Iterable
 from makefun import wraps
-from fairbench.experimental.core_v2 import Descriptor, Value, Number, TargetedNumber
+from fairbench.experimental.core_v2 import Descriptor, Value, Number, TargetedNumber, NotComputable
 
 
 def measure(description, unit=True):
@@ -64,7 +64,10 @@ def reduction(description):
                 )
                 dependencies = list(arg.depends.values())
                 arg = arg.flatten(to_float=False)
-                value = func(arg, **kwargs)
+                try:
+                    value = func(arg, **kwargs)
+                except NotComputable:
+                    continue
                 if not isinstance(value, TargetedNumber):
                     value = Number(value)
                 ret.append(descriptors(value, dependencies))

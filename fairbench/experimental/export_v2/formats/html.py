@@ -135,17 +135,12 @@ class Html:
 
     def result(self, title, val, target, units=""):
         if abs(val - target) < 0.25:
-            self.contents += (
-                f'<div class="alert alert-success mt-3">{title} {val:.3f} {units}</div>'
-            )
+            emphasis = "success"
         elif abs(val - target) < 0.75:
-            self.contents += (
-                f'<div class="alert alert-warning mt-3">{title} {val:.3f} {units}</div>'
-            )
+            emphasis = "warning"
         else:
-            self.contents += (
-                f'<div class="alert alert-danger mt-3">{title} {val:.3f} {units}</div>'
-            )
+            emphasis = "danger"
+        self.contents += f'<div class="alert alert-{emphasis} mt-3">{title} {val:.3f} {units}</div>'
         return self
 
     def first(self):
@@ -192,7 +187,7 @@ class Html:
         """
         return bootstrap_html
 
-    def display(self):
+    def show(self):
         with open("temp.html", "w", encoding="utf-8") as temp_file:
             temp_file.write(self._create_text())
             temp_file_path = temp_file.name

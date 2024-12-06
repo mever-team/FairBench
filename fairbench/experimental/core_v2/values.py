@@ -79,7 +79,9 @@ class Value:
         )
 
     def __float__(self):
-        assert self.value is not None, "Tried to represent None as a float"
+        if self.value is None:
+            from fairbench.experimental.core_v2 import NotComputable
+            raise NotComputable("Tried to represent None as a float")
         return float(self.value)
 
     def _keys(self, role=None, add_to: dict[str, Descriptor] = None):
@@ -201,13 +203,13 @@ class Value:
                 if item in keys:
                     item = keys[item]
         ret = next(iter(item.descriptor(depends=[self | item]).depends.values()))
-        item = ret.descriptor
+        """item = ret.descriptor
         ret.descriptor = Descriptor(
             self.descriptor.name + " " + item.name,
             self.descriptor.role + " " + item.role,
             item.details + " in " + self.descriptor.details,
             alias=self.descriptor.alias + " " + item.alias,
-        )
+        )"""
         return ret
 
     def __str__(self):
@@ -272,3 +274,15 @@ class Value:
         if item in dir(self):
             return self.__getattribute__(item)
         return self.__getitem__(item)
+
+    def show(self, env=None, depth=0):
+        from fairbench.experimental.export_v2.native import format as fmt
+        return fmt(self, env=env, depth=depth).show()
+
+    def explain(self):
+        from fairbench.experimental.export_v2 import help
+        from fairbench.experimental.export_v2.formats.ansi import ansi
+
+        help(self)
+        print(ansi.colorize("#" * 5 + " Numerical details " + "#" * 5, ansi.green + ansi.bold), end="")
+        return self.show(depth=2)

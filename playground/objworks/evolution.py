@@ -60,18 +60,12 @@ comparison.instance("Day 3", report1)
 comparison = comparison.build()
 
 
-comparison = comparison | fb.reduction.maxrel
+comparison = comparison & "maxrel"
+comparison.export()
+print(comparison.keys())
 
+comparison = fb.reduction.mean(comparison.values("analysis measure"))
 
-fb.export.static(comparison).display()
-comparison = fb.reduction.mean(comparison.values("reduction measure"))
-
-fb.help(fb.Comparison)
-fb.help(fb.measures.tpr)
-fb.help(comparison)
-#fb.export.static(comparison, depth=1, env=fb.export.formats.WebApp()).display()
-
-fb.export.static(comparison).display()
 
 """
 print(comparison)
