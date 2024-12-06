@@ -1,15 +1,13 @@
-from fairbench.bench.vision.datasets import get_vision_dataset
-from fairbench.bench.vision.architectures.runner import run_dataset
-from fairbench.bench.vision.architectures.loader import get_model
-from fairbench.bench.loader import cache
-
-
 def waterbirds(
     classifier="flac",
     data_root=None,
     predict="predict",
     device=None,
 ):
+    from fairbench.bench.vision.datasets import get_vision_dataset
+    from fairbench.bench.vision.architectures.runner import run_dataset
+    from fairbench.bench.vision.architectures.loader import get_model
+    from fairbench.bench.loader import cache
     from torchvision.models.resnet import resnet50
     from fairbench.bench.vision.architectures.resnet import BAddResNet50
     from torch import nn

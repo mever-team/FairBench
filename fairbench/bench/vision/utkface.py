@@ -1,15 +1,13 @@
-from fairbench.bench.vision.datasets import get_vision_dataset
-from fairbench.bench.vision.architectures.runner import run_dataset
-from fairbench.bench.vision.architectures.loader import get_model
-from fairbench.bench.loader import cache
-
-
 def utkface(
     classifier="flac",
     data_root=None,
     predict="predict",
     device=None,
 ):
+    from fairbench.bench.vision.datasets import get_vision_dataset
+    from fairbench.bench.vision.architectures.runner import run_dataset
+    from fairbench.bench.vision.architectures.loader import get_model
+    from fairbench.bench.loader import cache
     from fairbench.bench.vision.architectures.resnet import ResNet18
 
     classifiers = {
