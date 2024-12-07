@@ -1,7 +1,7 @@
 from fairbench.experimental.core_v2 import report
 from fairbench.experimental import blocks_v2 as blocks
 from fairbench.experimental.core_v2 import Sensitive, Descriptor
-from fairbench import core as deprecated
+from fairbench.v1 import core as deprecated
 import numpy as np
 
 

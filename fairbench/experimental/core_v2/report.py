@@ -1,5 +1,5 @@
 from fairbench.experimental.core_v2 import Sensitive, DataError, NotComputable
-from fairbench import core as deprecated
+from fairbench.v1 import core as deprecated
 from typing import Iterable
 
 
