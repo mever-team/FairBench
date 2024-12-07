@@ -1,9 +1,11 @@
 from fairbench.experimental.core_v2 import Value, Descriptor
 
 
-class Comparison:
+class Progress:
     def __init__(self, name, description=None):
-        self.descriptor = Descriptor(name, "comparison", description)
+        if description is None:
+            description = "tracking progress across " + name
+        self.descriptor = Descriptor(name, "progress", description)
         self.depends = list()
 
     def instance(self, name, report: Value):

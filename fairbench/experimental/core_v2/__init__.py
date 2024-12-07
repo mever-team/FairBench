@@ -8,4 +8,4 @@ from fairbench.experimental.core_v2.sensitive import Sensitive, NotComputable, D
 from fairbench.experimental.core_v2.framework import measure, reduction
 from fairbench.experimental.core_v2 import transform
 from fairbench.experimental.core_v2.report import report
-from fairbench.experimental.core_v2.comparison import Comparison
+from fairbench.experimental.core_v2.progress import Progress

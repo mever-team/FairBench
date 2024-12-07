@@ -30,14 +30,14 @@ reductions_vs_any = [
     blocks.reduction.min,
     blocks.reduction.max,
     blocks.reduction.wmean,
-    blocks.reduction.maxrel_vs_all,
-    blocks.reduction.maxdiff_vs_all,
+    blocks.reduction.largestmaxrel,
+    blocks.reduction.largestmaxdiff,
 ]
 
 vsall_descriptor = Descriptor(
-    "multidim_all",
+    "vsall",
     "analysis",
-    "analysis for several groups against the whole population",
+    "analysis that includes the whole population ('all') to compare against",
 )
 
 

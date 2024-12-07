@@ -1,6 +1,8 @@
 from typing import Optional
 
-complicated_mode = False
+from sklearn.utils import deprecated
+
+complicated_mode = True
 
 
 class Number:
@@ -32,6 +34,7 @@ class Descriptor:
         details: str | None = None,
         alias: str = None,
         prototype: Optional["Descriptor"] = None,
+        preferred_units: Optional[str] = None,
     ):
         self.name = name
         self.role = role
@@ -39,6 +42,9 @@ class Descriptor:
         self.alias = name if alias is None else alias
         self.descriptor = self  # interoperability with methods
         self.prototype = self if prototype is None else prototype
+        self.preferred_units = (
+            self.prototype.alias if preferred_units is None else preferred_units
+        )
 
     def __str__(self):
         return f"[{self.role}] {self.name}"
@@ -47,7 +53,7 @@ class Descriptor:
         return other.descriptor.name == self.name
 
     def __call__(self, value: any = None, depends: list["Value"] = None):
-        return Value(value, self, depends, units=self.prototype.alias)
+        return Value(value, self, depends, units=self.preferred_units)
 
     def __repr__(self):
         return (
@@ -107,9 +113,11 @@ class Value:
     def single_entry(self):
         if self.value is not None:
             return self
-        assert (
-            len(self.depends) == 1
-        ), f"There were multiple value candidates for dimension `{self.descriptor}`"
+        assert len(self.depends) == 1, (
+            "You need to specialize more to run the requested operation, "
+            "because it was not possible to retrieve only one value from the following candidates under dimension "
+            f"`{self.descriptor}`: {', '.join(self.depends.keys())}"
+        )
         ret = next(iter(self.depends.values())).single_entry()
         item = ret.descriptor
         """return Value(
@@ -134,9 +142,11 @@ class Value:
         return item(depends=list(ret.depends.values()))
 
     def flatten(self, to_float=False):
-        assert (
-            self.value is None
-        ), f"Cannot flatten a numeric value for dimension {self.descriptor}"
+        assert self.value is None, (
+            f"Cannot flatten dimension `{self.descriptor}` "
+            f"because it already holds a numeric value {float(self.value):.3f}. "
+            "Did you mean to work with its `.details` ?"
+        )
         assert (
             self.depends
         ), f"There were no retrieved computations to flatten for dimension `{self.descriptor}`"
@@ -305,11 +315,21 @@ class Value:
 
     @property
     def details(self):
+        if self.value is None:
+            return self.descriptor(
+                depends=[dependency.details for dependency in self.depends.values()]
+            )
         item = self.descriptor
         item = Descriptor(
             name=item.name + " details",
             role="explanation " + item.role,
-            details=item.details + " viewed for compute details",
+            details=item.details
+            + " viewed for compute details"
+            + (
+                " (NOTE: replace `.details.show()` with '.show(depth=...)' to also see this value)"
+                if self.value is not None
+                else ""
+            ),
         )
         return item(depends=list(self.depends.values()))
 

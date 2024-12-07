@@ -45,7 +45,7 @@ def measure(description, unit=True):
     return strategy
 
 
-def reduction(description):
+def reduction(description, autounits=True):
     """
     Reduction mechanisms take as input an iterable of values.
     Each of those values if flattened to a list of number values.
@@ -57,25 +57,52 @@ def reduction(description):
         descriptor = Descriptor(func.__name__, "reduction", description)
 
         @wraps(func)
-        def wrapper(values: Iterable[Value], **kwargs) -> Value:
+        def wrapper(values: Iterable[Value] | Value, **kwargs) -> Value:
+            if isinstance(values, Value):
+                assert values.value is None, (
+                    f"It is ambiguous to apply the reduction {func.__name__} on '{values.descriptor}' "
+                    f"because the latter is associated with a numeric value {float(values.value):.3f}. "
+                    "Maybe you meant to apply the reduction on its input's `.details` ?"
+                )
+                values = values.depends.values()
             values = list(values)
             ret = list()
             for arg in values:
+                dependencies = list(arg.depends.values())
+                flattened_arg = arg.flatten(to_float=False)
+
+                # TODO: there is a good chance that we may want to check for the same roles too
+                # find common units
+                units = {
+                    value.value.units
+                    for value in flattened_arg
+                    if value.value is not None and hasattr(value.value, "units")
+                } - {None}
+                assert len(units) <= 1, (
+                    f"More than one units were provided to reduction {func.__name__}: {', '.join(units)}."
+                    "Maybe a different view obtained with `.explain' is more suitable?"
+                )
+
+                # set descriptor
                 descriptors = Descriptor(
                     descriptor.name + " " + arg.descriptor.name,
                     descriptor.role + " " + arg.descriptor.role,
                     descriptor.details + " of " + arg.descriptor.details,
                     arg.descriptor.alias,
                     prototype=arg.descriptor,
+                    preferred_units=(
+                        func.__name__ + " " + str(next(units.__iter__()))
+                        if autounits and units
+                        else None
+                    ),
                 )
-                dependencies = list(arg.depends.values())
-                arg = arg.flatten(to_float=False)
+
                 try:
-                    value = func(arg, **kwargs)
+                    value = func(flattened_arg, **kwargs)
                 except NotComputable:
                     continue
                 if not isinstance(value, TargetedNumber):
-                    value = Number(value)
+                    value = Number(value, units=descriptors.preferred_units)
                 ret.append(descriptors(value, dependencies))
             return descriptor(depends=ret)
 

@@ -7,64 +7,21 @@ cats = deprecated.categories @ x["marital"]
 cats = {k: v.numpy() for k, v in cats.items()}
 
 sensitive = fb.Sensitive(cats)
-report1 = fb.report(
-    sensitive=sensitive,
-    predictions=yhat,
-    labels=y,
-    measures=[
-        fb.measures.pr,
-        fb.measures.tpr,
-        fb.measures.tnr,
-        fb.measures.tar,
-        fb.measures.trr,
-        fb.measures.mabs,
-        fb.measures.rmse,
-        fb.measures.pinball,
-    ],
-    reductions=[
-        fb.reduction.min,
-        fb.reduction.wmean,
-        fb.reduction.maxrel,
-        fb.reduction.maxdiff,
-        fb.reduction.std,
-    ],
-)
+report1 = fb.reports.pairwise(sensitive=sensitive, predictions=yhat, labels=y)
 yhat = 1 - yhat
-report2 = fb.report(
-    sensitive=sensitive,
-    predictions=yhat,
-    labels=y,
-    measures=[
-        fb.measures.pr,
-        fb.measures.tpr,
-        fb.measures.tnr,
-        fb.measures.tpr,
-        fb.measures.trr,
-    ],
-    reductions=[
-        fb.reduction.min,
-        fb.reduction.wmean,
-        fb.reduction.maxrel,
-        fb.reduction.maxdiff,
-        fb.reduction.std,
-    ],
-)
+report2 = fb.reports.pairwise(sensitive=sensitive, predictions=yhat, labels=y)
 
-# fb.export.console(report, depth=1)
-
-
-comparison = fb.Comparison("time")
+comparison = fb.Progress("time")
 comparison.instance("Day 1", report1)
 comparison.instance("Day 2", report2)
 comparison.instance("Day 3", report1)
 comparison = comparison.build()
 
 
-comparison = comparison & "maxrel"
-comparison.export()
-print(comparison.keys())
+# comparison.show(depth=10)
 
-comparison = fb.reduction.mean(comparison.values("analysis measure"))
+comparison = fb.reduction.mean(comparison.min.explain)
+comparison.details.show()
 
 
 """

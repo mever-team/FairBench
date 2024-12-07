@@ -15,7 +15,9 @@ class DataError(Exception):
         super().__init__(description)
 
 
-multidimensional = Descriptor("multidim", "analysis", "analysis for several groups")
+multidimensional = Descriptor(
+    "multidim", "analysis", "analysis that compares several groups"
+)
 
 
 class Sensitive:

@@ -5,7 +5,7 @@ x, yhat, y = fb1.bench.tabular.bank()
 sensitive = fb1.Fork(fb1.categories @ x["marital"], fb1.categories @ x["education"])
 sensitive = sensitive.intersectional().strict()
 
-report = fb.reports.pairwise(
+report = fb.reports.vsall(
     sensitive=sensitive,
     predictions=yhat,
     labels=y,
@@ -13,7 +13,4 @@ report = fb.reports.pairwise(
     targets=y,
 )
 
-# fb.export.help(report)
-# report.show(env=fb.export.Console(ansiplot=True))
-# report.std.help()
-# report.show(env=fb.export.WebApp())
+report.min.acc.show(env=fb.export.Console(ansiplot=True))

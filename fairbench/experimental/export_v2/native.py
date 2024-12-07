@@ -1,4 +1,4 @@
-from fairbench.experimental.core_v2 import Value, TargetedNumber, Descriptor, Comparison
+from fairbench.experimental.core_v2 import Value, TargetedNumber, Descriptor, Progress
 from fairbench.experimental.export_v2.formats.ansi import ansi
 import json
 from fairbench.experimental.export_v2.formats.console import Console
@@ -42,7 +42,7 @@ def _console(env: Console, value: Value, depth=0, max_depth=6, symbol_depth=0):
         return
     env.title(title, level=symbol_depth, link=value.descriptor.alias)
     env.first().quote(
-        _generate_details(value.descriptor), (" is ", " in ", " of ", " for ")
+        _generate_details(value.descriptor), (" is ", " in ", " of ", " for ", " that ")
     ).p()
     env.navigation(
         "Computations involve the following:",
@@ -54,7 +54,7 @@ def _console(env: Console, value: Value, depth=0, max_depth=6, symbol_depth=0):
         #    env.text(f" where ideal is {value.value.target:.3f}")
         env.p()
     elif value.depends:
-        env.first().bold("A value is computed in the following cases.").p()
+        env.first().bold("Computations cover the following cases.").p()
     for dep in value.depends.values():
         _console(env, dep, depth, max_depth=max_depth, symbol_depth=symbol_depth + 1)
     if not value.depends and value.value is None:
@@ -98,12 +98,12 @@ def help(value: any, details=True):
             .contents
         )
 
-    if isinstance(value, Comparison) or value == Comparison:
+    if isinstance(value, Progress) or value == Progress:
         ansi.print("#" * 5 + " FairBench help " + "#" * 5, ansi.green + ansi.bold)
         ansi.print("Comparison", ansi.bold + ansi.blue)
         print("This is a comparison builder.")
         ansi.print("Usage:", ansi.bold)
-        if value == Comparison:
+        if value == Progress:
             print(
                 "- cmp = Comparison(name)".ljust(27),
                 "Creates a comparison with the given name.",
