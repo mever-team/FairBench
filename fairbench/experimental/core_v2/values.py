@@ -1,4 +1,5 @@
 from typing import Optional
+
 complicated_mode = False
 
 
@@ -285,8 +286,8 @@ class Value:
 
     def help(self):
         from fairbench.experimental.export_v2 import help
-        return help(self)
 
+        return help(self)
 
     @property
     def explain(self):
@@ -296,9 +297,9 @@ class Value:
         all = [self | key for key in gathered_keys]
         item = self.descriptor
         item = Descriptor(
-            name = item.name+" explain",
-            role = "explanation "+item.role,
-            details = item.details+" viewed for inner details"
+            name=item.name + " explain",
+            role="explanation " + item.role,
+            details=item.details + " viewed for inner details",
         )
         return item(depends=all)
 
@@ -306,9 +307,9 @@ class Value:
     def details(self):
         item = self.descriptor
         item = Descriptor(
-            name = item.name+" details",
-            role = "explanation "+item.role,
-            details = item.details+" viewed for compute details"
+            name=item.name + " details",
+            role="explanation " + item.role,
+            details=item.details + " viewed for compute details",
         )
         return item(depends=list(self.depends.values()))
 

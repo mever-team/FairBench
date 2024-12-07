@@ -64,7 +64,9 @@ def maxrel(values):
     return c.TargetedNumber(np.max(values), 0)
 
 
-@c.reduction("the maximum difference from the largest group (usually the whole population)")
+@c.reduction(
+    "the maximum difference from the largest group (usually the whole population)"
+)
 def maxdiff_vs_all(values):
     values = c.transform.diff(values)
     return c.TargetedNumber(np.max(values), 0)

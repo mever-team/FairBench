@@ -35,7 +35,9 @@ reductions_vs_any = [
 ]
 
 vsall_descriptor = Descriptor(
-    "multidim_all", "analysis", "analysis for several groups against the whole population"
+    "multidim_all",
+    "analysis",
+    "analysis for several groups against the whole population",
 )
 
 

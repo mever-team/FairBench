@@ -31,10 +31,18 @@ class Console:
     def _embed_bars(self):
         if self.ansiplot:
             import ansiplot
-            canvas = ansiplot.Scaled(3*len(self.bars), 4)
+
+            canvas = ansiplot.Scaled(3 * len(self.bars), 4)
             num = 1
             for title, units, val, target in self.bars:
-                canvas.bar(num, val, title=title.ljust(40 - 2 * self.level-4)+(f"{val:.3f}" if val<=1 else str(int(val)))+" "+units)
+                canvas.bar(
+                    num,
+                    val,
+                    title=title.ljust(40 - 2 * self.level - 4)
+                    + (f"{val:.3f}" if val <= 1 else str(int(val)))
+                    + " "
+                    + units,
+                )
                 num += 1
             canvas.bar(0, 0, symbol=canvas.palette.yaxis)
             text = canvas.text()
