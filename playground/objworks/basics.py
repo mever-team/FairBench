@@ -1,9 +1,9 @@
 from fairbench.experimental import v2 as fb
-import fairbench as deprecated
+import fairbench.v1 as fb1
 
-x, yhat, y = deprecated.bench.tabular.bank()
-sensitive = deprecated.Fork(
-    deprecated.categories @ x["marital"], deprecated.categories @ x["education"]
+x, yhat, y = fb1.bench.tabular.bank()
+sensitive = fb1.Fork(
+    fb1.categories @ x["marital"], fb1.categories @ x["education"]
 ).intersectional()
 
 report = fb.reports.pairwise(
