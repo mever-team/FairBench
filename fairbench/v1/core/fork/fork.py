@@ -144,6 +144,30 @@ class Fork(Mapping):
             ] = new_mask
         return Fork(new_branches)
 
+    def strict(self):
+        branches = self.branches()
+        remaining_branches = dict()
+        for branch_name, branch_mask in branches.items():
+            has_no_stricter = True
+            for other_name, other_mask in branches.items():
+                if branch_name == other_name:
+                    continue
+                violations = (
+                    (
+                        tobackend(other_mask) * tobackend(branch_mask)
+                        < tobackend(branch_mask)
+                    )
+                    .abs()
+                    .sum()
+                )
+                if float(violations.raw) == 0:
+                    has_no_stricter = False
+                    break
+            if not has_no_stricter:
+                remaining_branches[branch_name] = branch_mask
+
+        return Fork(remaining_branches)
+
     def __len__(self):
         keys = None
         for k, v in self.branches().items():

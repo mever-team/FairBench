@@ -32,7 +32,7 @@ class Console:
         if self.ansiplot:
             import ansiplot
 
-            canvas = ansiplot.Scaled(3 * len(self.bars), 4)
+            canvas = ansiplot.Scaled(3 * len(self.bars), 8)
             num = 1
             for title, units, val, target in self.bars:
                 canvas.bar(
