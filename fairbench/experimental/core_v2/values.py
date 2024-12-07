@@ -13,6 +13,15 @@ class Number:
     def __float__(self):
         return self.value
 
+    def to_dict(self):
+        return {"value": self.value, "units": self.units}
+
+    @classmethod
+    def from_dict(cls, data):
+        if "target" in data:
+            return TargetedNumber.from_dict(data)
+        return cls(data["value"], data["units"])
+
 
 class TargetedNumber:
     def __init__(self, value, target, units: str = ""):
@@ -24,6 +33,13 @@ class TargetedNumber:
 
     def __float__(self):
         return self.value
+
+    def to_dict(self):
+        return {"value": self.value, "target": self.target, "units": self.units}
+
+    @classmethod
+    def from_dict(cls, data):
+        return cls(data["value"], data["target"], data["units"])
 
 
 class Descriptor:
@@ -59,6 +75,25 @@ class Descriptor:
         return (
             self.alias + " [" + self.role + "]"
         )  # self.__str__() + " " + str(hex(id(self)))
+
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "role": self.role,
+            "details": self.details,
+            "alias": self.alias,
+            "preferred_units": self.preferred_units,
+        }
+
+    @classmethod
+    def from_dict(cls, data):
+        return cls(
+            name=data["name"],
+            role=data["role"],
+            details=data.get("details"),
+            alias=data.get("alias"),
+            preferred_units=data.get("preferred_units"),
+        )
 
 
 missing_descriptor = Descriptor("unknown", "any role", prototype=None)
@@ -184,7 +219,7 @@ class Value:
                 ret += f"\n{dep.tostring(tab+'  ', depth, details)}"
         return ret
 
-    def serialize(self, depth=0, details: bool = False):
+    """def serialize(self, depth=0, details: bool = False):
         result = {
             "descriptor": str(self.descriptor.descriptor),
             "value": None if self.value is None else round(self.value, 3),
@@ -201,7 +236,7 @@ class Value:
         if depth >= 0:
             for dep in self.depends.values():
                 result["depends"].append(dep.serialize(depth, details))
-        return result
+        return result"""
 
     def reshape(self, item: Descriptor):
         if isinstance(item, str):
@@ -332,6 +367,20 @@ class Value:
             ),
         )
         return item(depends=list(self.depends.values()))
+
+    def to_dict(self):
+        return {
+            "value": self.value.to_dict() if self.value else None,
+            "descriptor": self.descriptor.to_dict(),
+            "depends": [dep.to_dict() for dep in self.depends.values()],
+        }
+
+    @classmethod
+    def from_dict(cls, data):
+        value = Number.from_dict(data["value"]) if data["value"] else None
+        descriptor = Descriptor.from_dict(data["descriptor"])
+        depends = [Value.from_dict(dep) for dep in data["depends"]]
+        return cls(value=value, descriptor=descriptor, depends=depends)
 
     """
     def explain(self):

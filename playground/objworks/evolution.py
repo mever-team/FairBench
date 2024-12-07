@@ -1,5 +1,7 @@
 from fairbench.experimental import v2 as fb
 import fairbench as deprecated
+import sys
+import json
 
 x, yhat, y = deprecated.bench.tabular.bank()
 
@@ -21,6 +23,10 @@ comparison = comparison.build()
 # comparison.show(depth=10)
 
 comparison = fb.reduction.mean(comparison.min.explain)
+
+dict = comparison.to_dict()
+comparison = fb.core.Value.from_dict(dict)
+
 comparison.details.show()
 
 
