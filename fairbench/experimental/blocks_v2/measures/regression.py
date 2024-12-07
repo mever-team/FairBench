@@ -4,13 +4,21 @@ import numpy as np
 
 
 @c.measure("mean absolute error")
-def mabs(scores, targets, sensitive=None):
+def mabs(scores, targets, sensitive=None, bins=100):
     scores = np.array(scores, dtype=np.float64)
     targets = np.array(targets, dtype=np.float64)
     sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
     error = (np.abs(scores - targets) * sensitive).sum()
     samples = sensitive.sum()
     value = 0 if samples == 0.0 else error / samples
+
+    """hist, bin_edges = np.histogram(scores[sensitive == 1], bins=bins, density=True, range=(0, 1))
+    bin_edges = np.concatenate([[0], bin_edges[:-1][hist != 0], [bin_edges[-1], 1]])
+    hist = np.concatenate([[0], hist[hist != 0], [0]])
+
+    curve_x = np.array((bin_edges[:-1] + bin_edges[1:]) / 2, dtype=float)
+    curve_y = np.array(hist, dtype=float)"""
+
     return c.Value(
         c.TargetedNumber(value, 0),
         depends=[

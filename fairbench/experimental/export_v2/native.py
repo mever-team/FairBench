@@ -46,7 +46,7 @@ def _console(env: Console, value: Value, depth=0, max_depth=6, symbol_depth=0):
     ).p()
     env.navigation(
         "Computations involve the following:",
-        {key.alias: key.name for key in value.keys()},
+        {key: key for key in value.depends.keys()},
     )
     if value.value is not None:
         env.first().result("Value:", float(value), get_ideal(), value.value.units)
@@ -59,6 +59,8 @@ def _console(env: Console, value: Value, depth=0, max_depth=6, symbol_depth=0):
         _console(env, dep, depth, max_depth=max_depth, symbol_depth=symbol_depth + 1)
     if not value.depends and value.value is None:
         env.bold("Nothing has been computed").p()
+    else:
+        env.navigation("Obtain an explanation for details", {"explain": "explain"})
 
 
 def format(value: Value, depth=0, env=None):

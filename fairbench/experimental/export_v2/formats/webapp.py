@@ -18,11 +18,13 @@ class WebApp(Html):
     def navigation(self, text, routes: dict):
         # if self.prev_max_level != 1:
         #    return self
-        # if self.prev_level == 3:
+        #if self.prev_level == 1:
         #    self.contents += "\n" + text + "<br>"
         for key, text in routes.items():
-            # if self.prev_max_level == 3:
+            #if self.prev_max_level == 1:
             #    self.contents += f'<a href="{key}">{text}</a> '
+            if key == "explain":
+                self.contents += f'<br><a class="btn btn-success" href="{key}">{text}</a> '
             self.routes[key] = key
         return self
 

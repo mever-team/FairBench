@@ -283,6 +283,36 @@ class Value:
 
         return fmt(self, env=env, depth=depth).show()
 
+    def help(self):
+        from fairbench.experimental.export_v2 import help
+        return help(self)
+
+
+    @property
+    def explain(self):
+        gathered_keys = list()
+        for value in self.depends.values():
+            gathered_keys.extend(value.depends.keys())
+        all = [self | key for key in gathered_keys]
+        item = self.descriptor
+        item = Descriptor(
+            name = item.name+" explain",
+            role = "explanation "+item.role,
+            details = item.details+" viewed for inner details"
+        )
+        return item(depends=all)
+
+    @property
+    def details(self):
+        item = self.descriptor
+        item = Descriptor(
+            name = item.name+" details",
+            role = "explanation "+item.role,
+            details = item.details+" viewed for compute details"
+        )
+        return item(depends=list(self.depends.values()))
+
+    """
     def explain(self):
         from fairbench.experimental.export_v2 import help
         from fairbench.experimental.export_v2.formats.ansi import ansi
@@ -295,3 +325,4 @@ class Value:
             end="",
         )
         return self.show(depth=2)
+    """

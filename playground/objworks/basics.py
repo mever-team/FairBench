@@ -12,5 +12,6 @@ report = fb.reports.vsall(
     targets=y,
 )
 
-report.min.acc.explain()
+#fb.export.help(report)
+report.min.acc.show()
 #report.show(env=fb.export.WebApp())

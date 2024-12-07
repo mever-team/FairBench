@@ -15,7 +15,7 @@ def pr(predictions, sensitive=None):
     )
 
 
-@c.measure("the true positive rate")
+@c.measure("the accuracy")
 def acc(predictions, labels, sensitive=None):
     predictions = np.array(predictions)
     labels = np.array(labels)

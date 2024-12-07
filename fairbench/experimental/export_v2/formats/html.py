@@ -74,16 +74,16 @@ class Html:
         self.contents += f"""
             <script>
                 const data{cid} = {bar_json};
-                const margin{cid} = {{ top: 20, right: 30, bottom: 40, left: 50 }};
+                const margin{cid} = {{ top: 20, right: 80, bottom: 80, left: 30 }};
                 const width{cid} = 400 - margin{cid}.left - margin{cid}.right;
                 const height{cid} = 200 - margin{cid}.top - margin{cid}.bottom;
 
                 const svg{cid} = d3.select("#bar-chart{cid}")
-                              .append("svg")
-                              .attr("width", width{cid} + margin{cid}.left + margin{cid}.right)
-                              .attr("height", height{cid} + margin{cid}.top + margin{cid}.bottom)
-                              .append("g")
-                              .attr("transform", `translate(${{margin{cid}.left}}, ${{margin{cid}.top}})`);
+                                  .append("svg")
+                                  .attr("width", width{cid} + margin{cid}.left + margin{cid}.right)
+                                  .attr("height", height{cid} + margin{cid}.top + margin{cid}.bottom)
+                                  .append("g")
+                                  .attr("transform", `translate(${{margin{cid}.left}}, ${{margin{cid}.top}})`);
 
                 const x{cid} = d3.scaleBand()
                             .domain(data{cid}.map(d => d.title))
@@ -94,8 +94,8 @@ class Html:
                    .attr("transform", `translate(0, ${{height{cid}}})`)
                    .call(d3.axisBottom(x{cid}))
                    .selectAll("text")
-                   .attr("transform", "translate(0,10)")
-                   .style("text-anchor", "middle");
+                   .attr("transform", "translate(0,10) rotate(30) translate(-10,-10)")
+                   .style("text-anchor", "start");
 
                 const y{cid} = d3.scaleLinear()
                             .domain([0, d3.max(data{cid}, d => Math.max(d.val, d.target))])
@@ -120,7 +120,7 @@ class Html:
                    .attr("height", d => height{cid} - y{cid}(d.val))
                    .attr("fill", d => colorScale{cid}(Math.abs(d.val - d.target)));
             </script>
-            """
+        """
 
         self.bars.clear()
 
