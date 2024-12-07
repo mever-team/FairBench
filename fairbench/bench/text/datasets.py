@@ -1,7 +1,6 @@
 import random
 import json
 import os
-import tqdm
 
 
 class LLMDatasetGenerator:
@@ -28,6 +27,8 @@ def simplequestions(
     n=1000,
     overwrite=False,
 ):
+    import tqdm
+
     if os.path.exists(cache) and not overwrite:
         with open(cache, "r") as file:
             dataset = json.load(file)

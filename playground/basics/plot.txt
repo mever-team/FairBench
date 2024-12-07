@@ -1,0 +1,38 @@
+----------------------- top ------------------------
+Black                         20.000  | ██████████
+Asian-Pac-Islander            20.000  | ██████████
+Other                         20.000  | ██████████
+Male                          20.000  | ██████████
+White                         20.000  | ██████████
+Female                        20.000  | ██████████
+Amer-Indian-Eskimo            20.000  | ██████████
+---------------------- curve -----------------------
+
+(1.0, 1.499171270718232)
+xxxx                                                        
+▎ xxx                   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+ooooxoxoooooxoxoxoxoxoxoxooooooooooooooooooooooooooooooooooo
+▎     □xxxxxx                                               
+▎    □□□□□                                                  
+▎   □□   □□□□                                               
+▎  □□       □□□□□□□                                         
+▎ □□              □□□□□□□□□□                                
+▎□□                        □□□□□□□□□□□□□□□□□□□□□□□□□□□□□    
+◇*◇*◇*◇*◇*◇*◇*◇*◇*◇*◇*◇*◇*◇*◇*◇*◇*◇*◇*◇*◇*◇*◇*◇*◇*◇*◇*◇□◇□◇□
+                                                 (20.0, 0.0)
+
+ * Black
+ - Asian-Pac-Islander
+ + Other
+ x Male
+ o White
+ □ Female
+ ◇ Amer-Indian-Eskimo
+--------------------- samples ----------------------
+Black                         1561.000 | █
+Asian-Pac-Islander            480.000 | 
+Other                         135.000 | 
+Male                          10860.000 | ███████
+White                         13946.000 | ██████████
+Female                        5421.000 | ███
+Amer-Indian-Eskimo            159.000 | 
