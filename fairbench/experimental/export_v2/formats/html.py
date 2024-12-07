@@ -22,7 +22,6 @@ class Html:
     def title(self, text, level=0, link=None):
         if self.bars:
             self._embed_bars()
-            self.bars.clear()
         level = level * 2 + 1
         if level > 6:
             level = 6
@@ -162,7 +161,6 @@ class Html:
     def end(self):
         if self.bars:
             self._embed_bars()
-            self.bars.clear()
         if self.prev_max_level >= 3:
             self.contents += "</div></div>"
         self.contents += "<br><br>"
