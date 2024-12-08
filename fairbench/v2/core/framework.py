@@ -1,6 +1,6 @@
 from typing import Iterable
 from makefun import wraps
-from fairbench.experimental.core_v2 import (
+from fairbench.v2.core import (
     Descriptor,
     Value,
     Number,

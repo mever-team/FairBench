@@ -1,4 +1,4 @@
-from fairbench.experimental.core_v2 import Value, Descriptor
+from fairbench.v2.core import Value, Descriptor
 
 
 class Progress:

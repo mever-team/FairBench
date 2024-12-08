@@ -1,6 +1,6 @@
-from fairbench.experimental.core_v2 import report
-from fairbench.experimental import blocks_v2 as blocks
-from fairbench.experimental.core_v2 import Sensitive, Descriptor
+from fairbench.v2.core import report
+from fairbench.v2 import blocks as blocks
+from fairbench.v2.core import Sensitive, Descriptor
 from fairbench.v1 import core as deprecated
 import numpy as np
 
@@ -12,6 +12,7 @@ measures = [
     blocks.measures.tnr,
     blocks.measures.tar,
     blocks.measures.trr,
+    blocks.measures.avgscore,
     blocks.measures.mabs,
     blocks.measures.rmse,
 ]

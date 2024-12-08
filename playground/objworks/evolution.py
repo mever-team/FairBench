@@ -1,4 +1,4 @@
-from fairbench.experimental import v2 as fb
+from fairbench import v2 as fb
 import fairbench as deprecated
 
 x, yhat, y = deprecated.bench.tabular.bank()
@@ -15,17 +15,20 @@ comparison = fb.Progress("time")
 comparison.instance("Day 1", report1)
 comparison.instance("Day 2", report2)
 comparison.instance("Day 3", report1)
+comparison.instance("Day 4", report1)
+comparison.instance("Day 5", report2)
+comparison.instance("Day 6", report1)
 comparison = comparison.build()
 
 
 # comparison.show(depth=10)
 
-comparison = fb.reduction.mean(comparison.min.explain)
+comparison = fb.reduction.mean(comparison.acc.explain)
 
 dict = comparison.to_dict()
 comparison = fb.core.Value.from_dict(dict)
 
-comparison.details.show()
+comparison.details.show(fb.export.Console(ansiplot=True))
 
 
 """

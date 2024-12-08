@@ -1,5 +1,5 @@
-from fairbench.experimental import core_v2 as c
-from fairbench.experimental.blocks_v2.quantities import quantities
+from fairbench.v2 import core as c
+from fairbench.v2.blocks.quantities import quantities
 import numpy as np
 
 

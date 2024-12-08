@@ -1,5 +1,5 @@
 import numpy as np
-from fairbench.experimental import core_v2 as c
+from fairbench.v2 import core as c
 
 
 @c.reduction("the minimum")
@@ -37,7 +37,7 @@ def mean(values):
 @c.reduction("the weighted average")
 def wmean(values, weight_by=None):
     if weight_by is None:
-        from fairbench.experimental.v2 import measures
+        from fairbench.v2 import measures
 
         weight_by = measures.quantities.samples
     weights = [

@@ -1,4 +1,4 @@
-from fairbench.experimental.core_v2 import Descriptor
+from fairbench.v2.core import Descriptor
 import numpy as np
 import inspect
 

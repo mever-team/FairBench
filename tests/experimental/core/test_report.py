@@ -1,4 +1,4 @@
-from fairbench.experimental import v2 as fb
+from fairbench.v2 import v2 as fb
 import fairbench.v1 as fb1
 import numpy as np
 
@@ -44,7 +44,7 @@ def test_pairwise():
 
 
 def test_progress():
-    from fairbench.experimental import v2 as fb
+    from fairbench.v2 import v2 as fb
     import fairbench as deprecated
 
     x, yhat, y = deprecated.bench.tabular.bank()

@@ -1,4 +1,4 @@
-from fairbench.experimental.export_v2.formats.ansi import ansi
+from fairbench.v2.export.formats.ansi import ansi
 
 
 class Console:
@@ -33,6 +33,18 @@ class Console:
             import ansiplot
 
             canvas = ansiplot.Scaled(3 * len(self.bars), 8)
+
+            """common_units = {units for title, units, val, target in self.bars}
+            if len(common_units) == 1:
+                # TODO: remove once we have proper plots and automatic conversion
+                plot = [val for title, units, val, target in self.bars]
+                canvas.plot(
+                    range(len(plot)),
+                    plot,
+                    title=self.bars[0][0] + " to " + self.bars[-1][0],
+                )
+            else:"""
+
             num = 1
             for title, units, val, target in self.bars:
                 canvas.bar(

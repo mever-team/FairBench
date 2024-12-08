@@ -162,7 +162,7 @@ class Value:
 
     def __float__(self):
         if self.value is None:
-            from fairbench.experimental.core_v2 import NotComputable
+            from fairbench.v2.core import NotComputable
 
             raise NotComputable("Tried to represent None as a float")
         return float(self.value)
@@ -369,7 +369,7 @@ class Value:
         return self.__getitem__(item)
 
     def show(self, env=None, depth=0):
-        from fairbench.experimental.export_v2.native import format as fmt
+        from fairbench.v2.export.native import format as fmt
 
         if env is not None and hasattr(env, "direct_show"):
             assert (
@@ -380,7 +380,7 @@ class Value:
         return fmt(self, env=env, depth=depth).show()
 
     def help(self):
-        from fairbench.experimental.export_v2 import help
+        from fairbench.v2.export import help
 
         return help(self)
 

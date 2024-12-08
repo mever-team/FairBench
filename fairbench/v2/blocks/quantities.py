@@ -1,4 +1,4 @@
-from fairbench.experimental import core_v2 as c
+from fairbench.v2 import core as c
 
 
 class quantities:

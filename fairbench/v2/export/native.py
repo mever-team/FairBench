@@ -1,6 +1,6 @@
-from fairbench.experimental.core_v2 import Value, TargetedNumber, Descriptor, Progress
-from fairbench.experimental.export_v2.formats.ansi import ansi
-from fairbench.experimental.export_v2.formats.console import Console
+from fairbench.v2.core import Value, TargetedNumber, Descriptor, Progress
+from fairbench.v2.export.formats.ansi import ansi
+from fairbench.v2.export.formats.console import Console
 
 
 def _generate_details(descriptor: Descriptor):

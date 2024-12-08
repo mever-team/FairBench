@@ -1,5 +1,5 @@
 from typing import Iterable
-from fairbench.experimental.core_v2 import Value, NotComputable
+from fairbench.v2.core import Value, NotComputable
 
 
 def number(values: Iterable[Value]) -> list[float]:

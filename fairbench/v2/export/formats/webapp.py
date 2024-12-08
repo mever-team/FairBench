@@ -1,4 +1,4 @@
-from fairbench.experimental.export_v2.formats.html import Html
+from fairbench.v2.export.formats.html import Html
 from threading import Timer
 
 
