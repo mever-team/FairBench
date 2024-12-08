@@ -3,6 +3,7 @@ from fairbench.v2.core.values import (
     Descriptor,
     TargetedNumber,
     Number,
+    Curve,
 )
 from fairbench.v2.core.sensitive import Sensitive, NotComputable, DataError
 from fairbench.v2.core.framework import measure, reduction

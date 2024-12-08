@@ -7,10 +7,32 @@ def report(
     sensitive: Sensitive | deprecated.Fork,
     measures: Iterable,
     reductions: Iterable,
-    **kwargs
+    **kwargs,
 ):
+    # prepare the sensitive attribute
+    if isinstance(sensitive, dict):
+        sensitive = deprecated.Fork(sensitive)
     if isinstance(sensitive, deprecated.Fork):
         sensitive = Sensitive({k: v.numpy() for k, v in sensitive.branches().items()})
+    assert isinstance(
+        sensitive, Sensitive
+    ), "The sensitive attribute can only be a dict, Sensitive, or Fork. For example, provide `fb.categories@iterable`."
+
+    # convert forks to dicts
+    kwargs = {
+        name: deprecated.Fork(arg) if isinstance(arg, dict) else arg
+        for name, arg in kwargs.items()
+    }
+    kwargs = {
+        name: (
+            {k: v.raw for k, v in arg.branches().items()}
+            if isinstance(arg, deprecated.Fork)
+            else arg
+        )
+        for name, arg in kwargs.items()
+    }
+
+    # make the actual computation
     try:
         results = sensitive.assessment(measures, **kwargs)
         reduction_results = list()

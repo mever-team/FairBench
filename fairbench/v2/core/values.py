@@ -1,6 +1,21 @@
 from typing import Optional
+import numpy as np
 
 complicated_mode = True
+
+
+class Curve:
+    def __init__(self, x, y, units: str = ""):
+        self.x = np.array(x)
+        self.y = np.array(y)
+        self.units = units
+
+    def to_dict(self):
+        raise Exception("Not implemented to_dict for curves yet")
+
+    @classmethod
+    def from_dict(cls, data):
+        raise Exception("Not implemented from_dict for curves yet")
 
 
 class Number:
@@ -16,6 +31,8 @@ class Number:
 
     @classmethod
     def from_dict(cls, data):
+        if "x" in data and "y" in data:
+            return Curve.from_dict(data)
         if "target" in data:
             return TargetedNumber.from_dict(data)
         return cls(data["value"], data["units"])

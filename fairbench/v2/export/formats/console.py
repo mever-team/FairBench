@@ -44,13 +44,13 @@ class Console:
                     title=self.bars[0][0] + " to " + self.bars[-1][0],
                 )
             else:"""
-
+            max_len = max(len(title) for title, units, val, target in self.bars) + 7
             num = 1
             for title, units, val, target in self.bars:
                 canvas.bar(
                     num,
                     val,
-                    title=title.ljust(40 - 2 * self.level - 4)
+                    title=title.ljust(max(max_len, 40 - 2 * self.level - 4))
                     + (f"{val:.3f}" if val <= 1 else str(int(val)))
                     + " "
                     + units,
@@ -62,8 +62,11 @@ class Console:
             self.contents += f"\n{tab}  " + f"\n{tab}  ".join(text.split("\n"))
             self.p()
         else:
+            max_len = max(len(title) for title, units, val, target in self.bars) + 4
             for title, units, val, target in self.bars:
-                self.contents += ("  |" + title).ljust(40 - 2 * self.level)
+                self.contents += ("  |" + title).ljust(
+                    max(max_len, 40 - 2 * self.level)
+                )
                 if val > 1:
                     self.contents += str(int(val)) + " " + units
                 else:

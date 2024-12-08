@@ -148,7 +148,7 @@ class Fork(Mapping):
         branches = self.branches()
         remaining_branches = dict()
         for branch_name, branch_mask in branches.items():
-            has_no_stricter = True
+            has_no_stricter_branch = True
             for other_name, other_mask in branches.items():
                 if branch_name == other_name:
                     continue
@@ -161,9 +161,9 @@ class Fork(Mapping):
                     .sum()
                 )
                 if float(violations.raw) == 0:
-                    has_no_stricter = False
+                    has_no_stricter_branch = False
                     break
-            if not has_no_stricter:
+            if not has_no_stricter_branch:
                 remaining_branches[branch_name] = branch_mask
 
         return Fork(remaining_branches)
