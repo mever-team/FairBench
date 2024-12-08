@@ -1,4 +1,4 @@
-from fairbench.v2.core import Sensitive, DataError, NotComputable
+from fairbench.v2.core import Sensitive, DataError, NotComputable, Descriptor
 from fairbench.v1 import core as deprecated
 from typing import Iterable
 
@@ -31,6 +31,50 @@ def report(
         )
         for name, arg in kwargs.items()
     }
+
+    gathered_branches = {
+        branch_name
+        for arg in kwargs.values()
+        if isinstance(arg, dict)
+        for branch_name in arg
+        if branch_name not in sensitive.branches
+    }
+    if gathered_branches:
+        # make the computations for each branch combination
+        branch_reports = list()
+        for branch_name in gathered_branches:
+            branch_sensitive = Sensitive(
+                sensitive.branches,
+                Descriptor(
+                    name=branch_name,
+                    alias=branch_name,
+                    role="branch",
+                    details=f"branch {branch_name}",
+                ),
+            )
+            # for the branch name, specialize each kwarg if the latter is a fork with that value
+            branch_kwargs = dict()
+            specialized_keys = list()
+            for k, v in kwargs.items():
+                if isinstance(v, dict):
+                    assert branch_name in v, (
+                        f"Analysis argument '{k}' is missing branch '{branch_name}' that is present "
+                        f"in at least one other input argument passed to the report "
+                        "(the conflict is only between Fork inputs with multiple values). Consider "
+                        "creating two reports, pruning branches of other values, or adding such a branch."
+                    )
+                    branch_kwargs[k] = v[branch_name]
+                    specialized_keys.append(k)
+                else:
+                    branch_kwargs[k] = v
+            branch_report = report(
+                sensitive=branch_sensitive,
+                measures=measures,
+                reductions=reductions,
+                **branch_kwargs,
+            )
+            branch_reports.append(branch_report)
+        return sensitive.descriptor(depends=branch_reports)
 
     # make the actual computation
     try:

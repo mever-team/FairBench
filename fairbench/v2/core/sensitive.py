@@ -51,7 +51,7 @@ class Sensitive:
                     valid_kwargs = {
                         k: v for k, v in kwargs.items() if k in valid_params
                     }
-
+                    """
                     # gather all kwarg branches that are different from the sensitive attribute's branches
                     gathered_branches = {
                         branch_name
@@ -88,10 +88,10 @@ class Sensitive:
                                 alias=result.descriptor.alias + branch_name,
                             )
                             measure_values.append(result)
-                    else:
-                        # this is what would normally happen if only the sensitive attribute has branches
-                        result = measure(**valid_kwargs, sensitive=sensitive)
-                        measure_values.append(result)
+                    else:"""
+                    # this is what would normally happen if only the sensitive attribute has branches
+                    result = measure(**valid_kwargs, sensitive=sensitive)
+                    measure_values.append(result)
                 except NotComputable:
                     pass
                 except TypeError:
