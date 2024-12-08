@@ -1,7 +1,5 @@
 from typing import Optional
 
-from sklearn.utils import deprecated
-
 complicated_mode = True
 
 
@@ -47,26 +45,26 @@ class Descriptor:
         self,
         name,
         role,
-        details: str | None = None,
-        alias: str = None,
+        details: Optional[str] = None,
+        alias: Optional[str] = None,
         prototype: Optional["Descriptor"] = None,
         preferred_units: Optional[str] = None,
     ):
         self.name = name
         self.role = role
-        self.details = name + " " + role if details is None else details
-        self.alias = name if alias is None else alias
+        self.details = name + " " + role if details is None else str(details)
+        self.alias = name if alias is None else str(alias)
         self.descriptor = self  # interoperability with methods
         self.prototype = self if prototype is None else prototype
         self.preferred_units = (
-            self.prototype.alias if preferred_units is None else preferred_units
+            self.prototype.alias if preferred_units is None else str(preferred_units)
         )
 
     def __str__(self):
         return f"[{self.role}] {self.name}"
 
     def __eq__(self, other):
-        return other.descriptor.name == self.name
+        return other.descriptor.name == self.name and other.descriptor.role == self.role
 
     def __call__(self, value: any = None, depends: list["Value"] = None):
         return Value(value, self, depends, units=self.preferred_units)
@@ -115,11 +113,52 @@ class Value:
             value = Number(value, units)
         self.value = value
         self.descriptor: Descriptor = descriptor.descriptor
-        self.depends = (
-            {}
-            if depends is None
-            else {dep.descriptor.alias: dep for dep in depends if dep.exists()}
-        )
+        if depends is None:
+            depends = []
+        depends = [dep for dep in depends if dep.exists()]
+        self.depends = {dep.descriptor.alias: dep for dep in depends}
+
+        if len(depends) != len(self.depends):
+            for dep in depends:
+                assert dep == self.depends[dep.descriptor.alias], (
+                    "A descriptor with the same alias was provided more than once but with different values "
+                    f"as a dependency of '{self.descriptor}': {', '.join([str(dep.descriptor.alias) for dep in depends])}\n"
+                    "The mis-matching values follow:\n\n"
+                    f"{str(dep)}\n\n"
+                    f"{str(self.depends[dep.descriptor.alias])}\n\n"
+                )
+
+    def __eq__(self, other: "Value"):
+        if not isinstance(other, Value):
+            return False
+        if self.descriptor != other.descriptor:
+            return False
+        if (self.value is None) != (other.value is None):
+            return False
+        if self.value is not None and float(self) != float(other):
+            return False
+        for key in self.depends:
+            if key not in other.depends:
+                return False
+        for key in other.depends:
+            if key not in self.depends:
+                return False
+        for key in self.depends:
+            if self.depends[key] != other.depends[key]:
+                return False
+        return True
+
+    @property
+    def units(self):
+        assert isinstance(self.value, Number) or isinstance(
+            self.value, TargetedNumber
+        ), "The value has no units"
+        return self.value.units
+
+    @property
+    def target(self):
+        assert isinstance(self.value, TargetedNumber), "The value has no target"
+        return self.value.target
 
     def __float__(self):
         if self.value is None:
@@ -149,9 +188,9 @@ class Value:
         if self.value is not None:
             return self
         assert len(self.depends) == 1, (
-            "You need to specialize more to run the requested operation, "
-            "because it was not possible to retrieve only one value from the following candidates under dimension "
-            f"`{self.descriptor}`: {', '.join(self.depends.keys())}"
+            "You need to specialize more (e.g., focus on the next mentioned dimension or candidates) to run the requested "
+            "operation.\nDetails: it was not possible to retrieve only one value from the following candidates under "
+            f"dimension `{self.descriptor}` with alias `{self.descriptor.alias}`: {', '.join(self.depends.keys())}"
         )
         ret = next(iter(self.depends.values())).single_entry()
         item = ret.descriptor
@@ -185,6 +224,11 @@ class Value:
         assert (
             self.depends
         ), f"There were no retrieved computations to flatten for dimension `{self.descriptor}`"
+        if (
+            len(self.depends) == 1
+            and next(self.depends.values().__iter__()).value is None
+        ):
+            return next(self.depends.values().__iter__()).flatten(to_float)
         ret = [dep.single_entry() for dep in self.depends.values()]
         if to_float:
             ret = [float(value) for value in ret]
@@ -326,6 +370,12 @@ class Value:
 
     def show(self, env=None, depth=0):
         from fairbench.experimental.export_v2.native import format as fmt
+
+        if env is not None and hasattr(env, "direct_show"):
+            assert (
+                depth == 0
+            ), f"You cannot specify a depth when showing with env class `{env.__class_.__name__}`"
+            return env.direct_show(self)
 
         return fmt(self, env=env, depth=depth).show()
 

@@ -1,7 +1,5 @@
 from fairbench.experimental import v2 as fb
 import fairbench as deprecated
-import sys
-import json
 
 x, yhat, y = deprecated.bench.tabular.bank()
 

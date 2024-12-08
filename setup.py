@@ -4,6 +4,8 @@ import setuptools
 # - install: wheel, twine
 # - build  : python setup.py bdist_wheel
 # - deploy : twine upload dist/*
+#
+# Coverage for v2: pytest tests/experimental --cov=fairbench/experimental --cov-report=htmlcomparison
 
 # with open("README.md", "r") as file:
 #    long_description = file.read()

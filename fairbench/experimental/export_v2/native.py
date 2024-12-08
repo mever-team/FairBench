@@ -1,6 +1,5 @@
 from fairbench.experimental.core_v2 import Value, TargetedNumber, Descriptor, Progress
 from fairbench.experimental.export_v2.formats.ansi import ansi
-import json
 from fairbench.experimental.export_v2.formats.console import Console
 
 
@@ -14,10 +13,6 @@ def _generate_details(descriptor: Descriptor):
     else:
         details = f"This {roles} is {details}."
     return details
-
-
-def tojson(value: Value, indent="  "):
-    return json.dumps(value.serialize(), indent=indent)
 
 
 def _console(env: Console, value: Value, depth=0, max_depth=6, symbol_depth=0):
