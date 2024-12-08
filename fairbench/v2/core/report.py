@@ -7,6 +7,7 @@ def report(
     sensitive: Sensitive | deprecated.Fork,
     measures: Iterable,
     reductions: Iterable,
+    attach_branches_to_measures: bool = False,
     **kwargs,
 ):
     # prepare the sensitive attribute
@@ -39,7 +40,7 @@ def report(
         for branch_name in arg
         if branch_name not in sensitive.branches
     }
-    if gathered_branches:
+    if gathered_branches and not attach_branches_to_measures:
         # make the computations for each branch combination
         branch_reports = list()
         for branch_name in gathered_branches:

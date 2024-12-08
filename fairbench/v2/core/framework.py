@@ -77,9 +77,9 @@ def reduction(description, autounits=True):
                     value.value.units
                     for value in flattened_arg
                     if value.value is not None and hasattr(value.value, "units")
-                } - {None}
+                } - {None, ""}
                 assert len(units) <= 1, (
-                    f"More than one units were provided to reduction {func.__name__}: {', '.join(units)}."
+                    f"More than one units were provided to reduction {func.__name__}: {', '.join(units)}. "
                     "Maybe a different view obtained with `.explain' is more suitable?"
                 )
 

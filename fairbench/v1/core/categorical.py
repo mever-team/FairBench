@@ -95,3 +95,17 @@ def categories(x):
         )
         for val in vals
     }
+
+
+@Transform
+def fuzzy(x):
+    assert isinstance(x, Iterable)
+    if isinstance(x, Mapping):
+        return Categorical(x)
+    x = tobackend(x)
+    minx = x.min()
+    maxx = x.max()
+    if minx == maxx:
+        return x * 0
+    x = (x - minx) / (maxx - minx)
+    return {f"large {float(maxx):.3f}": x, f"small {float(minx):.3f}": 1 - x}

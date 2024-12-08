@@ -13,4 +13,5 @@ report = fb.reports.pairwise(
     labels=y,
 )
 
-report.show(env=fb.export.Console(ansiplot=True))
+report.show(env=fb.export.Console(ansiplot=False))
+# fb.reduction.min(report.min.explain).show()
