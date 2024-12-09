@@ -12,7 +12,8 @@ measures = [
     blocks.measures.tnr,
     blocks.measures.tar,
     blocks.measures.trr,
-    # blocks.measures.avgscore,
+    blocks.measures.avgscore,
+    blocks.measures.auc,
     blocks.measures.mabs,
     blocks.measures.rmse,
 ]

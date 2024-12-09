@@ -57,27 +57,27 @@ def barea(
         if (
             not isinstance(value, Explainable)
             or "curve" not in value.explain.branches()
-            or not isinstance(value.explain.curve, ExplanationCurve)
+            or not isinstance(value.explain.distribution, ExplanationCurve)
         ):
             raise ExplainableError("Explanation absent or does not store `curve`")
         if x_min is None:
-            x_min = value.explain.curve.x.min()
-        elif value.explain.curve.x.min() != x_min:
+            x_min = value.explain.distribution.x.min()
+        elif value.explain.distribution.x.min() != x_min:
             raise ExplainableError(
-                f"Incompatible curves min: {x_min} vs {value.explain.curve.x.min()}"
+                f"Incompatible curves min: {x_min} vs {value.explain.distribution.x.min()}"
             )
         if x_max is None:
-            x_max = value.explain.curve.x.max()
-        elif value.explain.curve.x.max() != x_max:
+            x_max = value.explain.distribution.x.max()
+        elif value.explain.distribution.x.max() != x_max:
             raise ExplainableError(
-                f"Incompatible curve max: {x_max} vs {value.explain.curve.x.max()}"
+                f"Incompatible curve max: {x_max} vs {value.explain.distribution.x.max()}"
             )
         n_max = min(
-            n_max, value.explain.curve.points
+            n_max, value.explain.distribution.points
         )  # get the same discretization as the densest curve
-    x = values[0].explain.curve.togrid(n_max).x
-    values = [skew(x, value.explain.curve.togrid(n_max).y) for value in values]
-    base = [skew(x, value.explain.curve.togrid(n_max).y) for value in base]
+    x = values[0].explain.distribution.togrid(n_max).x
+    values = [skew(x, value.explain.distribution.togrid(n_max).y) for value in values]
+    base = [skew(x, value.explain.distribution.togrid(n_max).y) for value in base]
     x_integral = np.mean(skew(x, np.ones_like(x)))
 
     return [

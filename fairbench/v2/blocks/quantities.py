@@ -11,4 +11,5 @@ class quantities:
     an = c.Descriptor("an", "count", "the actual negative labels")
     freedom = c.Descriptor("freedom", "parameter", "the degrees of freedom")
     slope = c.Descriptor("slope", "parameter", "the slope of pinball deviation")
-    distribution = c.Descriptor("distribution", "curve", "the data distribution")
+    distribution = c.Descriptor("distribution", "curve", "the score distribution")
+    roc = c.Descriptor("roc", "curve", "the receiver operating characteristics curve")

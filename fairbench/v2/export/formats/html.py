@@ -1,4 +1,5 @@
 import webbrowser
+import json
 
 
 class Html:
@@ -8,6 +9,7 @@ class Html:
         self.bars = []
         self.prev_max_level = 0
         self.routes = dict()
+        self.curves = list()
 
     def navigation(self, text, routes: dict):
         return self
@@ -22,6 +24,8 @@ class Html:
     def title(self, text, level=0, link=None):
         if self.bars:
             self._embed_bars()
+        if self.curves:
+            self._embed_curves()
         level = level * 2 + 1
         if level > 6:
             level = 6
@@ -45,6 +49,12 @@ class Html:
         self.prev_max_level = max(self.prev_max_level, level)
         return self
 
+    def curve(self, title, x, y, units):
+        if units == title:
+            units = ""
+        self.curves.append((title, x, y, units))
+        return self
+
     def bar(self, title, val, target, units=""):
         if units == title:
             units = ""
@@ -53,23 +63,86 @@ class Html:
         self.bars.append((title + units, val, target))
         return self
 
+    def _embed_curves(self):
+        curve_data = [
+            {
+                "title": t,
+                "x": [float(val) for val in x],
+                "y": [float(val) for val in y],
+                "units": u,
+            }
+            for t, x, y, u in self.curves
+        ]
+        curve_json = json.dumps(curve_data)
+        self.chart_count += 1
+        cid = self.chart_count
+
+        self.contents += f"""<div id="curve-chart{cid}" class="mt-4"></div>"""
+
+        self.contents += f"""
+            <script>
+                const curveData{cid} = {curve_json};
+                const margin{cid} = {{top: 20, right: 30, bottom: 50, left: 50 }};
+                const width{cid} = 400 - margin{cid}.left - margin{cid}.right;
+                const height{cid} = 200 - margin{cid}.top - margin{cid}.bottom;
+            
+                const svg{cid} = d3.select("#curve-chart{cid}")
+                      .append("svg")
+                      .attr("width", width{cid} + margin{cid}.left + margin{cid}.right)
+                      .attr("height", height{cid} + margin{cid}.top + margin{cid}.bottom)
+                      .append("g");
+            
+                const xScale{cid} = d3.scaleLinear()
+                    .domain([0, d3.max(curveData{cid}, d => d3.max(d.x))])
+                    .range([0, width{cid}]);
+            
+                const yScale{cid} = d3.scaleLinear()
+                    .domain([0, d3.max(curveData{cid}, d => d3.max(d.y))])
+                    .nice()
+                    .range([height{cid}, 0]);
+            
+                svg{cid}.append("g")
+                    .call(d3.axisBottom(xScale{cid}));
+            
+                svg{cid}.append("g")
+                    .call(d3.axisLeft(yScale{cid}));
+            
+                curveData{cid}.forEach((curve) => {{
+                    const line{cid} = d3.line()
+                        .x((_, i) => xScale{cid}(curve.x[i]))
+                        .y((_, i) => yScale{cid}(curve.y[i]));
+            
+                    svg{cid}.append("path")
+                        .datum(curve)
+                        .attr("fill", "none")
+                        .attr("stroke", "steelblue")
+                        .attr("stroke-width", 1.5)
+                        .attr("d", line{cid});
+                }});
+            
+                svg{cid}.selectAll(".curve-label")
+                    .data(curveData{cid})
+                    .enter()
+                    .append("text")
+                    .attr("class", "curve-label")
+                    .attr("x", d => xScale{cid}(d.x[Math.floor(d.x.length / 2)]) - 5)
+                    .attr("y", d => yScale{cid}(d.y[Math.floor(d.y.length / 2)]) - 5)
+                    .text(d => d.title + " (" + d.units + ")")
+                    .style("font-size", "10px")
+                    .style("fill", "black");
+            </script>
+
+            </script>
+        """
+        self.curves = list()
+        return self
+
     def _embed_bars(self):
         bar_data = [{"title": t, "val": v, "target": trg} for t, v, trg in self.bars]
         bar_json = str(bar_data).replace("'", '"')
         self.chart_count += 1
         cid = self.chart_count
-
-        if not self.contents.endswith("</div>"):
-            self.contents += f"""<div id="bar-chart{cid}" class="mt-4"></div>"""
-        else:
-            self.contents += f"""
-                <details open>
-                <summary class="text-muted">Distribution</summary>
-        
-                <div id="bar-chart{cid}" class="mt-4"></div>
-                </details>
-            """
-
+        self.contents += f"""<div id="bar-chart{cid}" class="mt-4"></div>"""
         self.contents += f"""
             <script>
                 const data{cid} = {bar_json};
@@ -85,9 +158,9 @@ class Html:
                                   .attr("transform", `translate(${{margin{cid}.left}}, ${{margin{cid}.top}})`);
 
                 const x{cid} = d3.scaleBand()
-                            .domain(data{cid}.map(d => d.title))
-                            .range([0, width{cid}])
-                            .padding(0.2);
+                    .domain(data{cid}.map(d => d.title))
+                    .range([0, width{cid}])
+                    .padding(0.2);
 
                 svg{cid}.append("g")
                    .attr("transform", `translate(0, ${{height{cid}}})`)
@@ -97,9 +170,9 @@ class Html:
                    .style("text-anchor", "start");
 
                 const y{cid} = d3.scaleLinear()
-                            .domain([0, d3.max(data{cid}, d => Math.max(d.val, d.target))])
-                            .nice()
-                            .range([height{cid}, 0]);
+                    .domain([0, d3.max(data{cid}, d => Math.max(d.val, d.target))])
+                    .nice()
+                    .range([height{cid}, 0]);
 
                 svg{cid}.append("g")
                    .call(d3.axisLeft(y{cid}));
@@ -161,6 +234,8 @@ class Html:
     def end(self):
         if self.bars:
             self._embed_bars()
+        if self.curves:
+            self._embed_curves()
         if self.prev_max_level >= 3:
             self.contents += "</div></div>"
         self.contents += "<br><br>"

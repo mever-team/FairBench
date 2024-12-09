@@ -17,6 +17,15 @@ class Curve:
     def from_dict(cls, data):
         raise Exception("Not implemented from_dict for curves yet")
 
+    def __eq__(self, other):
+        if not isinstance(other, Curve):
+            return False
+        return (
+            np.abs(self.x - other.x).sum() == 0
+            and np.abs(self.y - other.y).sum() == 0
+            and self.units == other.units
+        )
+
 
 class Number:
     def __init__(self, value, units: str = ""):
@@ -126,6 +135,7 @@ class Value:
             value is not None
             and not isinstance(value, TargetedNumber)
             and not isinstance(value, Number)
+            and not isinstance(value, Curve)
         ):
             value = Number(value, units)
         self.value = value
@@ -152,6 +162,8 @@ class Value:
             return False
         if (self.value is None) != (other.value is None):
             return False
+        if self.value is not None and isinstance(self.value, Curve):
+            return self.value == other.value
         if self.value is not None and float(self) != float(other):
             return False
         for key in self.depends:

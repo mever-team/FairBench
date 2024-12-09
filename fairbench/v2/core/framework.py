@@ -9,10 +9,14 @@ from fairbench.v2.core import (
 )
 
 
-def measure(description, unit=True):
+def measure(description, unit=True, debug=False):
     """
     Measures compute a float value that is wrapped with their own descriptor
     and dependencies.
+
+    Args:
+        unit: Whether to enforce that inputs should be in the unit interval [0,1].
+        debug: Should be False. Set to True while developing new measures to ensure exceptions are not silently caught..
     """
 
     def strategy(func):
@@ -20,7 +24,10 @@ def measure(description, unit=True):
 
         @wraps(func)
         def wrapper(**kwargs) -> Value:
-            value = func(**kwargs)
+            try:
+                value = func(**kwargs)
+            except Exception as e:
+                raise Exception(e) if debug else e
             if not isinstance(value, Value):
                 value = Value(value, descriptor, [])
             assert (

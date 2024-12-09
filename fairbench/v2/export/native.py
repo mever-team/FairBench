@@ -1,4 +1,4 @@
-from fairbench.v2.core import Value, TargetedNumber, Descriptor, Progress
+from fairbench.v2.core import Value, TargetedNumber, Descriptor, Progress, Curve
 from fairbench.v2.export.formats.ansi import ansi
 from fairbench.v2.export.formats.console import Console
 
@@ -29,6 +29,9 @@ def _console(env: Console, value: Value, depth=0, max_depth=6, symbol_depth=0):
     if (
         not value.depends or depth > max_depth or symbol_depth > max_depth
     ) and value.value is not None:
+        if isinstance(value.value, Curve):
+            env.curve(title, value.value.x, value.value.y, value.value.units)
+            return
         val = float(value)
         env.bar(title, val, get_ideal(), units=value.value.units)
         return
@@ -44,10 +47,11 @@ def _console(env: Console, value: Value, depth=0, max_depth=6, symbol_depth=0):
         {key: key for key in value.depends.keys()},
     )
     if value.value is not None:
-        env.first().result("Value:", float(value), get_ideal(), value.value.units)
-        # if isinstance(value.value, TargetedNumber):
-        #    env.text(f" where ideal is {value.value.target:.3f}")
-        env.p()
+        if isinstance(value.value, Curve):
+            env.curve("Curve:", value.value.x, value.value.y, value.value.units)
+        else:
+            env.first().result("Value:", float(value), get_ideal(), value.value.units)
+            env.p()
     elif value.depends:
         env.first().bold("Computations cover several cases.").p()
     for dep in value.depends.values():

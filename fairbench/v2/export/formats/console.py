@@ -7,7 +7,8 @@ class Console:
         self.symbols = {0: "#", 1: "*", 2: "=", 3: "-", 4: "^", 5: '"'}  # sphinx format
         self.level = 0
         self.ansiplot = ansiplot
-        self.bars = []
+        self.bars = list()
+        self.curves = list()
 
     def navigation(self, text, routes: dict):
         return self
@@ -15,6 +16,8 @@ class Console:
     def title(self, text, level=0, link=None):
         if self.bars:
             self._embed_bars()
+        if self.curves:
+            self._embed_curves()
         self.level = level
         symbol = self.symbols[level]
         text = symbol * 5 + " " + text + " " + symbol * 5
@@ -22,10 +25,31 @@ class Console:
         self.contents += ansi.colorize(text, ansi.blue + ansi.bold)
         return self.p()
 
+    def curve(self, title, x, y, units):
+        if units == title:
+            units = ""
+        self.curves.append((title, x, y, units))
+        return self
+
     def bar(self, title, val: float, target: float, units: str = ""):
         if units == title:
             units = ""
         self.bars.append((title, units, val, target))
+        return self
+
+    def _embed_curves(self):
+        import ansiplot
+
+        canvas = ansiplot.Scaled(40, 10)
+        for title, x, y, units in self.curves:
+            canvas.plot(x, y, title=title + " " + units)
+
+        text = canvas.text()
+        tab = "" if self.level == 0 else (self.level - 1) * "  " + " "
+        self.contents += f"\n{tab}  " + f"\n{tab}  ".join(text.split("\n"))
+        self.contents += "\n"
+
+        self.curves = list()
         return self
 
     def _embed_bars(self):
@@ -128,6 +152,8 @@ class Console:
     def end(self):
         if self.bars:
             self._embed_bars()
+        if self.curves:
+            self._embed_curves()
         self.contents += "\n"
         return self
 
