@@ -49,7 +49,7 @@ def _console(env: Console, value: Value, depth=0, max_depth=6, symbol_depth=0):
         #    env.text(f" where ideal is {value.value.target:.3f}")
         env.p()
     elif value.depends:
-        env.first().bold("Computations cover the following cases.").p()
+        env.first().bold("Computations cover several cases.").p()
     for dep in value.depends.values():
         _console(env, dep, depth, max_depth=max_depth, symbol_depth=symbol_depth + 1)
     if not value.depends and value.value is None:

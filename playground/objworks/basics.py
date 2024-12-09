@@ -11,7 +11,11 @@ report = fb.reports.pairwise(
     sensitive=sensitive,
     predictions=yhat,
     labels=y,
+    scores=yhat,
+    targets=y,
 )
 
-report.show(env=fb.export.Console(ansiplot=False))
+report.min.show(fb.export.ConsoleTable)
+
+
 # fb.reduction.min(report.min.explain).show()

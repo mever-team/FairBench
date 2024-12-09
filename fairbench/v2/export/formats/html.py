@@ -121,7 +121,7 @@ class Html:
             </script>
         """
 
-        self.bars.clear()
+        self.bars = list()
 
     def quote(self, text, keywords=()):
         for keyword in keywords:

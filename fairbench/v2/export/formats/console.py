@@ -32,7 +32,8 @@ class Console:
         if self.ansiplot:
             import ansiplot
 
-            canvas = ansiplot.Scaled(3 * len(self.bars), 8)
+            width_mult = 3 if len(self.bars) < 20 else 2
+            canvas = ansiplot.Scaled(width_mult * len(self.bars), 6)
 
             """common_units = {units for title, units, val, target in self.bars}
             if len(common_units) == 1:
@@ -45,11 +46,24 @@ class Console:
                 )
             else:"""
             max_len = max(len(title) for title, units, val, target in self.bars) + 7
+            mv = max(val for title, units, val, target in self.bars)
+            ch = canvas.height
             num = 1
             for title, units, val, target in self.bars:
                 canvas.bar(
                     num,
                     val,
+                    symbol=canvas.current_color() + canvas.palette.block,
+                )
+                if int(val / mv * ch + 0.25) != int(val / mv * ch):
+                    canvas.bar(num, (val, val), symbol=canvas.current_color() + "▆")
+                elif int(val / mv * ch + 0.5) != int(val / mv * ch):
+                    canvas.bar(num, (val, val), symbol=canvas.current_color() + "▄")
+                elif int(val / mv * ch + 0.75) != int(val / mv * ch):
+                    canvas.bar(num, (val, val), symbol=canvas.current_color() + "▂")
+                canvas.point(
+                    num,
+                    0,
                     title=title.ljust(max(max_len, 40 - 2 * self.level - 4))
                     + (f"{val:.3f}" if val <= 1 else str(int(val)))
                     + " "
@@ -78,7 +92,7 @@ class Console:
                         abs(val - target),
                     )
                 self.p()
-        self.bars.clear()
+        self.bars = list()
 
     def first(self):
         self.text("|")

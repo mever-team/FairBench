@@ -1,3 +1,6 @@
+import re
+
+
 class ansi:
     # Reset
     reset = "\033[0m"
@@ -68,3 +71,24 @@ class ansi:
     @staticmethod
     def print(text, color):
         return print(ansi.colorize(text, color))
+
+    ANSI_COLOR_PATTERN = re.compile(r"\x1b\[[0-9;]*m")
+
+    @staticmethod
+    def visible_length(text):
+        """Calculate the visible length of a string ignoring ANSI color codes."""
+        return len(ansi.ANSI_COLOR_PATTERN.sub("", text))
+
+    @staticmethod
+    def ljust(text, width, fillchar=" "):
+        """Left-justify a string ignoring ANSI color codes."""
+        visible_len = ansi.visible_length(text)
+        padding = max(0, width - visible_len)
+        return text + fillchar * padding
+
+    @staticmethod
+    def rjust(text, width, fillchar=" "):
+        """Right-justify a string ignoring ANSI color codes."""
+        visible_len = ansi.visible_length(text)
+        padding = max(0, width - visible_len)
+        return fillchar * padding + text

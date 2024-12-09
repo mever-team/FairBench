@@ -388,6 +388,8 @@ class Value:
     def show(self, env=None, depth=0):
         from fairbench.v2.export.native import format as fmt
 
+        if callable(env):
+            env = env()
         if env is not None and hasattr(env, "direct_show"):
             assert (
                 depth == 0
