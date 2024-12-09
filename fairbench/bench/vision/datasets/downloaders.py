@@ -1,12 +1,3 @@
-import torch
-import os
-import zipfile
-import requests
-from tqdm import tqdm
-import gdown
-import tarfile
-
-
 class TwoCropTransform:
     """Create two crops of the same image"""
 
@@ -18,6 +9,8 @@ class TwoCropTransform:
 
 
 def get_confusion_matrix(num_classes, targets, biases):
+    import torch
+
     confusion_matrix_org = torch.zeros(num_classes, num_classes)
     confusion_matrix_org_by = torch.zeros(num_classes, num_classes)
     for t, p in zip(targets, biases):
@@ -33,6 +26,8 @@ def get_confusion_matrix(num_classes, targets, biases):
 
 
 def get_unsup_confusion_matrix(num_classes, targets, biases, marginals):
+    import torch
+
     confusion_matrix_org = torch.zeros(num_classes, num_classes).float()
     confusion_matrix_cnt = torch.zeros(num_classes, num_classes).float()
     for t, p, m in zip(targets, biases, marginals):
@@ -52,6 +47,11 @@ def get_unsup_confusion_matrix(num_classes, targets, biases, marginals):
 
 
 def download_celeba(root):
+    import os
+    import zipfile
+    import requests
+    from tqdm import tqdm
+
     dataset_url = (
         "https://www.kaggle.com/api/v1/datasets/download/jessicali9530/celeba-dataset"
     )
@@ -104,15 +104,11 @@ def download_celeba(root):
 
 
 def download_utkface(root):
-    """
-    Downloads the UTKFace dataset and extracts it to the directory `root/utk_face`.
+    import os
+    import zipfile
+    import requests
+    from tqdm import tqdm
 
-    Args:
-        root (str): Root directory where the UTKFace dataset will be extracted.
-
-    Raises:
-        Exception: If the download or extraction fails.
-    """
     # Define URLs and paths
     dataset_url = "https://www.kaggle.com/api/v1/datasets/download/jangedoo/utkface-new"
     download_path = os.path.join(root, "utkface.zip")
@@ -165,6 +161,9 @@ def download_utkface(root):
 
 
 def download_waterbirds(root):
+    import os
+    import zipfile
+    import gdown
 
     extract_path = root
     download_path = os.path.join(root, "waterbirds.zip")
@@ -194,15 +193,12 @@ def download_waterbirds(root):
 
 
 def download_imagenet9(root):
-    """
-    Downloads the Imagenet9 background challenge dataset and extracts it to the directory `root/imagenet9`.
+    import os
+    import zipfile
+    import requests
+    from tqdm import tqdm
+    import tarfile
 
-    Args:
-        root (str): Root directory where the Imagenet9 dataset will be extracted.
-
-    Raises:
-        Exception: If the download or extraction fails.
-    """
     # Define URLs and paths
     dataset_url = "https://github.com/MadryLab/backgrounds_challenge/releases/download/data/backgrounds_challenge_data.tar.gz"
     download_path = os.path.join(root, "imagenet9.zip")

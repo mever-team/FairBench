@@ -10,3 +10,4 @@ pyyaml
 requests
 ansiplot
 plotly
+flask

@@ -1,5 +1,8 @@
-# FairBench
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>FairBench</title>
 <style>
     #output {
         background-color: black;
@@ -15,7 +18,6 @@
         border: 1px solid #555555;
         font-family: monospace;
         spellcheck: false;
-        autocorrect: off;
         margin-bottom: 25px;
         margin-top: 0px;
         font-size: 0.7em;
@@ -26,45 +28,74 @@
     .icon-blue {
         color: blue;
     }
+    /* Adjust the CodeMirror styling to match your theme preferences */
+    .CodeMirror {
+        height: auto;
+        min-height: 200px;
+        background-color: black;
+        color: white;
+    }
 </style>
+
+<!-- Include CodeMirror -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/codemirror.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/mode/python/python.min.js"></script>
 
 
 This is a comprehensive AI fairness exploration framework. 
 Visit the <a href="quickstart/" markdown="span">quickstart</a> for a tour.
 You may also watch the introductory tutorial, read the full documentation and recipes, or try
-the library in action at the bottom of this page.
+the library in your browser.<br>
 
 <iframe width="280" height="157" src="https://www.youtube.com/embed/vJIK3Kc65pA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 <br>
+<br>
+<br>
 <h1 style="margin-bottom: 0px;">Try it here</h1>
 Run FairBench from your browser in console integration mode (fallbacks to ascii visualization). Read more in the documentation.
-Edit the snippet to be executed and run it bellow. The minimal library installation only contains textual visualization.
+Edit the snippet to be executed and run it below. The minimal library installation only contains textual visualization.
 
-<textarea class="code-block" id="code" style="width: 100%;overflow: hidden;resize: none;" rows="10">sensitive = fb.Fork(fb.categories@["Male", "Female", "Male", "Female", "Male", "Female", "Male"])
-y, yhat, scores = [1, 1, 0, 0, 1, 0, 1], [1, 1, 1, 0, 0, 0, 0], [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
+<textarea class="code-block" id="code" rows="40">sensitive = ["M","F","M","F","M","F","M"]
+y = [1, 1, 0, 0, 1, 0, 1]
+yhat = [1, 1, 1, 0, 0, 0, 0]
+scores = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
 
-report = fb.multireport(predictions=yhat, labels=y, scores=scores, sensitive=sensitive)
+report = fb.multireport(
+    predictions=yhat, 
+    labels=y, 
+    scores=scores, 
+    sensitive=fb.Fork(fb.categories@ sensitive)
+)
 fb.describe(report)
 
-print(f"{report.min.avgrepr} worst average presentation among these values")
 fb.text_visualize(report.min.avgrepr.explain)
 fb.text_visualize(report.min.avgrepr.explain.explain)</textarea>
-
-
+<br>
 <button id="run" onclick="evaluatePython()"><span class="icon-green">&#9654;</span> Run snippet</button>
 <button id="restart" onclick="restartPython()"><span class="icon-blue">&#x1F504;</span> Restart</button>
 <a href="https://pyodide.org/en/stable/">Powered by pyodyne</a>
-<pre class="code-block" id="output" style="width: 100%; resize: vertical; overflow: auto; max-height: 300px;" rows="20" disabled></pre>
+<pre class="code-block" id="output" style="width: 100%; resize: vertical; overflow: auto; max-height: 600px;" rows="30" disabled></pre>
 
-    
 <script src="https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"></script>
 <script>
     const output = document.getElementById("output");
-    const code = document.getElementById("code");
+    const codeTextarea = document.getElementById("code");
     const run = document.getElementById("run");
     const restart = document.getElementById("restart");
     var output_value = "";
+
+    // Initialize CodeMirror on the textarea
+    var codeEditor = CodeMirror.fromTextArea(codeTextarea, {
+        lineNumbers: true,
+        mode: "python",
+        theme: "default",
+        indentUnit: 4,
+        smartIndent: true,
+        matchBrackets: true,
+        autoCloseBrackets: true
+    });
 
     function convertUndefinedToNone(value) {
         return value === undefined ? "None" : value;
@@ -103,14 +134,12 @@ fb.text_visualize(report.min.avgrepr.explain.explain)</textarea>
             "\u001b[0m": "</span>"                             // Reset / End
         };
     
-        // Replace ANSI codes with corresponding HTML tags
         let htmlString = ansiString;
         for (const ansiCode in ansiToHtmlMap) {
             const htmlTag = ansiToHtmlMap[ansiCode];
             htmlString = htmlString.split(ansiCode).join(htmlTag);
         }
     
-        // Close any remaining open tags (in case of missing reset codes)
         return "<span>" + htmlString;
     }
 
@@ -120,7 +149,6 @@ fb.text_visualize(report.min.avgrepr.explain.explain)</textarea>
             output_value += s + "\n";
             const html = ansiToHtml(output_value);
             output.innerHTML = html;
-            //output.scrollTop = output.scrollHeight;
         }
     }
 
@@ -137,7 +165,7 @@ fb.text_visualize(report.min.avgrepr.explain.explain)</textarea>
         `));
         await pyodide.loadPackage("micropip");
         const micropip = pyodide.pyimport("micropip");
-        await micropip.install('fairbench');
+        await micropip.install('fairbench==0.6.0');
         output.value = ">>> import fairbench as fb\n";
         try {
             pyodide.runPython(`import fairbench as fb`);
@@ -153,9 +181,7 @@ fb.text_visualize(report.min.avgrepr.explain.explain)</textarea>
     restart.disabled = true;
 
     function getCodeString() {
-        const codeElement = document.getElementById("code");
-        const codeString = codeElement.value;
-        return codeString;
+        return codeEditor.getValue();
     }
     
     async function evaluatePython() {
@@ -164,7 +190,6 @@ fb.text_visualize(report.min.avgrepr.explain.explain)</textarea>
             pyodideReadyPromise = main();
         run.disabled = true;
         restart.disabled = true;
-        let pyodide = await pyodideReadyPromise;
         addToOutput("\n>>> " + command.replace(/\n/g, "\n>>> ") + "\n");
 
         var logBackup = console.log;
@@ -173,9 +198,10 @@ fb.text_visualize(report.min.avgrepr.explain.explain)</textarea>
             addToOutput(Array.from(arguments).join(' '));
         };
 
+        let pyodide = await pyodideReadyPromise;
         try {
-            let output = pyodide.runPython(command);
-            addToOutput(output);
+            let out = pyodide.runPython(command);
+            addToOutput(out);
         } catch (err) {
             addToOutput(err);
         }
@@ -184,12 +210,10 @@ fb.text_visualize(report.min.avgrepr.explain.explain)</textarea>
         restart.disabled = false;
     }
     
-    
     function removeAllCanvas() {
         const elements = document.querySelectorAll('[id^="matplotlib_"]');
         elements.forEach(element => element.remove());
     }
-
 
     async function restartPython() {
         output_value = "";
@@ -200,19 +224,12 @@ fb.text_visualize(report.min.avgrepr.explain.explain)</textarea>
         pyodideReadyPromise = main();
     }
 
-    // Run code on Shift+Enter
-    document.getElementById("code-editor").addEventListener("keydown", function(event) {
-        if (event.key === "Enter" && event.shiftKey) {
+    // Optional: Run code on Shift+Enter
+    document.addEventListener("keydown", function(event) {
+        if (event.shiftKey && event.key === "Enter") {
             evaluatePython();
             event.preventDefault();
         }
     });
-    
-    function autoResize() {
-        this.style.height = 'auto';
-        this.style.height = this.scrollHeight + 'px';
-    }
-    code.style.height = 'auto';
-    code.style.height = code.scrollHeight + 'px';
-    code.addEventListener('input', autoResize, false);
 </script>
+</html>
