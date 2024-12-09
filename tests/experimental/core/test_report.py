@@ -44,12 +44,9 @@ def test_pairwise():
 
 
 def test_progress():
-    from fairbench.v2 import v2 as fb
-    import fairbench as deprecated
+    x, yhat, y = fb1.bench.tabular.bank()
 
-    x, yhat, y = deprecated.bench.tabular.bank()
-
-    cats = deprecated.categories @ x["marital"]
+    cats = fb1.categories @ x["marital"]
     cats = {k: v.numpy() for k, v in cats.items()}
 
     sensitive = fb.Sensitive(cats)
@@ -71,3 +68,40 @@ def test_progress():
 
     comparison = fb.core.Value.from_dict(comparison.to_dict())  # hard test
     comparison.details.show()
+
+
+def test_multiclass():
+    x, yhat, y = fb1.bench.tabular.bank()
+    sensitive = fb1.Fork(fb1.categories @ x["marital"], fb1.categories @ x["education"])
+    sensitive = sensitive.intersectional().strict()
+    y = fb1.categories @ y
+    yhat = fb1.categories @ yhat
+
+    report = fb.reports.pairwise(
+        sensitive=sensitive,
+        predictions=yhat,
+        labels=y,
+        scores=yhat,
+        targets=y,
+    )
+
+    report.acc.show(fb.export.ConsoleTable)
+
+
+def test_attachment_to_measures():
+    x, yhat, y = fb1.bench.tabular.bank()
+    sensitive = fb1.Fork(fb1.categories @ x["marital"], fb1.categories @ x["education"])
+    sensitive = sensitive.intersectional().strict()
+    y = fb1.categories @ y
+    yhat = fb1.categories @ yhat
+
+    report = fb.reports.pairwise(
+        sensitive=sensitive,
+        predictions=yhat,
+        labels=y,
+        scores=yhat,
+        targets=y,
+        attach_branches_to_measures=True,
+    )
+
+    report.accFalse.show(fb.export.ConsoleTable)
