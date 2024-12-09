@@ -15,7 +15,6 @@ report = fb.reports.pairwise(
     targets=y,
 )
 
-report.min.show(fb.export.ConsoleTable)
-
+report.acc.show(fb.export.ConsoleTable)
 
 # fb.reduction.min(report.min.explain).show()

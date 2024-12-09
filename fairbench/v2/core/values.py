@@ -1,7 +1,7 @@
 from typing import Optional
 import numpy as np
 
-complicated_mode = True
+complicated_mode = False
 
 
 class Curve:

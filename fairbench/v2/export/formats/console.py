@@ -2,7 +2,7 @@ from fairbench.v2.export.formats.ansi import ansi
 
 
 class Console:
-    def __init__(self, ansiplot=False):
+    def __init__(self, ansiplot=True):
         self.contents = ""
         self.symbols = {0: "#", 1: "*", 2: "=", 3: "-", 4: "^", 5: '"'}  # sphinx format
         self.level = 0
@@ -65,7 +65,7 @@ class Console:
                     num,
                     0,
                     title=title.ljust(max(max_len, 40 - 2 * self.level - 4))
-                    + (f"{val:.3f}" if val <= 1 else str(int(val)))
+                    + (f"{val:.3f}" if val < 1 and val != 0 else str(int(val)))
                     + " "
                     + units,
                 )

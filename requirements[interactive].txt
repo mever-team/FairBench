@@ -9,3 +9,4 @@ bokeh
 pyyaml
 requests
 ansiplot
+plotly
