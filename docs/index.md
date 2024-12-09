@@ -57,22 +57,21 @@ the library in your browser.<br>
 Run FairBench from your browser in console integration mode (fallbacks to ascii visualization). Read more in the documentation.
 Edit the snippet to be executed and run it below. The minimal library installation only contains textual visualization.
 
-<textarea class="code-block" id="code" rows="40">sensitive = ["M","F","M","F","M","F","M"]
+<textarea class="code-block" id="code" rows="40">from fairbench import v2
+
+sensitive = ["M","F","M","F","M","F","M"]
 y = [1, 1, 0, 0, 1, 0, 1]
 yhat = [1, 1, 1, 0, 0, 0, 0]
-scores = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
 
-report = fb.multireport(
+report = v2.reports.pairwise(
     predictions=yhat, 
     labels=y, 
-    scores=scores, 
-    sensitive=fb.Fork(fb.categories@ sensitive)
+    sensitive=fb.Fork(fb.categories @ sensitive)
 )
-fb.describe(report)
 
-fb.text_visualize(report.min.avgrepr.explain)
-fb.text_visualize(report.min.avgrepr.explain.explain)</textarea>
-<br>
+report.show(env=v2.export.ConsoleTable(legend=False))
+report.maxdiff.show() # dot specializes, could also show everything</textarea>
+
 <button id="run" onclick="evaluatePython()"><span class="icon-green">&#9654;</span> Run snippet</button>
 <button id="restart" onclick="restartPython()"><span class="icon-blue">&#x1F504;</span> Restart</button>
 <a href="https://pyodide.org/en/stable/">Powered by pyodyne</a>
@@ -102,46 +101,230 @@ fb.text_visualize(report.min.avgrepr.explain.explain)</textarea>
     }
 
     function ansiToHtml(ansiString) {
-        const ansiToHtmlMap = {
-            "\u001b[91m": "</span><span style='color:#FF5555'>",       // Red
-            "\u001b[92m": "</span><span style='color:#50FA7B'>",       // Green
-            "\u001b[93m": "</span><span style='color:#F1FA8C'>",       // Yellow
-            "\u001b[94m": "</span><span style='color:#BD93F9'>",       // Blue
-            "\u001b[95m": "</span><span style='color:#FF79C6'>",       // Magenta
-            "\u001b[96m": "</span><span style='color:#8BE9FD'>",       // Cyan
-            "\u001b[93;1m": "</span><span style='color:#FFFF55'>",     // Bright Yellow
-            "\u001b[96;1m": "</span><span style='color:#55FFFF'>",     // Bright Cyan
-            "\u001b[91;1m": "</span><span style='color:#FFAAAA'>",     // Bright Red
-            "\u001b[92;1m": "</span><span style='color:#AAFFAA'>",     // Bright Green
-            "\u001b[94;1m": "</span><span style='color:#AAAAFF'>",     // Bright Blue
-            "\u001b[95;1m": "</span><span style='color:#FFAAFF'>",     // Bright Magenta
-            "\u001b[38;5;208m": "</span><span style='color:#FFA500'>", // Orange
-            "\u001b[38;5;202m": "</span><span style='color:#FF4500'>", // Dark Orange
-            "\u001b[38;5;198m": "</span><span style='color:#FF69B4'>", // Pink
-            "\u001b[38;5;165m": "</span><span style='color:#A020F0'>", // Purple
-            "\u001b[38;5;34m": "</span><span style='color:#228B22'>",  // Forest Green
-            "\u001b[38;5;70m": "</span><span style='color:#008080'>",  // Teal
-            "\u001b[38;5;69m": "</span><span style='color:#00FFFF'>",  // Aqua
-            "\u001b[38;5;220m": "</span><span style='color:#FFD700'>", // Gold
-            "\u001b[38;5;82m": "</span><span style='color:#32CD32'>",  // Lime Green
-            "\u001b[38;5;203m": "</span><span style='color:#FA8072'>", // Salmon
-            "\u001b[38;5;166m": "</span><span style='color:#FF7F50'>", // Coral
-            "\u001b[38;5;99m": "</span><span style='color:#DA70D6'>",  // Orchid
-            "\u001b[38;5;64m": "</span><span style='color:#808000'>",  // Olive Green
-            "\u001b[38;5;208;1m": "</span><span style='color:#FFA07A'>", // Bright Orange
-            "\u001b[38;5;56m": "</span><span style='color:#9400D3'>",  // Dark Violet
-            "\u001b[38;5;123m": "</span><span style='color:#4682B4'>", // Steel Blue
-            "\u001b[0m": "</span>"                             // Reset / End
+        // Maps for ANSI codes to CSS styles
+        const colors = {
+            30: "color:#CCCCCC", // Light gray (instead of pure black, so it's visible on black)
+            31: "color:#E74C3C", // A rich, warm red
+            32: "color:#27AE60", // A vibrant, balanced green
+            33: "color:#F1C40F", // A bright but not overpowering yellow
+            34: "color:#3498DB", // A bold, medium-blue tone
+            35: "color:#9B59B6", // A soft magenta/purple
+            36: "color:#1ABC9C", // A cool, pleasing cyan
+            37: "color:#ECF0F1",  // A near-white, soft tone
+            90: "color:#555555", // Bright Black (Gray)
+            91: "color:#FF5555", // Bright Red
+            92: "color:#50FA7B", // Bright Green
+            93: "color:#F1FA8C", // Bright Yellow
+            94: "color:#BD93F9", // Bright Blue
+            95: "color:#FF79C6", // Bright Magenta
+            96: "color:#8BE9FD", // Bright Cyan
+            97: "color:#FFFFFF"  // Bright White
         };
     
-        let htmlString = ansiString;
-        for (const ansiCode in ansiToHtmlMap) {
-            const htmlTag = ansiToHtmlMap[ansiCode];
-            htmlString = htmlString.split(ansiCode).join(htmlTag);
+        const backgrounds = {
+            40: "background-color:#000000", // Bg Black
+            41: "background-color:#FF0000", // Bg Red
+            42: "background-color:#00FF00", // Bg Green
+            43: "background-color:#FFFF00", // Bg Yellow
+            44: "background-color:#0000FF", // Bg Blue
+            45: "background-color:#FF00FF", // Bg Magenta
+            46: "background-color:#00FFFF", // Bg Cyan
+            47: "background-color:#FFFFFF", // Bg White
+            100: "background-color:#555555",// Bright Bg Black (Gray)
+            101: "background-color:#FF5555",// Bright Bg Red
+            102: "background-color:#50FA7B",// Bright Bg Green
+            103: "background-color:#F1FA8C",// Bright Bg Yellow
+            104: "background-color:#BD93F9",// Bright Bg Blue
+            105: "background-color:#FF79C6",// Bright Bg Magenta
+            106: "background-color:#8BE9FD",// Bright Bg Cyan
+            107: "background-color:#FFFFFF" // Bright Bg White
+        };
+    
+        // Additional extended 256-color mode (e.g., 38;5;... for foreground, 48;5;... for background)
+        // You provided some mappings for these extended colors:
+        // Example: "\u001b[38;5;208m" : color:#FFA500 (Orange)
+        // We will define a helper to map these if they appear:
+        const extendedColors = {
+            208: "#FFA500", // Orange
+            202: "#FF4500", // Dark Orange
+            198: "#FF69B4", // Pink
+            165: "#A020F0", // Purple
+            34:  "#228B22", // Forest Green
+            70:  "#008080", // Teal
+            69:  "#00FFFF", // Aqua
+            220: "#FFD700", // Gold
+            82:  "#32CD32", // Lime Green
+            203: "#FA8072", // Salmon
+            166: "#FF7F50", // Coral
+            99:  "#DA70D6", // Orchid
+            64:  "#808000", // Olive Green
+            56:  "#9400D3", // Dark Violet
+            123: "#4682B4"  // Steel Blue
+        };
+        
+        // Some bright variants you included that have a format like "\u001b[93;1m"
+        // These can be handled by applying both the color and style=bold. 
+        // We'll handle the '1' (bold) or any style codes generically below.
+    
+        // Style attributes
+        // We'll track them in a state object and rebuild style string whenever something changes.
+        let state = {
+            color: null,
+            background: null,
+            bold: false,
+            dim: false,
+            italic: false,
+            underline: false,
+            blink: false,
+            inverse: false,
+            hidden: false,
+            strikethrough: false
+        };
+    
+        // Convert the state into a CSS style string
+        function stateToStyleString(s) {
+            const styleList = [];
+            if (s.color) styleList.push(s.color);
+            if (s.background) styleList.push(s.background);
+            if (s.bold) styleList.push("font-weight:bold");
+            if (s.dim) styleList.push("opacity:0.6");
+            if (s.italic) styleList.push("font-style:italic");
+            if (s.underline) styleList.push("text-decoration:underline");
+            if (s.blink) styleList.push("text-decoration:blink");    // Not widely supported
+            if (s.inverse) styleList.push("filter:invert(100%)");    // Rough simulation
+            if (s.hidden) styleList.push("visibility:hidden");
+            if (s.strikethrough) styleList.push("text-decoration:line-through");
+            return styleList.join(";");
         }
     
-        return "<span>" + htmlString;
+        // We'll build the final result and update spans as we go
+        let result = "";
+        let openSpan = false;
+    
+        function openNewSpan() {
+            const style = stateToStyleString(state);
+            result += "<span" + (style ? " style='" + style + "'" : "") + ">";
+            openSpan = true;
+        }
+    
+        function closeSpanIfOpen() {
+            if (openSpan) {
+                result += "</span>";
+                openSpan = false;
+            }
+        }
+    
+        // Reset the state to default
+        function resetState() {
+            state = {
+                color: null,
+                background: null,
+                bold: false,
+                dim: false,
+                italic: false,
+                underline: false,
+                blink: false,
+                inverse: false,
+                hidden: false,
+                strikethrough: false
+            };
+        }
+    
+        // Update the state and re-open span
+        function applyCodes(codes) {
+            let needNewSpan = false;
+            for (const code of codes) {
+                const c = parseInt(code, 10);
+                if (c === 0) {
+                    // Reset
+                    resetState();
+                    closeSpanIfOpen();
+                    needNewSpan = true;
+                } else if (c === 1) {
+                    state.bold = true; needNewSpan = true;
+                } else if (c === 2) {
+                    state.dim = true; needNewSpan = true;
+                } else if (c === 3) {
+                    state.italic = true; needNewSpan = true;
+                } else if (c === 4) {
+                    state.underline = true; needNewSpan = true;
+                } else if (c === 5) {
+                    state.blink = true; needNewSpan = true;
+                } else if (c === 7) {
+                    state.inverse = true; needNewSpan = true;
+                } else if (c === 8) {
+                    state.hidden = true; needNewSpan = true;
+                } else if (c === 9) {
+                    state.strikethrough = true; needNewSpan = true;
+                } else if (c >= 30 && c <= 37) {
+                    // Set foreground color
+                    state.color = colors[c]; needNewSpan = true;
+                } else if (c >= 90 && c <= 97) {
+                    // Bright foreground
+                    state.color = colors[c]; needNewSpan = true;
+                } else if (c >= 40 && c <= 47) {
+                    // Background color
+                    state.background = backgrounds[c]; needNewSpan = true;
+                } else if (c >= 100 && c <= 107) {
+                    // Bright background
+                    state.background = backgrounds[c]; needNewSpan = true;
+                } else if (code.startsWith("38;5;")) {
+                    // 256-color foreground: 38;5;x
+                    const colorIndex = parseInt(code.split(";")[2], 10);
+                    if (extendedColors[colorIndex]) {
+                        state.color = "color:" + extendedColors[colorIndex];
+                    } else {
+                        // Fallback if not in extendedColors, just skip or set a default
+                        state.color = "color:#FFFFFF";
+                    }
+                    needNewSpan = true;
+                } else if (code.startsWith("48;5;")) {
+                    // 256-color background: 48;5;x
+                    const colorIndex = parseInt(code.split(";")[2], 10);
+                    if (extendedColors[colorIndex]) {
+                        state.background = "background-color:" + extendedColors[colorIndex];
+                    } else {
+                        // Fallback if not in extendedColors
+                        state.background = "background-color:#000000";
+                    }
+                    needNewSpan = true;
+                }
+            }
+    
+            if (needNewSpan) {
+                // Close and re-open span with new style
+                closeSpanIfOpen();
+                openNewSpan();
+            }
+        }
+    
+        // Regex to match ANSI escape codes (e.g., "\u001b[31m", "\u001b[38;5;123m", etc.)
+        const ansiRegex = /\u001b\[((?:\d|;)+)m/g;
+        let lastIndex = 0;
+        let match;
+    
+        // Initially open a span for the default state
+        openNewSpan();
+    
+        while ((match = ansiRegex.exec(ansiString)) !== null) {
+            const chunk = ansiString.slice(lastIndex, match.index);
+            result += chunk; // Add text before the ANSI code
+    
+            const codes = match[1].split(";"); // Extract the numeric codes
+            applyCodes(codes);
+    
+            lastIndex = ansiRegex.lastIndex;
+        }
+    
+        // Add any remaining text after the last ANSI code
+        result += ansiString.slice(lastIndex);
+    
+        // Close any open spans
+        closeSpanIfOpen();
+    
+        return result;
     }
+
 
     function addToOutput(s) {
         if (s === undefined) {
