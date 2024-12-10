@@ -14,6 +14,7 @@ class ConsoleTable(Console):
         self.end_token = end
         self.bar_contents = ""
         self.legend = legend
+        self.deepest_title = 0
 
     def _embed_bars(self):
         last_title = self.last_title[-1]
@@ -36,10 +37,10 @@ class ConsoleTable(Console):
                 col_num = self.col_names[last_title]
             # set value
             assert self.accumulated_bars[row_num][col_num] == "---", (
-                f"Two or more conflicting values for showing '{title}' under header '{last_title}'. "
+                f"Two or more conflicting values for showing '{title}' under header '{last_title}'"
+                f"with all headers being: {', '.join(self.col_names.keys())} "
                 "Consider switching to the Console visualization engine instead."
             )
-
             self.accumulated_bars[row_num][col_num] = ansi.colorize(
                 f"{val:.3f}" if val < 1 and val != 0 else str(int(val)),
                 abs(val - target),
@@ -76,11 +77,14 @@ class ConsoleTable(Console):
 
     def title(self, text, level=0, link=None):
         if self.bars:
-            try:
-                self._embed_bars()
-            except AssertionError:
-                self._embed_accumulated_bars()
-                self._embed_bars()
+            self._embed_bars()
+        if self.curves:
+            self._embed_curves()
+        if level < self.deepest_title and self.accumulated_bars:
+            self._embed_accumulated_bars()
+            self.deepest_title = level
+        if level > self.deepest_title:
+            self.deepest_title = level
         self.last_title = self.last_title[:level]
         self.last_title.append(text)
         self.level = level
@@ -100,8 +104,12 @@ class ConsoleTable(Console):
         return self
 
     def end(self):
-        super().end()
+        if self.bars:
+            self._embed_bars()
+        if self.curves:
+            self._embed_curves()
         self._embed_accumulated_bars()
+        self.contents += "\n"
         if self.legend:
             self.contents = self.bar_contents + self.contents.replace("|", " ").replace(
                 " Computations cover several cases.", ""

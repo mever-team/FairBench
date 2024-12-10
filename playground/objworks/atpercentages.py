@@ -4,8 +4,7 @@ import numpy as np
 
 
 comparison = fb.Progress("settings")
-
-for test_size in np.arange(0.1, 0.4, 0.2):
+for test_size in np.arange(0.1, 1, 0.1):
     x, yhat, y = fb1.bench.tabular.bank(test_size=test_size)
     sensitive = fb1.categories @ x["marital"]
 
@@ -19,5 +18,5 @@ for test_size in np.arange(0.1, 0.4, 0.2):
 
 comparison = comparison.build()
 
-comparison.min.explain.show(fb.export.ConsoleTable(legend=False), depth=2)
-comparison.explain.show(fb.export.ConsoleTable(legend=True), depth=2)
+# comparison.min.explain.show(fb.export.ConsoleTable(legend=False), depth=2)
+comparison.show(fb.export.ConsoleTable())
