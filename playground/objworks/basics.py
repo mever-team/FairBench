@@ -16,6 +16,7 @@ report = fb.reports.pairwise(
 )
 
 report.min.roc.show()
+report.show()
 # (fb.export.ConsoleTable)
 # fb.export.Html
 

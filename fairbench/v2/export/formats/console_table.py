@@ -3,7 +3,14 @@ from fairbench.v2.export.formats.ansi import ansi
 
 
 class ConsoleTable(Console):
-    def __init__(self, sep: str = "   ", end: str = "", legend=True):
+    def __init__(
+        self,
+        sep: str = "   ",
+        end: str = "",
+        legend=False,
+        transpose=None,
+        sideways=True,
+    ):
         super().__init__()
         self.accumulated_bars = list()
         self.row_names = dict()
@@ -12,9 +19,12 @@ class ConsoleTable(Console):
         self.last_supertitle = None
         self.sep_token = sep
         self.end_token = end
-        self.bar_contents = ""
+        self.bar_contents = list()
         self.legend = legend
         self.deepest_title = 0
+        self.transpose = transpose
+        self.sideways = sideways
+        self.last_row_names = None
 
     def _embed_bars(self):
         last_title = self.last_title[-1]
@@ -49,29 +59,59 @@ class ConsoleTable(Console):
         self.last_supertitle = self.last_title
 
     def _embed_accumulated_bars(self):
+        if self.transpose or (
+            self.transpose is None and len(self.row_names) < len(self.col_names)
+        ):
+            self.transpose = True
+            self.accumulated_bars = [
+                [self.accumulated_bars[row][col] for row in self.row_names.values()]
+                for col in self.col_names.values()
+            ]
+            self.row_names, self.col_names = self.col_names, self.row_names
         bar_text = ""
         hsep = self.sep_token
         end = self.end_token
         value_just = max(10, max(ansi.visible_length(key) for key in self.col_names))
         title_just = 30
-        bar_text += " " * title_just + hsep
+        if self.last_row_names is None:
+            self.last_row_names = ["" for _ in self.row_names]
+        assert not self.sideways or len(self.last_row_names) == len(self.row_names), (
+            "Sideways ConsoleTable presentation should have the same number of rows in all computed tables. "
+            "Consider constructing ConsoleTable(sideways=False) instead."
+        )
+        has_already_placed_row_names = self.sideways and all(
+            name1 == name2 for name1, name2 in zip(self.last_row_names, self.row_names)
+        )
+        if not has_already_placed_row_names and self.sideways:
+            self.last_row_names = ["", "", ""] + [
+                ansi.ljust(row_name, title_just) for row_name in self.row_names
+            ]
+            self.bar_contents.append(
+                "\n".join([row + hsep for row in self.last_row_names]) + "\n"
+            )
+            has_already_placed_row_names = True
+        if not has_already_placed_row_names:
+            bar_text += " " * title_just + hsep
         bar_text += hsep.join(ansi.rjust(key, value_just) for key in self.col_names)
         bar_text += end + "\n"
         for row_name, row_num in self.row_names.items():
-            bar_text += ansi.ljust(row_name, title_just) + hsep
+            if not has_already_placed_row_names:
+                bar_text += ansi.ljust(row_name, title_just) + hsep
             bar_text += hsep.join(
                 ansi.rjust(self.accumulated_bars[row_num][col_num], value_just)
                 for col_num in self.col_names.values()
             )
             bar_text += end + "\n"
 
-        self.bar_contents += (
+        bar_text = (
             "\n"
             + ansi.colorize(" ".join(self.last_supertitle[:-1]), ansi.blue + ansi.bold)
             + "\n"
             + bar_text
         )
+        self.bar_contents.append(bar_text)
         self.accumulated_bars = list()
+        self.last_row_names = self.row_names
         self.row_names = dict()
         self.col_names = dict()
 
@@ -80,8 +120,9 @@ class ConsoleTable(Console):
             self._embed_bars()
         if self.curves:
             self._embed_curves()
-        if level < self.deepest_title and self.accumulated_bars:
-            self._embed_accumulated_bars()
+        if level < self.deepest_title:
+            if self.accumulated_bars:
+                self._embed_accumulated_bars()
             self.deepest_title = level
         if level > self.deepest_title:
             self.deepest_title = level
@@ -104,16 +145,39 @@ class ConsoleTable(Console):
         return self
 
     def end(self):
+        # finalize leftover information
         if self.bars:
             self._embed_bars()
         if self.curves:
+            self.contents += "\n"
             self._embed_curves()
-        self._embed_accumulated_bars()
+        if self.accumulated_bars:
+            self._embed_accumulated_bars()
         self.contents += "\n"
+
+        # add bar contents
+        if self.sideways and self.bar_contents:
+            numrows = len(self.bar_contents[0].split("\n"))
+            for content in self.bar_contents:
+                assert numrows == len(content.split("\n"))
+            all_rows = ["" for _ in range(numrows)]
+            for content in self.bar_contents:
+                rows = content.split("\n")
+                max_row_len = max(ansi.visible_length(row) for row in rows)
+                for i, row in enumerate(rows):
+                    if self.end_token:
+                        row = row.replace(self.end_token, "")
+                    all_rows[i] += self.sep_token + ansi.ljust(row, max_row_len)
+            contents = "\n".join([row + self.end_token for row in all_rows])
+        else:
+            contents = "".join(self.bar_contents)
+
+        # manage legend
         if self.legend:
-            self.contents = self.bar_contents + self.contents.replace("|", " ").replace(
+            self.contents = contents + self.contents.replace("|", " ").replace(
                 " Computations cover several cases.", ""
             )
         else:
-            self.contents = self.bar_contents
+            self.contents = contents
+
         return self
