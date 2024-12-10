@@ -20,12 +20,12 @@ nav:
           - 'record/comparisons.md'
           - 'record/stamps.md'
     - Material:
-      - Notebooks:
-          - 'demos/tabular.ipynb'
-          - 'demos/intersectional.ipynb'
-          - 'demos/recommendations.ipynb'
-          - 'demos/vision.ipynb'
-          - 'demos/graphs.ipynb'
+      #- Notebooks:
+      #    - 'demos/tabular.ipynb'
+      #    - 'demos/intersectional.ipynb'
+      #    - 'demos/recommendations.ipynb'
+      #    - 'demos/vision.ipynb'
+      #    - 'demos/graphs.ipynb'
       - 'cite.md'
 
 markdown_extensions:

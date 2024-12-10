@@ -10,7 +10,6 @@
         border: 1px solid #555555;
         padding: 10px;
         font-family: monospace;
-        margin-bottom: 25px;
     }
     .code-block {
         background-color: black;
@@ -18,9 +17,8 @@
         border: 1px solid #555555;
         font-family: monospace;
         spellcheck: false;
-        margin-bottom: 25px;
         margin-top: 0px;
-        font-size: 0.7em;
+        font-size: 0.8em;
     }
     .icon-green {
         color: green;
@@ -28,8 +26,8 @@
     .icon-blue {
         color: blue;
     }
-    /* Adjust the CodeMirror styling to match your theme preferences */
     .CodeMirror {
+        font-size: 0.8em;
         height: auto;
         min-height: 200px;
         background-color: black;
@@ -42,20 +40,19 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/codemirror.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/mode/python/python.min.js"></script>
 
+<h1 style="margin-bottom: 0px;">FairBench</h1>
 
 This is a comprehensive AI fairness exploration framework. 
 Visit the <a href="quickstart/" markdown="span">quickstart</a> for a tour.
-You may also watch the introductory tutorial, read the full documentation and recipes, or try
-the library in your browser.<br>
+Read the full documentation and recipes. Or try
+the library in your browser in minimal mode (without some benchmarks and only ascii visualization); 
+edit the snippet to be executed and run it below.
+<br><br>
 
-<iframe width="280" height="157" src="https://www.youtube.com/embed/vJIK3Kc65pA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-<br>
-<br>
-<br>
-<h1 style="margin-bottom: 0px;">Try it here</h1>
-Run FairBench from your browser in console integration mode (fallbacks to ascii visualization). Read more in the documentation.
-Edit the snippet to be executed and run it below. The minimal library installation only contains textual visualization.
+<button id="run" onclick="evaluatePython()"><span class="icon-green">&#9654;</span> Run snippet</button>
+<button id="restart" onclick="restartPython()"><span class="icon-blue">&#x1F504;</span> Restart</button>
+<a href="https://pyodide.org/en/stable/">Powered by pyodyne</a>
+<pre class="code-block" id="output" style="width: 100%; resize: vertical; overflow: auto; max-height: 600px;" rows="30" disabled></pre>
 
 <textarea class="code-block" id="code" rows="40">from fairbench import v2
 
@@ -71,11 +68,6 @@ report = v2.reports.pairwise(
 
 report.show(env=v2.export.ConsoleTable(legend=False))
 report.maxdiff.show() # dot specializes, could also show everything</textarea>
-
-<button id="run" onclick="evaluatePython()"><span class="icon-green">&#9654;</span> Run snippet</button>
-<button id="restart" onclick="restartPython()"><span class="icon-blue">&#x1F504;</span> Restart</button>
-<a href="https://pyodide.org/en/stable/">Powered by pyodyne</a>
-<pre class="code-block" id="output" style="width: 100%; resize: vertical; overflow: auto; max-height: 600px;" rows="30" disabled></pre>
 
 <script src="https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"></script>
 <script>
@@ -332,6 +324,7 @@ report.maxdiff.show() # dot specializes, could also show everything</textarea>
             output_value += s + "\n";
             const html = ansiToHtml(output_value);
             output.innerHTML = html;
+            output.scrollTop = output.scrollHeight;
         }
     }
 
