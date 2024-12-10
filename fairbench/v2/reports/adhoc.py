@@ -27,6 +27,7 @@ reductions_pairwise = [
     blocks.reduction.wmean,
     blocks.reduction.maxrel,
     blocks.reduction.maxdiff,
+    blocks.reduction.gini,
     blocks.reduction.std,
 ]
 

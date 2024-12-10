@@ -28,6 +28,18 @@ def std(values):
     return c.TargetedNumber(np.std(values), 0)
 
 
+@c.reduction("the gini coefficient")
+def gini(values):
+    values = c.transform.number(values)
+    n = len(values)
+    if n == 0:
+        return c.TargetedNumber(0, 0)
+    mean = sum(values) / n
+    gini_sum = sum(abs(values[i] - values[j]) for i in range(n) for j in range(n))
+    gini_coefficient = gini_sum / (2 * n * n * mean)
+    return c.TargetedNumber(gini_coefficient, 0)
+
+
 @c.reduction("the average")
 def mean(values):
     values = c.transform.number(values)
