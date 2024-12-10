@@ -1,5 +1,6 @@
 from fairbench.v2.export.formats.console import Console
 from fairbench.v2.export.formats.ansi import ansi
+from warnings import warn
 
 
 class ConsoleTable(Console):
@@ -10,6 +11,7 @@ class ConsoleTable(Console):
         legend=False,
         transpose=None,
         sideways=True,
+        na="   ",
     ):
         super().__init__()
         self.accumulated_bars = list()
@@ -25,6 +27,7 @@ class ConsoleTable(Console):
         self.transpose = transpose
         self.sideways = sideways
         self.last_row_names = None
+        self.na = na
 
     def _embed_bars(self):
         last_title = self.last_title[-1]
@@ -34,7 +37,7 @@ class ConsoleTable(Console):
             if title not in self.row_names:
                 row_num = len(self.row_names)
                 self.row_names[title] = row_num
-                self.accumulated_bars.append(["---" for _ in self.col_names])
+                self.accumulated_bars.append([self.na for _ in self.col_names])
             else:
                 row_num = self.row_names[title]
             # find or create col
@@ -42,14 +45,14 @@ class ConsoleTable(Console):
                 col_num = len(self.col_names)
                 self.col_names[last_title] = col_num
                 for row in self.accumulated_bars:
-                    row.append("---")
+                    row.append(self.na)
             else:
                 col_num = self.col_names[last_title]
             # set value
-            assert self.accumulated_bars[row_num][col_num] == "---", (
+            assert self.accumulated_bars[row_num][col_num] == self.na, (
                 f"Two or more conflicting values for showing '{title}' under header '{last_title}'"
                 f"with all headers being: {', '.join(self.col_names.keys())} "
-                "Consider switching to the Console visualization engine instead."
+                "Consider switching to the Console visualization environment instead."
             )
             self.accumulated_bars[row_num][col_num] = ansi.colorize(
                 f"{val:.3f}" if val < 1 and val != 0 else str(int(val)),
@@ -77,7 +80,7 @@ class ConsoleTable(Console):
             self.last_row_names = ["" for _ in self.row_names]
         assert not self.sideways or len(self.last_row_names) == len(self.row_names), (
             "Sideways ConsoleTable presentation should have the same number of rows in all computed tables. "
-            "Consider constructing ConsoleTable(sideways=False) instead."
+            "Consider specializing or constructing `ConsoleTable(sideways=False)` instead."
         )
         has_already_placed_row_names = self.sideways and all(
             name1 == name2 for name1, name2 in zip(self.last_row_names, self.row_names)
@@ -144,6 +147,15 @@ class ConsoleTable(Console):
         self.contents += text
         return self
 
+    def curve(self, title, x, y, units):
+        super().curve(title, x, y, units)
+        if not self.legend:
+            warn(
+                f"Curve {title} will not be shown because ConsoleTable was set to legend-less mode."
+                "Consider using the `Console` environment or initializing this one with `ConsoleTable(legend=True)`."
+            )
+        return self
+
     def end(self):
         # finalize leftover information
         if self.bars:
@@ -164,10 +176,11 @@ class ConsoleTable(Console):
             for content in self.bar_contents:
                 rows = content.split("\n")
                 max_row_len = max(ansi.visible_length(row) for row in rows)
+                sep_token = "" if content == self.bar_contents[0] else self.sep_token
                 for i, row in enumerate(rows):
                     if self.end_token:
                         row = row.replace(self.end_token, "")
-                    all_rows[i] += self.sep_token + ansi.ljust(row, max_row_len)
+                    all_rows[i] += sep_token + ansi.ljust(row, max_row_len)
             contents = "\n".join([row + self.end_token for row in all_rows])
         else:
             contents = "".join(self.bar_contents)

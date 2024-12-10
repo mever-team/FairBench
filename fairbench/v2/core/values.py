@@ -410,6 +410,11 @@ class Value:
 
         return fmt(self, env=env, depth=depth).show()
 
+    def filter(self, method):
+        if callable(method):
+            method = method()
+        return method.filter(self)
+
     def help(self):
         from fairbench.v2.export import help
 

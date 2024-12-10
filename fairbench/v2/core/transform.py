@@ -1,9 +1,23 @@
 from typing import Iterable
-from fairbench.v2.core import Value, NotComputable
+from fairbench.v2.core import Value, NotComputable, Curve
 
 
 def number(values: Iterable[Value]) -> list[float]:
     return [float(value) for value in values]
+
+
+def single_role(values: Iterable[Value], role: str) -> list[Curve]:
+    ret = list()
+    for value in values:
+        depends = value.values(role)
+        assert (
+            depends
+        ), f"There were no dependencies for role '{role}'. Consider specializing more."
+        assert (
+            len(depends) == 1
+        ), f"There were multiple dependencies for role '{role}'. Consider specializing more."
+        ret.append(depends[0])
+    return ret
 
 
 def diff(

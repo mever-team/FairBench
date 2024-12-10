@@ -22,6 +22,17 @@ def max(values):
     return np.max(values)
 
 
+@c.reduction("the maximum deviation from the ideal value")
+def maxerror(values):
+    for value in values:
+        value = value.value
+        if not isinstance(value, c.TargetedNumber):
+            raise c.NotComputable()
+    return c.TargetedNumber(
+        np.max([abs(value.value.value - value.value.target) for value in values]), 0
+    )
+
+
 @c.reduction("the standard deviation")
 def std(values):
     values = c.transform.number(values)
