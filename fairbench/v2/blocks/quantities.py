@@ -13,3 +13,6 @@ class quantities:
     slope = c.Descriptor("slope", "parameter", "the slope of pinball deviation")
     distribution = c.Descriptor("distribution", "curve", "the score distribution")
     roc = c.Descriptor("roc", "curve", "the receiver operating characteristics curve")
+    top = c.Descriptor("top", "count", "the number of top scores considered")
+    precision = c.Descriptor("precision", "metric", "the precision score")
+    repr = c.Descriptor("repr", "metric", "the representation in top samples")

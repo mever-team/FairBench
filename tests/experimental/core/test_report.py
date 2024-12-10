@@ -12,13 +12,13 @@ def test_sensitive_conversion():
 
 
 def test_vsany():
-    x, yhat, y = fb1.bench.tabular.bank()
+    x, y, yhat = fb1.bench.tabular.bank(predict="probabilities")
     sensitive = fb1.Fork(fb1.categories @ x["marital"], fb1.categories @ x["education"])
     sensitive = sensitive.intersectional().strict()
 
     report = fb.reports.vsall(
         sensitive=sensitive,
-        predictions=yhat,
+        predictions=yhat > 0.5,
         labels=y,
         scores=yhat,
         targets=y,
@@ -29,7 +29,7 @@ def test_vsany():
 
 
 def test_pairwise():
-    x, yhat, y = fb1.bench.tabular.bank()
+    x, y, yhat = fb1.bench.tabular.bank()
     sensitive = fb1.Fork(fb1.categories @ x["marital"], fb1.categories @ x["education"])
     sensitive = sensitive.intersectional().strict()
 
@@ -44,7 +44,7 @@ def test_pairwise():
 
 
 def test_progress():
-    x, yhat, y = fb1.bench.tabular.bank()
+    x, y, yhat = fb1.bench.tabular.bank()
 
     cats = fb1.categories @ x["marital"]
     cats = {k: v.numpy() for k, v in cats.items()}
@@ -71,7 +71,7 @@ def test_progress():
 
 
 def test_multiclass():
-    x, yhat, y = fb1.bench.tabular.bank()
+    x, y, yhat = fb1.bench.tabular.bank()
     sensitive = fb1.Fork(fb1.categories @ x["marital"], fb1.categories @ x["education"])
     sensitive = sensitive.intersectional().strict()
     y = fb1.categories @ y
@@ -89,7 +89,7 @@ def test_multiclass():
 
 
 def test_attachment_to_measures():
-    x, yhat, y = fb1.bench.tabular.bank()
+    x, y, yhat = fb1.bench.tabular.bank()
     sensitive = fb1.Fork(fb1.categories @ x["marital"], fb1.categories @ x["education"])
     sensitive = sensitive.intersectional().strict()
     y = fb1.categories @ y

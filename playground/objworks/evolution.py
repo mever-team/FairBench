@@ -1,7 +1,7 @@
 from fairbench import v2 as fb
 import fairbench as deprecated
 
-x, yhat, y = deprecated.bench.tabular.bank()
+x, y, yhat = deprecated.bench.tabular.bank()
 
 cats = deprecated.categories @ x["marital"]
 cats = {k: v.numpy() for k, v in cats.items()}

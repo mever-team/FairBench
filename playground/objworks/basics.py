@@ -1,7 +1,7 @@
 from fairbench import v2 as fb
 import fairbench.v1 as fb1
 
-x, yhat, y = fb1.bench.tabular.bank()
+x, y, yhat = fb1.bench.tabular.bank()
 sensitive = fb1.Fork(fb1.categories @ x["marital"], fb1.categories @ x["education"])
 # sensitive = sensitive.intersectional().strict()
 # y = fb1.categories @ y
@@ -15,8 +15,8 @@ report = fb.reports.pairwise(
     targets=y,
 )
 
-report.min.roc.show()
-report.show()
+# report.min.roc.show()
+report.show(env=fb.export.ConsoleTable)
 # (fb.export.ConsoleTable)
 # fb.export.Html
 

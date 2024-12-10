@@ -14,6 +14,9 @@ all_measures = [
     blocks.measures.trr,
     blocks.measures.avgscore,
     blocks.measures.auc,
+    blocks.measures.tophr,
+    blocks.measures.toprec,
+    blocks.measures.topf1,
     blocks.measures.mabs,
     blocks.measures.rmse,
 ]
