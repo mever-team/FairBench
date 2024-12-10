@@ -3,7 +3,7 @@ from fairbench.v2.export.formats.ansi import ansi
 
 
 class ConsoleTable(Console):
-    def __init__(self, sep: str = " ", end: str = "", legend=True):
+    def __init__(self, sep: str = "   ", end: str = "", legend=True):
         super().__init__()
         self.accumulated_bars = list()
         self.row_names = dict()

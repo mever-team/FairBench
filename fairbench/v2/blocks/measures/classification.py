@@ -89,7 +89,7 @@ def tar(predictions, labels, sensitive=None):
     samples = sensitive.sum()
     value = 0 if samples == 0 else tp / samples
     return c.Value(
-        c.TargetedNumber(value, 1),
+        value,
         depends=[
             quantities.samples(samples),
             quantities.tp(tp),
@@ -106,7 +106,7 @@ def trr(predictions, labels, sensitive=None):
     samples = sensitive.sum()
     value = 0 if samples == 0.0 else tn / samples
     return c.Value(
-        c.TargetedNumber(value, 1),
+        value,
         depends=[
             quantities.samples(samples),
             quantities.tn(tn),

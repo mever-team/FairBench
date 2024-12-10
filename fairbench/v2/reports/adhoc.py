@@ -5,7 +5,7 @@ from fairbench.v1 import core as deprecated
 import numpy as np
 
 
-measures = [
+all_measures = [
     blocks.measures.acc,
     blocks.measures.pr,
     blocks.measures.tpr,
@@ -18,7 +18,7 @@ measures = [
     blocks.measures.rmse,
 ]
 
-reductions = [
+reductions_pairwise = [
     blocks.reduction.min,
     blocks.reduction.max,
     blocks.reduction.wmean,
@@ -31,7 +31,6 @@ reductions = [
 reductions_vs_any = [
     blocks.reduction.min,
     blocks.reduction.max,
-    blocks.reduction.wmean,
     blocks.reduction.largestmaxrel,
     blocks.reduction.largestmaxdiff,
 ]
@@ -43,14 +42,24 @@ vsall_descriptor = Descriptor(
 )
 
 
-def pairwise(sensitive: Sensitive | deprecated.Fork, **kwargs):
+def pairwise(
+    sensitive: Sensitive | deprecated.Fork, measures=None, reductions=None, **kwargs
+):
+    if measures is None:
+        measures = all_measures
+    if reductions is None:
+        reductions = reductions_pairwise
     return report(
         sensitive=sensitive, measures=measures, reductions=reductions, **kwargs
     )
 
 
-def vsall(sensitive: Sensitive | deprecated.Fork, **kwargs):
+def vsall(sensitive: Sensitive | deprecated.Fork, measures=None, **kwargs):
+    if measures is None:
+        measures = all_measures
     # prepare the sensitive attribute, because we are going to add one more branch here
+    if isinstance(sensitive, dict):
+        sensitive = deprecated.Fork(sensitive)
     if isinstance(sensitive, deprecated.Fork):
         sensitive = Sensitive({k: v.numpy() for k, v in sensitive.branches().items()})
     branches = sensitive.branches | {

@@ -3,12 +3,7 @@ from fairbench.fallbacks import LogisticRegression, MinMaxScaler, train_test_spl
 from fairbench.bench.loader import cache
 
 
-def bank(
-    classifier=None,
-    scaler=None,
-    predict="predict",
-    seed=None,
-):
+def bank(classifier=None, scaler=None, predict="predict", seed=None, test_size=0.25):
     """
     Creates demonstration outputs for the *bank* dataset.
 
@@ -28,7 +23,7 @@ def bank(
         delimiter=";",
         header=True,
     )
-    train, test = train_test_split(data, random_state=seed)
+    train, test = train_test_split(data, random_state=seed, test_size=test_size)
     numeric = ["age", "duration", "campaign", "pdays", "previous"]
     categorical = [
         "job",
