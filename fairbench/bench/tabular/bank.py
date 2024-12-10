@@ -3,7 +3,7 @@ from fairbench.fallbacks import LogisticRegression, MinMaxScaler, train_test_spl
 from fairbench.bench.loader import cache
 
 
-def bank(classifier=None, scaler=None, predict="predict", seed=None, test_size=0.25):
+def bank(classifier=None, scaler=None, predict="predict", seed=None, test_size=0.5):
     """
     Creates demonstration outputs for the *bank* dataset.
 
