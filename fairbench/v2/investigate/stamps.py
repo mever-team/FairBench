@@ -1,0 +1,104 @@
+from fairbench.v2.core import Value, Descriptor
+
+
+class IndividualStamp:
+    def __init__(self, name, sequence, details, caveats):
+        assert (
+            details[-1] == "."
+        ), f"Details did not end in a fullstop for stamp {name}."
+        self.name = name
+        self.sequence = sequence.split(".")
+        self.details = details
+        self.caveats = caveats
+
+
+class Stamps:
+    def filter(self, value: Value) -> Value:
+        stamps = (
+            IndividualStamp(
+                "worst accuracy",
+                "min.acc",
+                details="This is the minimum benefit the system brings to any group.",
+                caveats=[
+                    "The worst case is a lower bound but not an estimation of overall performance.",
+                    "There may be different distributions of benefits that could be protected.",
+                    "Ensure continuous monitoring and re-evaluation as group dynamics and external factors evolve.",
+                    "Ensure that high worst accuracy translates to meaningful benefits across all groups in the real-world context.",
+                    "Seek input from affected groups to understand the impact of errors and to inform remediation strategies.",
+                ],
+            ),
+            IndividualStamp(
+                "standard deviation",
+                "std.acc",
+                details="This reflects imbalances in the distribution of benefits across groups.",
+                caveats=[],
+            ),
+            IndividualStamp(
+                "differential fairness",
+                "maxrel.acc",
+                details="The worst deviation of ratios from 1 is reported, so that value of 1 indicates disparate impact, and value of 0 disparate impact mitigation.",
+                caveats=[
+                    "Disparate impact may not always be an appropriate fairness consideration, and may obscure other important fairness concerns or create new disparities.",
+                    "Ensure continuous monitoring and re-evaluation as group dynamics and external factors evolve.",
+                ],
+            ),
+            IndividualStamp(
+                "max |Δfpr|",
+                "maxdiff.tnr",
+                details="The maximum difference is reported, so that value of 1 indicates disparate mistreatment, and value of 0 disparate mistreatment mitigation.",
+                caveats=[
+                    "Disparate mistreatment may not always be an appropriate fairness consideration, and may obscure other important fairness concerns or create new disparities.",
+                    "Consider input from affected stakeholders to determine whether |Δfpr| is an appropriate fairness measure.",
+                    "Ensure continuous monitoring and re-evaluation as group dynamics and external factors evolve.",
+                    "Variations in FPR could be influenced by factors unrelated to the fairness of the system, such as data quality or representation.",
+                    "Mitigating |Δfpr| tends to mitigate |Δfnr|, and conversely.",
+                    "Seek input from affected groups to understand the impact of errors and to inform remediation strategies.",
+                ],
+            ),
+            IndividualStamp(
+                "max |Δfnr|",
+                "maxdiff.tpr",
+                details="The maximum difference is reported, so that value of 1 indicates disparate mistreatment, and value of 0 disparate mistreatment mitigation.",
+                caveats=[
+                    "Disparate mistreatment may not always be an appropriate fairness consideration, and may obscure other important fairness concerns or create new disparities.",
+                    "Consider input from affected stakeholders to determine whether |Δfnr| is an appropriate fairness measure.",
+                    "Ensure continuous monitoring and re-evaluation as group dynamics and external factors evolve.",
+                    "Variations in FPR could be influenced by factors unrelated to the fairness of the system, such as data quality or representation.",
+                    "Mitigating |Δfpr| tends to mitigate |Δfnr|, and conversely.",
+                    "Seek input from affected groups to understand the impact of errors and to inform remediation strategies.",
+                ],
+            ),
+        )
+
+        results = list()
+        for stamp in stamps:
+            try:
+                val = value
+                for element in stamp.sequence:
+                    val = val[element]
+                details = stamp.details
+                val = val.rebase(
+                    Descriptor(
+                        stamp.name,
+                        "stamp",
+                        val.descriptor.details
+                        + " of "
+                        + value.descriptor.details
+                        + ". "
+                        + details
+                        + "".join("\n• " + caveat for caveat in stamp.caveats),
+                    )
+                )
+                if val.exists():
+                    results.append(val)
+            except AssertionError:
+                pass
+
+        return Value(
+            depends=results,
+            descriptor=Descriptor(
+                "modelcard",
+                "modelcard",
+                "a modelcard that consists of popular fairness stamps",
+            ),
+        )

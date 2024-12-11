@@ -7,7 +7,7 @@ def _generate_details(descriptor: Descriptor):
     roles = descriptor.role.split(" ")
     roles = [role for role in roles if role not in descriptor.details]
     roles = " of a ".join(roles)
-    details = descriptor.details
+    details = descriptor.details.split(".")[0]
     if not roles:
         details = f"This is {details}."
     else:
@@ -52,7 +52,19 @@ def _console(env: Console, value: Value, depth=0, max_depth=6, symbol_depth=0):
         else:
             env.first().result("Value:", float(value), get_ideal(), value.value.units)
             env.p()
+        if "." in value.descriptor.details:
+            details = value.descriptor.details[
+                value.descriptor.details.index(".") + 1 :
+            ]
+            for line in details.split("\n"):
+                env.first().text(line).p()
     elif value.depends:
+        if "." in value.descriptor.details:
+            details = value.descriptor.details[
+                value.descriptor.details.index(".") + 1 :
+            ]
+            for line in details.split("\n"):
+                env.first().text(line).p()
         env.first().bold("Computations cover several cases.").p()
     for dep in value.depends.values():
         _console(env, dep, depth, max_depth=max_depth, symbol_depth=symbol_depth + 1)

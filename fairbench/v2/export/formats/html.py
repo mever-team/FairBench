@@ -3,13 +3,14 @@ import json
 
 
 class Html:
-    def __init__(self):
+    def __init__(self, horizontal=False):
         self.contents = ""
         self.chart_count = 0
         self.bars = []
         self.prev_max_level = 0
         self.routes = dict()
         self.curves = list()
+        self.horizontal = horizontal
 
     def navigation(self, text, routes: dict):
         return self
@@ -34,7 +35,7 @@ class Html:
                 self.contents += "</div></div>"
             else:
                 self.contents += "<br>"
-            self.contents += '<div style="width: 400px; float: left;" class="card m-3">'
+            self.contents += f'<div style="width: {400 if self.horizontal else 800}px; float: left;" class="card m-3">'
             self.contents += f'<h{level} class="mt-0 text-white bg-dark p-3 rounded">{text}</h{level}>'
 
             self.contents += """
@@ -254,7 +255,7 @@ class Html:
             <script src="https://d3js.org/d3.v7.min.js"></script>
         </head>
         <body>
-            <div class="container">
+            <div {'class="container"' if not self.horizontal else ""}>
                 {self.contents}
             </div>
         </body>
