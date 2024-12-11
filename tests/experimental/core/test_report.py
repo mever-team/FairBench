@@ -43,6 +43,20 @@ def test_pairwise():
     report.acc.min.show()
 
 
+def test_investigators():
+    x, y, yhat = fb1.bench.tabular.bank()
+    sensitive = fb1.Fork(fb1.categories @ x["marital"], fb1.categories @ x["education"])
+    sensitive = sensitive.intersectional().strict()
+
+    fb.reports.pairwise(
+        sensitive=sensitive,
+        predictions=yhat,
+        labels=y,
+    ).filter(
+        fb.investigate.DeviationsOver(0.2)
+    ).filter(fb.investigate.IsBias).show()
+
+
 def test_progress():
     x, y, yhat = fb1.bench.tabular.bank()
 
