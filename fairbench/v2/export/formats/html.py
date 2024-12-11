@@ -11,6 +11,7 @@ class Html:
         self.routes = dict()
         self.curves = list()
         self.horizontal = horizontal
+        self.level = 0
 
     def navigation(self, text, routes: dict):
         return self
@@ -28,6 +29,7 @@ class Html:
         if self.curves:
             self._embed_curves()
         level = level * 2 + 1
+        self.level = level
         if level > 6:
             level = 6
         if level == 3:
@@ -44,8 +46,10 @@ class Html:
         elif level <= 1:
             self.contents += f'<h{level} class="text-dark">{text}</h{level}>'
         else:
+            if level == 5:
+                self.contents += "<hr>"
             self.contents += (
-                f'<h{level} class="mt-5 text-dark"><b>{text}</b></h{level}>'
+                f'<h{level} class="mt-3 text-dark"><b>{text}</b></h{level}>'
             )
         self.prev_max_level = max(self.prev_max_level, level)
         return self
@@ -78,7 +82,7 @@ class Html:
         self.chart_count += 1
         cid = self.chart_count
 
-        self.contents += f"""<div id="curve-chart{cid}" class="mt-4"></div>"""
+        self.contents += f"""<div id="curve-chart{cid}" class="mt-2"></div>"""
 
         self.contents += f"""
             <script>
@@ -143,7 +147,7 @@ class Html:
         bar_json = str(bar_data).replace("'", '"')
         self.chart_count += 1
         cid = self.chart_count
-        self.contents += f"""<div id="bar-chart{cid}" class="mt-4"></div>"""
+        self.contents += f"""<div id="bar-chart{cid}" class="mt-2"></div>"""
         self.contents += f"""
             <script>
                 const data{cid} = {bar_json};
@@ -226,7 +230,7 @@ class Html:
         return self
 
     def text(self, text):
-        self.contents += f"<p>{text}</p>"
+        self.contents += f"{text}<br>"
         return self
 
     def p(self):

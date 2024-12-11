@@ -19,6 +19,8 @@ class Console:
         if self.curves:
             self._embed_curves()
         self.level = level
+        if not text:
+            return self
         symbol = self.symbols[level]
         text = symbol * 5 + " " + text + " " + symbol * 5
         self.p()

@@ -6,4 +6,4 @@ sensitive = fb1.Fork(fb1.categories @ x["marital"])
 
 report = fb.reports.pairwise(sensitive=sensitive, predictions=yhat, labels=y)
 
-report.filter(fb.investigate.Stamps).show(env=fb.export.Html, depth=1)
+report.filter([fb.investigate.Stamps]).show(env=fb.export.Html, depth=1)

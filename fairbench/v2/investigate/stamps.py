@@ -36,7 +36,7 @@ class Stamps:
             IndividualStamp(
                 "differential fairness",
                 "maxrel.acc",
-                details="The worst deviation of ratios from 1 is reported, so that value of 1 indicates disparate impact, and value of 0 disparate impact mitigation.",
+                details="The worst deviation of accuracy ratios from 1 is reported, so that value of 1 indicates disparate impact, and value of 0 disparate impact mitigation.",
                 caveats=[
                     "Disparate impact may not always be an appropriate fairness consideration, and may obscure other important fairness concerns or create new disparities.",
                     "Ensure continuous monitoring and re-evaluation as group dynamics and external factors evolve.",
@@ -45,7 +45,7 @@ class Stamps:
             IndividualStamp(
                 "max |Δfpr|",
                 "maxdiff.tnr",
-                details="The maximum difference is reported, so that value of 1 indicates disparate mistreatment, and value of 0 disparate mistreatment mitigation.",
+                details="The false positive rate differences are computed via the equivalent true negative rate differences. The maximum difference is reported, so that value of 1 indicates disparate mistreatment, and value of 0 disparate mistreatment mitigation.",
                 caveats=[
                     "Disparate mistreatment may not always be an appropriate fairness consideration, and may obscure other important fairness concerns or create new disparities.",
                     "Consider input from affected stakeholders to determine whether |Δfpr| is an appropriate fairness measure.",
@@ -58,7 +58,7 @@ class Stamps:
             IndividualStamp(
                 "max |Δfnr|",
                 "maxdiff.tpr",
-                details="The maximum difference is reported, so that value of 1 indicates disparate mistreatment, and value of 0 disparate mistreatment mitigation.",
+                details="The false negative rate differences are computed via the equivalent true positive rate differences. The maximum difference is reported, so that value of 1 indicates disparate mistreatment, and value of 0 disparate mistreatment mitigation.",
                 caveats=[
                     "Disparate mistreatment may not always be an appropriate fairness consideration, and may obscure other important fairness concerns or create new disparities.",
                     "Consider input from affected stakeholders to determine whether |Δfnr| is an appropriate fairness measure.",
@@ -81,12 +81,21 @@ class Stamps:
                     Descriptor(
                         stamp.name,
                         "stamp",
-                        val.descriptor.details
-                        + " of "
-                        + value.descriptor.details
-                        + ". "
-                        + details
-                        + "".join("\n• " + caveat for caveat in stamp.caveats),
+                        (
+                            val.descriptor.details
+                            + " of "
+                            + value.descriptor.details
+                            + "."
+                            + "# Details\n"
+                            + details
+                            + (
+                                "\n# Caveats and recommendations"
+                                if stamp.caveats
+                                else ""
+                            )
+                            + "".join("\n • " + caveat for caveat in stamp.caveats)
+                            + "\n# Distribution"
+                        ),
                     )
                 )
                 if val.exists():
@@ -97,8 +106,11 @@ class Stamps:
         return Value(
             depends=results,
             descriptor=Descriptor(
+                "fairness modelcard",
                 "modelcard",
-                "modelcard",
-                "a modelcard that consists of popular fairness stamps",
+                "a modelcard created with FairBench that consists of popular fairness stamps. "
+                "Stamps contain caveats and recommendation that should be considered during practical adoption. "
+                "They are only a part of the full analysis that has been conducted, so consider also viewing "
+                "the full generated report to find more prospective biases.",
             ),
         )

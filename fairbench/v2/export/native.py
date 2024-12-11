@@ -1,3 +1,5 @@
+from bokeh.util.logconfig import level
+
 from fairbench.v2.core import Value, TargetedNumber, Descriptor, Progress, Curve
 from fairbench.v2.export.formats.ansi import ansi
 from fairbench.v2.export.formats.console import Console
@@ -57,14 +59,21 @@ def _console(env: Console, value: Value, depth=0, max_depth=6, symbol_depth=0):
                 value.descriptor.details.index(".") + 1 :
             ]
             for line in details.split("\n"):
-                env.first().text(line).p()
+                if line and line[0] == "#":
+                    env.title(line[1:].strip(), level=depth + 1)
+                else:
+                    env.first().text(line).p()
     elif value.depends:
         if "." in value.descriptor.details:
             details = value.descriptor.details[
                 value.descriptor.details.index(".") + 1 :
             ]
             for line in details.split("\n"):
-                env.first().text(line).p()
+                if line and line[0] == "#":
+                    env.title(line[1:].strip(), level=depth + 1)
+                else:
+                    env.first().text(line).p()
+            env.title("", level=depth)
         env.first().bold("Computations cover several cases.").p()
     for dep in value.depends.values():
         _console(env, dep, depth, max_depth=max_depth, symbol_depth=symbol_depth + 1)
