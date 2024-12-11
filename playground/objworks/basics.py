@@ -11,11 +11,4 @@ report = fb.reports.pairwise(
     sensitive=sensitive, predictions=yhat, labels=y, scores=yhat, targets=y, top=50
 )
 
-# report.min.roc.show()
-report.filter(fb.investigate.Threshold(0.2)).show(fb.export.ConsoleTable)
-# report.filter(fb.investigate.MostProblematic).show(fb.export.ConsoleTable)
-# report.filter(fb.investigate.Caveats).show(fb.export.ConsoleTable)
-# (fb.export.ConsoleTable)
-# fb.export.Html
-
-# fb.reduction.min(report.min.explain).show()
+report.filter(fb.investigate.DeviationsOver(0.2)).show(fb.export.ConsoleTable)

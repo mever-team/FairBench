@@ -1,3 +1,4 @@
+from collections.abc import Iterable
 from typing import Optional
 import numpy as np
 
@@ -410,10 +411,16 @@ class Value:
 
         return fmt(self, env=env, depth=depth).show()
 
-    def filter(self, method):
-        if callable(method):
-            method = method()
-        return method.filter(self)
+    def filter(self, methods):
+        if not methods:
+            return self
+        if not isinstance(methods, Iterable):
+            methods = [methods]
+        methods = [method() if callable(method) else method for method in methods]
+        ret = self
+        for method in methods:
+            ret = method.filter(ret)
+        return ret
 
     def help(self):
         from fairbench.v2.export import help
