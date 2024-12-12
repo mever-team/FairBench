@@ -88,7 +88,7 @@ def maxrel(values):
 
 
 @c.reduction(
-    "the maximum difference from the largest group (e.g., the whole population if included)"
+    "the maximum difference from the largest group (the whole population if included)"
 )
 def largestmaxdiff(values):
     values = c.transform.diff(values)
@@ -96,7 +96,7 @@ def largestmaxdiff(values):
 
 
 @c.reduction(
-    "the maximum relative difference from the largest group (e.g., the whole population if included)"
+    "the maximum relative difference from the largest group (the whole population if included)"
 )
 def largestmaxrel(values):
     compared_to = c.transform.at_max_samples(values)

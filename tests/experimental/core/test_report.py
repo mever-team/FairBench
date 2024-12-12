@@ -11,6 +11,22 @@ def test_sensitive_conversion():
         assert np.abs(sensitive[sensitive[key]] - np.array(fork[key])).sum() == 0
 
 
+def test_env():
+    x, y, yhat = fb1.bench.tabular.bank(predict="probabilities")
+    sensitive = fb1.Fork(fb1.categories @ x["marital"], fb1.categories @ x["education"])
+    sensitive = sensitive.intersectional().strict()
+
+    report = fb.reports.vsall(
+        sensitive=sensitive,
+        predictions=yhat > 0.5,
+        labels=y,
+        scores=yhat,
+        targets=y,
+    )
+
+    assert str(report.to_dict()) == str(report.show(fb.export.ToDict))
+
+
 def test_vsany():
     x, y, yhat = fb1.bench.tabular.bank(predict="probabilities")
     sensitive = fb1.Fork(fb1.categories @ x["marital"], fb1.categories @ x["education"])
@@ -55,6 +71,23 @@ def test_investigators():
     ).filter(
         fb.investigate.DeviationsOver(0.2)
     ).filter(fb.investigate.IsBias).show()
+
+
+def test_stamp_investigation():
+    x, y, yhat = fb1.bench.tabular.bank()
+    sensitive = fb1.Fork(fb1.categories @ x["marital"], fb1.categories @ x["education"])
+    sensitive = sensitive.intersectional().strict()
+
+    serialized = (
+        fb.reports.pairwise(
+            sensitive=sensitive,
+            predictions=yhat,
+            labels=y,
+        )
+        .filter(fb.investigate.Stamps)
+        .show(fb.export.ToJson)
+    )
+    assert "worst accuracy" in serialized
 
 
 def test_progress():

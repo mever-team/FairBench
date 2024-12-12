@@ -2,7 +2,7 @@ from fairbench.v2.core import Value, Descriptor
 
 
 class IndividualStamp:
-    def __init__(self, name, sequence, details, caveats):
+    def __init__(self, name: str, sequence: str, details: str, caveats: list[str]):
         assert (
             details[-1] == "."
         ), f"Details did not end in a fullstop for stamp {name}."
@@ -58,6 +58,32 @@ class Stamps:
             IndividualStamp(
                 "max |Δfnr|",
                 "maxdiff.tpr",
+                details="The false negative rate differences are computed via the equivalent true positive rate differences. The maximum difference is reported, so that value of 1 indicates disparate mistreatment, and value of 0 disparate mistreatment mitigation.",
+                caveats=[
+                    "Disparate mistreatment may not always be an appropriate fairness consideration, and may obscure other important fairness concerns or create new disparities.",
+                    "Consider input from affected stakeholders to determine whether |Δfnr| is an appropriate fairness measure.",
+                    "Ensure continuous monitoring and re-evaluation as group dynamics and external factors evolve.",
+                    "Variations in FPR could be influenced by factors unrelated to the fairness of the system, such as data quality or representation.",
+                    "Mitigating |Δfpr| tends to mitigate |Δfnr|, and conversely.",
+                    "Seek input from affected groups to understand the impact of errors and to inform remediation strategies.",
+                ],
+            ),
+            IndividualStamp(
+                "max |Δfpr|",
+                "largestmaxdiff.tnr",
+                details="The false positive rate differences are computed via the equivalent true negative rate differences. The maximum difference is reported, so that value of 1 indicates disparate mistreatment, and value of 0 disparate mistreatment mitigation.",
+                caveats=[
+                    "Disparate mistreatment may not always be an appropriate fairness consideration, and may obscure other important fairness concerns or create new disparities.",
+                    "Consider input from affected stakeholders to determine whether |Δfpr| is an appropriate fairness measure.",
+                    "Ensure continuous monitoring and re-evaluation as group dynamics and external factors evolve.",
+                    "Variations in FPR could be influenced by factors unrelated to the fairness of the system, such as data quality or representation.",
+                    "Mitigating |Δfpr| tends to mitigate |Δfnr|, and conversely.",
+                    "Seek input from affected groups to understand the impact of errors and to inform remediation strategies.",
+                ],
+            ),
+            IndividualStamp(
+                "max |Δfnr|",
+                "largestmaxdiff.tpr",
                 details="The false negative rate differences are computed via the equivalent true positive rate differences. The maximum difference is reported, so that value of 1 indicates disparate mistreatment, and value of 0 disparate mistreatment mitigation.",
                 caveats=[
                     "Disparate mistreatment may not always be an appropriate fairness consideration, and may obscure other important fairness concerns or create new disparities.",

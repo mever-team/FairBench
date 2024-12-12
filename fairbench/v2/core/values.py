@@ -12,11 +12,20 @@ class Curve:
         self.units = units
 
     def to_dict(self):
-        raise Exception("Not implemented to_dict for curves yet")
+        return {
+            "x": self.x.tolist(),  # Convert numpy array to list for serialization
+            "y": self.y.tolist(),
+            "units": self.units,
+        }
 
     @classmethod
     def from_dict(cls, data):
-        raise Exception("Not implemented from_dict for curves yet")
+        if "x" not in data or "y" not in data:
+            raise ValueError("Dictionary must contain 'x' and 'y' keys.")
+        x = np.array(data["x"])  # Convert lists back to numpy arrays
+        y = np.array(data["y"])
+        units = data.get("units", "")
+        return cls(x, y, units)
 
     def __eq__(self, other):
         if not isinstance(other, Curve):
