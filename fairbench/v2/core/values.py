@@ -421,11 +421,9 @@ class Value:
 
         return fmt(self, env=env, depth=depth).show()
 
-    def filter(self, methods):
+    def filter(self, *methods):
         if not methods:
             return self
-        if not isinstance(methods, Iterable):
-            methods = [methods]
         methods = [method() if callable(method) else method for method in methods]
         ret = self
         for method in methods:

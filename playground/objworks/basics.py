@@ -6,4 +6,4 @@ sensitive = fb1.Fork(fb1.categories @ x["marital"])
 
 report = fb.reports.vsall(sensitive=sensitive, predictions=yhat, labels=y)
 
-report.filter([fb.investigate.Stamps]).show(depth=1)
+report.filter(fb.investigate.IsBias, fb.investigate.Stamps).show(depth=1)
