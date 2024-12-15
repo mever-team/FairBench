@@ -353,9 +353,10 @@ class Value:
             else:
                 # TODO: accelerate this code path in the future
                 keys = self._keys()
-                assert (
-                    item in keys
-                ), f"Key '{item}' is not one of {list(keys.keys())}. Run fb.help(value) for details."
+                assert item in keys, (
+                    f"Key '{item}' could not be found in the value. "
+                    f"It must be one of {list(keys.keys())}. Run `fb.help(value)` for details."
+                )
                 if item in keys:
                     item = keys[item]
                 item = item.descriptor.prototype  # TODO: decide on the prototype

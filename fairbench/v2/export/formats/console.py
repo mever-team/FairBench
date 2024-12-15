@@ -2,13 +2,14 @@ from fairbench.v2.export.formats.ansi import ansi
 
 
 class Console:
-    def __init__(self, ansiplot=True):
+    def __init__(self, ansiplot=True, width=80):
         self.contents = ""
         self.symbols = {0: "#", 1: "*", 2: "=", 3: "-", 4: "^", 5: '"'}  # sphinx format
         self.level = 0
         self.ansiplot = ansiplot
         self.bars = list()
         self.curves = list()
+        self.width = width
 
     def navigation(self, text, routes: dict):
         return self
@@ -129,6 +130,18 @@ class Console:
             text = text.replace(
                 keyword, ansi.colorize(keyword, ansi.white, ansi.reset + ansi.italic)
             )
+
+        endl = self.width - 2 - (0 if self.level == 0 else (self.level - 1) * 2 + 1)
+        if ansi.visible_length(text) > endl:
+            idx = 0
+            while True:
+                next = text.find(" ", idx + 1)
+                if next == -1 or ansi.visible_length(text[:next]) >= endl:
+                    break
+                idx = next
+            self.contents += ansi.italic + text[: idx + 1] + ansi.reset
+            return self.p().first().quote(text[idx + 1 :])
+
         self.contents += ansi.italic + text + ansi.reset
         return self
 
@@ -142,7 +155,24 @@ class Console:
         self.contents += ansi.colorize(text, ansi.bold)
         return self
 
-    def text(self, text):
+    def text(self, text, isinbullet=False):
+        endl = self.width - 2 - (0 if self.level == 0 else (self.level - 1) * 2 + 1)
+        if isinbullet:
+            self.contents += "   "
+            endl -= 3
+        if ansi.visible_length(text) > endl:
+            idx = 0
+            while True:
+                next = text.find(" ", idx + 1)
+                if next == -1 or ansi.visible_length(text[:next]) >= endl:
+                    break
+                idx = next
+            self.contents += text[: idx + 1]
+            return (
+                self.p()
+                .first()
+                .text(text[idx + 1 :], isinbullet or text.startswith(" • "))
+            )
         self.contents += text
         return self
 

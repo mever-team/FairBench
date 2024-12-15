@@ -27,6 +27,27 @@ def test_env():
     assert str(report.to_dict()) == str(report.show(fb.export.ToDict))
 
 
+def test_simple_report():
+    from fairbench import v2
+    import fairbench as fb
+
+    sensitive = ["M", "F", "M", "F", "M", "F", "M"]
+    y = [1, 1, 0, 0, 1, 0, 1]
+    yhat = [1, 1, 1, 0, 0, 0, 0]
+
+    report = v2.reports.pairwise(
+        predictions=yhat,
+        labels=y,
+        sensitive=fb.Fork(fb.categories @ sensitive).strict(),
+    )
+
+    report.filter(v2.investigate.Stamps).show(
+        env=v2.export.Html(open=False, filename="temp"), depth=1
+    )
+    report.maxdiff.show()  # console is the default
+    report.show(v2.export.ConsoleTable)
+
+
 def test_vsany():
     x, y, yhat = fb1.bench.tabular.bank(predict="probabilities")
     sensitive = fb1.Fork(fb1.categories @ x["marital"], fb1.categories @ x["education"])

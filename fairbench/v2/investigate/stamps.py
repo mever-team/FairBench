@@ -134,7 +134,7 @@ class Stamps:
             descriptor=Descriptor(
                 "fairness modelcard",
                 "modelcard",
-                "a modelcard created with FairBench that consists of popular fairness stamps. "
+                "a modelcard created with FairBench that consists of popular fairness stamps."
                 "Stamps contain caveats and recommendation that should be considered during practical adoption. "
                 "They are only a part of the full analysis that has been conducted, so consider also viewing "
                 "the full generated report to find more prospective biases.",
