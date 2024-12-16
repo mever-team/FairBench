@@ -18,6 +18,11 @@ class Curve:
             "units": self.units,
         }
 
+    def to_grid(self, grid):
+        new_x = np.linspace(self.x.min(), self.x.max(), num=grid)
+        approx_y = np.interp(new_x, self.x, self.y)
+        return Curve(new_x, approx_y, self.units)
+
     @classmethod
     def from_dict(cls, data):
         if "x" not in data or "y" not in data:

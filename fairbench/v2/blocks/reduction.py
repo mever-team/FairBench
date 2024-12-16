@@ -1,5 +1,6 @@
 import numpy as np
 from fairbench.v2 import core as c
+from fairbench.v2.core import NotComputable
 
 
 @c.reduction("the minimum")
@@ -47,7 +48,7 @@ def gini(values):
         return c.TargetedNumber(0, 0)
     mean = sum(values) / n
     gini_sum = sum(abs(values[i] - values[j]) for i in range(n) for j in range(n))
-    gini_coefficient = gini_sum / (2 * n * n * mean)
+    gini_coefficient = 0 if mean == 0 else gini_sum / (2 * n * n * mean)
     return c.TargetedNumber(gini_coefficient, 0)
 
 
@@ -81,6 +82,12 @@ def maxdiff(values):
     return c.TargetedNumber(np.max(values), 0)
 
 
+@c.reduction("the maximum area between curves")
+def maxbarea(values):
+    values = c.transform.curve_diff(values)
+    return c.TargetedNumber(np.max(values), 0)
+
+
 @c.reduction("the maximum relative difference")
 def maxrel(values):
     values = c.transform.relative(values)
@@ -101,4 +108,13 @@ def largestmaxdiff(values):
 def largestmaxrel(values):
     compared_to = c.transform.at_max_samples(values)
     values = c.transform.relative(values, compared_to=compared_to)
+    return c.TargetedNumber(np.max(values), 0)
+
+
+@c.reduction(
+    "the maximum area between curves and the curve of the largest group (the whole population if included)"
+)
+def largestmaxbarea(values):
+    compared_to = c.transform.at_max_samples(values)
+    values = c.transform.curve_diff(values, compared_to=compared_to)
     return c.TargetedNumber(np.max(values), 0)

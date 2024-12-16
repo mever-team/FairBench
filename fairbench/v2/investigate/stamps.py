@@ -45,7 +45,7 @@ class Stamps:
             IndividualStamp(
                 "max |Δfpr|",
                 "maxdiff.tnr",
-                details="The false positive rate differences are computed via the equivalent true negative rate differences. The maximum difference is reported, so that value of 1 indicates disparate mistreatment, and value of 0 disparate mistreatment mitigation.",
+                details="The false positive rate differences are computed via the equivalent true negative rate differences. The maximum difference between pairs of groups is reported, so that value of 1 indicates disparate mistreatment, and value of 0 disparate mistreatment mitigation.",
                 caveats=[
                     "Disparate mistreatment may not always be an appropriate fairness consideration, and may obscure other important fairness concerns or create new disparities.",
                     "Consider input from affected stakeholders to determine whether |Δfpr| is an appropriate fairness measure.",
@@ -58,7 +58,7 @@ class Stamps:
             IndividualStamp(
                 "max |Δfnr|",
                 "maxdiff.tpr",
-                details="The false negative rate differences are computed via the equivalent true positive rate differences. The maximum difference is reported, so that value of 1 indicates disparate mistreatment, and value of 0 disparate mistreatment mitigation.",
+                details="The false negative rate differences are computed via the equivalent true positive rate differences. The maximum difference between pairs of groups is reported, so that value of 1 indicates disparate mistreatment, and value of 0 disparate mistreatment mitigation.",
                 caveats=[
                     "Disparate mistreatment may not always be an appropriate fairness consideration, and may obscure other important fairness concerns or create new disparities.",
                     "Consider input from affected stakeholders to determine whether |Δfnr| is an appropriate fairness measure.",
@@ -71,7 +71,7 @@ class Stamps:
             IndividualStamp(
                 "max |Δfpr|",
                 "largestmaxdiff.tnr",
-                details="The false positive rate differences are computed via the equivalent true negative rate differences. The maximum difference is reported, so that value of 1 indicates disparate mistreatment, and value of 0 disparate mistreatment mitigation.",
+                details="The false positive rate differences are computed via the equivalent true negative rate differences. The maximum difference between each group and the largest group (typically the whole population `all` is included in analysis that outputs this value) is reported, so that value of 1 indicates disparate mistreatment, and value of 0 disparate mistreatment mitigation.",
                 caveats=[
                     "Disparate mistreatment may not always be an appropriate fairness consideration, and may obscure other important fairness concerns or create new disparities.",
                     "Consider input from affected stakeholders to determine whether |Δfpr| is an appropriate fairness measure.",
@@ -84,7 +84,7 @@ class Stamps:
             IndividualStamp(
                 "max |Δfnr|",
                 "largestmaxdiff.tpr",
-                details="The false negative rate differences are computed via the equivalent true positive rate differences. The maximum difference is reported, so that value of 1 indicates disparate mistreatment, and value of 0 disparate mistreatment mitigation.",
+                details="The false negative rate differences are computed via the equivalent true positive rate differences. The maximum difference between each group and the largest group (typically the whole population `all` is included in analysis that outputs this value) is reported, so that value of 1 indicates disparate mistreatment, and value of 0 disparate mistreatment mitigation.",
                 caveats=[
                     "Disparate mistreatment may not always be an appropriate fairness consideration, and may obscure other important fairness concerns or create new disparities.",
                     "Consider input from affected stakeholders to determine whether |Δfnr| is an appropriate fairness measure.",
@@ -92,6 +92,24 @@ class Stamps:
                     "Variations in FPR could be influenced by factors unrelated to the fairness of the system, such as data quality or representation.",
                     "Mitigating |Δfpr| tends to mitigate |Δfnr|, and conversely.",
                     "Seek input from affected groups to understand the impact of errors and to inform remediation strategies.",
+                ],
+            ),
+            IndividualStamp(
+                "max abroca",
+                "maxbarea.auc",
+                details="The maximum absolute between-ness area compares receiver operating characteristic (roc) curves pairwise and computes the area between them. Curves are retrieved from intermediate computations of the area under curve of the roc (auc). The absolute unsigned area is computed so that value of indicates identical curves (otherwise the signed area would be the absolute auc difference).",
+                caveats=[
+                    "Disparate mistreatment may not always be an appropriate fairness consideration, and may obscure other important fairness concerns or create new disparities.",
+                    "Consider input from affected stakeholders to determine whether abroca is an appropriate fairness measure.",
+                ],
+            ),
+            IndividualStamp(
+                "max abroca",
+                "largestmaxbarea.auc",
+                details="The maximum absolute between-ness area compares receiver operating characteristic (roc) curves pairwise and computes the area between each curve and the one of the largest group (typically the whole population `all` is included in analysis that outputs this value). Curves are retrieved from intermediate computations of the area under curve of the roc (auc). The absolute unsigned area is computed so that value of indicates identical curves (otherwise the signed area would be the absolute auc difference).",
+                caveats=[
+                    "Disparate mistreatment may not always be an appropriate fairness consideration, and may obscure other important fairness concerns or create new disparities.",
+                    "Consider input from affected stakeholders to determine whether abroca is an appropriate fairness measure.",
                 ],
             ),
         )

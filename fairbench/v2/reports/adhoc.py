@@ -27,6 +27,7 @@ reductions_pairwise = [
     blocks.reduction.maxerror,
     blocks.reduction.wmean,
     blocks.reduction.mean,
+    blocks.reduction.maxbarea,
     blocks.reduction.maxrel,
     blocks.reduction.maxdiff,
     blocks.reduction.gini,
@@ -39,6 +40,7 @@ reductions_vs_any = [
     blocks.reduction.max,
     blocks.reduction.largestmaxrel,
     blocks.reduction.largestmaxdiff,
+    blocks.reduction.largestmaxbarea,
 ]
 
 vsall_descriptor = Descriptor(
