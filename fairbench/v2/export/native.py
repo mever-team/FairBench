@@ -1,5 +1,3 @@
-from bokeh.util.logconfig import level
-
 from fairbench.v2.core import Value, TargetedNumber, Descriptor, Progress, Curve
 from fairbench.v2.export.formats.ansi import ansi
 from fairbench.v2.export.formats.console import Console

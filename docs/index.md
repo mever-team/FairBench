@@ -54,19 +54,18 @@ edit the snippet to be executed and run it below.
 <a href="https://pyodide.org/en/stable/">Powered by pyodyne</a>
 <pre class="code-block" id="output" style="width: 100%; resize: vertical; overflow: auto; max-height: 600px;" rows="30" disabled></pre>
 
-<textarea class="code-block" id="code" rows="40">from fairbench import v2
-
+<textarea class="code-block" id="code" rows="40">
 sensitive = ["M","F","M","F","M","F","M"]
 y = [1, 1, 0, 0, 1, 0, 1]
 yhat = [1, 1, 1, 0, 0, 0, 0]
 
-report = v2.reports.pairwise(
+report = fb.reports.pairwise(
     predictions=yhat, 
     labels=y, 
-    sensitive=fb.Fork(fb.categories @ sensitive)
+    sensitive=fb.Dimensions(fb.categories @ sensitive)
 )
 
-report.show(env=v2.export.ConsoleTable(legend=False))
+report.show(env=fb.export.ConsoleTable(legend=False))
 report.maxdiff.show() # dot specializes, could also show everything</textarea>
 
 <script src="https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"></script>
@@ -341,7 +340,7 @@ report.maxdiff.show() # dot specializes, could also show everything</textarea>
         `));
         await pyodide.loadPackage("micropip");
         const micropip = pyodide.pyimport("micropip");
-        await micropip.install('fairbench==0.6.0');
+        await micropip.install('fairbench==0.7.3');
         output.value = ">>> import fairbench as fb\n";
         try {
             pyodide.runPython(`import fairbench as fb`);
