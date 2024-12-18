@@ -1,10 +1,9 @@
-from fairbench import v2 as fb
-import fairbench.v1 as fb1
+import fairbench as fb
 import numpy as np
 
 
 def test_sensitive_conversion():
-    fork = fb1.Fork(men=[1, 0, 1], women=[0, 1, 0])
+    fork = fb.Dimensions(men=[1, 0, 1], women=[0, 1, 0])
     sensitive = fb.Sensitive(fork.branches())
     assert len(list(sensitive.keys())) == len(fork.branches())
     for key in sensitive.keys():
@@ -12,8 +11,10 @@ def test_sensitive_conversion():
 
 
 def test_env():
-    x, y, yhat = fb1.bench.tabular.bank(predict="probabilities")
-    sensitive = fb1.Fork(fb1.categories @ x["marital"], fb1.categories @ x["education"])
+    x, y, yhat = fb.bench.tabular.bank(predict="probabilities")
+    sensitive = fb.Dimensions(
+        fb.categories @ x["marital"], fb.categories @ x["education"]
+    )
     sensitive = sensitive.intersectional().strict()
 
     report = fb.reports.vsall(
@@ -35,10 +36,10 @@ def test_simple_report():
     y = [1, 1, 0, 0, 1, 0, 1]
     yhat = [1, 1, 1, 0, 0, 0, 0]
 
-    report = v2.reports.pairwise(
+    report = fb.reports.pairwise(
         predictions=yhat,
         labels=y,
-        sensitive=fb.Fork(fb.categories @ sensitive).strict(),
+        sensitive=fb.Dimensions(fb.categories @ sensitive),
     )
 
     report.filter(v2.investigate.Stamps).show(
@@ -49,8 +50,10 @@ def test_simple_report():
 
 
 def test_vsany():
-    x, y, yhat = fb1.bench.tabular.bank(predict="probabilities")
-    sensitive = fb1.Fork(fb1.categories @ x["marital"], fb1.categories @ x["education"])
+    x, y, yhat = fb.bench.tabular.bank(predict="probabilities")
+    sensitive = fb.Dimensions(
+        fb.categories @ x["marital"], fb.categories @ x["education"]
+    )
     sensitive = sensitive.intersectional().strict()
 
     report = fb.reports.vsall(
@@ -66,8 +69,10 @@ def test_vsany():
 
 
 def test_pairwise():
-    x, y, yhat = fb1.bench.tabular.bank()
-    sensitive = fb1.Fork(fb1.categories @ x["marital"], fb1.categories @ x["education"])
+    x, y, yhat = fb.bench.tabular.bank()
+    sensitive = fb.Dimensions(
+        fb.categories @ x["marital"], fb.categories @ x["education"]
+    )
     sensitive = sensitive.intersectional().strict()
 
     report = fb.reports.pairwise(
@@ -81,8 +86,10 @@ def test_pairwise():
 
 
 def test_investigators():
-    x, y, yhat = fb1.bench.tabular.bank()
-    sensitive = fb1.Fork(fb1.categories @ x["marital"], fb1.categories @ x["education"])
+    x, y, yhat = fb.bench.tabular.bank()
+    sensitive = fb.Dimensions(
+        fb.categories @ x["marital"], fb.categories @ x["education"]
+    )
     sensitive = sensitive.intersectional().strict()
 
     fb.reports.pairwise(
@@ -95,8 +102,10 @@ def test_investigators():
 
 
 def test_stamp_investigation():
-    x, y, yhat = fb1.bench.tabular.bank()
-    sensitive = fb1.Fork(fb1.categories @ x["marital"], fb1.categories @ x["education"])
+    x, y, yhat = fb.bench.tabular.bank()
+    sensitive = fb.Dimensions(
+        fb.categories @ x["marital"], fb.categories @ x["education"]
+    )
     sensitive = sensitive.intersectional().strict()
 
     serialized = (
@@ -112,9 +121,9 @@ def test_stamp_investigation():
 
 
 def test_progress():
-    x, y, yhat = fb1.bench.tabular.bank()
+    x, y, yhat = fb.bench.tabular.bank()
 
-    cats = fb1.categories @ x["marital"]
+    cats = fb.categories @ x["marital"]
     cats = {k: v.numpy() for k, v in cats.items()}
 
     sensitive = fb.Sensitive(cats)
@@ -139,11 +148,13 @@ def test_progress():
 
 
 def test_multiclass():
-    x, y, yhat = fb1.bench.tabular.bank()
-    sensitive = fb1.Fork(fb1.categories @ x["marital"], fb1.categories @ x["education"])
+    x, y, yhat = fb.bench.tabular.bank()
+    sensitive = fb.Dimensions(
+        fb.categories @ x["marital"], fb.categories @ x["education"]
+    )
     sensitive = sensitive.intersectional().strict()
-    y = fb1.categories @ y
-    yhat = fb1.categories @ yhat
+    y = fb.categories @ y
+    yhat = fb.categories @ yhat
 
     report = fb.reports.pairwise(
         sensitive=sensitive,
@@ -157,11 +168,13 @@ def test_multiclass():
 
 
 def test_attachment_to_measures():
-    x, y, yhat = fb1.bench.tabular.bank()
-    sensitive = fb1.Fork(fb1.categories @ x["marital"], fb1.categories @ x["education"])
+    x, y, yhat = fb.bench.tabular.bank()
+    sensitive = fb.Dimensions(
+        fb.categories @ x["marital"], fb.categories @ x["education"]
+    )
     sensitive = sensitive.intersectional().strict()
-    y = fb1.categories @ y
-    yhat = fb1.categories @ yhat
+    y = fb.categories @ y
+    yhat = fb.categories @ yhat
 
     report = fb.reports.pairwise(
         sensitive=sensitive,

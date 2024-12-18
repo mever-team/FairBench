@@ -23,12 +23,14 @@ comparison = comparison.build()
 
 # comparison.show(depth=10)
 
-comparison = fb.reduction.mean(comparison.acc.explain)
+# comparison = fb.reduction.mean(comparison.acc.explain)
+comparison = comparison.filter(fb.reduction.mean)
+
 
 dict = comparison.to_dict()
 comparison = fb.core.Value.from_dict(dict)
 
-comparison.details.show(fb.export.Console(ansiplot=True))
+comparison.show(fb.export.Console(ansiplot=True))
 
 
 """

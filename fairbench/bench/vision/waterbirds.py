@@ -1,5 +1,5 @@
 def waterbirds(
-    classifier="flac",
+    classifier="badd",
     data_root=None,
     predict="predict",
     device=None,

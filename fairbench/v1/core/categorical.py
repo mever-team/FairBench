@@ -103,8 +103,8 @@ def fuzzy(x):
     if isinstance(x, Mapping):
         return Categorical(x)
     x = tobackend(x)
-    minx = x.min()
-    maxx = x.max()
+    minx = x.min().raw
+    maxx = x.max().raw
     if minx == maxx:
         return x * 0
     x = (x - minx) / (maxx - minx)

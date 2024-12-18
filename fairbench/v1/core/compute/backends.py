@@ -15,7 +15,7 @@ def setbackend(backend_name: str):
 def tobackend(value):
     global __fairbench_backend
     if value.__class__.__name__ == "Fork":
-        from fairbench import Fork
+        from fairbench.v1 import Fork
 
         return Fork({k: tobackend(v) for k, v in value.branches().items()})
     if value.__class__.__name__ == "DotDict":
@@ -82,7 +82,7 @@ def astensor(value, _allow_explanation=True) -> Union["Explainable", ep.Tensor]:
     if value.__class__.__name__ == "Explainable" and not _allow_explanation:
         value = value.value
     elif value.__class__.__name__ == "Explainable":
-        from fairbench import Explainable
+        from fairbench.v1 import Explainable
 
         return Explainable(
             astensor(value.value),
@@ -116,7 +116,7 @@ def asprimitive(value, _allow_explanation=True):
     if value.__class__.__name__ == "Explainable" and not _allow_explanation:
         value = value.value
     elif value.__class__.__name__ == "Explainable":
-        from fairbench import Explainable
+        from fairbench.v1 import Explainable
 
         return Explainable(
             asprimitive(value.value),

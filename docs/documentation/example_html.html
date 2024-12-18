@@ -1,0 +1,272 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FairBench</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-dark">fairness modelcard</h1><i>This<span class="text-secondary font-weight-bold"> is </span>a modelcard created with FairBench<span class="text-secondary font-weight-bold"> that </span>consists<span class="text-secondary font-weight-bold"> of </span>popular fairness stamps.</i>Stamps contain caveats and recommendation that should be considered during practical adoption. They are only a part of the full analysis that has been conducted, so consider also viewing the full generated report to find more prospective biases.<br><h1 class="text-dark"></h1><br>Computations cover several cases.<br><div style="width: 800px; float: left;" class="card m-3"><h3 class="mt-0 text-white bg-dark p-3 rounded">worst accuracy</h3>
+    <div class="card-body">
+    <i>This stamp<span class="text-secondary font-weight-bold"> is </span>the minimum<span class="text-secondary font-weight-bold"> of </span>the accuracy<span class="text-secondary font-weight-bold"> of </span>analysis<span class="text-secondary font-weight-bold"> that </span>compares several groups.</i><div class="alert alert-warning mt-3">Value: 0.626 min acc</div><hr><h5 class="mt-3 text-dark"><b>Details</b></h5>This is the minimum benefit the system brings to any group.<br><hr><h5 class="mt-3 text-dark"><b>Caveats and recommendations</b></h5> • The worst case is a lower bound but not an estimation of overall performance.<br> • There may be different distributions of benefits that could be protected.<br> • Ensure continuous monitoring and re-evaluation as group dynamics and external factors evolve.<br> • Ensure that high worst accuracy translates to meaningful benefits across all groups in the real-world context.<br> • Seek input from affected groups to understand the impact of errors and to inform remediation strategies.<br><hr><h5 class="mt-3 text-dark"><b>Distribution</b></h5><div id="bar-chart1" class="mt-2"></div>
+    <script>
+        const data1 = [{"title": "single\n(acc)", "val": 0.6308724832214765, "target": 1.0}, {"title": "divorced\n(acc)", "val": 0.6263345195729537, "target": 1.0}, {"title": "married\n(acc)", "val": 0.7319364161849711, "target": 1.0}];
+        const margin1 = { top: 20, right: 80, bottom: 80, left: 30 };
+        const width1 = 400 - margin1.left - margin1.right;
+        const height1 = 200 - margin1.top - margin1.bottom;
+
+        const svg1 = d3.select("#bar-chart1")
+                          .append("svg")
+                          .attr("width", width1 + margin1.left + margin1.right)
+                          .attr("height", height1 + margin1.top + margin1.bottom)
+                          .append("g")
+                          .attr("transform", `translate(${margin1.left}, ${margin1.top})`);
+
+        const x1 = d3.scaleBand()
+            .domain(data1.map(d => d.title))
+            .range([0, width1])
+            .padding(0.2);
+
+        svg1.append("g")
+           .attr("transform", `translate(0, ${height1})`)
+           .call(d3.axisBottom(x1))
+           .selectAll("text")
+           .attr("transform", "translate(0,10) rotate(30) translate(-10,-10)")
+           .style("text-anchor", "start");
+
+        const y1 = d3.scaleLinear()
+            .domain([0, d3.max(data1, d => Math.max(d.val, d.target))])
+            .nice()
+            .range([height1, 0]);
+
+        svg1.append("g")
+           .call(d3.axisLeft(y1));
+
+        const colorScale1 = d3.scaleLinear()
+            .domain([0, 0.5, 1])
+            .range(["green", "orange", "red"]);
+
+        svg1.selectAll(".bar-val")
+           .data(data1)
+           .enter()
+           .append("rect")
+           .attr("class", "bar-val")
+           .attr("x", d => x1(d.title))
+           .attr("y", d => y1(d.val))
+           .attr("width", x1.bandwidth())
+           .attr("height", d => height1 - y1(d.val))
+           .attr("fill", d => colorScale1(Math.abs(d.val - d.target)));
+    </script>
+</div></div><div style="width: 800px; float: left;" class="card m-3"><h3 class="mt-0 text-white bg-dark p-3 rounded">standard deviation</h3>
+    <div class="card-body">
+    <i>This stamp<span class="text-secondary font-weight-bold"> is </span>the standard deviation<span class="text-secondary font-weight-bold"> of </span>the accuracy<span class="text-secondary font-weight-bold"> of </span>analysis<span class="text-secondary font-weight-bold"> that </span>compares several groups.</i><div class="alert alert-success mt-3">Value: 0.049 </div><hr><h5 class="mt-3 text-dark"><b>Details</b></h5>This reflects imbalances in the distribution of benefits across groups.<br><hr><h5 class="mt-3 text-dark"><b>Distribution</b></h5><div id="bar-chart2" class="mt-2"></div>
+    <script>
+        const data2 = [{"title": "single\n(acc)", "val": 0.6308724832214765, "target": 1.0}, {"title": "divorced\n(acc)", "val": 0.6263345195729537, "target": 1.0}, {"title": "married\n(acc)", "val": 0.7319364161849711, "target": 1.0}];
+        const margin2 = { top: 20, right: 80, bottom: 80, left: 30 };
+        const width2 = 400 - margin2.left - margin2.right;
+        const height2 = 200 - margin2.top - margin2.bottom;
+
+        const svg2 = d3.select("#bar-chart2")
+                          .append("svg")
+                          .attr("width", width2 + margin2.left + margin2.right)
+                          .attr("height", height2 + margin2.top + margin2.bottom)
+                          .append("g")
+                          .attr("transform", `translate(${margin2.left}, ${margin2.top})`);
+
+        const x2 = d3.scaleBand()
+            .domain(data2.map(d => d.title))
+            .range([0, width2])
+            .padding(0.2);
+
+        svg2.append("g")
+           .attr("transform", `translate(0, ${height2})`)
+           .call(d3.axisBottom(x2))
+           .selectAll("text")
+           .attr("transform", "translate(0,10) rotate(30) translate(-10,-10)")
+           .style("text-anchor", "start");
+
+        const y2 = d3.scaleLinear()
+            .domain([0, d3.max(data2, d => Math.max(d.val, d.target))])
+            .nice()
+            .range([height2, 0]);
+
+        svg2.append("g")
+           .call(d3.axisLeft(y2));
+
+        const colorScale2 = d3.scaleLinear()
+            .domain([0, 0.5, 1])
+            .range(["green", "orange", "red"]);
+
+        svg2.selectAll(".bar-val")
+           .data(data2)
+           .enter()
+           .append("rect")
+           .attr("class", "bar-val")
+           .attr("x", d => x2(d.title))
+           .attr("y", d => y2(d.val))
+           .attr("width", x2.bandwidth())
+           .attr("height", d => height2 - y2(d.val))
+           .attr("fill", d => colorScale2(Math.abs(d.val - d.target)));
+    </script>
+</div></div><div style="width: 800px; float: left;" class="card m-3"><h3 class="mt-0 text-white bg-dark p-3 rounded">differential fairness</h3>
+    <div class="card-body">
+    <i>This stamp<span class="text-secondary font-weight-bold"> is </span>the maximum relative difference<span class="text-secondary font-weight-bold"> of </span>the accuracy<span class="text-secondary font-weight-bold"> of </span>analysis<span class="text-secondary font-weight-bold"> that </span>compares several groups.</i><div class="alert alert-success mt-3">Value: 0.144 </div><hr><h5 class="mt-3 text-dark"><b>Details</b></h5>The worst deviation of accuracy ratios from 1 is reported, so that value of 1 indicates disparate impact, and value of 0 disparate impact mitigation.<br><hr><h5 class="mt-3 text-dark"><b>Caveats and recommendations</b></h5> • Disparate impact may not always be an appropriate fairness consideration, and may obscure other important fairness concerns or create new disparities.<br> • Ensure continuous monitoring and re-evaluation as group dynamics and external factors evolve.<br><hr><h5 class="mt-3 text-dark"><b>Distribution</b></h5><div id="bar-chart3" class="mt-2"></div>
+    <script>
+        const data3 = [{"title": "single\n(acc)", "val": 0.6308724832214765, "target": 1.0}, {"title": "divorced\n(acc)", "val": 0.6263345195729537, "target": 1.0}, {"title": "married\n(acc)", "val": 0.7319364161849711, "target": 1.0}];
+        const margin3 = { top: 20, right: 80, bottom: 80, left: 30 };
+        const width3 = 400 - margin3.left - margin3.right;
+        const height3 = 200 - margin3.top - margin3.bottom;
+
+        const svg3 = d3.select("#bar-chart3")
+                          .append("svg")
+                          .attr("width", width3 + margin3.left + margin3.right)
+                          .attr("height", height3 + margin3.top + margin3.bottom)
+                          .append("g")
+                          .attr("transform", `translate(${margin3.left}, ${margin3.top})`);
+
+        const x3 = d3.scaleBand()
+            .domain(data3.map(d => d.title))
+            .range([0, width3])
+            .padding(0.2);
+
+        svg3.append("g")
+           .attr("transform", `translate(0, ${height3})`)
+           .call(d3.axisBottom(x3))
+           .selectAll("text")
+           .attr("transform", "translate(0,10) rotate(30) translate(-10,-10)")
+           .style("text-anchor", "start");
+
+        const y3 = d3.scaleLinear()
+            .domain([0, d3.max(data3, d => Math.max(d.val, d.target))])
+            .nice()
+            .range([height3, 0]);
+
+        svg3.append("g")
+           .call(d3.axisLeft(y3));
+
+        const colorScale3 = d3.scaleLinear()
+            .domain([0, 0.5, 1])
+            .range(["green", "orange", "red"]);
+
+        svg3.selectAll(".bar-val")
+           .data(data3)
+           .enter()
+           .append("rect")
+           .attr("class", "bar-val")
+           .attr("x", d => x3(d.title))
+           .attr("y", d => y3(d.val))
+           .attr("width", x3.bandwidth())
+           .attr("height", d => height3 - y3(d.val))
+           .attr("fill", d => colorScale3(Math.abs(d.val - d.target)));
+    </script>
+</div></div><div style="width: 800px; float: left;" class="card m-3"><h3 class="mt-0 text-white bg-dark p-3 rounded">max |Δfpr|</h3>
+    <div class="card-body">
+    <i>This stamp<span class="text-secondary font-weight-bold"> is </span>the maximum difference<span class="text-secondary font-weight-bold"> of </span>the true negative rate<span class="text-secondary font-weight-bold"> of </span>analysis<span class="text-secondary font-weight-bold"> that </span>compares several groups.</i><div class="alert alert-success mt-3">Value: 0.143 </div><hr><h5 class="mt-3 text-dark"><b>Details</b></h5>The false positive rate differences are computed via the equivalent true negative rate differences. The maximum difference between pairs of groups is reported, so that value of 1 indicates disparate mistreatment, and value of 0 disparate mistreatment mitigation.<br><hr><h5 class="mt-3 text-dark"><b>Caveats and recommendations</b></h5> • Disparate mistreatment may not always be an appropriate fairness consideration, and may obscure other important fairness concerns or create new disparities.<br> • Consider input from affected stakeholders to determine whether |Δfpr| is an appropriate fairness measure.<br> • Ensure continuous monitoring and re-evaluation as group dynamics and external factors evolve.<br> • Variations in FPR could be influenced by factors unrelated to the fairness of the system, such as data quality or representation.<br> • Mitigating |Δfpr| tends to mitigate |Δfnr|, and conversely.<br> • Seek input from affected groups to understand the impact of errors and to inform remediation strategies.<br><hr><h5 class="mt-3 text-dark"><b>Distribution</b></h5><div id="bar-chart4" class="mt-2"></div>
+    <script>
+        const data4 = [{"title": "single\n(tnr)", "val": 0.61003861003861, "target": 1.0}, {"title": "divorced\n(tnr)", "val": 0.6041666666666666, "target": 1.0}, {"title": "married\n(tnr)", "val": 0.7472089314194578, "target": 1.0}];
+        const margin4 = { top: 20, right: 80, bottom: 80, left: 30 };
+        const width4 = 400 - margin4.left - margin4.right;
+        const height4 = 200 - margin4.top - margin4.bottom;
+
+        const svg4 = d3.select("#bar-chart4")
+                          .append("svg")
+                          .attr("width", width4 + margin4.left + margin4.right)
+                          .attr("height", height4 + margin4.top + margin4.bottom)
+                          .append("g")
+                          .attr("transform", `translate(${margin4.left}, ${margin4.top})`);
+
+        const x4 = d3.scaleBand()
+            .domain(data4.map(d => d.title))
+            .range([0, width4])
+            .padding(0.2);
+
+        svg4.append("g")
+           .attr("transform", `translate(0, ${height4})`)
+           .call(d3.axisBottom(x4))
+           .selectAll("text")
+           .attr("transform", "translate(0,10) rotate(30) translate(-10,-10)")
+           .style("text-anchor", "start");
+
+        const y4 = d3.scaleLinear()
+            .domain([0, d3.max(data4, d => Math.max(d.val, d.target))])
+            .nice()
+            .range([height4, 0]);
+
+        svg4.append("g")
+           .call(d3.axisLeft(y4));
+
+        const colorScale4 = d3.scaleLinear()
+            .domain([0, 0.5, 1])
+            .range(["green", "orange", "red"]);
+
+        svg4.selectAll(".bar-val")
+           .data(data4)
+           .enter()
+           .append("rect")
+           .attr("class", "bar-val")
+           .attr("x", d => x4(d.title))
+           .attr("y", d => y4(d.val))
+           .attr("width", x4.bandwidth())
+           .attr("height", d => height4 - y4(d.val))
+           .attr("fill", d => colorScale4(Math.abs(d.val - d.target)));
+    </script>
+</div></div><div style="width: 800px; float: left;" class="card m-3"><h3 class="mt-0 text-white bg-dark p-3 rounded">max |Δfnr|</h3>
+    <div class="card-body">
+    <i>This stamp<span class="text-secondary font-weight-bold"> is </span>the maximum difference<span class="text-secondary font-weight-bold"> of </span>the true positive rate<span class="text-secondary font-weight-bold"> of </span>analysis<span class="text-secondary font-weight-bold"> that </span>compares several groups.</i><div class="alert alert-success mt-3">Value: 0.185 </div><hr><h5 class="mt-3 text-dark"><b>Details</b></h5>The false negative rate differences are computed via the equivalent true positive rate differences. The maximum difference between pairs of groups is reported, so that value of 1 indicates disparate mistreatment, and value of 0 disparate mistreatment mitigation.<br><hr><h5 class="mt-3 text-dark"><b>Caveats and recommendations</b></h5> • Disparate mistreatment may not always be an appropriate fairness consideration, and may obscure other important fairness concerns or create new disparities.<br> • Consider input from affected stakeholders to determine whether |Δfnr| is an appropriate fairness measure.<br> • Ensure continuous monitoring and re-evaluation as group dynamics and external factors evolve.<br> • Variations in FPR could be influenced by factors unrelated to the fairness of the system, such as data quality or representation.<br> • Mitigating |Δfpr| tends to mitigate |Δfnr|, and conversely.<br> • Seek input from affected groups to understand the impact of errors and to inform remediation strategies.<br><hr><h5 class="mt-3 text-dark"><b>Distribution</b></h5><div id="bar-chart5" class="mt-2"></div>
+    <script>
+        const data5 = [{"title": "single\n(tpr)", "val": 0.7692307692307693, "target": 1.0}, {"title": "divorced\n(tpr)", "val": 0.7560975609756098, "target": 1.0}, {"title": "married\n(tpr)", "val": 0.5846153846153846, "target": 1.0}];
+        const margin5 = { top: 20, right: 80, bottom: 80, left: 30 };
+        const width5 = 400 - margin5.left - margin5.right;
+        const height5 = 200 - margin5.top - margin5.bottom;
+
+        const svg5 = d3.select("#bar-chart5")
+                          .append("svg")
+                          .attr("width", width5 + margin5.left + margin5.right)
+                          .attr("height", height5 + margin5.top + margin5.bottom)
+                          .append("g")
+                          .attr("transform", `translate(${margin5.left}, ${margin5.top})`);
+
+        const x5 = d3.scaleBand()
+            .domain(data5.map(d => d.title))
+            .range([0, width5])
+            .padding(0.2);
+
+        svg5.append("g")
+           .attr("transform", `translate(0, ${height5})`)
+           .call(d3.axisBottom(x5))
+           .selectAll("text")
+           .attr("transform", "translate(0,10) rotate(30) translate(-10,-10)")
+           .style("text-anchor", "start");
+
+        const y5 = d3.scaleLinear()
+            .domain([0, d3.max(data5, d => Math.max(d.val, d.target))])
+            .nice()
+            .range([height5, 0]);
+
+        svg5.append("g")
+           .call(d3.axisLeft(y5));
+
+        const colorScale5 = d3.scaleLinear()
+            .domain([0, 0.5, 1])
+            .range(["green", "orange", "red"]);
+
+        svg5.selectAll(".bar-val")
+           .data(data5)
+           .enter()
+           .append("rect")
+           .attr("class", "bar-val")
+           .attr("x", d => x5(d.title))
+           .attr("y", d => y5(d.val))
+           .attr("width", x5.bandwidth())
+           .attr("height", d => height5 - y5(d.val))
+           .attr("fill", d => colorScale5(Math.abs(d.val - d.target)));
+    </script>
+</div></div><br><br>
+    </div>
+</body>
+</html>

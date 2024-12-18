@@ -275,7 +275,7 @@ class Fork(Mapping):
         return call(self, "__ror__", other)
 
     def __call__(self, *args, **kwargs):
-        from fairbench import Explainable
+        from fairbench.v1 import Explainable
 
         return Fork(
             **{

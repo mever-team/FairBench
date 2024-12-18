@@ -1,5 +1,3 @@
-from torch.distributed.tensor import zeros
-
 from fairbench.v2 import core as c
 from fairbench.v2.blocks.quantities import quantities
 import numpy as np

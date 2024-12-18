@@ -1,4 +1,4 @@
-# Citation
+# About
 
 To cite FairBench, please use the following BibTex entry:
 

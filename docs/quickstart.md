@@ -11,83 +11,134 @@ fairness concerns to discuss with stakeholders. You need to eventually
 decide which of the concerns matter after getting a wide enough
 picture. Follow the steps below.
 
-## 1. Prepare test data
+## 1. Prepare data
 
 Run your system to generate some predictions for test data.
-Here, we assess biases for a binary
-classifier, but other types of predictions can be analysed too. 
-Supported data formats
-include lists, numpy arrays, and pytorch/tensorflow tensors.
-Import the library and create some demo
-predictions to play with:
+Here, we assess biases for a demo binary classifier and dataset,
+but other types of predictions can be analysed too. 
+Supported data formats include lists, numpy arrays, 
+and pytorch/tensorflow/jax tensors.
 
 ```python
 import fairbench as fb
-test, y, yhat = fb.tabular.adult()  # test is a Pandas dataframe
+test, y, yhat = fb.bench.tabular.adult()
 ```
 
-## 2. Set    sensitive attribute [fork](basics/forks.md)
+## 2. Sensitive attributes
 
 Pack sensitive attributes found in your test data
-into a data structure called fork.
-This can store any number of attributes with any number of values
+into a data structure holding multiple [dimensions](documentation/dimensions.md).
+This stores any number of attributes with any number of values
 by considering each value as a separate dimension.
-A fork can be constructed with many patterns, like this one:
+One construction pattern is the following:
 
 ```python
-sensitive = fb.Fork(fb.categories @ test[8], fb.categories @ test[9])  # analyse the gender and race columns
+sensitive = fb.Dimensions(fb.categories @ test[8], fb.categories @ test[9])  # analyse the gender and race columns
 sensitive = sensitive.intersectional()  # automatically find non-empty intersections
+sensitive = sensitive.strict()  # keep only intersections that have no children
 ```
 
-## 3. Explore fairness [reports](basics/reports.md)
+## 3. Compute reports
 
 Use sensitive attribute forks alongside predictions 
 to generate fairness reports.
-Next we generate a multireport, which compares all population
-groups or subgroups pairwise based on some base performance metrics
-and aggregates all comparisons to one value.
+Below is a pairwise report, which compares all pairs
+of population groups or subgroups defined in the sensitive attribute
+based on a wide range of base performance measures. 
+Reports can be viewed under various visualization environments.
+
+The comparisons for each measure are reduced to one value
+with various reduction strategies (the columns).
 The task type (here: binary classification)
-and corresponding base performance 
-metrics are determined by
-which arguments are provided.
-
-```python
-report = fb.multireport(predictions=yhat, labels=y, sensitive=sensitive)
-fb.describe(report)  # or print(report) or fb.visualize(report) or fb.interactive(report)
-```
-
-[Explore](basics/interactive.md) 
-reports by backtracking their
-intermediate computations
-to get a sense of where unfairness comes from.
-This can be done either programmatically 
-or through an interactive UI
-that is also launched programmatically via `fb.interactive(report)`.
-
-## 4. Create fairness [model cards](advanced/modelcards.md)
-
-After determining key issues at play,
-create some stamps of popular fairness definitions 
-and organize these into a fairness model card.
-that includes caveats and recommendations.
-The snippet below creates a card like
-[this one](images/example_modelcard.md).
-You can omit the arguments for exporting to a file or 
-for immediately showing the modelcards.
-You can also export to markdown or yaml formats.
+and corresponding base performance metrics are determined
+by the report's arguments.
 
 
 ```python
-stamps = fb.combine(
-    fb.stamps.prule(report),
-    fb.stamps.accuracy(report),
-    fb.stamps.four_fifths(report)
-)
-fb.modelcards.tohtml(stamps, file="output.html", show=True)
+report = fb.reports.pairwise(predictions=yhat, labels=y, sensitive=sensitive)
+fb.show(env=fb.export.ConsoleTable)  
 ```
 
+```text
+                                    multidim                                                                   
+                                           acc           pr          tpr          tnr          tar          trr
+min                                      0.876        0.056        0.348        0.966        0.036        0.822
+max                                                   0.097                                  0.067        0.884
+maxerror                                 0.124                     0.652        0.034                          
+wmean                                    0.906        0.066        0.382        0.975        0.044        0.862
+mean                                     0.900        0.077        0.407        0.972        0.052        0.847
+maxrel                                   0.048        0.422        0.304        0.012        0.465        0.070
+maxdiff                                  0.044        0.041        0.152        0.012        0.031        0.062
+gini                                     0.011        0.118        0.083        0.003        0.133        0.016
+std                                      0.018        0.017        0.067        0.005        0.013        0.027
+```
+
+
+## 4. Go into details
+
+Explore reports by focusing on any of their contributing
+computations with the dot notation programmatically,
+or with interactive visualization environments.
+You may also add more `depth` to
+their view like this. Below is an example, but there are
+many dynamic options [here](documentation/interactive.md).
+We focus on only the minimum accuracy to keep the outcome simple,
+but visualization environments
+work with complicated reports too.
+
+```python
+report.min.acc.show(env=fb.export.Console)
+```
+
+```
+##### min acc #####
+|This reduction of a measure is the minimum of the accuracy.
+|Value: 0.866 min acc
+
+  (0.0, 0.9213973799126638)
+  ▎       █
+  ▎ ▄  ▆  █
+  ▎ █  █  █
+  ▎ █  █  █
+  ▎ █  █  █
+  ▎▬*▬▬-▬▬+
+  (3.0, 0.0)
+  
+   * single                              0.866 acc
+   - married                             0.901 acc
+   + divorced                            0.921 acc
+```
+
+## 5. Simplify reports 
+
+Apply filters to focus on specific types of evaluation,
+like keeping computations that show only bias
+or keeping only bias/fairness values violating
+certain thresholds.
+
+One of the available filters, which is presented
+below, are fairness stamps. These refer to a few 
+common types of fairness evaluation and are accompanied
+by caveats and recommendations. The collection of available
+stamps is called a fairness modelcard, though it is
+a normal report and can be manipulated (e.g., viewed) 
+normally.
+
+```python
+report.filter(fb.investigate.Stamps).show(env=fb.export.Html, depth=1)
+```
+
+*The output can be viewed [here](documentation/example_html.html).*
+
+The `Html` environment that was used this time
+can save and/or open in the browser
+the generated HTML representation of reports. The generated document
+requires an internet connection to properly view, as it depends
+on [bootstrap](https://getbootstrap.com/) for theming. 
+It is equivalent to the `Console` environment of previous examples.
+The provided depth controls the level of details (default is zero).
 
 !!! danger
-    Blindly stamping systems is not always a good idea.
-    Find out risks be reading the caveats and recommendations
-    accompanying the stamps.
+    Blindly applying filters may neglect certain
+    kinds of evaluation.
+

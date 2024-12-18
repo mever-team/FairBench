@@ -1,4 +1,4 @@
-from fairbench import v2 as fb
+import fairbench as fb
 import random
 import pytest
 

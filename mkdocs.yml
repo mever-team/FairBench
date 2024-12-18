@@ -5,39 +5,29 @@ copyright: Copyright &copy; 2024 Emmanouil Krasanakis
 
 nav:
     - Home: 'index.md'
-    - 'quickstart.md'
+    - Overview:
+        - 'quickstart.md'
+        - 'bench.md'
     - Documentation:
-      - Basics:
-          - 'basics/forks.md'
-          - 'basics/reports.md'
-          - 'basics/interactive.md'
-      - Advanced:
-          - 'advanced/modelcards.md'
-          - 'advanced/ml_integration.md'
-          - 'advanced/manipulation.md'
-      - Report entries:
-          - 'record/metrics.md'
-          - 'record/comparisons.md'
-          - 'record/stamps.md'
+        - 'documentation/dimensions.md'
+        - 'documentation/reports.md'
+        - 'documentation/exploration.md'
+        - 'documentation/progress.md'
+        - 'documentation/benchmarks.md'
     - Material:
-      #- Notebooks:
-      #    - 'demos/tabular.ipynb'
-      #    - 'demos/intersectional.ipynb'
-      #    - 'demos/recommendations.ipynb'
-      #    - 'demos/vision.ipynb'
-      #    - 'demos/graphs.ipynb'
-      - 'cite.md'
+      - 'material/visualization.md'
+      - 'material/filters.md'
+      - 'material/api.md'
+      - 'material/cite.md'
 
 markdown_extensions:
   - admonition
   - mkautodoc
-  - codehilite
   - attr_list
   - pymdownx.betterem:
       smart_enable: all
   - pymdownx.smartsymbols
   - pymdownx.inlinehilite
-  - pymdownx.extra
   - pymdownx.arithmatex:
       generic: true
   - pymdownx.highlight:
@@ -82,9 +72,6 @@ extra_javascript:
 plugins:
   - search
   - mkdocstrings
-  - mkdocs-jupyter
-      #include_requirejs: true
-      #highlight_extra_classes: "custom-css-classes"
 
 extra_css:
   - theme_extend.css

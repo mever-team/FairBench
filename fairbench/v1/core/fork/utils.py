@@ -11,7 +11,7 @@ from makefun import wraps
 
 
 def _result(ret):
-    from fairbench import DotDict
+    from fairbench.v1 import DotDict
 
     if ret.__class__.__name__ == "Future":
         ret = ret.result()
@@ -39,7 +39,7 @@ def role(rolename):
 
 
 def simplify(fork):
-    from fairbench import Explainable, ExplainableError, Fork, DotDict
+    from fairbench.v1 import Explainable, ExplainableError, Fork, DotDict
 
     branches = fork.branches() if isinstance(fork, Fork) else fork
     branches = {
@@ -53,7 +53,7 @@ def simplify(fork):
 
 
 def _str_foreign(v, tabs=0):
-    from fairbench import Fork
+    from fairbench.v1 import Fork
 
     if isinstance(v, Fork):
         v = v.branches()
@@ -115,14 +115,14 @@ def multibranch_tensors(_wrapped_method):
 
 @parallel_primitive
 def merge(dict1, dict2):
-    from fairbench import DotDict
+    from fairbench.v1 import DotDict
 
     return DotDict({**dict1, **dict2})
 
 
 @comparator
 def combine(*args, _role=None, _cast=None):
-    from fairbench import Fork, DotDict
+    from fairbench.v1 import Fork, DotDict
 
     if _cast is None:
         _cast = Fork
@@ -151,7 +151,7 @@ def unit_bounded(method):
 
 @parallel_primitive
 def call(obj, method, *args, **kwargs):
-    from fairbench import ExplainableError
+    from fairbench.v1 import ExplainableError
 
     if method == "__getattribute__":
         obj = _result(obj)

@@ -71,7 +71,14 @@ def reduction(description, autounits=True):
                     f"because the latter is associated with a numeric value {float(values.value):.3f}. "
                     "Maybe you meant to apply the reduction on its input's `.details` ?"
                 )
+                prepend_name = values.descriptor.name + " "
+                prepend_alias = values.descriptor.alias + " "
+                postpend_details = " of " + values.descriptor.details
                 values = values.depends.values()
+            else:
+                prepend_name = ""
+                prepend_alias = ""
+                postpend_details = ""
             values = list(values)
             ret = list()
             for arg in values:
@@ -111,7 +118,12 @@ def reduction(description, autounits=True):
                 if not isinstance(value, TargetedNumber):
                     value = Number(value, units=descriptors.preferred_units)
                 ret.append(descriptors(value, dependencies))
-            return descriptor(depends=ret)
+            return Descriptor(
+                name=prepend_name + descriptor.name,
+                alias=prepend_alias + descriptor.alias,
+                role=descriptor.role,
+                details=descriptor.details + postpend_details,
+            )(depends=ret)
 
         wrapper.descriptor = descriptor
         return wrapper

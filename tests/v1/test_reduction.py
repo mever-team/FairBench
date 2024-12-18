@@ -1,4 +1,4 @@
-import fairbench as fb
+from fairbench import v1 as fb
 import numpy as np
 from .test_forks import environment
 

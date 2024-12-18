@@ -429,9 +429,24 @@ class Value:
     def filter(self, *methods):
         if not methods:
             return self
-        methods = [method() if callable(method) else method for method in methods]
+        methods = [
+            (
+                method()
+                if callable(method) and not hasattr(method, "descriptor")
+                else method
+            )
+            for method in methods
+        ]
         ret = self
         for method in methods:
+            if callable(method) and hasattr(method, "descriptor"):
+                # once we have a reduction, get explanation view of internal keys
+                ret = ret.explain
+                ret = self.descriptor(
+                    value=self.value,
+                    depends=[method(dep.explain) for dep in ret.depends.values()],
+                )
+                continue
             ret = method.filter(ret)
         return ret
 

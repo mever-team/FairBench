@@ -1,4 +1,4 @@
-import fairbench as fb
+from fairbench import v1 as fb
 
 
 def test_llm_criminality():
