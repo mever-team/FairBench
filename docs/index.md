@@ -340,7 +340,7 @@ report.maxdiff.show() # dot specializes, could also show everything</textarea>
         `));
         await pyodide.loadPackage("micropip");
         const micropip = pyodide.pyimport("micropip");
-        await micropip.install('fairbench==0.7.3');
+        await micropip.install('fairbench==0.7.4');
         output.value = ">>> import fairbench as fb\n";
         try {
             pyodide.runPython(`import fairbench as fb`);

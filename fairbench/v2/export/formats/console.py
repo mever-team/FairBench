@@ -2,7 +2,7 @@ from fairbench.v2.export.formats.ansi import ansi
 
 
 class Console:
-    def __init__(self, ansiplot=True, width=80):
+    def __init__(self, view=True, ansiplot=True, width=80):
         self.contents = ""
         self.symbols = {0: "#", 1: "*", 2: "=", 3: "-", 4: "^", 5: '"'}  # sphinx format
         self.level = 0
@@ -10,6 +10,7 @@ class Console:
         self.bars = list()
         self.curves = list()
         self.width = width
+        self.view = view
 
     def navigation(self, text, routes: dict):
         return self
@@ -187,7 +188,9 @@ class Console:
         if self.curves:
             self._embed_curves()
         self.contents += "\n"
-        return self
+        return self.p()
 
     def show(self):
-        print(self.p().contents)
+        if not self.view:
+            return self.contents
+        print(self.contents)

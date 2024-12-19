@@ -3,7 +3,7 @@ import json
 
 
 class Html:
-    def __init__(self, horizontal=False, open=True, filename="temp"):
+    def __init__(self, horizontal=False, view=True, filename="temp"):
         self.contents = ""
         self.chart_count = 0
         self.bars = []
@@ -12,7 +12,7 @@ class Html:
         self.curves = list()
         self.horizontal = horizontal
         self.level = 0
-        self.open = open
+        self.view = view
         self.filename = filename
 
     def navigation(self, text, routes: dict):
@@ -273,5 +273,5 @@ class Html:
         with open(f"{self.filename}.html", "w", encoding="utf-8") as temp_file:
             temp_file.write(self._create_text())
             temp_file_path = temp_file.name
-        if self.open:
+        if self.view:
             webbrowser.open(f"{temp_file_path}")

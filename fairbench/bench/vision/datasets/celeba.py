@@ -1,4 +1,4 @@
-import logging
+# import logging
 import pickle
 from pathlib import Path
 
@@ -115,9 +115,9 @@ def get_celeba(
     img_size=224,
     given_y=True,
 ):
-    logging.info(
-        f"get_celeba - split:{split}, aug: {aug}, given_y: {given_y}, ratio: {ratio}"
-    )
+    # logging.info(
+    #    f"get_celeba - split:{split}, aug: {aug}, given_y: {given_y}, ratio: {ratio}"
+    # )
     if split == "eval":
         transform = T.Compose(
             [

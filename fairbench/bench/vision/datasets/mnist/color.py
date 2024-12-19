@@ -11,10 +11,10 @@ Modifications to this code have been made by:
 - Emmanouil Krasanakis, © 2024.
 
 Modifications consist of only source code remodularization
-without altering base functionality.
+and logging behavior without altering base functionality.
 """
 
-import logging
+# import logging
 
 import numpy as np
 import torch
@@ -129,9 +129,9 @@ def get_color_mnist(
     given_y=True,
     train_corr=None,
 ):
-    logging.info(
-        f"get_color_mnist - split: {split}, aug: {aug}, given_y: {given_y}, ratio: {ratio}"
-    )
+    # logging.info(
+    #    f"get_color_mnist - split: {split}, aug: {aug}, given_y: {given_y}, ratio: {ratio}"
+    # )
     normalize = transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
     if aug:
         prob = 0.5

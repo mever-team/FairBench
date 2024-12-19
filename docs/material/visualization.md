@@ -1,3 +1,5 @@
+from sympy.solvers.diophantine.diophantine import reconstruct
+
 # Visualization
 
 Reports accept visualization environments as arguments to their `show` method.
@@ -157,4 +159,30 @@ std                                      0.333        0.083        0.500        
 
 ## Html
 
+This is an equivalent to the Console environment that converts
+presented text and quantities to a static Html page.
+
 *This section is under construction*
+
+## HtmlTable
+
+This is an equivalent to the ConsoleTable environment that
+again converts the generated tables to a static Html page.
+
+## ToJson
+
+When provided as an environment to the `show` method, it does
+not create any visual output but instead returns a string
+that is a json damp of the report values. This can be used
+to reconstruct the report like so:
+
+```python
+import fairbench as fb
+import json
+
+# serialize a report
+json_dump = report.show(env=fb.export.ToJson)
+# deserialize
+dicts_and_lists = json.loads(json_dump)
+reconstructed = fb.core.Value.from_dict(dicts_and_lists)
+```

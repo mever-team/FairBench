@@ -1,4 +1,4 @@
-import fairbench as fb
+import fairbench.v1 as fb
 
 
 test, y, scores = fb.bench.tabular.adult(predict="probabilities")

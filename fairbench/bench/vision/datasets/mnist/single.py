@@ -14,7 +14,7 @@ Modifications consist of only source code remodularization
 without altering base functionality.
 """
 
-import logging
+# import logging
 import os
 import pickle
 from pathlib import Path
@@ -108,12 +108,12 @@ class BiasedMNISTSingle(MNIST):
         if self.load_bias_feature:
             if train_corr:
                 bias_feature_dir = f"{bias_feature_root}/train{train_corr}-corr{data_label_correlation}-seed{seed}"
-                logging.info(f"load bias feature: {bias_feature_dir}")
+                # logging.info(f"load bias feature: {bias_feature_dir}")
                 self.bias_features = torch.load(f"{bias_feature_dir}/bias_feats.pt")
                 self.marginal = torch.load(f"{bias_feature_dir}/marginal.pt")
             else:
                 bias_feature_dir = f"{bias_feature_root}/color_mnist-corr{data_label_correlation}-seed{seed}"
-                logging.info(f"load bias feature: {bias_feature_dir}")
+                # logging.info(f"load bias feature: {bias_feature_dir}")
                 self.bias_features = torch.load(f"{bias_feature_dir}/bias_feats.pt")
                 self.marginal = torch.load(f"{bias_feature_dir}/marginal.pt")
 
@@ -124,7 +124,7 @@ class BiasedMNISTSingle(MNIST):
             / split
         )
         if save_path.is_dir():
-            logging.info(f"use existing color_mnist from {save_path}")
+            # logging.info(f"use existing color_mnist from {save_path}")
             self.data = pickle.load(open(save_path / "data.pkl", "rb"))
             self.targets = pickle.load(open(save_path / "targets.pkl", "rb"))
             self.biased_targets = pickle.load(
@@ -144,7 +144,7 @@ class BiasedMNISTSingle(MNIST):
             self.targets = self.targets[indices]
             self.biased_targets = self.biased_targets[indices]
 
-            logging.info(f"save color_mnist to {save_path}")
+            # logging.info(f"save color_mnist to {save_path}")
             save_path.mkdir(parents=True, exist_ok=True)
             pickle.dump(self.data, open(save_path / "data.pkl", "wb"))
             pickle.dump(self.targets, open(save_path / "targets.pkl", "wb"))
@@ -327,9 +327,9 @@ def get_color_mnist(
     given_y=True,
     train_corr=None,
 ):
-    logging.info(
-        f"get_color_mnist - split: {split}, aug: {aug}, given_y: {given_y}, ratio: {ratio}"
-    )
+    # logging.info(
+    #    f"get_color_mnist - split: {split}, aug: {aug}, given_y: {given_y}, ratio: {ratio}"
+    # )
     normalize = transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
     if aug:
         if data_label_correlation == 0.999:

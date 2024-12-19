@@ -3,12 +3,7 @@ from fairbench.fallbacks import LogisticRegression, MinMaxScaler, train_test_spl
 from fairbench.bench.loader import cache
 
 
-def compas(
-    classifier=None,
-    scaler=None,
-    predict="predict",
-    seed=None,
-):
+def compas(classifier=None, scaler=None, predict="predict", seed=None, test_size=0.25):
     """
     Creates demonstration outputs for the *compas* dataset.
 
@@ -26,9 +21,9 @@ def compas(
         "https://raw.githubusercontent.com/propublica/compas-analysis/master/compas-scores-two-years.csv",
         root=cache(),
         delimiter=",",
-        header=True,
+        header=0,
     )
-    train, test = train_test_split(data, random_state=seed)
+    train, test = train_test_split(data, random_state=seed, test_size=test_size)
     numeric = [
         "age",
     ]

@@ -1,4 +1,4 @@
-import logging
+# import logging
 import os
 import pickle
 from pathlib import Path
@@ -227,9 +227,9 @@ def get_utk_face(
     ratio=0,
     given_y=True,
 ):
-    logging.info(
-        f"get_utk_face - split: {split}, aug: {aug}, given_y: {given_y}, ratio: {ratio}"
-    )
+    # logging.info(
+    #    f"get_utk_face - split: {split}, aug: {aug}, given_y: {given_y}, ratio: {ratio}"
+    # )
     size_dict = {64: 72, 128: 144, 224: 256}
     load_size = size_dict[image_size]
     train = split == "train"
@@ -325,9 +325,9 @@ def get_org_utk_face(
     given_y=True,
     t="race",
 ):
-    logging.info(
-        f"get_utk_face - split: {split}, aug: {aug}, given_y: {given_y}, ratio: {ratio}"
-    )
+    # logging.info(
+    #    f"get_utk_face - split: {split}, aug: {aug}, given_y: {given_y}, ratio: {ratio}"
+    # )
     size_dict = {64: 72, 128: 144, 224: 256}
     load_size = size_dict[image_size]
     train = split == "train"

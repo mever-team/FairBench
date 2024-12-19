@@ -1,16 +1,8 @@
 import traceback
 import sys
-import logging
 import os
 from io import StringIO
 import warnings
-
-
-logging.basicConfig(
-    level=logging.ERROR,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[logging.FileHandler("fairbench.log", delay=True)],
-)
 
 
 class ComputationWithExplainableError(SystemExit):
@@ -142,7 +134,7 @@ class ExplainableError(Exception):
             print("Repeated usage of " + repr(self), file=sys.stderr)
             raise self
         self.__printed = True
-        stack_trace = "".join(traceback.format_stack())
+        """stack_trace = "".join(traceback.format_stack())
         logging.error(
             "There was an attempt to call computations that encountered an ExplainabeError"
             "\nThis is the full stack trace of the ExplainableError that includes FairBench internals",
@@ -151,7 +143,7 @@ class ExplainableError(Exception):
         logging.error(
             "This is the full stack trace of the computations where the ExplainableError was encountered"
             "\nTraceback (most recent call last):" + stack_trace + "-" * 120
-        )
+        )"""
         # this is what happens when the explainable error creates another issue down the line
         if _in_jupyter():
             warnings.warn(self.format_traceback(False))

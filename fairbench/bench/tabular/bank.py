@@ -21,7 +21,7 @@ def bank(classifier=None, scaler=None, predict="predict", seed=None, test_size=0
         "https://archive.ics.uci.edu/static/public/222/bank+marketing.zip/bank/bank.csv",
         root=cache(),
         delimiter=";",
-        header=True,
+        header=0,
     )
     train, test = train_test_split(data, random_state=seed, test_size=test_size)
     numeric = ["age", "duration", "campaign", "pdays", "previous"]

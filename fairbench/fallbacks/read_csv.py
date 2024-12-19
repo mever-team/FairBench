@@ -100,7 +100,7 @@ def read_csv(
                     col.strip() if skipinitialspace else col
                     for col in first_line.split(delimiter)
                 ]
-                if header is None:
+                if header == "infer":
                     # Check if the first line looks like headers (contains any non-numeric strings)
                     if '"' in first_line:
                         headers = [
@@ -114,18 +114,22 @@ def read_csv(
                             header: [convert_to_number(value)]
                             for header, value in zip(headers, first_line)
                         }
-                elif header:
+                elif header == 0:
                     headers = [
                         col[1:-1] if col[0] == '"' and col[-1] == '"' else col
                         for col in first_line
                     ]
                     data = {header: list() for header in headers}
-                else:
+                elif header is None:
                     headers = [i for i in range(len(first_line))]
                     data = {
                         header: [convert_to_number(value)]
                         for header, value in zip(headers, first_line)
                     }
+                else:
+                    raise AssertionError(
+                        "The header argument can only be 'infer', 0, or None"
+                    )
                 continue
 
             row = line.strip()

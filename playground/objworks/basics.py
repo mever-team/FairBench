@@ -1,7 +1,18 @@
+import os
+
+os.environ["FBINTERACTIVE"] = "True"
 import fairbench as fb
 
-sensitive = fb.Dimensions(men=[1, 1, 0, 0, 0], women=[0, 0, 1, 1, 1])
+
+x, y, yhat = fb.bench.tabular.compas(test_size=0.5)
+print(x)
+
+
+sensitive = fb.Dimensions(fb.categories @ x["sex"], fb.categories @ x["race"])
+print(sensitive)
+
+
 report = fb.reports.pairwise(
-    predictions=[1, 0, 1, 0, 0], labels=[1, 0, 0, 1, 0], sensitive=sensitive
+    predictions=fb.categories @ yhat, labels=fb.categories @ y, sensitive=sensitive
 )
-report.show()
+report.show(fb.export.HtmlTable())

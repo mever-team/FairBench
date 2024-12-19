@@ -64,8 +64,8 @@ def _str_foreign(v, tabs=0):
                 complicated = True
         return "\n".join(
             "   " * tabs
-            + k
-            + ": "
+            + k.ljust(max(30 - 2 * tabs, 0))
+            + " "
             + ("\n" if complicated else "")
             + _str_foreign(asprimitive(v), tabs + 1)
             for k, v in v.items()

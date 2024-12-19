@@ -11,10 +11,10 @@ Modifications to this code have been made by:
 - Emmanouil Krasanakis, © 2024.
 
 Modifications consist of only source code remodularization
-without altering base functionality.
+and logging behavior without altering base functionality.
 """
 
-import logging
+# import logging
 import os
 import pickle
 from pathlib import Path
@@ -118,12 +118,12 @@ class BiasedMNIST(MNIST):
         if self.load_bias_feature:
             if train_corr:
                 bias_feature_dir = f"{bias_feature_root}/train{train_corr}-corrA{data_label_correlation1}-corrB{data_label_correlation2}-seed{seed}"
-                logging.info(f"load bias feature: {bias_feature_dir}")
+                # logging.info(f"load bias feature: {bias_feature_dir}")
                 self.bias_features = torch.load(f"{bias_feature_dir}/bias_feats.pt")
                 self.marginal = torch.load(f"{bias_feature_dir}/marginal.pt")
             else:
                 bias_feature_dir = f"{bias_feature_root}/color_mnist-corrA{data_label_correlation1}-corrB{data_label_correlation2}-seed{seed}"
-                logging.info(f"load bias feature: {bias_feature_dir}")
+                # logging.info(f"load bias feature: {bias_feature_dir}")
                 self.bias_features = torch.load(f"{bias_feature_dir}/bias_feats.pt")
                 self.marginal = torch.load(f"{bias_feature_dir}/marginal.pt")
 
@@ -134,7 +134,7 @@ class BiasedMNIST(MNIST):
             / split
         )
         if save_path.is_dir():
-            logging.info(f"use existing color_mnist from {save_path}")
+            # logging.info(f"use existing color_mnist from {save_path}")
             self.data = pickle.load(open(save_path / "data.pkl", "rb"))
             self.targets = pickle.load(open(save_path / "targets.pkl", "rb"))
             self.biased_targets = pickle.load(
@@ -165,7 +165,7 @@ class BiasedMNIST(MNIST):
             self.biased_targets = self.biased_targets[indices]
             self.biased_targets2 = self.biased_targets2[indices]
 
-            logging.info(f"save color_mnist to {save_path}")
+            # logging.info(f"save color_mnist to {save_path}")
             save_path.mkdir(parents=True, exist_ok=True)
             pickle.dump(self.data, open(save_path / "data.pkl", "wb"))
             pickle.dump(self.targets, open(save_path / "targets.pkl", "wb"))

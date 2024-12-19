@@ -28,7 +28,7 @@ sensitive = fb.Fork(
     fb.categories @ x["religion"],
     fb.categories @ x["gender"],
 )
-report = fb.unireport(predictions=yhat, labels=y, sensitive=sensitive)
+report = fb.reports.vsall(predictions=yhat, labels=y, sensitive=sensitive)
 
-fb.describe(report)
-fb.text_visualize(report.accuracy.min.explain)
+report.show()
+report.accuracy.min.explain.show()
