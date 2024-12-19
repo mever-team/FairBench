@@ -7,8 +7,8 @@ pip install --upgrade fairbench
 ```
 
 A typical workflow using the library will help you identify prospective
-fairness concerns to discuss with stakeholders. You need to eventually
-decide which of the concerns matter after getting a wide enough
+fairness concerns to discuss with stakeholders. Decide which of 
+the concerns matter after drawing a broad enough
 picture. Follow the steps below.
 
 ## 1. Prepare data
@@ -56,7 +56,7 @@ by the report's arguments.
 
 ```python
 report = fb.reports.pairwise(predictions=yhat, labels=y, sensitive=sensitive)
-fb.show(env=fb.export.ConsoleTable)  
+report.show(env=fb.export.ConsoleTable)  
 ```
 
 ```text
@@ -80,7 +80,7 @@ Explore reports by focusing on any of their contributing
 computations with the dot notation programmatically,
 or with interactive visualization environments.
 You may also add more `depth` to
-their view like this. Below is an example, but there are
+their view. Below is an example, but there are
 many dynamic options [here](documentation/interactive.md).
 We focus on only the minimum accuracy to keep the outcome simple,
 but visualization environments
@@ -90,7 +90,7 @@ work with complicated reports too.
 report.min.acc.show(env=fb.export.Console)
 ```
 
-```
+```text
 ##### min acc #####
 |This reduction of a measure is the minimum of the accuracy.
 |Value: 0.866 min acc

@@ -5,13 +5,13 @@ multidimensional values, such as
 sensitive attributes or predictions and labels for
 multiple classes. Each dimension holds its own
 value. For example, you might have a 
-dimension for each gender, which would be a binary 
-array indicating the presence of that attribute 
-in data samples.
+dimension for each gender; those dimensions would be 
+binary arrays indicating the presence of the respective
+attribute in data samples.
 
-As a common use case when using FairBench, here is how to 
+As a common use case is to
 define a multidimensional sensitive attribute 
-for intersectional fairness:
+for intersectional fairness, like so:
 
 ```python
 import fairbench as fb
@@ -23,7 +23,7 @@ sensitive = sensitive.intersectional()
 print(sensitive)
 ```
 
-```
+```text
 Black: [1 0 0 1 0]
 White: [0 1 1 0 1]
 Female: [0 0 1 1 0]
@@ -68,7 +68,8 @@ sensitive = fb.Dimensions(
 print(sensitive.nonbinary)
 print(sensitive["nonbinary"]) # does the same
 ```
-```
+
+```text
 [0, 0, 0, 0, 1]
 [0, 0, 0, 0, 1]
 ```
@@ -96,7 +97,8 @@ sensitive = fb.Dimensions(
 print(sensitive.men)
 print(sensitive["men"])  # does the same
 ```
-```
+
+```text
 [1, 1, 0, 0, 0]
 [1, 1, 0, 0, 0]
 ```
