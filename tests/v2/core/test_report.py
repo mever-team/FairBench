@@ -43,7 +43,7 @@ def test_simple_report():
     )
 
     report.filter(v2.investigate.Stamps).show(
-        env=v2.export.Html(open=False, filename="temp"), depth=1
+        env=v2.export.Html(view=False, filename="temp"), depth=1
     )
     report.maxdiff.show()  # console is the default
     report.show(v2.export.ConsoleTable)
