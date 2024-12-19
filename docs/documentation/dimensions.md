@@ -1,7 +1,7 @@
 # Dimensions
 
 `Dimensions` is a flexible data structures that stores 
-and manage multidimensional values, such as
+multidimensional values, such as
 sensitive attributes or predictions and labels for
 multiple classes. Each dimension holds its own
 value. For example, you might have a 
@@ -44,7 +44,7 @@ Nonbinary&White: [0 0 0 0 1]
 
 ## Create dimensions
 
-There are several patterns allowed in dimensions constructor arguments.
+There are several patterns for constructing dimensions.
 
 <button onclick="toggleCode('code1')" class="toggle-button">>></button>
 <b>Keyword arguments</b><br> For values that are non-dictionaries,
@@ -105,7 +105,7 @@ print(sensitive["men"])  # does the same
 
 <button onclick="toggleCode('code3')" class="toggle-button">>></button>
 <b>Multidimensional</b><br>
-It is acceptable to have dimensions with different roles, 
+It is acceptable to have dimensions with different nature, 
 such as multiple sensitive attributes and attribute values.
 For example, mix in gender and age sensitive attributes
 in the same `Dimensions` object.
@@ -191,7 +191,7 @@ import fairbench as fb
 sensitive = fb.Dimensions(fb.categories@["Man", "Woman", "Man", "Woman", "Nonbin"])
 print(sensitive)
 ```
-```
+```text
 genderMan: [1, 0, 1, 0, 0]
 genderWoman: [0, 1, 0, 1, 0]
 genderNonbin: [0, 0, 0, 0, 1]
@@ -212,7 +212,7 @@ age = [18, 20, 19, 42, 30, 60, 18, 50, 40]
 sensitive = fb.Dimensions(gender=fb.fuzzy @ age)
 print(sensitive)
 ```
-```
+```text
 genderlarge 60.000: [0.         0.04761905 0.02380952 0.57142857 0.28571429 1.
  0.         0.76190476 0.52380952]
 gendersmall 18.000: [1.         0.95238095 0.97619048 0.42857143 0.71428571 0.
@@ -266,7 +266,7 @@ sensitive = fb.Dimensions(
 print(sensitive)
 ```
 
-```
+```text
 Woman&Black: [0 1 0 0]
 Woman&White: [0 0 0 0]
 Man&Black: [1 0 0 0]

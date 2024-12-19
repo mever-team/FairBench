@@ -1,5 +1,3 @@
-from sympy.solvers.diophantine.diophantine import reconstruct
-
 # Visualization
 
 Reports accept visualization environments as arguments to their `show` method.
