@@ -4,6 +4,19 @@ import numpy as np
 complicated_mode = False
 
 
+def mismatch(item, keys):
+    keys = list(keys)
+    ret = f"Key {item} is not one of {list(keys)}.\n"
+    similar = [key for key in keys if item in key]
+    if similar:
+        ret += (
+            f"It may be the case that you tried to access one of {similar}.\n"
+            "If the dot notation `value.key` is failing due to using invalid Python variable names (e.g., that contain the '&' character), "
+            "try the item access notation `value['key']` instead.\n"
+        )
+    return ret
+
+
 class Curve:
     def __init__(self, x, y, units: str = ""):
         self.x = np.array(x)
@@ -341,9 +354,9 @@ class Value:
             else:
                 # TODO: accelerate this code path in the future
                 keys = self._keys()
-                assert (
-                    item in keys
-                ), f"Key '{item}' is not one of {list(keys.keys())}. Run fb.help(value) for details."
+                assert item in keys, (
+                    mismatch(item, keys.keys()) + "Run fb.help(value) for details."
+                )
                 if item in keys:
                     item = keys[item]
         ret = next(iter(item.descriptor(depends=[self | item]).depends.values()))
@@ -367,8 +380,7 @@ class Value:
                 # TODO: accelerate this code path in the future
                 keys = self._keys()
                 assert item in keys, (
-                    f"Key '{item}' could not be found in the value. "
-                    f"It must be one of {list(keys.keys())}. Run `fb.help(value)` for details."
+                    mismatch(item, keys.keys()) + "Run `fb.help(value)` for details."
                 )
                 if item in keys:
                     item = keys[item]

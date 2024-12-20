@@ -19,5 +19,3 @@ report = fb.reports.pairwise(predictions=yhat, labels=y, sensitive=sensitive)
 
 print(float(report.min.acc))
 report.min.acc.show()
-
-print(report)
