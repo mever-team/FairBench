@@ -179,7 +179,16 @@ def help(value: any, details=True):
     for descriptor in value.keys():
         descriptor = descriptor.prototype
         alias = descriptor.alias
-        if " " in alias or "&" in alias:
+        if (
+            " " in alias
+            or "&" in alias
+            or "|" in alias
+            or "=" in alias
+            or "+" in alias
+            or "-" in alias
+            or "/" in alias
+            or "*" in alias
+        ):
             alias = f"value['{alias}']"
         else:
             alias = "value." + alias

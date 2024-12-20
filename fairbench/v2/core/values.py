@@ -22,6 +22,9 @@ class Curve:
         approx_y = np.interp(new_x, self.x, self.y)
         return Curve(new_x, approx_y, self.units)
 
+    def __str__(self):
+        return f"{self.units} curve of {len(self.x)} points"
+
     @classmethod
     def from_dict(cls, data):
         if "x" not in data or "y" not in data:
@@ -52,6 +55,9 @@ class Number:
     def to_dict(self):
         return {"value": self.value, "units": self.units}
 
+    def __str__(self):
+        return f"{self.value:.3f} {self.units}"
+
     @classmethod
     def from_dict(cls, data):
         if "x" in data and "y" in data:
@@ -71,6 +77,9 @@ class TargetedNumber:
 
     def __float__(self):
         return self.value
+
+    def __str__(self):
+        return f"{self.value:.3f} {self.units} (ideal value {self.target:.3f})"
 
     def to_dict(self):
         return {"value": self.value, "target": self.target, "units": self.units}
@@ -297,7 +306,7 @@ class Value:
                 ret += f" ({self.descriptor.details})"
             return ret
         if self.value is not None:
-            ret += f" {float(self.value):.3f}"
+            ret += str(self.value)
             depth -= 1
         if details:
             ret += f" ({self.descriptor.details})"

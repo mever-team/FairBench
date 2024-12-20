@@ -78,6 +78,9 @@ class Fork(Mapping):
             if branch_names is None or zero_mask or branch in branch_names
         }
 
+    def to_dict(self):
+        return self.branches()
+
     def withcomplements(self):
         # find missing branch complements
         branches = self.branches()

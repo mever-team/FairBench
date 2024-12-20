@@ -5,22 +5,33 @@ from fairbench.v2.core import NotComputable
 
 @c.reduction("the minimum")
 def min(values):
+    min_target = None
     for value in values:
         value = value.value
-        if isinstance(value, c.TargetedNumber) and value.value > value.target:
-            raise c.NotComputable()
+        if isinstance(value, c.TargetedNumber):
+            if value.value > value.target:
+                raise c.NotComputable()
+            elif min_target is None or float(value.target) > min_target:
+                min_target = float(value.target)
+
     values = c.transform.number(values)
-    return np.min(values)
+    ret = np.min(values)
+    return ret if min_target is None else c.TargetedNumber(ret, min_target)
 
 
 @c.reduction("the maximum")
 def max(values):
+    max_target = None
     for value in values:
         value = value.value
-        if isinstance(value, c.TargetedNumber) and value.value < value.target:
-            raise c.NotComputable()
+        if isinstance(value, c.TargetedNumber):
+            if value.value < value.target:
+                raise c.NotComputable()
+            elif max_target is None or float(value.target) < max_target:
+                max_target = float(value.target)
     values = c.transform.number(values)
-    return np.max(values)
+    ret = np.max(values)
+    return ret if max_target is None else c.TargetedNumber(ret, max_target)
 
 
 @c.reduction("the maximum deviation from the ideal value")
