@@ -43,10 +43,9 @@
 <h1 style="margin-bottom: 0px;">FairBench</h1>
 
 This is a comprehensive AI fairness exploration framework. 
-Visit the <a href="quickstart/" markdown="span">quickstart</a> for a tour.
-Read the full documentation and recipes. Or try
-the library in your browser in minimal mode (without some benchmarks and only ascii visualization); 
-edit the snippet to be executed and run it below.
+Visit the <a href="quickstart/" markdown="span">quickstart</a> for a tour and read the 
+documentation. Or try
+the library in your browser below (with only lightweight features).
 <br><br>
 
 <button id="run" onclick="evaluatePython()"><span class="icon-green">&#9654;</span> Run snippet</button>

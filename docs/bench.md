@@ -1,8 +1,9 @@
 # Quick benchmarks
 
-Here we show how to run and compare vision algorithms.
-Before starting, install FairBench with the extra dependencies required
-to run benchmarks on models of the corresponding types. 
+Here we show how to run and compare algorithms, with computer vision examples.
+
+Before starting, install FairBench with the extra dependencies (extras) required
+to run benchmarks on models of the corresponding data types. 
 Tabular data benchmarks only use implementations packed alongside the
 library under its normal installation. To install with all extras run:
 
@@ -13,27 +14,24 @@ pip install --upgrade fairbench[graph,llm,vision]
 !!! warning
     - Benchmarking standardization is a work in progress 
     and you may encounter interface breaking changes before FairBench v1.0.0.
-    - Vision extras include an installation of pytorch,
-    which requires several gigabytes in download and storage
-    capacity.
+    - Vision extras include pytorch,
+    which requires several gigabytes in download and storage.
 
 ## 1. Setup experiments
 
 There is little distinction between running different algorithms 
-or different data with the workflow shown next; each pair of algorithm
-and data are distinct. This is not necessary, but simpler to explore.
+or different data with the workflow shown next; each algorithm-data 
+pair is distinct. This simplification is not mandatory, but simpler to explore.
 We will use the automated dataset downloading and running provided by
 FairBench - otherwise create predictions with your own workflow
 and skip this step.
 
 Datasets are set up as callable methods under `bench` 
-modules that run given algorithms on the data in
+modules; they run provided algorithms in
 a standardized way. 
-All datasets accept an algorithm argument to run with 
+Datasets can also run with 
 your own models. In domains where large
-models is the norm, like Vision and LLMs, the datasets run
-the algorithms without training them; they assume that pretrained
-models are provided as inputs.
+models are the norm, like Vision and LLMs, provided algorithms/models are assumed to be already trained.
 
 Below is an example that runs two classifiers on the `utkface`
 vision dataset. You can add experiments where you pass a torch
@@ -53,16 +51,14 @@ experiments = {
 !!! info
     Get familiar with generating standalone fairness reports in the [quickstart](quickstart.md). 
 
-A mechanism provided by FairBench to gather
-fairness reports is the `Progress` class.
-This offers a builder pattern in which new reports are registered
-sqeuentially, and at any point an amalgamation can be extracted.
-The same mechanism can be used for reports that show the evolution
+FairBench offers the `Progress` class to gather fairness reports
+by registering them sequentially and can yield an amalgamation at any point.
+The same class is also used for reports that show the evolution
 of datasets and algorithms over time 
 (both tracked progress and reports can be serialized to and from Json,
-which allows for persistence if needed).
+which allows for persistence, if needed).
 
-Here is how you can add report/value instances to progress and build
+Here is how to add report/value instances to progress and build
 a report that contains all of them:
 
 ```python
@@ -93,12 +89,12 @@ std                                      0.000        0.027        0.013        
 
 ## 3. Side-by-side comparison
 
-You can alter how reports (including complicated ones like the above) are organized
+Alter how reports are organized
 at the top level using `.explain`. This is helpful for side-by-side comparison,
-for example with the following recipe. The normal `ConsoleTable` visualization
-environment explicitly instructs to use `sideways=False` instead once it realizes there
-are conflicting row names (e.g., `min acc`  vs `maxerror acc`). Notice that
-all visualizations naturally generalize to any number of comparisons.
+for example with the following recipe. The console table visualization
+environment below requests usage `sideways=False` instead its default value once
+it realizes there are conflicting row names, like *min acc*  vs *maxerror acc*. 
+All visualizations generalize to any number of comparisons.
 
 ```python
 comparison.explain.show(env=fb.export.ConsoleTable(sideways=False)) 
@@ -108,15 +104,12 @@ comparison.explain.show(env=fb.export.ConsoleTable(sideways=False))
 
 ## 4.Explore
 
-Like with simpler reports, explore complicated ones
-by focusing on any of their contributing
-computations with the dot notation programmatically,
-or with interactive visualization environments.
-Below is an example, 
-but there are many dynamic options [here](documentation/interactive.md).
-We focus on both accuracy and the maximum difference reduction 
-to keep the outcome simple, but visualization environments
-work with complicated reports too.
+Explore reports of any complexity
+by focusing on contributing
+computations of interest. Do this with the dot notation programmatically,
+or with interactive visualization environments [here](documentation/interactive.md).
+Below is an example, where we focus on both accuracy and the maximum difference reduction 
+to keep the outcome simple.
 
 ```python
 comparison.acc.explain.maxdiff.show(env=fb.export.Console)

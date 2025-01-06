@@ -13,9 +13,9 @@ picture. Follow the steps below.
 
 ## 1. Prepare data
 
-Run your system to generate some predictions for test data.
-Here, we assess biases for a demo binary classifier and dataset,
-but other types of predictions can be analysed too. 
+To assess your system, use it to generate predictions for test data.
+Here, we look at a binary classifier and dataset,
+but other types of predictions can be assessed for bias too. 
 Supported data formats include lists, numpy arrays, 
 and pytorch/tensorflow/jax tensors.
 
@@ -40,17 +40,16 @@ sensitive = sensitive.strict()  # keep only intersections that have no children
 
 ## 3. Compute reports
 
-Use sensitive attribute forks alongside predictions 
+Use sensitive attributes alongside predictions 
 to generate fairness reports.
-Below is a pairwise report, which compares all pairs
-of population groups or subgroups defined in the sensitive attribute
-based on a wide range of base performance measures. 
+Below is one that compares all pairs
+of population groups or subgroups 
+according to a wide range of base performance measures. 
 Reports can be viewed under various visualization environments.
 
-The comparisons for each measure are reduced to one value
-with various reduction strategies (the columns).
-The task type (here: binary classification)
-and corresponding base performance metrics are determined
+The comparisons for each measure (row) are reduced to one value
+with reduction strategies (columns).
+The task type and applicable measures are determined
 by the report's arguments.
 
 
@@ -77,12 +76,12 @@ std                                      0.018        0.017        0.067        
 ## 4. Go into details
 
 Explore reports by focusing on any of their contributing
-computations with the dot notation programmatically,
-or with interactive visualization environments.
-You may also add more `depth` to
-their view. Below is an example, but there are
+computations. Use the programmatic dot notation,
+where more `depth` can be added to viewed values. 
+Below is an example, but there are also
 many dynamic options [here](documentation/interactive.md).
-We focus on only the minimum accuracy to keep the outcome simple,
+
+Un the example, we focus on only the minimum accuracy to keep the outcome simple,
 but visualization environments
 work with complicated reports too.
 
