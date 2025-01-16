@@ -151,22 +151,17 @@ class Fork(Mapping):
         branches = self.branches()
         remaining_branches = dict()
         for branch_name, branch_mask in branches.items():
-            has_no_stricter_branch = True
+            specification_exists = False
             for other_name, other_mask in branches.items():
                 if branch_name == other_name:
                     continue
-                violations = (
-                    (
-                        tobackend(other_mask) * tobackend(branch_mask)
-                        < tobackend(branch_mask)
-                    )
-                    .abs()
-                    .sum()
-                )
-                if float(violations.raw) == 0:
-                    has_no_stricter_branch = False
-                    break
-            if not has_no_stricter_branch:
+                branch = tobackend(branch_mask)
+                other = tobackend(other_mask)
+                both = branch * other
+                could_not_be_child = float((both < other).abs().sum().raw) == 0
+                if could_not_be_child:
+                    specification_exists = True
+            if not specification_exists:
                 remaining_branches[branch_name] = branch_mask
 
         return Fork(remaining_branches)

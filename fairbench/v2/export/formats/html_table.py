@@ -5,12 +5,14 @@ from warnings import warn
 class HtmlTable(Html):
     def __init__(
         self,
+        view=True,
+        filename="temp",
         legend=False,
         transpose=None,
         sideways=True,
         na="   ",
     ):
-        super().__init__()
+        super().__init__(filename=filename, view=view)
         self.accumulated_bars = []
         self.row_names = {}
         self.col_names = {}

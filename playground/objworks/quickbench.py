@@ -23,7 +23,7 @@ comparison.show(fb.export.ConsoleTable)
 print("================================================")
 comparison.explain.show(env=fb.export.ConsoleTable(sideways=False))
 print("================================================")
-comparison.acc.explain.maxdiff.show(env=fb.export.Console)
+comparison.acc.explain["maxdiff explain mean"].show(env=fb.export.Console)
 print("================================================")
 filter = fb.investigate.DeviationsOver(0.1)
 env = fb.export.ConsoleTable(

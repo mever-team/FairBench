@@ -3,6 +3,8 @@ def celeba(
     data_root=None,
     predict="predict",
     device=None,
+    target_attr="blonde",
+    batch_size=64,
 ):
     from fairbench.bench.vision.datasets import get_vision_dataset
     from fairbench.bench.vision.architectures.runner import run_dataset
@@ -29,6 +31,10 @@ def celeba(
     if data_root is None:
         data_root = cache("data/celeba_biased")
     test_loader = get_vision_dataset("celeba")(
-        data_root, batch_size=64, target_attr="blonde", split="valid", aug=False
+        data_root,
+        batch_size=batch_size,
+        target_attr=target_attr,
+        split="valid",
+        aug=False,
     )
     return run_dataset(classifiers, test_loader, classifier, predict, device)

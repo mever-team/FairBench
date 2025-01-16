@@ -9,7 +9,7 @@ Some of these options are also used by interactive visualizations described
 
 Focus on certain aspects of reports based
 on some key values. Keys any kind of computation name
-included in the report, even those at a very high depth. 
+included in the report, even those at high depth. 
 
 For instance, write `report.samples.show()` to see the number of samples
 involved in computations - this may be the same for all values of simple reports
@@ -180,7 +180,7 @@ various kinds of investigative filters may be submitted.
 Apply filters to focus on specific types of evaluation,
 like keeping computations that show only bias
 or keeping only bias/fairness values violating
-certain thresholds. Find all avalable filters
+certain thresholds. Find all available filters
 [here](../material/filters.md).
 
 One of the available filters, which is presented

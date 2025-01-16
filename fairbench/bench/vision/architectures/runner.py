@@ -4,15 +4,17 @@ def run_dataset(
     import torch
     from tqdm import tqdm
 
+    predictors = {
+        "predict": lambda outputs: outputs.data.max(1, keepdim=True)[1].squeeze(1),
+        "probabilities": lambda outputs: torch.softmax(outputs, dim=1)[:, 1],
+    }
+
     if device is None:
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
+    if isinstance(predict, str):
+        predict = predictors[predict]
     if isinstance(classifier, str):
-        classifier = classifier.lower()
-        assert (
-            classifier in classifiers
-        ), f"Available classifiers are: {list(classifiers)}"
-        classifier = classifiers[classifier](device)
+        classifier = classifiers[classifier.lower()](device)
     assert isinstance(classifier, torch.nn.Module), "Classifier is not a torch model."
 
     y, yhat, sens = [], [], []
@@ -23,16 +25,7 @@ def run_dataset(
             images, labels = data[unpacking[0]], data[unpacking[1]]
             images, labels = images.to(device), labels.to(device)
             outputs = classifier(images)  # Forward pass
-
-            if predict == "predict":
-                preds = outputs.data.max(1, keepdim=True)[1].squeeze(1)
-            elif predict == "probabilities":
-                preds = torch.softmax(outputs, dim=1)[:, 1]
-            else:
-                raise Exception(
-                    "Invalid predict value. Use 'predict' or 'probabilities'."
-                )
-
+            preds = predict(outputs)
             yhat.extend(preds.cpu().tolist())
 
             y.extend(labels.cpu().tolist())

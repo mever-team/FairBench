@@ -270,6 +270,8 @@ class Html:
         return bootstrap_html
 
     def show(self):
+        if self.filename is None:
+            return self._create_text()
         with open(f"{self.filename}.html", "w", encoding="utf-8") as temp_file:
             temp_file.write(self._create_text())
             temp_file_path = temp_file.name
