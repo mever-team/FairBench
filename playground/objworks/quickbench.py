@@ -3,6 +3,10 @@ from fairbench import v2 as fb
 experiments = {
     "flac utkface": lambda: fb.bench.vision.utkface(classifier="flac"),
     "badd utkface": lambda: fb.bench.vision.utkface(classifier="badd"),
+    "flac celeba": lambda: fb.bench.vision.celeba(classifier="flac"),
+    "mavias celeba": lambda: fb.bench.vision.celeba(classifier="mavias"),
+    "badd waterbirds": lambda: fb.bench.vision.waterbirds(classifier="badd"),
+    "mavias waterbirds": lambda: fb.bench.vision.waterbirds(classifier="mavias"),
 }
 
 settings = fb.Progress("settings")
