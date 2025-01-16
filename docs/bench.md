@@ -1,6 +1,7 @@
 # Quick benchmarks
 
-Here we show how to run and compare algorithms, with computer vision examples.
+Here we show how to run and compare algorithms. To give a taste of
+the library's ability to accommodate various kinds of data, we use computer vision examples.
 
 Before starting, install FairBench with the extra dependencies (extras) required
 to run benchmarks on models of the corresponding data types. 
@@ -15,15 +16,17 @@ pip install --upgrade fairbench[graph,llm,vision]
     - Benchmarking standardization is a work in progress 
     and you may encounter interface breaking changes before FairBench v1.0.0.
     - Vision extras include pytorch,
-    which requires several gigabytes in download and storage.
+    which downloads and stores several gigabytes of data.
 
 ## 1. Setup experiments
 
 There is little distinction between running different algorithms 
 or different data with the workflow shown next; each algorithm-data 
-pair is distinct. This simplification is not mandatory, but simpler to explore.
-We will use the automated dataset downloading and running provided by
-FairBench - otherwise create predictions with your own workflow
+pair is distinct. This simplification is not mandatory, but simpler to explore
+given that we aim to explore multiple types of bias assessment too.
+Automatically download and run datasets and models with
+FairBench, which is why we installed the extras installed above.
+Alternatively, create predictions with your own workflow
 and skip this step.
 
 Datasets are set up as callable methods under `bench` 
@@ -34,8 +37,8 @@ your own models. In domains where large
 models are the norm, like Vision and LLMs, provided algorithms/models are assumed to be already trained.
 
 Below is an example that runs two classifiers on the `utkface`
-vision dataset. You can add experiments where you pass a torch
-model as a classifier too.
+vision dataset. You can aso set up experiments where you pass a torch
+model as a classifier instead of a string name.
 
 ```python
 import fairbench as fb
@@ -48,7 +51,7 @@ experiments = {
 
 ## 2. Gather reports
 
-!!! info
+!!! tip
     Get familiar with generating standalone fairness reports in the [quickstart](quickstart.md). 
 
 FairBench offers the `Progress` class to gather fairness reports
@@ -104,15 +107,19 @@ comparison.explain.show(env=fb.export.ConsoleTable(sideways=False))
 
 ## 4.Explore
 
-Explore reports of any complexity
-by focusing on contributing
-computations of interest. Do this with the dot notation programmatically,
-or with interactive visualization environments [here](documentation/interactive.md).
-Below is an example, where we focus on both accuracy and the maximum difference reduction 
+Explore reports of any complexity by focusing on contributing
+computations of interest. Do this programmatically with the dot notation or, 
+when the former would not be valid Python, by looking up the computation as in
+a dictionary with its string name.
+Exploration is made easier with interactive visualization environments [here](documentation/interactive.md).
+Or you can show all specification with the report's `.help()` method, which can be called
+at any point of specialization.
+
+Below is an exploration example. In this, we focus on both accuracy and the maximum difference reduction 
 to keep the outcome simple.
 
 ```python
-comparison.acc.explain.maxdiff.show(env=fb.export.Console)
+comparison.acc.explain["maxdiff explain mean"].show(env=fb.export.Console)
 ```
 
 ```text
@@ -135,15 +142,18 @@ comparison.acc.explain.maxdiff.show(env=fb.export.Console)
 
 ## 5. Simplify the comparison 
 
-Apply filters to focus on specific types of evaluation,
-like keeping computations that show only bias
-or keeping only bias/fairness values violating
-certain thresholds.
+Apply filters to retain only specific types of evaluation,
+such as computations that show only bias
+or bias/fairness values violating certain thresholds.
 
 One of the available filters, which is presented
-below, is to show only deviations from ideal values
-greater than `0.1` (skipping values where their
-ideal counterparts cannot be determined).
+below, hides deviations from ideal values
+lesser than `0.1` (also hides values whose
+ideal targets cannot be determined). Observe
+how the report is simplified into its most
+problematic elements. If everything was rejected,
+it would not indicate fairness -which is a subjective belief-
+but rather that stricter thresholds should be explored.
 
 ```python
 filter = fb.investigate.DeviationsOver(0.1)

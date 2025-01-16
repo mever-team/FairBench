@@ -45,7 +45,7 @@
 This is a comprehensive AI fairness exploration framework. 
 Visit the <a href="quickstart/" markdown="span">quickstart</a> for a tour and read the 
 documentation. Or try
-the library in your browser below (with only lightweight features).
+the library with only lightweight features enabled in your browser.
 <br><br>
 
 <button id="run" onclick="evaluatePython()"><span class="icon-green">&#9654;</span> Run snippet</button>

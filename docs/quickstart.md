@@ -6,6 +6,9 @@ Before starting, install FairBench with:
 pip install --upgrade fairbench
 ```
 
+This is only the lightweight version without any specifications,
+which suffices for assessment of any system - install extras are
+available to run out-of-the-box benchmarks for vision data or LLMs.
 A typical workflow using the library will help you identify prospective
 fairness concerns to discuss with stakeholders. Decide which of 
 the concerns matter after drawing a broad enough
@@ -26,11 +29,18 @@ test, y, yhat = fb.bench.tabular.adult()
 
 ## 2. Sensitive attributes
 
-Pack sensitive attributes found in your test data
+Pack sensitive attributes found across test samples
 into a data structure holding multiple [dimensions](documentation/dimensions.md).
 This stores any number of attributes with any number of values
 by considering each value as a separate dimension.
-One construction pattern is the following:
+
+In particular, each dimension is represented as a binary or fuzzy array
+whose i-th element represents whether the i sample has the attribute
+corresponding to the dimension. 
+One construction pattern is the following. This first analyses categorical
+iterables and then packs them into dimensions. It then computes all non-empty
+intersections that combine attributes, and finally retains the most specialized 
+intersectional subgroups.
 
 ```python
 sensitive = fb.Dimensions(fb.categories @ test[8], fb.categories @ test[9])  # analyse the gender and race columns
@@ -77,11 +87,13 @@ std                                      0.018        0.017        0.067        
 
 Explore reports by focusing on any of their contributing
 computations. Use the programmatic dot notation,
-where more `depth` can be added to viewed values. 
+where more `depth` can be added to viewed values
+to further expand intermediate computations and search
+for the root causes of discrimination. 
 Below is an example, but there are also
-many dynamic options [here](documentation/interactive.md).
+many dynamic visualization options [here](documentation/interactive.md).
 
-Un the example, we focus on only the minimum accuracy to keep the outcome simple,
+In the example, we focus on only the minimum accuracy to keep the outcome simple,
 but visualization environments
 work with complicated reports too.
 
@@ -110,10 +122,9 @@ report.min.acc.show(env=fb.export.Console)
 
 ## 5. Simplify reports 
 
-Apply filters to focus on specific types of evaluation,
-like keeping computations that show only bias
-or keeping only bias/fairness values violating
-certain thresholds.
+FairBench provides filters that focus on specific types of evaluation.
+For example, it can remove report entries that do not violate certain
+threshold, leaving only problematic values behind.
 
 One of the available filters, which is presented
 below, are fairness stamps. These refer to a few 

@@ -30,9 +30,9 @@ sensitive attribute values interchangeably.
 | sensitive   | sensitive attribute | fork of arrays with elements in [0,1] (either binary or fuzzy) |
 
 !!! info
-    In multiclass settings, create the same 
-    class dimensions on all provided keyword
-    argument other than the sensitive attribute.
+    In multiclass settings, all keyword
+    arguments other than the sensitive attribute
+    must be dimensions corresponding to the classes.
 
 ## Report types
 
