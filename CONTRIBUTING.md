@@ -35,6 +35,8 @@ compatible with each other. As an exception, serialization mechanisms are allowe
 method that skips the common ground. Notice that this makes them lose several text formatting semantics - which
 they would not be able to express anyway.
 
+## :warning: Risky contributions
+
 Contributions will be strictly reviewed when targeting the following directories,
 as it can be very tricky to recover from failures found in respective code segments:
 
