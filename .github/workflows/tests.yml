@@ -13,7 +13,7 @@ jobs:
       matrix:
         python-version: ["3.11"] # TODO: re-enable 3.8 for 3.6 compatibility
     env:
-      HOME: /github/home
+      HOME: .
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
@@ -57,7 +57,7 @@ jobs:
       matrix:
         python-version: ["3.13"]
     env:
-      HOME: /github/home
+      HOME: .
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
