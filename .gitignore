@@ -10,6 +10,7 @@ flac.py
 .log
 **/*.log
 temp.html
+home
 
 # =================== PYCHARM ===================
 # idea

@@ -40,7 +40,7 @@ they would not be able to express anyway.
 Contributions will be strictly reviewed when targeting the following directories,
 as it can be very tricky to recover from failures found in respective code segments:
 
-- Editing the *fairbench/v1* directory will not be accepted unless they are made on features that have
+- Edits to the *fairbench/v1* directory will not be accepted unless they are made on features that have
 not been completely phased out. Documentation does not cover this version of the interface anymore either.
 - Editing the *fairbench/v2/core* directory will be accepted only upon exceptional circumstances, as it
-its code is heavily opinionated and follows a complex flow to make sure that *errors are always comprehensible*.
+its code is heavily opinionated on how to both be dynamic and let *errors be comprehensive*.

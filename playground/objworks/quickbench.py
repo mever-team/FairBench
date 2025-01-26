@@ -18,15 +18,12 @@ for name, experiment in experiments.items():
 
 comparison = settings.build()
 
-print("================================================")
-comparison.show(fb.export.ConsoleTable)
-print("================================================")
-comparison.explain.show(env=fb.export.ConsoleTable(sideways=False))
-print("================================================")
-comparison.acc.explain["maxdiff explain mean"].show(env=fb.export.Console)
-print("================================================")
-filter = fb.investigate.DeviationsOver(0.1)
-env = fb.export.ConsoleTable(
-    sideways=False
-)  # not sideways because the environment complains about different rows
-comparison.filter(filter).show(env=env)
+comparison["maxdiff explain mean"].explain.show()
+# print("================================================")
+# comparison.show(fb.export.ConsoleTable)
+# print("================================================")
+# comparison.explain.show(env=fb.export.ConsoleTable(sideways=False))
+# print("================================================")
+# comparison.acc.explain["maxdiff explain mean"].show(env=fb.export.Console)
+# print("================================================")
+# comparison.show(env=fb.export.ConsoleTable(sideways=False))
