@@ -62,5 +62,6 @@ jobs:
       - name: Install fairbench without extras
         run: |
           pip install .
+          pip install pytest pytest-cov coverage-badge
       - name: Test with pytest
         run: pytest tests/v2  # this is the barebones core without any depenendency
