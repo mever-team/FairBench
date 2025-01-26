@@ -17,6 +17,11 @@ def waterbirds(
         model.fc = nn.Linear(2048, 2)
         return model
 
+    def rn50():
+        model = resnet50()
+        model.fc = nn.Linear(2048, 2)
+        return model
+
     classifiers = {
         "badd": lambda device: get_model(
             device=device,
@@ -31,7 +36,7 @@ def waterbirds(
             model_dir=cache("pretrained/mavias"),
             model_file="waterbirds.pt",
             model_url="https://drive.google.com/uc?id=1N5bz67XwkjdC1nliA6onGDt-mSNepNeP",
-            model_class=resnet50,
+            model_class=rn50,
         ),
     }
     if data_root is None:

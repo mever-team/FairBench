@@ -49,37 +49,20 @@ def get_unsup_confusion_matrix(num_classes, targets, biases, marginals):
 def download_celeba(root):
     import os
     import zipfile
-    import requests
-    from tqdm import tqdm
+    import gdown
 
-    dataset_url = (
-        "https://www.kaggle.com/api/v1/datasets/download/jessicali9530/celeba-dataset"
-    )
-    download_path = os.path.join(root, "celeba.zip")
     extract_path = root
+    download_path = os.path.join(root, "celeba.zip")
+    data_url = "https://drive.google.com/uc?id=0B7EVK8r0v71pZjFTYXZWM3FlRnM"
+    # Ensure the directory exists
     os.makedirs(root, exist_ok=True)
-
     try:
-        print("Downloading CelebA dataset...")
-        response = requests.get(dataset_url, stream=True)
-        response.raise_for_status()  # Raise HTTPError for bad responses (4xx and 5xx)
+        # Download the data file from Google Drive
+        gdown.download(data_url, download_path, quiet=False)
+        print(f"Downloaded data to {download_path}.")
 
-        # Get the total size from headers
-        total_size = int(response.headers.get("content-length", 0))
-        chunk_size = 1024
-        num_chunks = total_size // chunk_size + 1
-
-        with open(download_path, "wb") as file, tqdm(
-            desc="Downloading",
-            unit="KB",
-            unit_divisor=1024,
-        ) as pbar:
-            for chunk in response.iter_content(chunk_size=chunk_size):
-                if chunk:
-                    file.write(chunk)
-                    pbar.update(len(chunk))
-        print(f"Downloaded CelebA dataset to {download_path}.")
-        print(f"Extracting CelebA dataset to {extract_path}...")
+        # Extract the dataset
+        print(f"Extracting CelebA dataset images to {extract_path}...")
         with zipfile.ZipFile(download_path, "r") as zip_ref:
             zip_ref.extractall(extract_path)
 
@@ -89,18 +72,43 @@ def download_celeba(root):
             os.rename(extracted_dir, final_path)
         print(f"Extraction complete. Dataset available at {final_path}.")
 
+        # Optionally delete the zip file
         os.remove(download_path)
         print(f"Deleted the downloaded zip file: {download_path}.")
-
-    except requests.exceptions.RequestException as e:
-        print(f"Failed to download the dataset: {e}")
-        raise
     except zipfile.BadZipFile as e:
         print(f"Failed to extract the dataset: {e}")
         raise
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
         raise
+
+    # download annotations
+    extract_path = root
+    files = {
+        "list_eval_partition.txt": "0B7EVK8r0v71pY0NSMzRuSXJEVkk",
+        "list_landmarks_celeba.txt": "0B7EVK8r0v71pTzJIdlJWdHczRlU",
+        "list_attr_celeba.txt": "0B7EVK8r0v71pblRyaVFSWGxPY0U",
+        "list_bbox_celeba.txt": "0B7EVK8r0v71pbThiMVRxWXZ4dU0",
+        "list_landmarks_align_celeba.txt": "0B7EVK8r0v71pd0FJY3Blby1HUTQ",
+        "identity_CelebA.txt": "1_ee_0u7vcNLOfNLegJRHmolfH5ICW-XS",
+    }
+    for file, uid in files.items():
+        download_path = os.path.join(root, "celeba", file)
+        data_url = f"https://drive.google.com/uc?id={uid}"
+        # Ensure the directory exists
+        os.makedirs(os.path.join(root, "celeba"), exist_ok=True)
+
+        try:
+            # Download the data file from Google Drive
+            gdown.download(data_url, download_path, quiet=False)
+            print(f"Downloaded data to {download_path}.")
+
+        except zipfile.BadZipFile as e:
+            print(f"Failed to extract the dataset: {e}")
+            raise
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
+            raise
 
 
 def download_utkface(root):
