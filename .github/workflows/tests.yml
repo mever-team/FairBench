@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    needs: canary
     strategy:
       matrix:
         python-version: ["3.11"] # TODO: re-enable 3.8 for 3.6 compatibility
