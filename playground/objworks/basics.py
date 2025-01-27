@@ -15,4 +15,4 @@ report = fb.reports.pairwise(predictions=yhat, labels=y, sensitive=sensitive)
 # report.show(env=fb.export.WebApp)
 
 
-report.show(depth=10)
+report.show(env=fb.export.HtmlTable, depth=1)

@@ -3,7 +3,8 @@
 Reports accept visualization environments as arguments to their `show` method.
 These environments can be either static or interactive, where the last
 category requires FairBench to be installed with the `interactive` extra
-dependencies like so:
+dependencies like below. You can always install specific libraries by looking
+at error messages to avoid the full bundle.
 
 ```bash
 pip install --upgrade fairbench[interactive]
@@ -165,11 +166,11 @@ This is an equivalent to the Console environment that converts
 presented text and quantities to a static HTML page. That page 
 displays evaluation cards one under the other, as demonstrated
 [here](../documentation/example_html.html) for the fairness 
-model card filtering found in the [quickstar](../quickstart.md).
+model card filtering found in the [quickstart](../quickstart.md).
 
 If you have a wide screen, it may be more convenient to display 
 the individual cards side-by-side by setting `horizontal=False` 
-in the environment's constructor.
+in the environment's constructor. An example is shown below.
 Get the generated HTML in text form without opening any browser
 window, for example to show later, by passing `view=False` 
 to the constructor. Here is an example of what this looks like 
@@ -180,13 +181,26 @@ report = ... # compute fairness report
 html_text = report.show(fb.export.Html(horizontal=False, view=False)) 
 ```
 
+![html_horizontal.png](html_horizontal.png)
+
 
 ## HtmlTable
 
 This is an equivalent to the ConsoleTable environment that
 again converts the generated tables to a static HTML page.
-The page is organized as a heatmap showing the intensity
-of values so that it's easier to spot edge cases.
+Below is an example outcome of `report.show(fb.export.HtmlTable)`.
+
+![html_table.png](html_table.png)
+
+## PlotlyHeatMap
+
+!!! warning
+    Plotly is installed as part of the interactive extras.
+
+This is similar to the HtmlTable environment, with the 
+difference that Plotly is used for heatmap plotting of
+the values.
+
 
 ## ToJson
 

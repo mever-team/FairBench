@@ -31,12 +31,20 @@ class HtmlTable(Html):
 
     def colorize(self, text, deviation):
         if deviation < 0.25:
-            emphasis = "success"
+            fg_color = "#28a745"  # Bright green
+            tooltip = "Near ideal values"
         elif deviation < 0.75:
-            emphasis = "warning"
+            fg_color = "#fd7e14"  # Vibrant orange
+            tooltip = "Not ideal / ideal value unknown"
         else:
-            emphasis = "danger"
-        return f'<td class="bg-bg-light text-{emphasis}" style="width: 50px; height: 50px; text-align: center; vertical-align: middle;">{text}</td>'
+            fg_color = "#dc3545"  # Strong red
+            tooltip = "Far from ideal"
+
+        return (
+            f'<td style="color: {fg_color}; width: 50px; height: 50px; text-align: center; vertical-align: middle;" '
+            f'data-bs-toggle="tooltip" title="{tooltip}">'
+            f"{text}</td>"
+        )
 
     def bar(self, title, val, target, units=""):
         if units == title:

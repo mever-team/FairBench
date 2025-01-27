@@ -131,7 +131,6 @@ class PlotlyHeatMap:
             subplot_titles=[d[4] for d in self.figures_data],
         )
         fig.update_annotations(font=dict(size=20))
-
         for i, (z, text_data, x_labels, y_labels, title) in enumerate(
             self.figures_data, start=1
         ):
@@ -165,9 +164,9 @@ class PlotlyHeatMap:
             )
 
         fig.update_layout(
-            width=600 * num_plots,  # Scale width based on number of plots
-            height=600,  # Set the height of the figure
-            margin=dict(l=10, r=10, t=50, b=10),  # Minimize margins
+            # width=600 * num_plots,  # Scale width based on number of plots
+            # height=600,  # Set the height of the figure
+            margin=dict(l=10, r=10, t=10, b=10),  # Minimize margins
         )
         fig.show(renderer="browser")
 
