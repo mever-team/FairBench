@@ -129,11 +129,11 @@ report.show(env=fb.export.Console(ansiplot=False))
 
 A more concise visualization strategy is to create
 tables in the console, like below. This also admits
-a `sideways` argument with default True
+a `sideways` argument with default value True
 that determines whether to attempt to show
 multiple tables side-by-side if necessary.
 It also accepts a `legend` argument with default False
-that shows additional textual descriptions,
+about showing additional textual descriptions,
 similarly to the console report.
 
 ```python
@@ -154,18 +154,39 @@ gini                                     0.250        0.100        0.500        
 std                                      0.333        0.083        0.500        0.250        0.250        0.083
 ```
 
+!!! tip
+    The default options of ConsoleTable provides the most concise representation of results.
+    However, you might need refreshers about each entry, for example by adding a legend
+    or simply running `report.help()` first.
 
 ## Html
 
 This is an equivalent to the Console environment that converts
-presented text and quantities to a static Html page.
+presented text and quantities to a static HTML page. That page 
+displays evaluation cards one under the other, as demonstrated
+[here](../documentation/example_html.html) for the fairness 
+model card filtering found in the [quickstar](../quickstart.md).
 
-*This section is under construction*
+If you have a wide screen, it may be more convenient to display 
+the individual cards side-by-side by setting `horizontal=False` 
+in the environment's constructor.
+Get the generated HTML in text form without opening any browser
+window, for example to show later, by passing `view=False` 
+to the constructor. Here is an example of what this looks like 
+in code.
+
+```python
+report = ... # compute fairness report
+html_text = report.show(fb.export.Html(horizontal=False, view=False)) 
+```
+
 
 ## HtmlTable
 
 This is an equivalent to the ConsoleTable environment that
-again converts the generated tables to a static Html page.
+again converts the generated tables to a static HTML page.
+The page is organized as a heatmap showing the intensity
+of values so that it's easier to spot edge cases.
 
 ## ToJson
 

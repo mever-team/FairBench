@@ -148,7 +148,7 @@ sensitive = fb.Dimensions(
 <button onclick="toggleCode('code6')" class="toggle-button">>></button>
 <b>From multiple iterables</b><br>
 Add the outcomes of multiple category analyses 
-to `Dimensions`; usie named keyword arguments to prepend the 
+to `Dimensions`; use named keyword arguments to prepend the 
 that name to dimensions names, or put all category analyses
 as positional arguments to just merge their branches.
 Any Python iterable can be analyzed into categories.

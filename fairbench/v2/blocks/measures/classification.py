@@ -80,7 +80,7 @@ def tnr(predictions, labels, sensitive=None):
     )
 
 
-@c.measure("the true acceptance rate")
+@c.measure("the true acceptance ratio (true positives compared to all)")
 def tar(predictions, labels, sensitive=None):
     predictions = np.array(predictions)
     labels = np.array(labels)
@@ -97,7 +97,7 @@ def tar(predictions, labels, sensitive=None):
     )
 
 
-@c.measure("the true rejection rate")
+@c.measure("the true rejection ratio (true negatives compared to all)")
 def trr(predictions, labels, sensitive=None):
     predictions = np.array(predictions)
     labels = np.array(labels)

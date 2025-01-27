@@ -43,8 +43,9 @@ def test_watebirds():
     badd_report = fb.biasreport(
         predictions=yhat, labels=y, sensitive=fb.Fork(fb.categories @ sens)
     )
-    report = badd_report  # TODO: hack until we get mavias to be actually working
-    # y, yhat, sens = fb.bench.vision.waterbirds(classifier="mavias", predict="predict")
-    ##mavias_report = fb.biasreport(predictions=yhat, labels=y, sensitive=fb.Fork(fb.categories @ sens))
-    # report = fb.Fork(mavias=mavias_report, badd=badd_report)
+    y, yhat, sens = fb.bench.vision.waterbirds(classifier="mavias", predict="predict")
+    mavias_report = fb.biasreport(
+        predictions=yhat, labels=y, sensitive=fb.Fork(fb.categories @ sens)
+    )
+    report = fb.Fork(mavias=mavias_report, badd=badd_report)
     fb.text_visualize(report.accuracy)

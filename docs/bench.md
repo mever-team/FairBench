@@ -1,22 +1,22 @@
 # Quick benchmarks
 
 Here we show how to run and compare algorithms. To give a taste of
-the library's ability to accommodate various kinds of data, we use computer vision examples.
+the library's ability to accommodate various kinds of data, we assess 
+computer vision systems.
 
-Before starting, install FairBench with the extra dependencies (extras) required
-to run benchmarks on models of the corresponding data types. 
-Tabular data benchmarks only use implementations packed alongside the
-library under its normal installation. To install with all extras run:
+Before starting, install FairBench with any needed extra dependencies (extras).
+These install libraries required by models of the corresponding data types. 
+Tabular data benchmarks do not need any extras. To install with all extras run:
 
 ```shell
 pip install --upgrade fairbench[graph,llm,vision]
 ```
 
 !!! warning
-    - Benchmarking standardization is a work in progress 
-    and you may encounter interface breaking changes before FairBench v1.0.0.
-    - Vision extras include pytorch,
-    which downloads and stores several gigabytes of data.
+    Benchmarks using extras may download a lot of data (partially due to the
+    size of libraries like *torch*) and need sufficient resources to run. These
+    constraints are standard for the respective domains and are needed to run
+    experiments whose outcomes FairBench analyses.
 
 ## 1. Setup experiments
 
@@ -51,16 +51,12 @@ experiments = {
 
 ## 2. Gather reports
 
-!!! tip
+!!! info
     Get familiar with generating standalone fairness reports in the [quickstart](quickstart.md). 
 
-FairBench offers the `Progress` class to gather fairness reports
-by registering them sequentially and can yield an amalgamation at any point.
-The same class is also used for reports that show the evolution
-of datasets and algorithms over time 
-(both tracked progress and reports can be serialized to and from Json,
-which allows for persistence, if needed).
-
+FairBench offers the `Progress` class to gather several fairness reports
+by registering them sequentially. It can yield an amalgamation at any point.
+The same class can also track the evolution of datasets and algorithms over time.
 Here is how to add report/value instances to progress and build
 a report that contains all of them:
 
@@ -90,7 +86,26 @@ gini                                     0.000        0.030        0.008        
 std                                      0.000        0.027        0.013        0.009        0.024        0.023        0.011        0.048        0.021        0.040        0.029        0.039
 ```
 
-## 3. Side-by-side comparison
+Serialize and serialize reports like below, for
+example to cache results and facilitate future exploration.
+Use the same mechanism to keep track of data across multiple runs
+in case of time evolving reports.
+
+```python
+import os.path
+import json
+
+if not os.path.exists("cache.json"):
+    ... # the rest of the code here
+    comparison = settings.build()
+    with open("cache.json", "w") as file:
+        file.write(json.dumps(comparison.to_dict()))
+else:
+    with open("cache.json", "r") as file:
+        comparison = fb.core.Value.from_dict(json.loads(file.read()))
+```
+
+## 3. Compare and explore
 
 Alter how reports are organized
 at the top level using `.explain`. This is helpful for side-by-side comparison,
@@ -104,8 +119,6 @@ comparison.explain.show(env=fb.export.ConsoleTable(sideways=False))
 ```
 
 *Output omitted for brevity. It is similar to the last one in this page.*
-
-## 4.Explore
 
 Explore reports of any complexity by focusing on contributing
 computations of interest. Do this programmatically with the dot notation or, 
@@ -140,7 +153,7 @@ comparison.acc.explain["maxdiff explain mean"].show(env=fb.export.Console)
    - badd utkface multidim               0.022 
 ```
 
-## 5. Simplify the comparison 
+## 4. Simplify the comparison 
 
 Apply filters to retain only specific types of evaluation,
 such as computations that show only bias
@@ -176,7 +189,7 @@ tar                                                0.125
 trr                                                0.150
 ```
 
-## 6. Multiple runs
+## 5. Multiple runs
 
 Use the same progress tracking mechanism to keep track
 of multiple experiment repetitions, if you need to. 
