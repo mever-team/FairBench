@@ -6,5 +6,8 @@ sensitive = fb.Dimensions(fb.categories @ x["sex"], fb.categories @ x["race"])
 sensitive = sensitive.intersectional()
 report = fb.reports.pairwise(predictions=yhat, labels=y, sensitive=sensitive)
 
-report.filter(fb.investigate.DeviationsOver(0.2)).show(env=fb.export.ConsoleTable)
-report.maxrel.pr.show(env=fb.export.Console)
+direct_values = {k: float(v) for k, v in report.pr.maxdiff.depends.items()}
+print(direct_values)
+
+ret = report.to_dict()["depends"][6]["depends"][1]
+print(report.maxdiff.pr | float)

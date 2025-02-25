@@ -38,7 +38,7 @@ def acc(predictions, labels, sensitive=None):
     )
 
 
-@c.measure("the true positive rate")
+@c.measure("the true positive rate/recall/sensitivity/hit rate")
 def tpr(predictions, labels, sensitive=None):
     predictions = np.array(predictions)
     labels = np.array(labels)
@@ -59,7 +59,7 @@ def tpr(predictions, labels, sensitive=None):
     )
 
 
-@c.measure("the true negative rate")
+@c.measure("the true negative rate/specificity")
 def tnr(predictions, labels, sensitive=None):
     predictions = np.array(predictions)
     labels = np.array(labels)
@@ -76,6 +76,27 @@ def tnr(predictions, labels, sensitive=None):
             quantities.negatives(negatives),
             quantities.an(an),
             quantities.tn(tn),
+        ],
+    )
+
+
+@c.measure("the positive predictive value/precision")
+def ppv(predictions, labels, sensitive=None):
+    predictions = np.array(predictions)
+    labels = np.array(labels)
+    sensitive = np.ones_like(predictions) if sensitive is None else np.array(sensitive)
+    positives = (predictions * sensitive).sum()
+    tp = (predictions * sensitive * labels).sum()
+    ap = (labels * sensitive).sum()
+    samples = sensitive.sum()
+    value = 0 if positives == 0 else tp / positives
+    return c.Value(
+        c.TargetedNumber(value, 1),
+        depends=[
+            quantities.samples(samples),
+            quantities.positives(positives),
+            quantities.ap(ap),
+            quantities.tp(tp),
         ],
     )
 
