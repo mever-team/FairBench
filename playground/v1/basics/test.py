@@ -1,8 +1,10 @@
 import fairbench as fb
 
-yhat = [0]*10
-y = [0]*8+[1,1]
-sensitive = fb.Fork(fb.categories@[0, 0, 0, 0, 0, 1, 1, 1, 1, 1])  # see why weighted mean doesn't work
+yhat = [0] * 10
+y = [0] * 8 + [1, 1]
+sensitive = fb.Fork(
+    fb.categories @ [0, 0, 0, 0, 0, 1, 1, 1, 1, 1]
+)  # see why weighted mean doesn't work
 
 report = fb.multireport(predictions=yhat, labels=y, sensitive=sensitive)
 fb.text_visualize(report.accuracy)

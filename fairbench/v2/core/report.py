@@ -26,7 +26,7 @@ def report(
     }
     kwargs = {
         name: (
-            {k: v.raw for k, v in arg.branches().items()}
+            {k: v.raw if hasattr(v, "raw") else v for k, v in arg.branches().items()}
             if isinstance(arg, deprecated.Fork)
             else arg
         )
