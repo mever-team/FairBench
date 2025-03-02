@@ -50,7 +50,7 @@ class ConsoleTable(Console):
                 col_num = self.col_names[last_title]
             # set value
             assert self.accumulated_bars[row_num][col_num] == self.na, (
-                f"Two or more conflicting values for showing '{title}' under header '{last_title}'"
+                f"Two or more conflicting values for showing '{title}' under header '{last_title}' "
                 f"with all headers being: {', '.join(self.col_names.keys())} "
                 "Consider switching to the Console visualization environment instead."
             )

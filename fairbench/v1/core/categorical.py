@@ -102,6 +102,7 @@ def fuzzy(x):
     assert isinstance(x, Iterable)
     if isinstance(x, Mapping):
         return Categorical(x)
+    x = x.numpy() if istensor(x) else [xval for xval in x]
     x = tobackend(x)
     minx = x.min().raw
     maxx = x.max().raw

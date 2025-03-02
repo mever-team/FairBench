@@ -8,14 +8,10 @@ def _generate_details(descriptor: Descriptor):
     roles = [role for role in roles if role not in descriptor.details]
     roles = " of a ".join(roles)
     details = descriptor.details.split(".")[0]
-    if not roles:
-        details = f"This is {details}."
-    else:
-        details = f"This {roles} is {details}."
-    return details
+    return f"This is {details}." if not roles else f"This {roles} is {details}."
 
 
-def _console(env: Console, value: Value, depth=0, max_depth=6, symbol_depth=0):
+def _console(env: Console, value: Value, depth=0, max_depth=6):
     title = value.descriptor.name
 
     def get_ideal():
@@ -23,22 +19,14 @@ def _console(env: Console, value: Value, depth=0, max_depth=6, symbol_depth=0):
             return value.value.target
         return float(value) + 0.5
 
-    if value.value is not None and (depth < max_depth or symbol_depth != 0):
-        depth += 1
-
-    if (
-        not value.depends or depth > max_depth or symbol_depth > max_depth
-    ) and value.value is not None:
+    if (not value.depends or depth > max_depth) and value.value:
         if isinstance(value.value, Curve):
             env.curve(title, value.value.x, value.value.y, value.value.units)
             return
         val = float(value)
         env.bar(title, val, get_ideal(), units=value.value.units)
         return
-    if depth > max_depth:
-        env.text(f"{title} [use the alias {value.descriptor.alias} for more info]")
-        return
-    env.title(title, level=symbol_depth, link=value.descriptor.alias)
+    env.title(title, level=depth, link=value.descriptor.alias)
     env.first().quote(
         _generate_details(value.descriptor), (" is ", " in ", " of ", " for ", " that ")
     ).p()
@@ -74,7 +62,7 @@ def _console(env: Console, value: Value, depth=0, max_depth=6, symbol_depth=0):
             env.title("", level=depth)
         env.first().bold("Computations cover several cases.").p()
     for dep in value.depends.values():
-        _console(env, dep, depth, max_depth=max_depth, symbol_depth=symbol_depth + 1)
+        _console(env, dep, depth=depth + 1, max_depth=max_depth)
     if not value.depends and value.value is None:
         env.bold("Nothing has been computed").p()
     else:

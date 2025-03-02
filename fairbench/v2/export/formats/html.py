@@ -3,9 +3,10 @@ import json
 
 
 class Html:
+    chart_count = 0
+
     def __init__(self, horizontal=False, view=True, filename="temp"):
         self.contents = ""
-        self.chart_count = 0
         self.bars = []
         self.prev_max_level = 0
         self.routes = dict()
@@ -81,8 +82,8 @@ class Html:
             for t, x, y, u in self.curves
         ]
         curve_json = json.dumps(curve_data)
-        self.chart_count += 1
-        cid = self.chart_count
+        Html.chart_count += 1
+        cid = Html.chart_count
 
         self.contents += f"""<div id="curve-chart{cid}" class="mt-2"></div>"""
 
@@ -147,8 +148,8 @@ class Html:
     def _embed_bars(self):
         bar_data = [{"title": t, "val": v, "target": trg} for t, v, trg in self.bars]
         bar_json = str(bar_data).replace("'", '"')
-        self.chart_count += 1
-        cid = self.chart_count
+        Html.chart_count += 1
+        cid = Html.chart_count
         self.contents += f"""<div id="bar-chart{cid}" class="mt-2"></div>"""
         self.contents += f"""
             <script>
