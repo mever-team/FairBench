@@ -5,7 +5,9 @@ import json
 class Html:
     chart_count = 0
 
-    def __init__(self, horizontal=False, view=True, filename="temp"):
+    def __init__(
+        self, horizontal=False, view=True, filename="temp", distributions=False
+    ):
         self.contents = ""
         self.bars = []
         self.prev_max_level = 0
@@ -15,6 +17,7 @@ class Html:
         self.level = 0
         self.view = view
         self.filename = filename
+        self.distributions = distributions
 
     def navigation(self, text, routes: dict):
         return self
@@ -72,6 +75,10 @@ class Html:
         return self
 
     def _embed_curves(self):
+        if not self.distributions:
+            self.contents += (
+                f"<details><summary>Obtained from {len(self.bars)} curves</summary>\n"
+            )
         curve_data = [
             {
                 "title": t,
@@ -142,10 +149,17 @@ class Html:
 
             </script>
         """
+
+        if not self.distributions:
+            self.contents += "\n</details>\n"
         self.curves = list()
         return self
 
     def _embed_bars(self):
+        if not self.distributions:
+            self.contents += (
+                f"<details><summary>Obtained from {len(self.bars)} values</summary>\n"
+            )
         bar_data = [{"title": t, "val": v, "target": trg} for t, v, trg in self.bars]
         bar_json = str(bar_data).replace("'", '"')
         Html.chart_count += 1
@@ -201,6 +215,8 @@ class Html:
                    .attr("fill", d => colorScale{cid}(Math.abs(d.val - d.target)));
             </script>
         """
+        if not self.distributions:
+            self.contents += "\n</details>\n"
 
         self.bars = list()
 

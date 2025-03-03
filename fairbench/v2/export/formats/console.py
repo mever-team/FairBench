@@ -2,7 +2,7 @@ from fairbench.v2.export.formats.ansi import ansi
 
 
 class Console:
-    def __init__(self, view=True, ansiplot=True, width=80):
+    def __init__(self, view=True, ansiplot=True, width=80, distributions=True):
         self.contents = ""
         self.symbols = {0: "#", 1: "*", 2: "=", 3: "-", 4: "^", 5: '"'}  # sphinx format
         self.level = 0
@@ -11,6 +11,7 @@ class Console:
         self.curves = list()
         self.width = width
         self.view = view
+        self.distributions = distributions
 
     def navigation(self, text, routes: dict):
         return self
@@ -42,21 +43,32 @@ class Console:
         return self
 
     def _embed_curves(self):
-        import ansiplot
+        if self.distributions:
+            import ansiplot
 
-        canvas = ansiplot.Scaled(40, 10)
-        for title, x, y, units in self.curves:
-            canvas.plot(x, y, title=title + " " + units)
+            canvas = ansiplot.Scaled(40, 10)
+            for title, x, y, units in self.curves:
+                canvas.plot(x, y, title=title + " " + units)
 
-        text = canvas.text()
-        tab = "" if self.level == 0 else (self.level - 1) * "  " + " "
-        self.contents += f"\n{tab}  " + f"\n{tab}  ".join(text.split("\n"))
-        self.contents += "\n"
+            text = canvas.text()
+            tab = "" if self.level == 0 else (self.level - 1) * "  " + " "
+            self.contents += f"\n{tab}  " + f"\n{tab}  ".join(text.split("\n"))
+            self.contents += "\n"
+        else:
+            self.first()
+            self.contents += f"Obtained from {len(self.bars)} curves"
+            self.p()
 
         self.curves = list()
         return self
 
     def _embed_bars(self):
+        if not self.distributions:
+            self.first()
+            self.contents += f"Obtained from {len(self.bars)} values"
+            self.p()
+            self.bars = list()
+            return
         if self.ansiplot:
             import ansiplot
 
