@@ -9,4 +9,6 @@ report = fb.reports.pairwise(predictions=yhat, labels=y, sensitive=sensitive)
 report.filter(fb.investigate.Stamps).show(
     env=fb.export.Html(distributions=False), depth=1
 )
-report.maxrel.pr.show(env=fb.export.Console)
+report.show(env=fb.export.ConsoleTable)
+
+report.maxrel.tnr.show()

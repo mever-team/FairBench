@@ -89,6 +89,8 @@ class Console:
             mv = max(val for title, units, val, target in self.bars)
             ch = canvas.height
             num = 1
+            if mv == 0:
+                mv = 1
             for title, units, val, target in self.bars:
                 canvas.bar(
                     num,
