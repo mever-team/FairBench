@@ -6,11 +6,11 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md) 
 
-A comprehensive AI fairness exploration framework.
-- 📈 Fairness reports and stamps
-- ⚖️ Multivalue multiattribute
-- 🧪 Backtrack computations to measure building blocks
-- 🖥️ ML compatible: *numpy,pandas,torch,tensorflow,jax*
+A comprehensive AI fairness exploration framework. <br>
+📈 Fairness reports and stamps <br>
+⚖️ Multivalue multiattribute <br>
+🧪 Backtrack computations to measure building blocks <br>
+🖥️ ML compatible: *numpy,pandas,torch,tensorflow,jax*
 
 *FairBench strives to be compatible with the latest Python release, 
 but compatibility delays of third-party ML libraries usually 
