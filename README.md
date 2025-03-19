@@ -7,10 +7,10 @@
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md) 
 
 A comprehensive AI fairness exploration framework.
-- :chart_with_upwards_trend: Fairness reports and stamps
-- :flags: Multivalue multiattribute
-- :hammer_and_wrench: Measure building blocks
-- :gear: ML integration (`numpy`,`torch`,`tensorflow`,`jax`)
+- 📈 Fairness reports and stamps
+- ⚖️ Multivalue multiattribute
+- 🧪 Backtrack computations to measure building blocks
+- 🖥️ ML compatible: *numpy,pandas,torch,tensorflow,jax*
 
 *FairBench strives to be compatible with the latest Python release, 
 but compatibility delays of third-party ML libraries usually 
