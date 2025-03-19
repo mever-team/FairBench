@@ -17,6 +17,8 @@ but compatibility delays of third-party ML libraries usually
 mean that only the language's previous release is tested and
 stable (currently 3.12).*
 
+## Example html visualization
+
 ![example](docs/images/example.png)
 
 ## [Documentation](https://fairbench.readthedocs.io/)
