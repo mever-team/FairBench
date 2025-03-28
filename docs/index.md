@@ -42,10 +42,11 @@
 
 <h1 style="margin-bottom: 0px;">FairBench</h1>
 
-This is a comprehensive AI fairness exploration framework. 
-Visit the <a href="quickstart/" markdown="span">quickstart</a> for a tour and read the 
-documentation. Or try
-the library with only lightweight features enabled in your browser.
+This is a comprehensive AI fairness exploration framework developed by the
+<a href="https://mammoth-ai.eu/">MAMMOth</a> project. 
+Visit the overview, read the 
+documentation, or try
+lightweight features in your browser.
 <br><br>
 
 <button id="run" onclick="evaluatePython()"><span class="icon-green">&#9654;</span> Run snippet</button>

@@ -49,10 +49,10 @@ report.filter(fb.investigate.Stamps).show(env=fb.export.Html(horizontal=True), d
 }
 ```
 
+**Project:** [MAMMOth](https://mammoth-ai.eu/) (https://mammoth-ai.eu) <br>
 **Maintainer:** Emmanouil (Manios) Krasanakis (maniospas@hotmail.com)<br>
 **License:** Apache 2.0<br>
 **Contributors:** Giannis Sarridis
-
 
 This project includes modified code originally licensed under the MIT License:
 
