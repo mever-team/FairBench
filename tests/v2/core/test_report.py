@@ -85,7 +85,7 @@ def test_pairwise():
     report.acc.min.show()
 
 
-def test_exceedingly_Bad_recommendation():
+def test_exceedingly_bad_recommendation():
     x, y, yhat = fb.bench.tabular.bank()
     sensitive = fb.Dimensions(fb.fuzzy @ x["age"], fb.categories @ x["education"])
     sensitive = sensitive.intersectional().strict()
@@ -95,7 +95,7 @@ def test_exceedingly_Bad_recommendation():
         scores=yhat,
         labels=y,
     )
-    report.min.show()
+    report.show()
 
 
 def test_investigators():

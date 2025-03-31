@@ -11,15 +11,16 @@ def avgscore(scores, sensitive=None, bins=100):
     samples = sensitive.sum()
     value = 0 if samples == 0 else positives / samples
 
+    scores = scores * sensitive
     hist, bin_edges = np.histogram(
-        scores[sensitive == 1], bins=bins, density=True, range=(0, 1)
+        scores[sensitive != 0], bins=bins, density=True, range=(0, 1)
     )
     bin_edges = np.concatenate([[0], bin_edges[:-1][hist != 0], [bin_edges[-1], 1]])
     hist = np.concatenate([[0], hist[hist != 0], [0]])
 
     curve = c.Curve(
-        x=np.array((bin_edges[:-1] + bin_edges[1:]) / 2, dtype=float),
-        y=np.array(hist, dtype=float),
+        y=np.array((bin_edges[:-1] + bin_edges[1:]) / 2, dtype=float),
+        x=np.array(hist, dtype=float),
         units="",
     )
 
@@ -42,19 +43,20 @@ def auc(scores, labels, sensitive=None):
     labels = np.array(labels, dtype=np.float64)
     sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
 
-    scores = scores[sensitive == 1]
-    labels = labels[sensitive == 1]
+    median_sensitive = np.median(sensitive)
+    scores = scores[sensitive >= median_sensitive]
+    labels = labels[sensitive >= median_sensitive]
     fpr, tpr, _ = _roc_curve(labels, scores)
     value = _auc(fpr, tpr)
 
     if math.isnan(value):  # TODO: temporary solution
         return c.NotComputable(
-            f"Cannot compute AUC when all instances have the same label for branch"
+            f"Cannot compute AUC when all instances have the same label for a sensitive attribute dimension"
         )
 
     assert not math.isnan(
         value
-    ), f"Cannot compute AUC when all instances have the same label for branch"
+    ), f"Cannot compute AUC when all instances have the same label for a sensitive attribute dimension"
 
     curve = c.Curve(
         x=fpr,

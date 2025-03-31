@@ -1,3 +1,5 @@
+import math
+
 from fairbench.v2.export.formats.ansi import ansi
 
 
@@ -39,6 +41,10 @@ class Console:
     def bar(self, title, val: float, target: float, units: str = ""):
         if units == title:
             units = ""
+        assert not math.isnan(val)
+        assert not math.isnan(target)
+        assert not math.isinf(val)
+        assert not math.isinf(target)
         self.bars.append((title, units, val, target))
         return self
 

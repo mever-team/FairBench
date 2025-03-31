@@ -22,6 +22,10 @@ class Curve:
         self.x = np.array(x)
         self.y = np.array(y)
         self.units = units
+        for value in x:
+            assert not np.isnan(value), f"Cannot store a NaN value in a curve's x-axis"
+        for value in y:
+            assert not np.isnan(value), f"Cannot store a NaN value in a curve's y-axis"
 
     def to_dict(self):
         return {

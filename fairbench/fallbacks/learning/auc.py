@@ -5,7 +5,6 @@ def roc_curve(labels, scores):
     # Sort by score descending
     desc_score_indices = np.argsort(scores)[::-1]
     sorted_labels = labels[desc_score_indices]
-    sorted_scores = scores[desc_score_indices]
 
     # Initialize TPR and FPR arrays
     tpr = [0]
@@ -31,9 +30,8 @@ def roc_curve(labels, scores):
     sorted_indices = np.argsort(fpr)
     fpr = fpr[sorted_indices]
     tpr = tpr[sorted_indices]
-    # sorted_scores = sorted_scores[sorted_indices]
 
-    return fpr, tpr, sorted_scores
+    return fpr, tpr, sorted_indices
 
 
 def auc(fpr, tpr):

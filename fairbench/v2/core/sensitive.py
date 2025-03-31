@@ -91,6 +91,11 @@ class Sensitive:
                         # this is what would normally happen if only the sensitive attribute has branches
                         result = measure(**valid_kwargs, sensitive=sensitive)
                         measure_values.append(result)
+                except AssertionError as e:
+                    raise AssertionError(
+                        str(e)
+                        + f" while computing {measure.descriptor} for dimension `{key}`"
+                    )
                 except NotComputable:
                     pass
                 except TypeError:

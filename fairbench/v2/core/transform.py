@@ -1,6 +1,7 @@
 from typing import Iterable
 from fairbench.v2.core import Value, NotComputable, Curve
 import numpy as np
+import math
 
 
 def number(values: Iterable[Value]) -> list[float]:
@@ -90,10 +91,12 @@ def curve_pair_diff(
         curve2, Curve
     ), "Cannot compare non-curves"
     n_points = min(len(curve1.x), len(curve2.x))
+    assert (
+        n_points > 1
+    ), "A curve was less than two points was involved in comparing curve areas"
     curve1_grid = curve1.to_grid(n_points)
     curve2_grid = curve2.to_grid(n_points)
     skewed_y1 = skew(curve1_grid.x, curve1_grid.y)
     skewed_y2 = skew(curve2_grid.x, curve2_grid.y)
     x_integral = np.mean(skew(curve1_grid.x, np.ones_like(curve1_grid.x)))
-
     return np.mean(comparator(skewed_y1, skewed_y2)) / x_integral
