@@ -83,8 +83,8 @@ def tophr(scores, labels, sensitive=None, top=3):
     labels = labels[sensitive == 1]
     indexes = np.argsort(scores)[-k:]
 
-    value = labels[indexes].mean()
-    true_top = labels[indexes].sum()
+    value = labels[indexes].mean() if len(indexes) else 0
+    true_top = labels[indexes].sum() if len(indexes) else 0
     samples = sensitive.sum()
 
     return c.Value(
@@ -143,8 +143,8 @@ def topf1(scores, labels, sensitive=None, top=3):
     labels = labels[sensitive == 1]
     indexes = np.argsort(scores)[-k:]
 
-    prec = labels[indexes].mean()
-    denom_rec = labels.sum()
+    prec = labels[indexes].mean() if len(indexes) else 0
+    denom_rec = labels.sum() if len(indexes) else 0
     rec = 0 if denom_rec == 0 else labels[indexes].sum() / denom_rec
     denom = prec + rec
     value = 0 if denom == 0 else 2 * prec * rec / denom
