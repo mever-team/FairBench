@@ -164,7 +164,17 @@ class Html:
             self.contents += (
                 f"<details><summary>Obtained from {len(self.bars)} values</summary>\n"
             )
-        bar_data = [{"title": t, "val": v, "target": trg} for t, v, trg in self.bars]
+        bar_data = [
+            {
+                "title": (f"{v:.3f} " if v < 1 else str(int(t))) + t,
+                "val": v,
+                "target": trg,
+            }
+            for t, v, trg in self.bars
+        ]
+        max_val = max(v for t, v, trg in self.bars)
+        if max_val < 1:
+            max_val = 1
         bar_json = str(bar_data).replace("'", '"')
         Html.chart_count += 1
         cid = Html.chart_count
@@ -173,10 +183,10 @@ class Html:
             self.contents += f"""
                 <script>
                     const data{cid} = {bar_json};
-                    const margin{cid} = {{ top: 20, right: 200, bottom: 40, left: 10 }};
+                    const margin{cid} = {{ top: 0, right: 50, bottom: 30, left: 10 }};
                     const width{cid} = {400 if self.horizontal else 600} - margin{cid}.left - margin{cid}.right;
-                    const barHeight{cid} = 40;
-                    const height{cid} = data{cid}.length * barHeight{cid} - margin{cid}.top - margin{cid}.bottom;
+                    const barHeight{cid} = 30;
+                    const height{cid} = data{cid}.length * barHeight{cid}+30;
 
                     const svg{cid} = d3.select("#bar-chart{cid}")
                                       .append("svg")
@@ -190,8 +200,7 @@ class Html:
                         .range([0, height{cid}])
                         .padding(0.2);
 
-                    const x{cid} = d3.scaleLinear()
-                        .domain([0, d3.max(data{cid}, d => Math.max(d.val, d.target))])
+                    const x{cid} = d3.scaleLinear().domain([0, {max_val}])
                         .nice()
                         .range([0, width{cid}]);
 
@@ -213,27 +222,13 @@ class Html:
                         .attr("width", d => x{cid}(d.val))
                         .attr("fill", d => colorScale{cid}(Math.abs(d.val - d.target)));
 
-                    // Add the number inside the bar (aligned near the right end but inside)
-                    svg{cid}.selectAll(".bar-value")
-                        .data(data{cid})
-                        .enter()
-                        .append("text")
-                        .attr("class", "bar-value")
-                        .attr("x", d => x{cid}(d.val) - 5) // 5px padding inside the bar
-                        .attr("y", d => y{cid}(d.title) + y{cid}.bandwidth() / 2)
-                        .attr("dy", ".35em")
-                        .text(d => formatNumber{cid}(d.val))
-                        .attr("fill", "white")
-                        .attr("font-size", "12px")
-                        .attr("text-anchor", "end"); // align to the end (right)
-
                     // Add the label (title) right outside the bar
                     svg{cid}.selectAll(".bar-label")
                         .data(data{cid})
                         .enter()
                         .append("text")
                         .attr("class", "bar-label")
-                        .attr("x", d => x{cid}(d.val) + 5) // 5px outside the bar
+                        .attr("x", d => 5) // 5px padding inside the bar
                         .attr("y", d => y{cid}(d.title) + y{cid}.bandwidth() / 2)
                         .attr("dy", ".35em")
                         .text(d => d.title)
@@ -247,7 +242,7 @@ class Html:
 
                     svg{cid}.append("g")
                         .attr("transform", `translate(0, ${{height{cid}}})`)
-                        .call(d3.axisBottom(x{cid}));
+                        .call(d3.axisBottom(x{cid}).tickFormat(d => (d / {max_val}).toFixed(1)));
                 </script>
             """
         else:
@@ -278,7 +273,7 @@ class Html:
                        .style("text-anchor", "start");
     
                     const y{cid} = d3.scaleLinear()
-                        .domain([0, d3.max(data{cid}, d => Math.max(d.val, d.target))])
+                        .domain([0, {max_val}])
                         .nice()
                         .range([height{cid}, 0]);
     

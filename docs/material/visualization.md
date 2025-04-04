@@ -3,8 +3,7 @@
 Reports accept visualization environments as arguments to their `show` method.
 These environments can be either static or interactive, where the last
 category requires FairBench to be installed with the `interactive` extra
-dependencies like below. You can always install specific libraries by looking
-at error messages to avoid the full bundle.
+dependencies:
 
 ```bash
 pip install --upgrade fairbench[interactive]
@@ -14,10 +13,10 @@ pip install --upgrade fairbench[interactive]
 
 The default visualization environment prints all report
 details in the console (it also uses ansi color codes
-that do not appear in this page). This environment can be
-explicitly selected by passing its class as an argument
+that do not appear in this page). It can also be
+selected by passing its class as an argument
 to the `show` method, in which case it is instantiated
-with its default values.
+with default arguments.
 
 ```python
 report.show(env=fb.export.Console)
@@ -26,8 +25,7 @@ report.show(env=fb.export.Console)
 The above makes use of the [ansiplot](https://github.com/maniospas/ansiplot)
 library to have some nice plots. You can switch
 to a less verbose style by manually instantiating
-the environment instead of passing its class to
-be created with the default arguments:
+the environment, like below.
 
 ```python
 report.show(env=fb.export.Console(ansiplot=False))
@@ -130,8 +128,8 @@ report.show(env=fb.export.Console(ansiplot=False))
 
 A more concise visualization strategy is to create
 tables in the console, like below. This also admits
-a `sideways` argument with default value True
-that determines whether to attempt to show
+a `sideways` argument with default value *True*
+that determines whether to show
 multiple tables side-by-side if necessary.
 It also accepts a `legend` argument with default False
 about showing additional textual descriptions,
@@ -158,7 +156,7 @@ std                                      0.333        0.083        0.500        
 !!! tip
     The default options of ConsoleTable provides the most concise representation of results.
     However, you might need refreshers about each entry, for example by adding a legend
-    or simply running `report.help()` first.
+    or running `report.help()`.
 
 ## Html
 
@@ -166,22 +164,35 @@ This is an equivalent to the Console environment that converts
 presented text and quantities to a static HTML page. That page 
 displays evaluation cards one under the other, as demonstrated
 [here](../documentation/example_html.html) for the fairness 
-model card filtering found in the [quickstart](../quickstart.md).
+model card filtering found in the [quickstart](../quickstart.md). 
 
-If you have a wide screen, it may be more convenient to display 
-the individual cards side-by-side by setting `horizontal=False` 
-in the environment's constructor. An example is shown below.
-Get the generated HTML in text form without opening any browser
-window, for example to show later, by passing `view=False` 
-to the constructor. Here is an example of what this looks like 
-in code.
+When instantiating the environment with non-default values,U
+use the `filename` argument to set in which file to export results. 
+If this is *None*, the generated HTML text is returned from the
+showing method. Pass `view=False` if you want to write to the file
+without showing anything instead. An example follows.
 
 ```python
-report = ... # compute fairness report
-html_text = report.show(fb.export.Html(horizontal=False, view=False)) 
+html_text = report.show(fb.export.Html(filename=None, horizontal_bars=False)) 
+```
+
+If you have a wide enough screen, it may be more convenient to display 
+the individual cards side-by-side by setting `horizontal=False` 
+in the environment's constructor. An example is shown below.
+By default, distributions are hidden under expanding 
+details, but set `distributions=True` to make make them
+always visible. Finally, set `horizontal_bars=False` to 
+create bar plots with vertical bars; otherwise, horizontal
+bars are used to account for scenarios where many values
+are plotted to be compared. These options are demonstrated below.
+
+```python
+report.show(env=fb.export.Html(distributions=True, horizontal=True, horizontal_bars=True))
 ```
 
 ![html_horizontal.png](html_horizontal.png)
+
+
 
 
 ## HtmlTable
