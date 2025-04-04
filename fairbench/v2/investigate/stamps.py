@@ -135,7 +135,7 @@ class Stamps:
                             + " of "
                             + value.descriptor.details
                             + "."
-                            + "# Details\n"
+                            + "\n# Details\n"
                             + details
                             + (
                                 "\n# Caveats and recommendations"
