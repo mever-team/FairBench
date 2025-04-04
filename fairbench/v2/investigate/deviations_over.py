@@ -3,11 +3,8 @@ from fairbench.v2.investigate.investigator import Investigator
 
 
 class DeviationsOver(Investigator):
-    def __init__(self, limit, action="keep", shallow=True):
-        assert action in [
-            "keep",
-            "colorize",
-        ], "Can only 'keep' or 'colorize' as the DeviationsOver's action"
+    def __init__(self, limit, prune=True, shallow=True):
+        action = "keep" if prune else "colorize"
         super().__init__(shallow=shallow and action == "keep")
         self.limit = limit
         self.action = action

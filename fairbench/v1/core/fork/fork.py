@@ -132,7 +132,7 @@ class Fork(Mapping):
             new_branches[name] = new_branches[name] / new_branches[name].max()
         return Fork(new_branches)
 
-    def intersectional(self, delimiter="&"):
+    def intersectional(self, delimiter="&", min_size=1):
         # get branches
         branches = self.branches()
         new_branches = dict()
@@ -140,7 +140,7 @@ class Fork(Mapping):
             new_mask = 1
             for branch in candidates:
                 new_mask = tobackend(branches[branch]) * new_mask
-            if astensor(new_mask).abs().sum() == 0:
+            if astensor(new_mask).abs().sum() < min_size:
                 continue
             new_branches[
                 (delimiter.join(candidates)) if len(candidates) > 1 else candidates[0]

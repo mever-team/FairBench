@@ -13,7 +13,9 @@ report = fb.reports.pairwise(
     labels={"true": y, "false": 1 - y},
 )
 
-report.filter(fb.investigate.Stamps).show(env=fb.export.Html, depth=2)
+report.filter(fb.investigate.Stamps, fb.investigate.Worst).show(
+    env=fb.export.Html, depth=2
+)
 print(report.filter(fb.investigate.Stamps))
 
 report.filter(fb.investigate.Stamps).show()

@@ -32,7 +32,7 @@ class HtmlTable(Html):
     def colorize(self, text, deviation):
         if deviation < 0.25:
             fg_color = "#28a745"  # Bright green
-            tooltip = "Near ideal values"
+            tooltip = "Near ideal value (does not necessarily mean fair)"
         elif deviation < 0.75:
             fg_color = "#fd7e14"  # Vibrant orange
             tooltip = "Not ideal / ideal value unknown"

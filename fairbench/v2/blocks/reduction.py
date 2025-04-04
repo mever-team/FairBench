@@ -44,7 +44,7 @@ def maxerror(values):
     )
 
 
-@c.reduction("the standard deviation x2 (curated for worst value 1)")
+@c.reduction("the standard deviation x2")
 def stdx2(values):
     values = c.transform.number(values)
     return c.TargetedNumber(2 * np.std(values), 0)

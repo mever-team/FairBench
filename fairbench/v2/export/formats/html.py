@@ -12,6 +12,7 @@ class Html:
         filename="temp",
         distributions=False,
         horizontal_bars=True,
+        legend=True,
     ):
         self.contents = ""
         self.bars = []
@@ -24,6 +25,7 @@ class Html:
         self.filename = filename
         self.distributions = distributions
         self.horizontal_bars = horizontal_bars
+        self.legend = legend
 
     def navigation(self, text, routes: dict):
         return self
@@ -51,6 +53,7 @@ class Html:
                 else:
                     self.contents += "<br>"
                 self.contents += f'<div style="width: {400 if self.horizontal else 800}px; float: left;" class="card m-3">'
+                # if self.legend:
                 self.contents += f'<h{level} class="mt-0 text-white bg-dark p-3 rounded">{text}</h{level}>'
 
                 self.contents += """
@@ -61,9 +64,10 @@ class Html:
             else:
                 if level == 5:
                     self.contents += "<hr>"
-                self.contents += (
-                    f'<h{level} class="mt-3 text-dark"><b>{text}</b></h{level}>'
-                )
+                if self.legend or level <= 2:
+                    self.contents += (
+                        f'<h{level} class="mt-3 text-dark"><b>{text}</b></h{level}>'
+                    )
         self.prev_max_level = max(self.prev_max_level, level)
         return self
 
@@ -203,10 +207,10 @@ class Html:
                     const x{cid} = d3.scaleLinear().domain([0, {max_val}])
                         .nice()
                         .range([0, width{cid}]);
-
+                        
                     const colorScale{cid} = d3.scaleLinear()
-                        .domain([0, 0.5, 1])
-                        .range(["green", "orange", "red"]);
+                    .domain([0, 0.5, 1])
+                    .range(["#77dd77", "#ffb347", "#ff6961"]);
 
                     const formatNumber{cid} = d3.format(".3f"); // 3 decimal places
 
@@ -282,7 +286,7 @@ class Html:
     
                     const colorScale{cid} = d3.scaleLinear()
                         .domain([0, 0.5, 1])
-                        .range(["green", "orange", "red"]);
+                        .range(["#77dd77", "#ffb347", "#ff6961"]);
     
                     svg{cid}.selectAll(".bar-val")
                        .data(data{cid})
@@ -307,18 +311,53 @@ class Html:
                 keyword,
                 f'<span class="text-secondary font-weight-bold">{keyword}</span>',
             )
-        self.contents += f"<i>{text}</i>"
+        if self.legend:
+            self.contents += f"<i>{text}</i>"
         return self
 
     def result(self, title, val, target, units=""):
+        if not self.legend:
+            assert (
+                units
+            ), "All displayed quantities must have non-empty inferred units when visualizing values with Html and parameter `legend=False`."
+        if title == "Value:":
+            title = ""
         if abs(val - target) < 0.25:
-            emphasis = "success"
+            background = "#77dd77"  # pastel green
+            symbol = "&#x2714;"  # checkmark
+            hint = "Near ideal value (does not necessarily mean fair)"
         elif abs(val - target) < 0.75:
-            emphasis = "warning"
+            background = "#ffb347"  # pastel orange
+            symbol = "?"  # question mark
+            hint = "Not ideal / ideal value unknown"
         else:
-            emphasis = "danger"
+            background = "#ff6961"  # pastel red
+            symbol = "X"  # cross
+            hint = "Far from ideal"
+
+        stamp_html = ""
+        if symbol:
+            stamp_html = (
+                f'<span style="'
+                f"color:black; "
+                f"background:{background}; "
+                f"display: inline-block; "
+                f"border-radius: 8px;"
+                f"border: 1px solid black; "
+                f"padding: 2px 6px; padding-bottom: 10px;"
+                f"margin-right: 8px; "
+                f"font-weight: bold; "
+                f"font-size: 2em; "
+                f"text-align: center; "
+                f"vertical-align: middle; "
+                f"width: 1.5em; height: 1.5em; "
+                f"box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);"
+                f'" title="{hint}">{symbol}</span>'
+            )
+
         self.contents += (
-            f'<div class="alert alert-{emphasis} mt-3">{title} {val:.3f} {units}</div>'
+            f'<div class="mt-3 alert" style="background-color: white; padding:0px;">'
+            f"{stamp_html}<span style='font-size: 1.3em; vertical-align: middle;'>{title} <b>{val:.3f}</b> {units}</span></div>"
         )
         return self
 
@@ -326,11 +365,13 @@ class Html:
         return self
 
     def bold(self, text):
-        self.contents += f"<br>{text}"
+        if self.legend:
+            self.contents += f"<br>{text}"
         return self
 
     def text(self, text):
-        self.contents += f"{text}<br>"
+        if self.legend:
+            self.contents += f"{text}<br>"
         return self
 
     def p(self):

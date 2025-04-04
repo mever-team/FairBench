@@ -85,9 +85,8 @@ report.min.acc.explain.show()
 <div style="overflow-y: scroll;height: 380px; margin-bottom: 30px;">
 
 ```text
-##### min acc explain #####
-|This explanation of a reduction of a measure is the minimum of the accuracy 
-|viewed for inner details.
+##### acc counts #####
+|This measure of a view is the minimum of the accuracy across counts.
 |Computations cover several cases.
 
  ***** samples *****

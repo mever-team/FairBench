@@ -28,9 +28,13 @@ class Stamps:
         ),
         IndividualStamp(
             "standard deviation",
-            "std.acc",
-            details="This reflects imbalances in the distribution of benefits across groups.",
-            caveats=[],
+            "stdx2.acc",
+            details="This reflects imbalances in the distribution of correctness across groups, where correctness is measured with accuracy. The computed standard deviation is doubled, because this way the assessment value becomes 1 in the worst case, and remains 0 for perfect bias mitigation at equal accuracies.",
+            caveats=[
+                "Measuring only standard deviation may not always be an appropriate fairness consideration, and may obscure other important fairness concerns or create new disparities.",
+                'Always consider trade-offs with overall or minimum accuracy, as the easiest way to "optimize" for this measure would be to degrade accuracy for all groups to the lowest level among groups.',
+                "Ensure continuous monitoring and re-evaluation as group dynamics and external factors evolve.",
+            ],
         ),
         IndividualStamp(
             "differential fairness",
@@ -38,6 +42,7 @@ class Stamps:
             details="The worst deviation of accuracy ratios from 1 is reported, so that value of 1 indicates disparate impact, and value of 0 disparate impact mitigation.",
             caveats=[
                 "Disparate impact may not always be an appropriate fairness consideration, and may obscure other important fairness concerns or create new disparities.",
+                'Always consider trade-offs with overall or minimum accuracy, as the easiest way to "optimize" for this measure would be to degrade accuracy for all groups to the lowest level among groups.',
                 "Ensure continuous monitoring and re-evaluation as group dynamics and external factors evolve.",
             ],
         ),
@@ -114,7 +119,6 @@ class Stamps:
     )
 
     def filter(self, value: Value) -> Value:
-
         results = list()
         for stamp in Stamps.stamps:
             try:
@@ -154,7 +158,9 @@ class Stamps:
                 "fairness modelcard",
                 "modelcard",
                 "a modelcard that contains popular fairness stamps."
-                "\nStamps contain caveats and recommendation that should be considered during practical adoption. "
+                "\nThese are obtained from "
+                + value.descriptor.details
+                + "\nStamps contain caveats and recommendation that should be considered during practical adoption. "
                 "They are only a part of the full analysis that has been conducted, so consider also viewing "
                 "the full generated report to find more prospective biases.\n",
             ),
