@@ -11,11 +11,10 @@ def min(values):
         if isinstance(value, c.TargetedNumber):
             if value.value > value.target:
                 raise c.NotComputable()
-            elif min_target is None or float(value.target) > min_target:
+            if min_target is None or float(value.target) > min_target:
                 min_target = float(value.target)
-
     values = c.transform.number(values)
-    ret = np.min(values)
+    ret = np.min(values) if len(values) else 0
     return ret if min_target is None else c.TargetedNumber(ret, min_target)
 
 
@@ -30,7 +29,7 @@ def max(values):
             elif max_target is None or float(value.target) < max_target:
                 max_target = float(value.target)
     values = c.transform.number(values)
-    ret = np.max(values)
+    ret = np.max(values) if len(values) else 0
     return ret if max_target is None else c.TargetedNumber(ret, max_target)
 
 

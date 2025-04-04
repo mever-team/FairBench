@@ -39,6 +39,8 @@ def measure(description, unit=True, debug=False):
             assert not unit or (
                 0 <= float(value) <= 1
             ), f"{descriptor} computed {float(value)} that is not in [0,1]"
+            if isinstance(value.value, float) or isinstance(value.value, int):
+                value.value = Number(value.value)
             if isinstance(value.value, Number) or isinstance(
                 value.value, TargetedNumber
             ):
@@ -99,8 +101,8 @@ def reduction(description, autounits=True):
 
                 # set descriptor
                 descriptors = Descriptor(
-                    descriptor.name + " " + arg.descriptor.name,
-                    descriptor.role + " " + arg.descriptor.role,
+                    arg.descriptor.name,
+                    arg.descriptor.role,
                     descriptor.details + " of " + arg.descriptor.details,
                     arg.descriptor.alias,
                     prototype=arg.descriptor,
@@ -115,7 +117,7 @@ def reduction(description, autounits=True):
                     value = func(flattened_arg, **kwargs)
                 except NotComputable:
                     continue
-                if not isinstance(value, TargetedNumber):
+                if isinstance(value, int) or isinstance(value, float):
                     value = Number(value, units=descriptors.preferred_units)
                 ret.append(descriptors(value, dependencies))
             return Descriptor(

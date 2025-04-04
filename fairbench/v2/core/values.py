@@ -178,6 +178,8 @@ class Value:
             and not isinstance(value, Curve)
         ):
             value = Number(value, units)
+        elif hasattr(value, "units") and not value.units:
+            value.units = units  # TODO: there is a chance that we don't want this applied everywhere, in which case move it to fromework.reduction
         self.value = value
         self.descriptor: Descriptor = descriptor.descriptor
         if depends is None:
@@ -417,6 +419,7 @@ class Value:
                 self.descriptor.role + " " + item.role,
                 item.details + " of " + self.descriptor.details,
                 alias=item.alias,
+                preferred_units=item.preferred_units,
             )
 
         ret = item(
@@ -486,10 +489,15 @@ class Value:
             gathered_keys.extend(value.depends.keys())
         all = [self | key for key in gathered_keys]
         item = self.descriptor
+        roles = set(a.descriptor.role for a in all)
+        assert (
+            len(roles) == 1
+        ), f"While trying to .explain multiple roles were encountered and the operation was aborted: {','.join(roles)}"
+        roles = next(roles.__iter__())
         item = Descriptor(
-            name=item.name + " explain",
-            role="explanation " + item.role,
-            details=item.details + " viewed for inner details",
+            name=item.name + f" {roles}s",
+            role=item.role + f" view",
+            details=item.details + f" across {roles}s",
         )
         return item(depends=all)
 
@@ -500,13 +508,18 @@ class Value:
                 depends=[dependency.details for dependency in self.depends.values()]
             )
         item = self.descriptor
+        roles = set(a.descriptor.role for a in self.depends.values())
+        assert (
+            len(roles) == 1
+        ), f"While trying to obtain .details multiple roles were encountered and the operation was aborted: {','.join(roles)}"
+        roles = next(roles.__iter__())
         item = Descriptor(
-            name=item.name + " details",
-            role="explanation " + item.role,
+            name=item.name + f" {roles}s",
+            role=item.role + f" view",
             details=item.details
-            + " viewed for compute details"
+            + f" across {roles}s"
             + (
-                " (NOTE: replace `.details.show()` with '.show(depth=...)' to also see this value)"
+                " (NOTE: replace `.details.show()` with '.show(depth=...)' to also see the resulting value)"
                 if self.value is not None
                 else ""
             ),

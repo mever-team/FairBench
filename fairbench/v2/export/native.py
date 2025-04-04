@@ -28,7 +28,8 @@ def _console(env: Console, value: Value, depth=0, max_depth=6):
         return
     env.title(title, level=depth, link=value.descriptor.alias)
     env.first().quote(
-        _generate_details(value.descriptor), (" is ", " in ", " of ", " for ", " that ")
+        _generate_details(value.descriptor),
+        (" is ", " in ", " of ", " for ", " that ", " across "),
     ).p()
     env.navigation(
         "Computations involve the following:",
@@ -99,7 +100,7 @@ def help(value: any, details=True):
             Console()
             .quote(
                 _generate_details(descriptor.prototype),
-                (" is ", " in ", " of ", " for "),
+                (" is ", " in ", " of ", " for ", " across "),
             )
             .contents
         )

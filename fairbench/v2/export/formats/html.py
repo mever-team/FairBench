@@ -6,7 +6,12 @@ class Html:
     chart_count = 0
 
     def __init__(
-        self, horizontal=False, view=True, filename="temp", distributions=False
+        self,
+        horizontal=False,
+        view=True,
+        filename="temp",
+        distributions=False,
+        horizontal_bars=True,
     ):
         self.contents = ""
         self.bars = []
@@ -18,6 +23,7 @@ class Html:
         self.view = view
         self.filename = filename
         self.distributions = distributions
+        self.horizontal_bars = horizontal_bars
 
     def navigation(self, text, routes: dict):
         return self
@@ -38,25 +44,26 @@ class Html:
         self.level = level
         if level > 6:
             level = 6
-        if level == 3:
-            if self.prev_max_level >= level:
-                self.contents += "</div></div>"
-            else:
-                self.contents += "<br>"
-            self.contents += f'<div style="width: {400 if self.horizontal else 800}px; float: left;" class="card m-3">'
-            self.contents += f'<h{level} class="mt-0 text-white bg-dark p-3 rounded">{text}</h{level}>'
+        if text:
+            if level == 3:
+                if self.prev_max_level >= level:
+                    self.contents += "</div></div>"
+                else:
+                    self.contents += "<br>"
+                self.contents += f'<div style="width: {400 if self.horizontal else 800}px; float: left;" class="card m-3">'
+                self.contents += f'<h{level} class="mt-0 text-white bg-dark p-3 rounded">{text}</h{level}>'
 
-            self.contents += """
-            <div class="card-body">
-            """
-        elif level <= 1:
-            self.contents += f'<h{level} class="text-dark">{text}</h{level}>'
-        else:
-            if level == 5:
-                self.contents += "<hr>"
-            self.contents += (
-                f'<h{level} class="mt-3 text-dark"><b>{text}</b></h{level}>'
-            )
+                self.contents += """
+                <div class="card-body">
+                """
+            elif level <= 1:
+                self.contents += f'<h{level} class="text-dark">{text}</h{level}>'
+            else:
+                if level == 5:
+                    self.contents += "<hr>"
+                self.contents += (
+                    f'<h{level} class="mt-3 text-dark"><b>{text}</b></h{level}>'
+                )
         self.prev_max_level = max(self.prev_max_level, level)
         return self
 
@@ -93,12 +100,11 @@ class Html:
         cid = Html.chart_count
 
         self.contents += f"""<div id="curve-chart{cid}" class="mt-2"></div>"""
-
         self.contents += f"""
             <script>
                 const curveData{cid} = {curve_json};
                 const margin{cid} = {{top: 20, right: 30, bottom: 50, left: 50 }};
-                const width{cid} = 400 - margin{cid}.left - margin{cid}.right;
+                const width{cid} = {400 if self.horizontal else 600} - margin{cid}.left - margin{cid}.right;
                 const height{cid} = 200 - margin{cid}.top - margin{cid}.bottom;
             
                 const svg{cid} = d3.select("#curve-chart{cid}")
@@ -146,8 +152,6 @@ class Html:
                     .style("font-size", "10px")
                     .style("fill", "black");
             </script>
-
-            </script>
         """
 
         if not self.distributions:
@@ -165,56 +169,138 @@ class Html:
         Html.chart_count += 1
         cid = Html.chart_count
         self.contents += f"""<div id="bar-chart{cid}" class="mt-2"></div>"""
-        self.contents += f"""
-            <script>
-                const data{cid} = {bar_json};
-                const margin{cid} = {{ top: 20, right: 80, bottom: 80, left: 30 }};
-                const width{cid} = 400 - margin{cid}.left - margin{cid}.right;
-                const height{cid} = 200 - margin{cid}.top - margin{cid}.bottom;
+        if self.horizontal_bars:
+            self.contents += f"""
+                <script>
+                    const data{cid} = {bar_json};
+                    const margin{cid} = {{ top: 20, right: 200, bottom: 40, left: 10 }};
+                    const width{cid} = {400 if self.horizontal else 600} - margin{cid}.left - margin{cid}.right;
+                    const barHeight{cid} = 40;
+                    const height{cid} = data{cid}.length * barHeight{cid} - margin{cid}.top - margin{cid}.bottom;
 
-                const svg{cid} = d3.select("#bar-chart{cid}")
-                                  .append("svg")
-                                  .attr("width", width{cid} + margin{cid}.left + margin{cid}.right)
-                                  .attr("height", height{cid} + margin{cid}.top + margin{cid}.bottom)
-                                  .append("g")
-                                  .attr("transform", `translate(${{margin{cid}.left}}, ${{margin{cid}.top}})`);
+                    const svg{cid} = d3.select("#bar-chart{cid}")
+                                      .append("svg")
+                                      .attr("width", width{cid} + margin{cid}.left + margin{cid}.right)
+                                      .attr("height", height{cid} + margin{cid}.top + margin{cid}.bottom)
+                                      .append("g")
+                                      .attr("transform", `translate(${{margin{cid}.left}}, ${{margin{cid}.top}})`);
 
-                const x{cid} = d3.scaleBand()
-                    .domain(data{cid}.map(d => d.title))
-                    .range([0, width{cid}])
-                    .padding(0.2);
+                    const y{cid} = d3.scaleBand()
+                        .domain(data{cid}.map(d => d.title))
+                        .range([0, height{cid}])
+                        .padding(0.2);
 
-                svg{cid}.append("g")
-                   .attr("transform", `translate(0, ${{height{cid}}})`)
-                   .call(d3.axisBottom(x{cid}))
-                   .selectAll("text")
-                   .attr("transform", "translate(0,10) rotate(30) translate(-10,-10)")
-                   .style("text-anchor", "start");
+                    const x{cid} = d3.scaleLinear()
+                        .domain([0, d3.max(data{cid}, d => Math.max(d.val, d.target))])
+                        .nice()
+                        .range([0, width{cid}]);
 
-                const y{cid} = d3.scaleLinear()
-                    .domain([0, d3.max(data{cid}, d => Math.max(d.val, d.target))])
-                    .nice()
-                    .range([height{cid}, 0]);
+                    const colorScale{cid} = d3.scaleLinear()
+                        .domain([0, 0.5, 1])
+                        .range(["green", "orange", "red"]);
 
-                svg{cid}.append("g")
-                   .call(d3.axisLeft(y{cid}));
+                    const formatNumber{cid} = d3.format(".3f"); // 3 decimal places
 
-                const colorScale{cid} = d3.scaleLinear()
-                    .domain([0, 0.5, 1])
-                    .range(["green", "orange", "red"]);
+                    // Draw bars
+                    svg{cid}.selectAll(".bar-val")
+                        .data(data{cid})
+                        .enter()
+                        .append("rect")
+                        .attr("class", "bar-val")
+                        .attr("y", d => y{cid}(d.title))
+                        .attr("x", 0)
+                        .attr("height", y{cid}.bandwidth())
+                        .attr("width", d => x{cid}(d.val))
+                        .attr("fill", d => colorScale{cid}(Math.abs(d.val - d.target)));
 
-                svg{cid}.selectAll(".bar-val")
-                   .data(data{cid})
-                   .enter()
-                   .append("rect")
-                   .attr("class", "bar-val")
-                   .attr("x", d => x{cid}(d.title))
-                   .attr("y", d => y{cid}(d.val))
-                   .attr("width", x{cid}.bandwidth())
-                   .attr("height", d => height{cid} - y{cid}(d.val))
-                   .attr("fill", d => colorScale{cid}(Math.abs(d.val - d.target)));
-            </script>
-        """
+                    // Add the number inside the bar (aligned near the right end but inside)
+                    svg{cid}.selectAll(".bar-value")
+                        .data(data{cid})
+                        .enter()
+                        .append("text")
+                        .attr("class", "bar-value")
+                        .attr("x", d => x{cid}(d.val) - 5) // 5px padding inside the bar
+                        .attr("y", d => y{cid}(d.title) + y{cid}.bandwidth() / 2)
+                        .attr("dy", ".35em")
+                        .text(d => formatNumber{cid}(d.val))
+                        .attr("fill", "white")
+                        .attr("font-size", "12px")
+                        .attr("text-anchor", "end"); // align to the end (right)
+
+                    // Add the label (title) right outside the bar
+                    svg{cid}.selectAll(".bar-label")
+                        .data(data{cid})
+                        .enter()
+                        .append("text")
+                        .attr("class", "bar-label")
+                        .attr("x", d => x{cid}(d.val) + 5) // 5px outside the bar
+                        .attr("y", d => y{cid}(d.title) + y{cid}.bandwidth() / 2)
+                        .attr("dy", ".35em")
+                        .text(d => d.title)
+                        .attr("fill", "black")
+                        .attr("font-size", "12px")
+                        .attr("text-anchor", "start");
+
+                    // Axes
+                    svg{cid}.append("g")
+                        .call(d3.axisLeft(y{cid}).tickFormat("")); // no labels on y axis
+
+                    svg{cid}.append("g")
+                        .attr("transform", `translate(0, ${{height{cid}}})`)
+                        .call(d3.axisBottom(x{cid}));
+                </script>
+            """
+        else:
+            self.contents += f"""
+                <script>
+                    const data{cid} = {bar_json};
+                    const margin{cid} = {{ top: 20, right: 80, bottom: 80, left: 30 }};
+                    const width{cid} = {400 if self.horizontal else 600} - margin{cid}.left - margin{cid}.right;
+                    const height{cid} = 200 - margin{cid}.top - margin{cid}.bottom;
+    
+                    const svg{cid} = d3.select("#bar-chart{cid}")
+                                      .append("svg")
+                                      .attr("width", width{cid} + margin{cid}.left + margin{cid}.right)
+                                      .attr("height", height{cid} + margin{cid}.top + margin{cid}.bottom)
+                                      .append("g")
+                                      .attr("transform", `translate(${{margin{cid}.left}}, ${{margin{cid}.top}})`);
+    
+                    const x{cid} = d3.scaleBand()
+                        .domain(data{cid}.map(d => d.title))
+                        .range([0, width{cid}])
+                        .padding(0.2);
+    
+                    svg{cid}.append("g")
+                       .attr("transform", `translate(0, ${{height{cid}}})`)
+                       .call(d3.axisBottom(x{cid}))
+                       .selectAll("text")
+                       .attr("transform", "translate(0,10) rotate(30) translate(-10,-10)")
+                       .style("text-anchor", "start");
+    
+                    const y{cid} = d3.scaleLinear()
+                        .domain([0, d3.max(data{cid}, d => Math.max(d.val, d.target))])
+                        .nice()
+                        .range([height{cid}, 0]);
+    
+                    svg{cid}.append("g")
+                       .call(d3.axisLeft(y{cid}));
+    
+                    const colorScale{cid} = d3.scaleLinear()
+                        .domain([0, 0.5, 1])
+                        .range(["green", "orange", "red"]);
+    
+                    svg{cid}.selectAll(".bar-val")
+                       .data(data{cid})
+                       .enter()
+                       .append("rect")
+                       .attr("class", "bar-val")
+                       .attr("x", d => x{cid}(d.title))
+                       .attr("y", d => y{cid}(d.val))
+                       .attr("width", x{cid}.bandwidth())
+                       .attr("height", d => height{cid} - y{cid}(d.val))
+                       .attr("fill", d => colorScale{cid}(Math.abs(d.val - d.target)));
+                </script>
+            """
         if not self.distributions:
             self.contents += "\n</details>\n"
 

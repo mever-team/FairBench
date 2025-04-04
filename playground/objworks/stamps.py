@@ -8,11 +8,15 @@ sensitive = fb.Dimensions(
 )
 print(sensitive.branches)
 report = fb.reports.pairwise(
-    sensitive=sensitive, predictions=yhat, labels={"true": y, "false": 1 - y}
+    sensitive=sensitive,
+    predictions={"true": yhat, "false": 1 - yhat},
+    labels={"true": y, "false": 1 - y},
 )
 
-report.filter(fb.investigate.Stamps).show(env=fb.export.Html)
+report.filter(fb.investigate.Stamps).show(env=fb.export.Html, depth=2)
 print(report.filter(fb.investigate.Stamps))
+
+report.filter(fb.investigate.Stamps).show()
 
 
 """
