@@ -1,5 +1,3 @@
-from accelerate.commands.config.default import description
-
 from fairbench.v2.core import Value, TargetedNumber, Descriptor
 from fairbench.v2.investigate.investigator import Investigator
 
