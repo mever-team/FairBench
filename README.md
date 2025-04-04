@@ -30,7 +30,7 @@ report = fb.reports.pairwise(predictions=yhat, labels=y, sensitive=sensitive)
 report.filter(fb.investigate.Stamps).show(env=fb.export.Html(horizontal=True), depth=1)
 ```
 
-![example](docs/stamps.png)
+![docs/stamps.png](docs/stamps.png)
 
 ## [Documentation](https://fairbench.readthedocs.io/)
 
