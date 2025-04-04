@@ -31,7 +31,7 @@ reductions_pairwise = [
     blocks.reduction.maxrel,
     blocks.reduction.maxdiff,
     blocks.reduction.gini,
-    blocks.reduction.std,
+    blocks.reduction.stdx2,
 ]
 
 # the following reductions should be applied only when the total population is also known

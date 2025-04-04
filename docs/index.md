@@ -5,20 +5,13 @@
 <title>FairBench</title>
 <style>
     #output {
-        background-color: black;
+        background-color: #333;
         color: white;
-        border: 1px solid #555555;
-        padding: 10px;
+        border: 1px solid black;
+        padding: 5px;
         font-family: monospace;
-    }
-    .code-block {
-        background-color: black;
-        color: white;
-        border: 1px solid #555555;
-        font-family: monospace;
-        spellcheck: false;
-        margin-top: 0px;
         font-size: 0.8em;
+        margin-top: 0px;
     }
     .icon-green {
         color: green;
@@ -27,11 +20,16 @@
         color: blue;
     }
     .CodeMirror {
+        margin-top: 5px;
+        margin-bottom: 0px;
+        padding: 2px;
         font-size: 0.8em;
         height: auto;
         min-height: 200px;
         background-color: black;
         color: white;
+        font-size: 0.8em;
+        border: 1px solid black;
     }
 </style>
 
@@ -49,10 +47,10 @@ documentation, or try
 lightweight features in your browser.
 <br><br>
 
-<button id="run" onclick="evaluatePython()"><span class="icon-green">&#9654;</span> Run snippet</button>
-<button id="restart" onclick="restartPython()"><span class="icon-blue">&#x1F504;</span> Restart</button>
+
+<button id="run" onclick="evaluatePython()"><span class="icon-green">&#9654;</span> Run</button>
+<button id="restart" onclick="restartPython()"><span class="icon-blue">&#x1F504;</span> Clear</button>
 <a href="https://pyodide.org/en/stable/">Powered by pyodyne</a>
-<pre class="code-block" id="output" style="width: 100%; resize: vertical; overflow: auto; max-height: 600px;" rows="30" disabled></pre>
 
 <textarea class="code-block" id="code" rows="40">
 sensitive = ["M","F","M","F","M","F","M"]
@@ -68,6 +66,8 @@ report = fb.reports.pairwise(
 report.show(env=fb.export.ConsoleTable(legend=False))
 report.maxdiff.show() # dot specializes, could also show everything</textarea>
 
+<pre id="output" style="width: 100%; resize: vertical; overflow: auto; max-height: 600px;" rows="30" disabled></pre>
+
 <script src="https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"></script>
 <script>
     const output = document.getElementById("output");
@@ -78,7 +78,7 @@ report.maxdiff.show() # dot specializes, could also show everything</textarea>
 
     // Initialize CodeMirror on the textarea
     var codeEditor = CodeMirror.fromTextArea(codeTextarea, {
-        lineNumbers: true,
+        lineNumbers: false,
         mode: "python",
         theme: "default",
         indentUnit: 4,

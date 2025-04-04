@@ -45,6 +45,12 @@ def test_simple_report():
     report.filter(v2.investigate.Stamps).show(
         env=v2.export.Html(view=False, filename="temp"), depth=1
     )
+    report.filter(v2.investigate.Stamps).show(
+        env=v2.export.Html(
+            view=False, filename="temp", distributions=True, horizontal_bars=True
+        ),
+        depth=2,
+    )
     report.maxdiff.show()  # console is the default
     report.show(v2.export.ConsoleTable)
 

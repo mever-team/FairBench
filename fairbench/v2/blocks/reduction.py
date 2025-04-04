@@ -44,10 +44,10 @@ def maxerror(values):
     )
 
 
-@c.reduction("the standard deviation")
-def std(values):
+@c.reduction("the standard deviation x2 (curated for worst value 1)")
+def stdx2(values):
     values = c.transform.number(values)
-    return c.TargetedNumber(np.std(values), 0)
+    return c.TargetedNumber(2 * np.std(values), 0)
 
 
 @c.reduction("the gini coefficient")
@@ -65,7 +65,7 @@ def gini(values):
 @c.reduction("the average")
 def mean(values):
     values = c.transform.number(values)
-    return np.mean(values)
+    return np.mean(values) if len(values) else 0
 
 
 @c.reduction("the weighted average")

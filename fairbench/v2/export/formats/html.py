@@ -166,7 +166,7 @@ class Html:
             )
         bar_data = [
             {
-                "title": (f"{v:.3f} " if v < 1 else str(int(t))) + t,
+                "title": (f"{v:.3f} " if v < 1 else str(int(v))) + t,
                 "val": v,
                 "target": trg,
             }
