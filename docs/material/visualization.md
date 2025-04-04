@@ -162,15 +162,17 @@ std                                      0.333        0.083        0.500        
 
 This is an equivalent to the Console environment that converts
 presented text and quantities to a static HTML page. That page 
-displays evaluation cards one under the other, as demonstrated
-[here](../documentation/example_html.html) for the fairness 
-model card filtering found in the [quickstart](../quickstart.md). 
+displays evaluation cards one under the other, or next to each
+other as demonstrated in the [quickstart](../quickstart.md). 
+Note that increasing the of the *show* method, for example to
+`depth=2`, adds a lof of useful information but may take some
+time to go through.
 
-When instantiating the environment with non-default values,U
-use the `filename` argument to set in which file to export results. 
+When instantiating the environment with non-default values,
+use the `filename` argument to set a file path for exporting results. 
 If this is *None*, the generated HTML text is returned from the
-showing method. Pass `view=False` if you want to write to the file
-without showing anything instead. An example follows.
+*show* method instead. Pass `view=False` if you want to write to the file
+without showing anything. An example follows.
 
 ```python
 html_text = report.show(fb.export.Html(filename=None, horizontal_bars=False)) 
@@ -178,7 +180,7 @@ html_text = report.show(fb.export.Html(filename=None, horizontal_bars=False))
 
 If you have a wide enough screen, it may be more convenient to display 
 the individual cards side-by-side by setting `horizontal=False` 
-in the environment's constructor. An example is shown below.
+in the environment's constructor. An example is presented below.
 By default, distributions are hidden under expanding 
 details, but set `distributions=True` to make make them
 always visible. Finally, set `horizontal_bars=False` to 
@@ -193,6 +195,22 @@ report.show(env=fb.export.Html(distributions=True, horizontal=True, horizontal_b
 ![html_horizontal.png](html_horizontal.png)
 
 
+If you want only to only see the markings (checkmark, questionmark, or X) 
+that appear for higher 
+depths like the above, pass a `legend=False` argument to this environment. 
+This is more verbose that HTMLTable. Here is an example.
+THe markings indicate whether values are proximate to ideal
+ones by an error of 0.25 in the default case - though certain 
+[filters](filters.md) control the threshold. Therefore, checkmarks
+do not necessarily indicate fairness, but just smaller magnitudes of
+bias. However, those small biases may also be the ones most prohibitive 
+in the deployment context of the evaluated AI systems.
+
+```python
+report.show(fb.export.Html(legend=False), depth=2)
+```
+
+![legend_false.png](legend_false.png)
 
 
 ## HtmlTable

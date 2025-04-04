@@ -47,7 +47,7 @@ other special characters that Python cannot parse.
 Here is an example, which also demonstrates that specializations can be chained:
 
 ```python
-report["min"].acc.show()
+report["min"].acc.show() # equivalent to `report.min.acc.show()`
 ```
 
 ```text

@@ -29,9 +29,9 @@ These are raw quantities that are contained in measures or reductions.
 | slope         | parameter  | the slope of pinball deviation                         |
 | distribution  | curve      | the score distribution                                 |
 | roc           | curve      | the receiver operating characteristics curve           |
-| top           | count      | the number of top scores considered                   |
+| top           | count      | the number of top scores considered                    |
 | precision     | metric     | the precision score                                    |
-| repr          | metric     | the representation in top samples                     |
+| repr          | metric     | the representation in top samples                      |
 
 
 ## Measures
@@ -60,19 +60,19 @@ These are measures of algorithmic performance.
 
 ## Reductions
 
-| Name             | Role       | Details                                                                 |
-|------------------|------------|-------------------------------------------------------------------------|
-| min              | reduction  | the minimum                                                            |
-| max              | reduction  | the maximum                                                            |
-| maxerror         | reduction  | the maximum deviation from the ideal value                             |
-| std              | reduction  | the standard deviation                                                 |
-| gini             | reduction  | the gini coefficient                                                   |
-| mean             | reduction  | the average                                                            |
-| wmean            | reduction  | the weighted average                                                   |
-| maxdiff          | reduction  | the maximum difference                                                 |
-| maxbarea         | reduction  | the maximum area between curves                                        |
-| maxrel           | reduction  | the maximum relative difference                                        |
-| largestmaxdiff   | reduction  | the maximum difference from the largest group (the whole population if included) |
-| largestmaxrel    | reduction  | the maximum relative difference from the largest group (the whole population if included) |
+| Name             | Role       | Details                                                                                               |
+|------------------|------------|-------------------------------------------------------------------------------------------------------|
+| min              | reduction  | the minimum                                                                                           |
+| max              | reduction  | the maximum                                                                                           |
+| maxerror         | reduction  | the maximum deviation from the ideal value                                                            |
+| std              | reduction  | the standard deviation                                                                                |
+| gini             | reduction  | the gini coefficient                                                                                  |
+| mean             | reduction  | the average                                                                                           |
+| wmean            | reduction  | the weighted average                                                                                  |
+| maxdiff          | reduction  | the maximum difference                                                                                |
+| maxbarea         | reduction  | the maximum area between curves                                                                       |
+| maxrel           | reduction  | the maximum relative difference                                                                       |
+| largestmaxdiff   | reduction  | the maximum difference from the largest group (the whole population if included)                      |
+| largestmaxrel    | reduction  | the maximum relative difference from the largest group (the whole population if included)             |
 | largestmaxbarea  | reduction  | the maximum area between curves and the curve of the largest group (the whole population if included) |
 

@@ -122,25 +122,19 @@ report.min.acc.show(env=fb.export.Console)
 
 ## 5. Simplify reports 
 
-FairBench provides filters that focus on specific types of evaluation.
-For example, it can remove report entries that do not violate certain
+FairBench provides filters that enhance the evaluation.
+For example, they can remove report entries that do not violate certain
 threshold, leaving only problematic values behind.
 
 One of the available filters, which is presented
 below, are fairness stamps. These refer to a few 
 common types of fairness evaluation and are accompanied
 by caveats and recommendations. The collection of available
-stamps is called a fairness modelcard, though it is
-a normal report and can be manipulated (e.g., viewed) 
+stamps is called a fairness modelcard. Filtering through
+reports yields new ones that can be manipulated (e.g., viewed) 
 normally.
 
-```python
-report.filter(fb.investigate.Stamps).show(env=fb.export.Html, depth=1)
-```
-
-*The output can be viewed [here](documentation/example_html.html).*
-
-The `Html` environment that was used this time
+The `Html` environment that is used below
 can save and/or open in the browser
 the generated HTML representation of reports. The generated document
 requires an internet connection to properly view, as it depends
@@ -148,7 +142,18 @@ on [bootstrap](https://getbootstrap.com/) for theming.
 It is equivalent to the `Console` environment of previous examples.
 The provided depth controls the level of details (default is zero).
 
+```python
+report = report.filter(fb.investigate.Stamps)
+report.show(env=fb.export.Html(horizontal=True), depth=1)
+```
+
+![stamps](stamps.png)
+
+
 !!! danger
-    Blindly applying filters may neglect certain
-    kinds of evaluation.
+    Blindly following filters may neglect certain
+    kinds of evaluation. Icons also give an indication
+    of which are the most problematic values, 
+    but any measure value could be worrisome.
+    Therefore, computed values are also shown.
 
