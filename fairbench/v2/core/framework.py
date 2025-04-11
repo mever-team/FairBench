@@ -119,6 +119,20 @@ def reduction(description, autounits=True):
                     continue
                 if isinstance(value, int) or isinstance(value, float):
                     value = Number(value, units=descriptors.preferred_units)
+                if hasattr(value, "dependencies"):
+                    olds = dependencies
+                    dependencies = list()
+                    for old, dp in zip(olds, value.dependencies, strict=True):
+                        desc = Descriptor(
+                            name=old.descriptor.name + " details",
+                            role=old.descriptor.role + " " + dp.descriptor.role,
+                            details=dp.descriptor.details
+                            + " of "
+                            + old.descriptor.details,
+                            preferred_units=dp.descriptor.preferred_units,
+                        )
+                        dependencies.append(dp.rebase(desc))
+                    dependencies.extend(olds)
                 ret.append(descriptors(value, dependencies))
             return Descriptor(
                 name=prepend_name + descriptor.name,

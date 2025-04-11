@@ -54,6 +54,8 @@ class Curve:
     def __eq__(self, other):
         if not isinstance(other, Curve):
             return False
+        if len(self.x) != len(other.x):
+            return False
         return (
             np.abs(self.x - other.x).sum() == 0
             and np.abs(self.y - other.y).sum() == 0
@@ -325,7 +327,7 @@ class Value:
                 ret += f" ({self.descriptor.details})"
             return ret
         if self.value is not None:
-            ret += str(self.value)
+            ret += " " + str(self.value)
             depth -= 1
         if details:
             ret += f" ({self.descriptor.details})"
@@ -452,6 +454,9 @@ class Value:
             return env.direct_show(self)
 
         return fmt(self, env=env, depth=depth).show()
+
+    def float(self):
+        return float(self)
 
     def filter(self, *methods):
         if not methods:

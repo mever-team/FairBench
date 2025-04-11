@@ -69,7 +69,8 @@ def at_max_samples(values: Iterable[Value]) -> list[Value]:
 
 
 def curve_diff(
-    values: Iterable[Value], compared_to: Iterable[Value] | None = None
+    values: Iterable[Value],
+    compared_to: Iterable[Value] | None = None,
 ) -> list[float]:
     try:
         values: list[Value] = single_role(values, role="curve")

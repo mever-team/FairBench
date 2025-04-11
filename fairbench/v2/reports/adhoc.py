@@ -10,15 +10,29 @@ all_measures = [
     blocks.measures.pr,
     blocks.measures.tpr,
     blocks.measures.tnr,
+    blocks.measures.ppv,
+    blocks.measures.f1,
     blocks.measures.tar,
     blocks.measures.trr,
+    blocks.measures.slift,
+    blocks.measures.nmcc,
+    blocks.measures.nkappa,
     blocks.measures.avgscore,
     blocks.measures.auc,
+    blocks.measures.ndcg,
+    blocks.measures.topndcg,
     blocks.measures.tophr,
     blocks.measures.toprec,
     blocks.measures.topf1,
+    blocks.measures.nmrr,
+    blocks.measures.nentropy,
     blocks.measures.mabs,
     blocks.measures.rmse,
+    blocks.measures.r2,
+    blocks.measures.pinball,
+    blocks.measures.spearman,
+    blocks.measures.rbo,
+    blocks.measures.ndrl,
 ]
 
 reductions_pairwise = [
@@ -62,9 +76,13 @@ def pairwise(
     )
 
 
-def vsall(sensitive: Sensitive | deprecated.Fork, measures=None, **kwargs):
+def vsall(
+    sensitive: Sensitive | deprecated.Fork, measures=None, reductions=None, **kwargs
+):
     if measures is None:
         measures = all_measures
+    if reductions is None:
+        reductions = reductions_vs_any
     # prepare the sensitive attribute, because we are going to add one more branch here
     if isinstance(sensitive, dict):
         sensitive = deprecated.Fork(sensitive)
@@ -75,5 +93,5 @@ def vsall(sensitive: Sensitive | deprecated.Fork, measures=None, **kwargs):
     }
     sensitive = Sensitive(branches, vsall_descriptor)
     return report(
-        sensitive=sensitive, measures=measures, reductions=reductions_vs_any, **kwargs
+        sensitive=sensitive, measures=measures, reductions=reductions, **kwargs
     )

@@ -73,6 +73,12 @@ def test_vsany():
     report.show(env=fb.export.Console(ansiplot=True))
     report.help()
 
+    assert report.acc.min == fb.quick.vsall_acc_min(
+        sensitive=sensitive,
+        predictions=yhat,
+        labels=y,
+    )
+
 
 def test_pairwise():
     x, y, yhat = fb.bench.tabular.bank()
@@ -89,6 +95,12 @@ def test_pairwise():
     report.min.acc.show()
     report.min.acc.help()
     report.acc.min.show()
+
+    assert report.acc.min == fb.quick.pairwise_acc_min(
+        sensitive=sensitive,
+        predictions=yhat,
+        labels=y,
+    )
 
 
 def test_exceedingly_bad_recommendation():

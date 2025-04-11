@@ -1,6 +1,7 @@
 import numpy as np
 from fairbench.v2 import core as c
-from fairbench.v2.core import NotComputable
+
+direct_curves = True
 
 
 @c.reduction("the minimum")
@@ -94,8 +95,15 @@ def maxdiff(values):
 
 @c.reduction("the maximum area between curves")
 def maxbarea(values):
+    try:
+        dependencies = c.transform.single_role(values, role="curve")
+    except AssertionError as e:
+        raise c.NotComputable(e)
     values = c.transform.curve_diff(values)
-    return c.TargetedNumber(np.max(values), 0)
+    ret = c.TargetedNumber(np.max(values), 0)
+    if direct_curves:
+        ret.dependencies = dependencies
+    return ret
 
 
 @c.reduction("the maximum relative difference")

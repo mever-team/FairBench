@@ -8,7 +8,7 @@ from fairbench.v2 import export
 from fairbench.v2.export import help
 from fairbench.v2 import reports
 from fairbench.v2 import investigate
-
+from fairbench.v2.auto import quick
 from fairbench.v1 import categories, fuzzy
 
 

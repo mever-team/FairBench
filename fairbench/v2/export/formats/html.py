@@ -88,7 +88,7 @@ class Html:
     def _embed_curves(self):
         if not self.distributions:
             self.contents += (
-                f"<details><summary>Obtained from {len(self.bars)} curves</summary>\n"
+                f"<details><summary>Obtained from {len(self.curves)} curves</summary>\n"
             )
         curve_data = [
             {
@@ -99,63 +99,96 @@ class Html:
             }
             for t, x, y, u in self.curves
         ]
+        """
+        # this in case we want to compare d3 with something known to work
+        import matplotlib.pyplot as plt
+        for curve in curve_data:
+            plt.plot(
+                curve["x"], curve["y"], label=f'{curve["title"]} ({curve["units"]})'
+            )
+
+        plt.xlabel("X-axis")
+        plt.ylabel("Y-axis")
+        plt.title("Curves Plot")
+        plt.legend()
+        plt.grid(True)
+        plt.show()
+        """
+
         curve_json = json.dumps(curve_data)
         Html.chart_count += 1
         cid = Html.chart_count
 
         self.contents += f"""<div id="curve-chart{cid}" class="mt-2"></div>"""
         self.contents += f"""
-            <script>
-                const curveData{cid} = {curve_json};
-                const margin{cid} = {{top: 20, right: 30, bottom: 50, left: 50 }};
-                const width{cid} = {400 if self.horizontal else 600} - margin{cid}.left - margin{cid}.right;
-                const height{cid} = 200 - margin{cid}.top - margin{cid}.bottom;
-            
-                const svg{cid} = d3.select("#curve-chart{cid}")
-                      .append("svg")
-                      .attr("width", width{cid} + margin{cid}.left + margin{cid}.right)
-                      .attr("height", height{cid} + margin{cid}.top + margin{cid}.bottom)
-                      .append("g");
-            
-                const xScale{cid} = d3.scaleLinear()
-                    .domain([0, d3.max(curveData{cid}, d => d3.max(d.x))])
-                    .range([0, width{cid}]);
-            
-                const yScale{cid} = d3.scaleLinear()
-                    .domain([0, d3.max(curveData{cid}, d => d3.max(d.y))])
-                    .nice()
-                    .range([height{cid}, 0]);
-            
-                svg{cid}.append("g")
-                    .call(d3.axisBottom(xScale{cid}));
-            
-                svg{cid}.append("g")
-                    .call(d3.axisLeft(yScale{cid}));
-            
-                curveData{cid}.forEach((curve) => {{
-                    const line{cid} = d3.line()
-                        .x((_, i) => xScale{cid}(curve.x[i]))
-                        .y((_, i) => yScale{cid}(curve.y[i]));
-            
-                    svg{cid}.append("path")
-                        .datum(curve)
-                        .attr("fill", "none")
-                        .attr("stroke", "steelblue")
-                        .attr("stroke-width", 1.5)
-                        .attr("d", line{cid});
-                }});
-            
-                svg{cid}.selectAll(".curve-label")
-                    .data(curveData{cid})
-                    .enter()
-                    .append("text")
-                    .attr("class", "curve-label")
-                    .attr("x", d => xScale{cid}(d.x[Math.floor(d.x.length / 2)]) - 5)
-                    .attr("y", d => yScale{cid}(d.y[Math.floor(d.y.length / 2)]) - 5)
-                    .text(d => d.title + " (" + d.units + ")")
-                    .style("font-size", "10px")
-                    .style("fill", "black");
-            </script>
+        <script>
+            const curveData{cid} = {curve_json};
+            const margin{cid} = {{top: 20, right: 30, bottom: 70, left: 50}};
+            const width{cid} = {400 if self.horizontal else 600} - margin{cid}.left - margin{cid}.right;
+            const height{cid} = 400 - margin{cid}.top - margin{cid}.bottom;
+
+            const svg{cid} = d3.select("#curve-chart{cid}")
+                  .append("svg")
+                  .attr("width", width{cid} + margin{cid}.left + margin{cid}.right)
+                  .attr("height", height{cid} + margin{cid}.top + margin{cid}.bottom)
+                  .append("g")
+                  .attr("transform", "translate(" + margin{cid}.left + "," + margin{cid}.top + ")");
+
+            const allX{cid} = curveData{cid}.flatMap(d => d.x);
+            const allY{cid} = curveData{cid}.flatMap(d => d.y);
+
+            const xScale{cid} = d3.scaleLinear()
+                .domain([0, d3.max(allX{cid})])
+                .range([0, width{cid}]);
+
+            const yScale{cid} = d3.scaleLinear()
+                .domain([0, d3.max(allY{cid})])
+                .nice()
+                .range([height{cid}, 0]);
+
+            svg{cid}.append("g")
+                .attr("transform", "translate(0," + height{cid} + ")")
+                .call(d3.axisBottom(xScale{cid}));
+
+            svg{cid}.append("g")
+                .call(d3.axisLeft(yScale{cid}));
+
+            const color{cid} = d3.scaleOrdinal(d3.schemeCategory10);
+
+            curveData{cid}.forEach((curve, index) => {{
+                const lineGenerator = d3.line()
+                    .x((d, i) => xScale{cid}(curve.x[i]))
+                    .y((d, i) => yScale{cid}(curve.y[i]));
+
+                svg{cid}.append("path")
+                    .datum(curve.x.map((_, i) => i))  // Create array of indices
+                    .attr("fill", "none")
+                    .attr("stroke", color{cid}(index))
+                    .attr("stroke-width", 2)
+                    .attr("d", lineGenerator);
+            }});
+
+            // Add a legend
+            const legend{cid} = svg{cid}.selectAll(".legend")
+                .data(curveData{cid})
+                .enter().append("g")
+                .attr("class", "legend")
+                .attr("transform", (d, i) => "translate(-300," + (i * 20) + ")");
+
+            legend{cid}.append("rect")
+                .attr("x", width{cid} - 18)
+                .attr("width", 18)
+                .attr("height", 18)
+                .style("fill", (d, i) => color{cid}(i));
+
+            legend{cid}.append("text")
+                .attr("x", width{cid} - 24)
+                .attr("y", 9)
+                .attr("dy", ".35em")
+                .style("text-anchor", "end")
+                .text(d => d.title + " (" + d.units + ")");
+
+        </script>
         """
 
         if not self.distributions:
