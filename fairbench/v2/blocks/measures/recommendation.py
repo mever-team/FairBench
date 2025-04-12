@@ -2,6 +2,8 @@ from fairbench.v2 import core as c
 from fairbench.v2.blocks.quantities import quantities
 import numpy as np
 
+from fairbench.v2.core import TargetedNumber
+
 
 @c.measure("the average score")
 def avgscore(scores, sensitive=None, bins=20):
@@ -15,17 +17,13 @@ def avgscore(scores, sensitive=None, bins=20):
     hist, bin_edges = np.histogram(
         scores[sensitive != 0], bins=bins, density=False, range=(0, 1)
     )
-    # hst = hist if samples == 0 else hist / samples
     cdf = np.cumsum(hist)
-    cdf = cdf / cdf[-1]
-
-    # bin_edges = np.concatenate([[0], bin_edges[:-1][hist != 0], [bin_edges[-1], 1]])
-    # hist = np.concatenate([[0], hist[hist != 0], [0]])
-
+    if cdf[-1] != 0:
+        cdf = cdf / cdf[-1]
     curve = c.Curve(
         x=np.array((bin_edges[:-1] + bin_edges[1:]) / 2, dtype=float),
         y=np.array(cdf, dtype=float),
-        units="",
+        units="density",
     )
 
     return c.Value(
@@ -46,6 +44,8 @@ def auc(scores, labels, sensitive=None):
     scores = np.array(scores, dtype=np.float64)
     labels = np.array(labels, dtype=np.float64)
     sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
+    samples = sensitive.sum()
+    assert samples != 0, f"Cannot compute AUC for an empty group"
 
     mean_sensitive = (np.max(sensitive) + np.min(sensitive)) / 2
     scores = scores[sensitive >= mean_sensitive]
@@ -69,8 +69,8 @@ def auc(scores, labels, sensitive=None):
     )
 
     return c.Value(
-        value,
-        depends=[quantities.samples(sensitive.sum()), quantities.roc(curve)],
+        TargetedNumber(value, 1),
+        depends=[quantities.samples(samples), quantities.roc(curve)],
     )
 
 
@@ -81,9 +81,9 @@ def ndcg(scores, labels, sensitive=None):
     sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
     scores = scores[sensitive > 0]
     labels = labels[sensitive > 0]
+    samples = sensitive.sum()
+    assert samples != 0, f"Cannot compute NDCG for an empty group"
 
-    if len(labels) == 0:
-        return c.Value(0.0, depends=[])
     indexes = np.argsort(scores)[::-1]
     rel = labels[indexes]
     dcg = np.sum((2**rel - 1) / np.log2(np.arange(2, len(rel) + 2)))
@@ -91,7 +91,6 @@ def ndcg(scores, labels, sensitive=None):
     idcg = np.sum((2**ideal_rel - 1) / np.log2(np.arange(2, len(ideal_rel) + 2)))
     ndcg = dcg / idcg if idcg > 0 else 0.0
     true_top = labels.sum()
-    samples = sensitive.sum()
     return c.Value(
         ndcg,
         depends=[
@@ -106,17 +105,17 @@ def topndcg(scores, labels, sensitive=None, top=3):
     scores = np.array(scores, dtype=np.float64)
     labels = np.array(labels, dtype=np.float64)
     sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
+    samples = sensitive.sum()
 
     k = int(top)
     assert (
         0 < k <= scores.shape[0]
     ), f"There are only {scores.shape[0]} inputs but top={top} was requested for ranking analysis"
+    assert samples != 0, f"Cannot compute topndfcg for an empty group"
 
     scores = scores[sensitive > 0]
     labels = labels[sensitive > 0]
 
-    if len(labels) == 0:
-        return c.Value(0.0, depends=[])
     indexes = np.argsort(scores)[-k:][::-1]
     rel = labels[indexes]
     dcg = np.sum((2**rel - 1) / np.log2(np.arange(2, len(rel) + 2)))
@@ -124,7 +123,6 @@ def topndcg(scores, labels, sensitive=None, top=3):
     idcg = np.sum((2**ideal_rel - 1) / np.log2(np.arange(2, len(ideal_rel) + 2)))
     ndcg = dcg / idcg if idcg > 0 else 0.0
     true_top = labels[indexes].sum()
-    samples = sensitive.sum()
 
     return c.Value(
         ndcg,
@@ -196,7 +194,7 @@ def toprec(scores, labels, sensitive=None, top=3):
     )
 
 
-@c.measure("the normalized mean reciprocal rank (nMRR)")
+@c.measure("the normalized mean reciprocal rank")
 def nmrr(scores, labels, sensitive=None):
     scores = np.array(scores, dtype=np.float64)
     labels = np.array(labels, dtype=np.float64)
@@ -215,7 +213,7 @@ def nmrr(scores, labels, sensitive=None):
     mrr_value = 0.0 if len(ranks) == 0 else 1.0 / (ranks[0] + 1)
 
     max_rank = len(scores)
-    value = mrr_value * np.log2(max_rank + 1) if max_rank > 0 else 0.0
+    value = mrr_value / np.log2(max_rank + 1) if max_rank > 0 else 0.0
 
     true_top = rel.sum()
     samples = sensitive.sum()
@@ -249,7 +247,7 @@ def nentropy(scores, sensitive=None, bins=20):
         else 0.0
     )
 
-    max_entropy = np.log(len(hist)) if len(hist) > 0 else 1.0
+    max_entropy = np.log2(len(hist)) if len(hist) > 0 else 1.0
     normalized_entropy = 0.0 if max_entropy == 0 else raw_entropy / max_entropy
     curve = c.Curve(
         x=np.array((bin_edges[:-1] + bin_edges[1:]) / 2, dtype=float),

@@ -17,6 +17,11 @@ class quantities:
         "curve",
         "the cumulative density function of the score distribution (numerically robust compared to non-cumulative)",
     )
+    itemloss = c.Descriptor(
+        "itemloss",
+        "curve",
+        "the loss exhibited by items at each position (the position is normalized)",
+    )
     roc = c.Descriptor("roc", "curve", "the receiver operating characteristics curve")
     top = c.Descriptor("top", "count", "the number of top scores considered")
     precision = c.Descriptor("precision", "metric", "the precision score")

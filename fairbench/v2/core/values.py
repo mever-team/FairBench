@@ -1,3 +1,4 @@
+import math
 from typing import Optional
 import numpy as np
 
@@ -457,6 +458,13 @@ class Value:
 
     def float(self):
         return float(self)
+
+    def testeq(self, other, eps=1.0e-9):
+        # ONLY USE THIS FOR TESTING
+        value = float(self)
+        assert not math.isnan(value)
+        if not np.isnan(other):
+            assert abs(value - other) < eps
 
     def filter(self, *methods):
         if not methods:

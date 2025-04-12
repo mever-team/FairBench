@@ -76,39 +76,46 @@ def rbo(scores, order, sensitive=None, p=0.9):
     )
 
 
-@c.measure("the normalized discounted ranking loss")
+@c.measure("the normalized discounted ranking loss (NDRL)")
 def ndrl(scores, order, sensitive=None):
+    import numpy as np
+
     scores = np.array(scores, dtype=np.float64)
     order = np.array(order, dtype=np.float64)
     sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
+
     scores = scores[sensitive > 0]
     order = order[sensitive > 0]
     samples = sensitive.sum()
 
     if len(scores) == 0 or len(order) == 0:
-        return c.Value(
-            c.TargetedNumber(0, 0),
-            depends=[
-                quantities.samples(samples),
-            ],
-        )
+        return c.Value(c.TargetedNumber(0, 0), depends=[])
 
     pred_ranks = np.argsort(np.argsort(-scores))
     true_ranks = np.argsort(np.argsort(-order))
 
-    discounted_loss = np.sum(
-        np.abs(pred_ranks - true_ranks) / np.log2(np.arange(2, len(scores) + 2))
-    )
+    n = len(scores)
+    discount = np.log2(np.arange(2, n + 2))
+
+    # Per-rank discounted loss
+    per_item_loss = np.abs(pred_ranks - true_ranks) / discount
+    discounted_loss = per_item_loss.sum()
 
     worst_pred = true_ranks[::-1]
-    max_loss = np.sum(
-        np.abs(worst_pred - true_ranks) / np.log2(np.arange(2, len(scores) + 2))
-    )
+    max_per_item_loss = np.abs(worst_pred - true_ranks) / discount
+    max_loss = max_per_item_loss.sum()
 
     value = 0.0 if max_loss == 0 else discounted_loss / max_loss
+    loss_curve = c.Curve(
+        x=np.arange(1, n + 1, dtype=float) / n,
+        y=per_item_loss,
+        units="",
+    )
+
     return c.Value(
         c.TargetedNumber(value, 0),
         depends=[
             quantities.samples(samples),
+            quantities.itemloss(loss_curve),
         ],
     )
