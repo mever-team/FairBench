@@ -32,7 +32,7 @@ graph_requirements = read_requirements("requirements[graph].txt")
 # Setup configuration
 setuptools.setup(
     name="fairbench",
-    version="0.7.19",
+    version="0.8.0",
     author="Emmanouil (Manios) Krasanakis",
     author_email="maniospas@hotmail.com",
     description="A fairness assessment framework",
