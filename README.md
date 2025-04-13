@@ -17,6 +17,9 @@ but compatibility delays of third-party ML libraries usually
 mean that only the language's previous release is tested and
 stable (currently 3.12).*
 
+
+## [Documentation](https://fairbench.readthedocs.io/)
+
 ## Quick measure
 
 ```python
@@ -49,7 +52,6 @@ report.filter(fb.investigate.Stamps).show(env=fb.export.Html(horizontal=True), d
 
 ![docs/stamps.png](docs/stamps.png)
 
-## [Documentation](https://fairbench.readthedocs.io/)
 
 ## [Benchmarks](benchmarks/README.md)
 
