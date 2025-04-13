@@ -19,26 +19,27 @@ def roc_curve(labels, scores):
         label = sorted_labels[i]
         score = sorted_scores[i]
         if prev_score is not None and score != prev_score:
-            tpr.append(tp / pos_count)
-            fpr.append(fp / neg_count)
-
+            tpr.append(tp / pos_count if pos_count else 0)
+            fpr.append(fp / neg_count if neg_count else 0)
         if label == 1:
             tp += 1
         else:
             fp += 1
-
         prev_score = score
-    tpr.append(tp / pos_count)
-    fpr.append(fp / neg_count)
+    tpr.append(tp / pos_count if pos_count else 0)
+    fpr.append(fp / neg_count if neg_count else 0)
 
-    tpr = np.array(tpr)
-    fpr = np.array(fpr)
+    return np.array(fpr), np.array(tpr), None
 
-    return fpr, tpr, None
+
+def trapz(y, x):
+    area = 0.0
+    for i in range(1, len(x)):
+        width = x[i] - x[i - 1]
+        avg_height = (y[i] + y[i - 1]) / 2
+        area += width * avg_height
+    return area
 
 
 def auc(fpr, tpr):
-    # Use trapezoidal rule to calculate AUC
-    return np.trapz(
-        tpr, fpr
-    )  # TODO: this is deprecated but we need to avoid scipy calls
+    return trapz(tpr, fpr)

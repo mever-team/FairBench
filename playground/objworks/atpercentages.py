@@ -18,4 +18,4 @@ for test_size in np.arange(0.1, 1, 0.1):
 
 comparison = comparison.build()
 # comparison.min.explain.show(fb.export.ConsoleTable(legend=False), depth=2)
-comparison.explain.show(fb.export.ConsoleTable)
+comparison.show(fb.export.Html)

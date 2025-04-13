@@ -1,3 +1,5 @@
+import numpy as np
+
 from fairbench.v2.core import Descriptor, Value
 from fairbench.v2.reports.adhoc import (
     reductions_vs_any,
@@ -82,7 +84,40 @@ class QuickMeasures:
         pass
 
     def __getattr__(self, item):
+        if item in dir(self):
+            return AttributeError
         return MeasureBuilder(str(item).split("_"))
+
+    def help(self):
+        print(
+            "Showing all fairness measures that can be computed.\n"
+            "These are dynamically created from building blocks.\n"
+            "Create reports to capture many of those.\n"
+        )
+        for item in self:
+            print("fairbench.quick." + item)
+
+    def __iter__(self):
+        import fairbench as fb
+
+        scores = np.random.rand(1000)
+        target = np.random.rand(1000)
+        sensitive = np.random.rand(1000)
+        kw = {
+            "scores": scores,
+            "targets": target,
+            "predictions": scores > 0.5,
+            "labels": target > 0.5,
+            "order": target,
+            "sensitive": fb.Dimensions(fb.fuzzy @ sensitive),
+        }
+        for rep in report_types:
+            for red in report_types[rep][1]:
+                for meas in report_types[rep][2]:
+                    item = rep + "_" + red.descriptor.name + "_" + meas.descriptor.name
+                    value = getattr(self, item)(**kw)
+                    if value.exists():
+                        yield item
 
 
 quick = QuickMeasures()

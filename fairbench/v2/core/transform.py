@@ -1,5 +1,5 @@
 from typing import Iterable
-from fairbench.v2.core import Value, NotComputable, Curve
+from fairbench.v2.core import Value, NotComputable, Curve, DataError
 import numpy as np
 
 
@@ -58,10 +58,15 @@ def at_max_samples(values: Iterable[Value]) -> list[Value]:
     max_samples = 0
     max_sample_value = 0
     for value in values:
-        samples = float(value.samples)
-        if samples > max_samples:
-            max_samples = samples
-            max_sample_value = value
+        try:
+            samples = float(value.samples)
+            if samples > max_samples:
+                max_samples = samples
+                max_sample_value = value
+        except AssertionError:
+            pass
+        except DataError:
+            pass
     if max_samples == 0:
         raise NotComputable()
     return [max_sample_value]

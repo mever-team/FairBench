@@ -73,10 +73,12 @@ def test_vsany():
     report.show(env=fb.export.Console(ansiplot=True))
     report.help()
 
-    assert report.acc.min == fb.quick.vsall_acc_min(
-        sensitive=sensitive,
-        predictions=yhat,
-        labels=y,
+    report.acc.min.testeq(
+        fb.quick.vsall_acc_min(
+            sensitive=sensitive,
+            predictions=yhat > 0.5,
+            labels=y,
+        ).float()
     )
 
 
@@ -96,10 +98,12 @@ def test_pairwise():
     report.min.acc.help()
     report.acc.min.show()
 
-    assert report.acc.min == fb.quick.pairwise_acc_min(
-        sensitive=sensitive,
-        predictions=yhat,
-        labels=y,
+    report.acc.min.testeq(
+        fb.quick.pairwise_acc_min(
+            sensitive=sensitive,
+            predictions=yhat,
+            labels=y,
+        ).float()
     )
 
 
@@ -217,3 +221,11 @@ def test_attachment_to_measures():
     )
 
     report.accFalse.show(fb.export.ConsoleTable)
+
+
+def test_number_of_measures():
+    items = list(item for item in fb.quick)
+    num = len(items)
+    print(str(num) + " measures can be computed.")
+    fb.quick.help()
+    assert num > 300

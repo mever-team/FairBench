@@ -7,7 +7,7 @@ complicated_mode = False
 
 def mismatch(item, keys):
     keys = list(keys)
-    ret = f"Key {item} is not one of {list(keys)}.\n"
+    ret = f"Key '{item}' is not one of {list(keys)}.\n"
     similar = [key for key in keys if item in key]
     if similar:
         ret += (
@@ -461,6 +461,7 @@ class Value:
 
     def testeq(self, other, eps=1.0e-9):
         # ONLY USE THIS FOR TESTING
+        other = float(other)
         value = float(self)
         assert not math.isnan(
             value

@@ -64,10 +64,8 @@ def rbo(scores, order, sensitive=None, top_weightedness=1.0):
     )
 
 
-@c.measure("the normalized discounted ranking loss")
+@c.measure("the normalized discounted ranking loss", unit=False)
 def ndrl(scores, order, sensitive=None):
-    import numpy as np
-
     scores = np.array(scores, dtype=np.float64)
     order = np.array(order, dtype=np.float64)
     sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
@@ -89,7 +87,8 @@ def ndrl(scores, order, sensitive=None):
     per_item_loss = np.abs(pred_ranks - true_ranks) / discount
     discounted_loss = per_item_loss.sum()
 
-    worst_pred = true_ranks[::-1]
+    # WORST prediction: sort true ranks ascending
+    worst_pred = np.argsort(true_ranks)
     max_per_item_loss = np.abs(worst_pred - true_ranks) / discount
     max_loss = max_per_item_loss.sum()
 

@@ -51,7 +51,10 @@ def mse(scores, targets, sensitive=None):
     )
 
 
-@c.measure("r2 coefficient of determination", unit=False)
+@c.measure(
+    "r2 coefficient of determination (values much smaller than zero indicate terrible models)",
+    unit=False,
+)
 def r2(scores, targets, sensitive=None, deg_freedom=0):
     scores = np.array(scores, dtype=np.float64)
     targets = np.array(targets, dtype=np.float64)
@@ -73,7 +76,7 @@ def r2(scores, targets, sensitive=None, deg_freedom=0):
             value = r2_value
 
     return c.Value(
-        c.TargetedNumber(value, 0),
+        c.TargetedNumber(value, 1),
         depends=[
             quantities.samples(num_sensitive),
             quantities.freedom(deg_freedom),
