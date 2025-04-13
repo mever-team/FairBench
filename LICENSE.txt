@@ -18,3 +18,7 @@
       - ReBias. (Copyright © 2020-present NAVER Corp)
         Modifications © 2024 Emmanouil Krasanakis.
         See fairbench/bench/vision/datasets/mnist/ for details.
+
+      - rbo. (Copyright © 2019 Changyao Chen)
+        Modifications © 2025 Emmanouil Krasanakis.
+        See fairbench/fallbacks/rbo.py for details.

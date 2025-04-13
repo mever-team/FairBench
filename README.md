@@ -80,5 +80,5 @@ Modifications © 2024 Emmanouil Krasanakis.<br>
 See [fairbench/bench/vision/datasets/mnist/](fairbench/bench/vision/datasets/mnist/) for details.
 
 - rbo. (Copyright © 2019 Changyao Chen)<br>
-Modifications © 2024 Emmanouil Krasanakis.<br>
+Modifications © 2025 Emmanouil Krasanakis.<br>
 See [fairbench/fallbacks/rbo.py](fairbench/fallbacks/rbo.py) for details.
