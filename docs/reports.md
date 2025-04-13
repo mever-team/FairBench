@@ -1,4 +1,4 @@
-# Quickstart
+# Full reports
 
 Before starting, install FairBench with:
 
@@ -8,7 +8,7 @@ pip install --upgrade fairbench
 
 This is only the lightweight version without any specifications,
 which suffices for assessment of any system - install extras are
-available to run out-of-the-box benchmarks for vision data or LLMs.
+needed if you want run out-of-the-box benchmarks for vision data or LLMs.
 A typical workflow using the library will help you identify prospective
 fairness concerns to discuss with stakeholders. Decide which of 
 the concerns matter after drawing a broad enough

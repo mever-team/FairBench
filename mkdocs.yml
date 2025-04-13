@@ -6,7 +6,8 @@ copyright: Copyright &copy; 2024 Emmanouil Krasanakis
 nav:
     - Home: 'index.md'
     - Overview:
-        - 'quickstart.md'
+        - 'quick.md'
+        - 'reports.md'
         - 'bench.md'
     - Documentation:
         - 'documentation/dimensions.md'

@@ -1,8 +1,8 @@
-# Quick benchmarks
+# Benchmarks
 
 Here we show how to run and compare algorithms. To give a taste of
-the library's ability to accommodate various kinds of data, we assess 
-computer vision systems.
+the library's ability to accommodate various kinds of data without
+changing anything, we assess computer vision systems.
 
 Before starting, install FairBench with any needed extra dependencies (extras).
 These install libraries required by models of the corresponding data types. 
@@ -52,7 +52,7 @@ experiments = {
 ## 2. Gather reports
 
 !!! info
-    Get familiar with generating standalone fairness reports in the [quickstart](quickstart.md). 
+    Get familiar with generating standalone fairness reports in the [quickstart](reports). 
 
 FairBench offers the `Progress` class to gather several fairness reports
 by registering them sequentially. It can yield an amalgamation at any point.

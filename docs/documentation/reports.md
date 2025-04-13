@@ -21,13 +21,14 @@ Sensitive attributes contain multiple
 that treat multi-value attributes or multiple
 sensitive attribute values interchangeably.
 
-| Argument    | Role                | Values                                                         |
-|-------------|---------------------|----------------------------------------------------------------|
-| predictions | system output       | binary array                                                   |
-| scores      | system output       | array with elements in [0,1]                                   |
-| targets     | prediction target   | array with elements in [0,1]                                   |      
-| labels      | prediction target   | binary array                                                   | 
-| sensitive   | sensitive attribute | fork of arrays with elements in [0,1] (either binary or fuzzy) |
+| Argument    | Role                | Values                                                                |
+|-------------|---------------------|-----------------------------------------------------------------------|
+| predictions | system output       | binary array                                                          |
+| scores      | system output       | array with elements in [0,1]                                          |
+| targets     | prediction target   | array with elements in [0,1]                                          | 
+| order       | order target        | array whose element order should be replicated (e.g., may have ranks) |      
+| labels      | prediction target   | binary array                                                          | 
+| sensitive   | sensitive attribute | fork of arrays with elements in [0,1] (either binary or fuzzy)        |
 
 !!! info
     In multiclass settings, all keyword

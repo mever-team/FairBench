@@ -163,7 +163,7 @@ std                                      0.333        0.083        0.500        
 This is an equivalent to the Console environment that converts
 presented text and quantities to a static HTML page. That page 
 displays evaluation cards one under the other, or next to each
-other as demonstrated in the [quickstart](../quickstart.md). 
+other as demonstrated in the [quickstart](../reports). 
 Note that increasing the of the *show* method, for example to
 `depth=2`, adds a lof of useful information but may take some
 time to go through.
