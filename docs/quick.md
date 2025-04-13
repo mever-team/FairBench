@@ -56,8 +56,8 @@ sensitive = fb.Dimensions(fb.categories @ x["race"])
 !!! info
     For this quickstart we analyze only one attribute, but you can add
     more as positional arguments to *Dimensions*. The library also
-    supports intersectionality by only changing how the sensitive attributes
-    are created. This is demonstrated in the next tutorial.
+    supports intersectionality by only transforming dimensions through
+    appropriate methods. This is demonstrated in the next page.
 
 ## 3. Build & compute a measure
 

@@ -43,8 +43,7 @@
 This is a comprehensive AI fairness exploration framework developed by the
 <a href="https://mammoth-ai.eu/">MAMMOth</a> project. 
 Visit the overview, read the 
-documentation, or try
-lightweight features in your browser.
+documentation, or try lightweight features in your browser below.
 <br><br>
 
 
@@ -53,6 +52,7 @@ lightweight features in your browser.
 <a href="https://pyodide.org/en/stable/">Powered by pyodyne</a>
 
 <textarea class="code-block" id="code" rows="40">
+# an expected real-world pattern
 sensitive = ["M","F","M","F","M","F","M"]
 y = [1, 1, 0, 0, 1, 0, 1]
 yhat = [1, 1, 1, 0, 0, 0, 0]
