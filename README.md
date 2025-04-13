@@ -17,7 +17,24 @@ but compatibility delays of third-party ML libraries usually
 mean that only the language's previous release is tested and
 stable (currently 3.12).*
 
-## Example
+## Quick measure
+
+```python
+import fairbench as fb
+
+x, y, yhat = fb.bench.tabular.compas(test_size=0.5, predict="probabilities")
+sensitive = fb.Dimensions(fb.categories @ x["race"])
+
+# more than 300 measures generated from their name and packed into a report
+abroca = fb.quick.pairwise_maxbarea_auc(scores=yhat, labels=y, sensitive=sensitive)
+print(abroca.float())
+abroca.roc.show()
+```
+
+![docs/simplest.png](docs/simplest.png)
+
+
+## Full report
 
 ```python
 import fairbench as fb
