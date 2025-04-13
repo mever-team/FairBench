@@ -462,9 +462,13 @@ class Value:
     def testeq(self, other, eps=1.0e-9):
         # ONLY USE THIS FOR TESTING
         value = float(self)
-        assert not math.isnan(value)
+        assert not math.isnan(
+            value
+        ), f"Result for {self.descriptor.name} was nan instead of raising an exception"
         if not np.isnan(other):
-            assert abs(value - other) < eps
+            assert (
+                abs(value - other) < eps
+            ), f"Failed to have {self.descriptor.name} {value} be similar to test value {other}"
 
     def filter(self, *methods):
         if not methods:

@@ -1,7 +1,6 @@
 from typing import Iterable
 from fairbench.v2.core import Value, NotComputable, Curve
 import numpy as np
-import math
 
 
 def number(values: Iterable[Value]) -> list[float]:
@@ -49,7 +48,7 @@ def relative(
     values = number(values)
     compared_to = values if compared_to is None else number(compared_to)
     return [
-        abs(1 - min(i, j) / max(i, j)) if i != 0 or j != 0 else 0
+        abs(1 - abs(min(i, j)) / max(abs(i), abs(j))) if i != 0 or j != 0 else 0
         for i in values
         for j in compared_to
     ]

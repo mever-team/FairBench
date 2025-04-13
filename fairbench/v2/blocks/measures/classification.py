@@ -101,10 +101,8 @@ def ppv(predictions, labels, sensitive=None):
     )
 
 
-@c.measure(
-    "the lift ratio of tpr divided by pr saturated through inverse log-odds to [0,1] (random model at finding positives is 0.5)"
-)
-def slift(predictions, labels, sensitive=None):
+@c.measure("the lift ratio (tpr divided by pr)", unit=False)
+def lift(predictions, labels, sensitive=None):
     predictions = np.array(predictions)
     labels = np.array(labels)
     sensitive = np.ones_like(predictions) if sensitive is None else np.array(sensitive)
@@ -119,7 +117,7 @@ def slift(predictions, labels, sensitive=None):
     value = 0 if pr == 0 else tpr / pr
 
     return c.Value(
-        c.TargetedNumber(value / (1 + value), 1),
+        value,
         depends=[
             quantities.tp(tp),
             quantities.ap(ap),
@@ -129,10 +127,8 @@ def slift(predictions, labels, sensitive=None):
     )
 
 
-@c.measure(
-    "the Matthews Correlation Coefficient (MCC) normalized to [0,1] (random model is 0.5)"
-)
-def nmcc(predictions, labels, sensitive=None):
+@c.measure("the Matthews correlation coefficient", unit=False)
+def mcc(predictions, labels, sensitive=None):
     predictions = np.array(predictions)
     labels = np.array(labels)
     sensitive = np.ones_like(predictions) if sensitive is None else np.array(sensitive)
@@ -151,7 +147,7 @@ def nmcc(predictions, labels, sensitive=None):
     value = 0 if denominator == 0 else numerator / denominator
 
     return c.Value(
-        c.TargetedNumber(value * 0.5 + 0.5, 1),
+        c.TargetedNumber(value, 1),
         depends=[
             quantities.tp(tp),
             quantities.tn(tn),
@@ -161,10 +157,8 @@ def nmcc(predictions, labels, sensitive=None):
     )
 
 
-@c.measure(
-    "the Cohen's Kappa score normalized to [0,1] shows the agreement beyond chance (random model is 0.5)"
-)
-def nkappa(predictions, labels, sensitive=None):
+@c.measure("the Cohen's Kappa score", unit=False)
+def kappa(predictions, labels, sensitive=None):
     predictions = np.array(predictions)
     labels = np.array(labels)
     sensitive = np.ones_like(predictions) if sensitive is None else np.array(sensitive)
@@ -185,7 +179,7 @@ def nkappa(predictions, labels, sensitive=None):
     value = 0 if (1 - pe) == 0 else (po - pe) / (1 - pe)
 
     return c.Value(
-        c.TargetedNumber(value * 0.5 + 0.5, 1),
+        c.TargetedNumber(value, 1),
         depends=[
             quantities.tp(tp),
             quantities.tn(tn),

@@ -3,7 +3,7 @@ from fairbench.v2.blocks.quantities import quantities
 import numpy as np
 
 
-@c.measure("the Spearman correlation")
+@c.measure("the Spearman correlation", unit=False)
 def spearman(scores, order, sensitive=None):
     scores = np.array(scores, dtype=np.float64)
     order = np.array(order, dtype=np.float64)
@@ -39,14 +39,15 @@ def spearman(scores, order, sensitive=None):
 
 
 @c.measure("the rank-biased overlap")
-def rbo(scores, order, sensitive=None, p=0.9):
+def rbo(scores, order, sensitive=None, top_weightedness=1.0):
+    from fairbench.fallbacks.rbo import RankingSimilarity
+
     scores = np.array(scores, dtype=np.float64)
     order = np.array(order, dtype=np.float64)
     sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
     scores = scores[sensitive > 0]
     order = order[sensitive > 0]
     samples = sensitive.sum()
-
     if scores.size == 0 or order.size == 0:
         return c.Value(
             c.TargetedNumber(0, 1),
@@ -54,20 +55,7 @@ def rbo(scores, order, sensitive=None, p=0.9):
                 quantities.samples(samples),
             ],
         )
-
-    pred_ranking = np.argsort(scores)[::-1]
-    true_ranking = np.argsort(order)[::-1]
-
-    def _rbo(pred, true, p):
-        rbo_score = 0.0
-        depth = min(len(pred), len(true))
-        agreement = 0
-        for d in range(1, depth + 1):
-            agreement += len(set(pred[:d]) & set(true[:d])) / d
-            rbo_score += (p ** (d - 1)) * (agreement / d)
-        return (1 - p) * rbo_score
-
-    value = _rbo(pred_ranking, true_ranking, p)
+    value = RankingSimilarity(scores, order).rbo(p=top_weightedness)
     return c.Value(
         c.TargetedNumber(value, 1),
         depends=[
@@ -76,7 +64,7 @@ def rbo(scores, order, sensitive=None, p=0.9):
     )
 
 
-@c.measure("the normalized discounted ranking loss (NDRL)")
+@c.measure("the normalized discounted ranking loss")
 def ndrl(scores, order, sensitive=None):
     import numpy as np
 
@@ -117,5 +105,65 @@ def ndrl(scores, order, sensitive=None):
         depends=[
             quantities.samples(samples),
             quantities.itemloss(loss_curve),
+        ],
+    )
+
+
+@c.measure("the normalized discounted cumulative gain of all recommendations")
+def ndcg(scores, order, sensitive=None):
+    scores = np.array(scores, dtype=np.float64)
+    order = np.array(order, dtype=np.float64)
+    sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
+    scores = scores[sensitive > 0]
+    order = order[sensitive > 0]
+    samples = sensitive.sum()
+    assert samples != 0, f"Cannot compute NDCG for an empty group"
+
+    indexes = np.argsort(scores)[::-1]
+    rel = order[indexes]
+    dcg = np.sum((2**rel - 1) / np.log2(np.arange(2, len(rel) + 2)))
+    ideal_rel = np.sort(order)[::-1]
+    idcg = np.sum((2**ideal_rel - 1) / np.log2(np.arange(2, len(ideal_rel) + 2)))
+    ndcg = dcg / idcg if idcg > 0 else 0.0
+    true_top = order.sum()
+    return c.Value(
+        ndcg,
+        depends=[
+            quantities.tp(true_top),
+            quantities.samples(samples),
+        ],
+    )
+
+
+@c.measure("the normalized discounted cumulative gain of top recommendations")
+def topndcg(scores, order, sensitive=None, top=3):
+    scores = np.array(scores, dtype=np.float64)
+    order = np.array(order, dtype=np.float64)
+    sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
+    samples = sensitive.sum()
+
+    k = int(top)
+    assert (
+        0 < k <= scores.shape[0]
+    ), f"There are only {scores.shape[0]} inputs but top={top} was requested for ranking analysis"
+    assert samples != 0, f"Cannot compute topndfcg for an empty group"
+
+    scores = scores[sensitive > 0]
+    order = order[sensitive > 0]
+
+    indexes = np.argsort(scores)[-k:][::-1]
+    rel = order[indexes]
+    dcg = np.sum((2**rel - 1) / np.log2(np.arange(2, len(rel) + 2)))
+    ideal_rel = np.sort(order)[-k:][::-1]
+    idcg = np.sum((2**ideal_rel - 1) / np.log2(np.arange(2, len(ideal_rel) + 2)))
+    ndcg = dcg / idcg if idcg > 0 else 0.0
+    true_top = order[indexes].sum()
+
+    return c.Value(
+        ndcg,
+        depends=[
+            quantities.top(k),
+            quantities.tp(true_top),
+            quantities.samples(samples),
         ],
     )

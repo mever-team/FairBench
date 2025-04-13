@@ -74,66 +74,6 @@ def auc(scores, labels, sensitive=None):
     )
 
 
-@c.measure("the normalized discounted cumulative gain of all recommendations")
-def ndcg(scores, labels, sensitive=None):
-    scores = np.array(scores, dtype=np.float64)
-    labels = np.array(labels, dtype=np.float64)
-    sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
-    scores = scores[sensitive > 0]
-    labels = labels[sensitive > 0]
-    samples = sensitive.sum()
-    assert samples != 0, f"Cannot compute NDCG for an empty group"
-
-    indexes = np.argsort(scores)[::-1]
-    rel = labels[indexes]
-    dcg = np.sum((2**rel - 1) / np.log2(np.arange(2, len(rel) + 2)))
-    ideal_rel = np.sort(labels)[::-1]
-    idcg = np.sum((2**ideal_rel - 1) / np.log2(np.arange(2, len(ideal_rel) + 2)))
-    ndcg = dcg / idcg if idcg > 0 else 0.0
-    true_top = labels.sum()
-    return c.Value(
-        ndcg,
-        depends=[
-            quantities.tp(true_top),
-            quantities.samples(samples),
-        ],
-    )
-
-
-@c.measure("the normalized discounted cumulative gain of top recommendations")
-def topndcg(scores, labels, sensitive=None, top=3):
-    scores = np.array(scores, dtype=np.float64)
-    labels = np.array(labels, dtype=np.float64)
-    sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
-    samples = sensitive.sum()
-
-    k = int(top)
-    assert (
-        0 < k <= scores.shape[0]
-    ), f"There are only {scores.shape[0]} inputs but top={top} was requested for ranking analysis"
-    assert samples != 0, f"Cannot compute topndfcg for an empty group"
-
-    scores = scores[sensitive > 0]
-    labels = labels[sensitive > 0]
-
-    indexes = np.argsort(scores)[-k:][::-1]
-    rel = labels[indexes]
-    dcg = np.sum((2**rel - 1) / np.log2(np.arange(2, len(rel) + 2)))
-    ideal_rel = np.sort(labels)[-k:][::-1]
-    idcg = np.sum((2**ideal_rel - 1) / np.log2(np.arange(2, len(ideal_rel) + 2)))
-    ndcg = dcg / idcg if idcg > 0 else 0.0
-    true_top = labels[indexes].sum()
-
-    return c.Value(
-        ndcg,
-        depends=[
-            quantities.top(k),
-            quantities.tp(true_top),
-            quantities.samples(samples),
-        ],
-    )
-
-
 @c.measure("the hit ratio of top recommendations")
 def tophr(scores, labels, sensitive=None, top=3):
     scores = np.array(scores, dtype=np.float64)
