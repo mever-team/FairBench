@@ -21,13 +21,12 @@ Here is a common workflow for computing a fairness measure.
 
 To assess your system, use it to generate predictions for test data.
 Taking a break from most tutorials that focus on binary classification, 
-we evaluate the recommendation capabilities
-of a system obtained with from those available for out-of-the-box
-experimentation, where
-*yhat* hold prediction probabilities, *y* hold target binary labels,
-and *x* is the test portion of the dataset.
-This is not necessarily well-performing or fair.
-Use the library to assess other types of predictive systems too. 
+we evaluate a recommender system from those available for out-of-the-box
+experimentation with the following pattern. Its outputs are the test portion of the dataset *x*, 
+the target binary labels *y*, and prediction probabilities *yhat* that are
+not necessarily performant of fair.
+The library can assess other types of predictive tasks too, such as (multiclass) classification
+and ranking.
 Supported data formats include lists, numpy arrays, 
 and pytorch/tensorflow/jax tensors.
 
@@ -43,12 +42,13 @@ into a data structure holding multiple [dimensions](documentation/dimensions.md)
 This stores any number of attributes with any number of values
 by considering each value as a separate dimension.
 
-In particular, each dimension is a binary or fuzzy array
+Each dimension is a binary or fuzzy (with truth values in [0,1]) array
 whose i-th element represents whether the i sample has the attribute
 corresponding to the dimension. 
-One construction pattern is the following The `@` operator is overloaded so that
-methods that split data into small dictionaries can be called without 
-making code less readable when there are many attributes.
+One construction pattern is the following, where the
+`@` operator is overloaded so that
+methods that split data into small dictionaries to be combined
+can be called without making code less readable when there are many attributes.
 
 ```python
 sensitive = fb.Dimensions(fb.categories @ x["race"])
