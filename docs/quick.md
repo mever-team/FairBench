@@ -20,17 +20,20 @@ Here is a common workflow for computing a fairness measure.
 ## 1. Prepare data
 
 To assess your system, use it to generate predictions for test data.
-To take a break from most tutorials that focus on binary classification, 
+Taking a break from most tutorials that focus on binary classification, 
 we evaluate the recommendation capabilities
-of what is originally a classifier trained on a specific
-dataset. This is not necessarily well-performing or fair.
+of a system obtained with from those available for out-of-the-box
+experimentation, where
+*yhat* hold prediction probabilities, *y* hold target binary labels,
+and *x* is the test portion of the dataset.
+This is not necessarily well-performing or fair.
 Use the library to assess other types of predictive systems too. 
 Supported data formats include lists, numpy arrays, 
 and pytorch/tensorflow/jax tensors.
 
 ```python
 import fairbench as fb
-test, y, yhat = fb.bench.tabular.adult()
+x, y, yhat = fb.bench.tabular.compas(test_size=0.5, predict="probabilities")
 ```
 
 ## 2. Sensitive attributes
@@ -40,16 +43,14 @@ into a data structure holding multiple [dimensions](documentation/dimensions.md)
 This stores any number of attributes with any number of values
 by considering each value as a separate dimension.
 
-In particular, each dimension is represented as a binary or fuzzy array
+In particular, each dimension is a binary or fuzzy array
 whose i-th element represents whether the i sample has the attribute
 corresponding to the dimension. 
-One construction pattern is the following, which has *yhat* hold
-prediction probabilities. The `@` operator is overloaded so that
+One construction pattern is the following The `@` operator is overloaded so that
 methods that split data into small dictionaries can be called without 
 making code less readable when there are many attributes.
 
 ```python
-x, y, yhat = fb.bench.tabular.compas(test_size=0.5, predict="probabilities")
 sensitive = fb.Dimensions(fb.categories @ x["race"])
 ```
 

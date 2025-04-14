@@ -34,7 +34,7 @@ into a data structure holding multiple [dimensions](documentation/dimensions.md)
 This stores any number of attributes with any number of values
 by considering each value as a separate dimension.
 
-In particular, each dimension is represented as a binary or fuzzy array
+In particular, each dimension is a binary or fuzzy array
 whose i-th element represents whether the i sample has the attribute
 corresponding to the dimension. 
 One construction pattern is the following. This first analyses categorical
