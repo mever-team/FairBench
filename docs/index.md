@@ -64,7 +64,8 @@ report = fb.reports.pairwise(
 )
 
 report.show(env=fb.export.ConsoleTable(legend=False))
-report.maxdiff.show() # dot specializes, could also show everything</textarea>
+report.maxdiff.show() 
+# dot specializes, could show everything or use Console, `report.help()` for options</textarea>
 
 <pre id="output" style="width: 100%; resize: vertical; overflow: auto; max-height: 600px;" rows="30" disabled></pre>
 
@@ -340,7 +341,7 @@ report.maxdiff.show() # dot specializes, could also show everything</textarea>
         `));
         await pyodide.loadPackage("micropip");
         const micropip = pyodide.pyimport("micropip");
-        await micropip.install('fairbench==0.7.4');
+        await micropip.install('fairbench==0.8.0');
         output.value = ">>> import fairbench as fb\n";
         try {
             pyodide.runPython(`import fairbench as fb`);

@@ -7,9 +7,10 @@
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md) 
 
 A comprehensive AI fairness exploration framework. <br>
+🧱 Build measures from simpler blocks<br>
 📈 Fairness reports and stamps <br>
 ⚖️ Multivalue multiattribute <br>
-🧪 Backtrack computations to measure building blocks <br>
+🧪 Backtrack,filter, and reorganize computations<br>
 🖥️ ML compatible: *numpy,pandas,torch,tensorflow,jax*
 
 *FairBench strives to be compatible with the latest Python release, 
