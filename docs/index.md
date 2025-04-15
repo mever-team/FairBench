@@ -51,21 +51,23 @@ documentation, or try lightweight features in your browser below.
 <button id="restart" onclick="restartPython()"><span class="icon-blue">&#x1F504;</span> Clear</button>
 <a href="https://pyodide.org/en/stable/">Powered by pyodyne</a>
 
-<textarea class="code-block" id="code" rows="40">
-# an expected real-world pattern
-sensitive = ["M","F","M","F","M","F","M"]
-y = [1, 1, 0, 0, 1, 0, 1]
-yhat = [1, 1, 1, 0, 0, 0, 0]
+<textarea class="code-block" id="code" rows="40"># some sensitive attribute with values M,F,O, binary target
+# labels y, and predicted ones yhat (see docs for multiclass)
+s = ["M","F","M","F","M","F","M", "O", "O"]
+y = [1, 1, 0, 0, 1, 0, 1, 1, 0]
+yhat = [1, 1, 1, 0, 0, 0, 0, 1, 0]
 
-report = fb.reports.pairwise(
-    predictions=yhat, 
-    labels=y, 
-    sensitive=fb.Dimensions(fb.categories @ sensitive)
-)
+# one way to unpack sensitive attributes into dimensions
+s = fb.Dimensions(fb.categories @ s)
 
+# a fairness report for base measures (all applicable to the
+# arguments) computed and compared across all groups
+report = fb.reports.pairwise(predictions=yhat, labels=y, sensitive=s)
+
+# show in an environment (default: Console) & focus on max differences
+# report.help() shows what to focus on
 report.show(env=fb.export.ConsoleTable(legend=False))
-report.maxdiff.show() 
-# dot specializes, could show everything or use Console, `report.help()` for options</textarea>
+report.maxdiff.show(env=fb.export.Console(ansiplot=False))</textarea>
 
 <pre id="output" style="width: 100%; resize: vertical; overflow: auto; max-height: 600px;" rows="30" disabled></pre>
 
