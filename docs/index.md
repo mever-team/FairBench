@@ -57,7 +57,7 @@ s = ["M","F","M","F","M","F","M", "O", "O"]
 y = [1, 1, 0, 0, 1, 0, 1, 1, 0]
 yhat = [1, 1, 1, 0, 0, 0, 0, 1, 0]
 
-# one way to unpack sensitive attributes into dimensions
+# one of the patterns to unpack sensitive attributes into dimensions
 s = fb.Dimensions(fb.categories @ s)
 
 # a fairness report for base measures (all applicable to the
