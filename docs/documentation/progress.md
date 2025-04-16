@@ -61,7 +61,7 @@ comparison = fb.Progress(status)
 ## Applying reductions
 
 FairBench already provides reduction mechanisms to aggregate fairness measures across
-groups or subgroups. These can also be applied on filters to values, granted that they
+groups or subgroups. These can also be applied as filters, granted that they
 encounter the same units across all dimensions when attempting a reduction (this check
 is enforced for sanity).
 

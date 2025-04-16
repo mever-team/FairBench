@@ -33,7 +33,16 @@ sensitive attribute values interchangeably.
 !!! info
     In multiclass settings, all keyword
     arguments other than the sensitive attribute
-    must be dimensions corresponding to the classes.
+    must have dimensions corresponding to the classes.
+
+!!! tip
+    Typically, you would want to assess a system of only one kind,
+    such as with:
+
+    - *predictions,labels,sensitive* for classification
+    - *scores,labels,sensitive* for recommendation
+    - *scores,targets,sensitive* for regression
+    - *scores,order,sensitive* for ranking
 
 ## Report types
 

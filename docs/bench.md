@@ -51,8 +51,7 @@ experiments = {
 
 ## 2. Gather reports
 
-!!! info
-    Get familiar with generating standalone fairness reports in the [quickstart](reports). 
+*Get familiar with generating [full reports](reports) before continuing.*
 
 FairBench offers the `Progress` class to gather several fairness reports
 by registering them sequentially. It can yield an amalgamation at any point.
