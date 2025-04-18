@@ -18,8 +18,9 @@ but compatibility delays of third-party ML libraries usually
 mean that only the language's previous release is tested and
 stable (currently 3.12).*
 
-
 ## [Documentation](https://fairbench.readthedocs.io/)
+
+## [Discord](https://discord.gg/WwQWFSjSWZ)
 
 ## Quick measure
 
