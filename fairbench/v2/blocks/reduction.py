@@ -65,12 +65,35 @@ def gini(values):
 
 @c.reduction("the average")
 def mean(values):
+    targets = [value.value.target for value in values if value.value and isinstance(value.value, c.TargetedNumber)]
     values = c.transform.number(values)
-    return np.mean(values) if len(values) else 0
+    value = np.mean(values) if len(values) else 0
+    return (
+        c.TargetedNumber(value, target=targets[0])
+        if len(targets) and len(set(targets))==1
+        else value
+    )
+
+
+@c.reduction("the geometric mean")
+def gm(values):
+    targets = [value.value.target for value in values if value.value and isinstance(value.value, c.TargetedNumber)]
+    values = c.transform.number(values)
+    value = 1.0
+    for v in values:
+        value *= v
+    if values:
+        value **= 1./len(values)
+    return (
+        c.TargetedNumber(value, target=targets[0])
+        if len(targets) and len(set(targets))==1
+        else value
+    )
 
 
 @c.reduction("the weighted average")
 def wmean(values, weight_by=None):
+    targets = [value.value.target for value in values if value.value and isinstance(value.value, c.TargetedNumber)]
     if weight_by is None:
         from fairbench.v2 import measures
 
@@ -82,9 +105,12 @@ def wmean(values, weight_by=None):
     values = np.array(values)
     weights = np.array(weights)
     weights_sum = weights.sum()
-    if weights_sum == 0:
-        return values
-    return np.sum(values * weights / weights_sum)
+    value = np.sum(values * weights / weights_sum) if weights_sum else values
+    return (
+        c.TargetedNumber(value, target=targets[0])
+        if len(targets) and len(set(targets))==1
+        else value
+    )
 
 
 @c.reduction("the maximum difference")

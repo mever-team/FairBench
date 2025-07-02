@@ -9,6 +9,7 @@ nav:
         - 'quick.md'
         - 'reports.md'
         - 'bench.md'
+        - 'llms.md'
     - Documentation:
         - 'documentation/dimensions.md'
         - 'documentation/reports.md'
