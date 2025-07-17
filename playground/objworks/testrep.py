@@ -4,6 +4,8 @@ x, y, yhat = fb.bench.tabular.bank(predict="probabilities")
 sensitive = fb.Dimensions(fb.categories @ x["marital"], fb.categories @ x["education"])
 sensitive = sensitive.intersectional().strict()
 
+fb.measures.acc(predictions=yhat, labels=y, sensitive=sensitive)
+
 report = fb.reports.vsall(
     sensitive=sensitive,
     predictions=yhat > 0.5,

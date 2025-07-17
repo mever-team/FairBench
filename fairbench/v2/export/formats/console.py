@@ -149,7 +149,8 @@ class Console:
     def quote(self, text, keywords=()):
         for keyword in keywords:
             text = text.replace(
-                keyword, ansi.colorize(keyword, ansi.white, ansi.reset + ansi.italic)
+                keyword,
+                ansi.colorize(keyword, ansi.bright_green, ansi.reset + ansi.italic),
             )
 
         endl = self.width - 2 - (0 if self.level == 0 else (self.level - 1) * 2 + 1)

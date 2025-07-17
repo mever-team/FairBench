@@ -20,4 +20,6 @@ for name, experiment in experiments.items():
     settings.instance(name, mean_report)
 
 comparison = settings.build()
-comparison["gm measures mean"].show(env=fb.export.HtmlTable(sideways=True, transpose=True, legend=True))
+comparison["gm measures mean"].show(
+    env=fb.export.HtmlTable(sideways=True, transpose=True, legend=True)
+)

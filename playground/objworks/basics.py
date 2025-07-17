@@ -10,5 +10,4 @@ y = fb.Dimensions(fb.categories @ y)
 
 report = fb.reports.pairwise(predictions=yhat, labels=y, sensitive=sensitive)
 report.show(env=fb.export.ConsoleTable(sideways=False))
-report.filter(fb.investigate.BL(0.1)).show(env=fb.export.ConsoleTable(sideways=False))
-
+report.filter(fb.investigate.BL(0.1)).show()
