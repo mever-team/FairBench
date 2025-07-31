@@ -95,6 +95,8 @@ def gm(values):
     values = c.transform.number(values)
     value = 1.0
     for v in values:
+        if v<0:
+            raise c.NotComputable("Cannot accept negative result when computing gm")
         value *= v
     if values:
         value **= 1.0 / len(values)
