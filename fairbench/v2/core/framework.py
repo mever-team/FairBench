@@ -9,14 +9,15 @@ from fairbench.v2.core import (
 )
 
 
-def measure(description, unit=True, debug=False):
+def measure(description, unit=True, debug=False, eps=1E-9):
     """
     Measures compute a float value that is wrapped with their own descriptor
     and dependencies.
 
     Args:
-        unit: Whether to enforce that inputs should be in the unit interval [0,1].
-        debug: Should be False. Set to True while developing new measures to ensure exceptions are not silently caught..
+        unit: Whether to enforce that outputs should be in the unit interval [0,1].
+        debug: Should be False. Set to True while developing new measures to ensure exceptions are not silently caught.
+        eps: Rounds 1+eps to 1 when e is a tiny rounding error and outputs are required to be in the unit interval .
     """
 
     def strategy(func):
@@ -36,6 +37,8 @@ def measure(description, unit=True, debug=False):
                 or isinstance(value.value, float)
                 or isinstance(value.value, int)
             ), f"{descriptor} computed {type(value.value)} instead of float, int, Number, or TargetedNumber"
+            if unit and 1 < float(value) < 1 + eps: # take care of rounding errors
+                value = 1.0
             assert not unit or (
                 0 <= float(value) <= 1
             ), f"{descriptor} computed {float(value)} that is not in [0,1]"
