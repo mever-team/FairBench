@@ -48,7 +48,13 @@ def maxerror(values):
 @c.reduction("the standard deviation x2")
 def stdx2(values):
     values = c.transform.number(values)
-    return c.TargetedNumber(2 * np.std(values), 0)
+    return c.TargetedNumber(np.std(values)*2 if len(values) else 0, 0)
+
+
+@c.reduction("the standard deviation x2")
+def std(values):
+    values = c.transform.number(values)
+    return c.TargetedNumber(np.std(values) if len(values) else 0, 0)
 
 
 @c.reduction("the gini coefficient")
