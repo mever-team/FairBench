@@ -11,7 +11,7 @@ A comprehensive AI fairness exploration framework. <br>
 📈 Fairness reports and stamps <br>
 ⚖️ Multivalue multiattribute <br>
 🧪 Backtrack,filter, and reorganize computations<br>
-🖥️ ML compatible: *numpy,pandas,torch,tensorflow,jax*
+🖥️ ML and LLM compatible: *numpy,pandas,torch,tensorflow,jax,transformers,ollama*
 
 *FairBench strives to be compatible with the latest Python release, 
 but compatibility delays of third-party ML libraries usually 
