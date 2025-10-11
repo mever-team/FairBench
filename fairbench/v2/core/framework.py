@@ -9,7 +9,7 @@ from fairbench.v2.core import (
 )
 
 
-def measure(description, unit=True, debug=False, eps=1E-9):
+def measure(description, unit=True, debug=False, eps=1e-9):
     """
     Measures compute a float value that is wrapped with their own descriptor
     and dependencies.
@@ -37,7 +37,7 @@ def measure(description, unit=True, debug=False, eps=1E-9):
                 or isinstance(value.value, float)
                 or isinstance(value.value, int)
             ), f"{descriptor} computed {type(value.value)} instead of float, int, Number, or TargetedNumber"
-            if unit and 1 < float(value) < 1 + eps: # take care of rounding errors
+            if unit and 1 < float(value) < 1 + eps:  # take care of rounding errors
                 value = 1.0
             assert not unit or (
                 0 <= float(value) <= 1

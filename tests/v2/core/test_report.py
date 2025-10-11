@@ -41,7 +41,12 @@ def test_simple_report():
         labels=y,
         sensitive=fb.Dimensions(fb.categories @ sensitive),
         measures=[fb.measures.mcc],
-        reductions=[fb.reduction.stdx2,fb.reduction.maxdiff,fb.reduction.gm,fb.reduction.std]
+        reductions=[
+            fb.reduction.stdx2,
+            fb.reduction.maxdiff,
+            fb.reduction.gm,
+            fb.reduction.std,
+        ],
     )
 
     report.filter(v2.investigate.Stamps).show(

@@ -5,6 +5,27 @@ import numpy as np
 complicated_mode = False
 
 
+def deep_dict_equal(a, b, path: str = ""):
+    if a is b:
+        return
+    assert a is not None and b is not None, f"{path}: Mismatching types {a}, {b}"
+    assert type(a) == type(b), f"{path}: Mismatching types {type(a)}, {type(b)}"
+    if isinstance(a, dict):
+        for k in a.keys():
+            assert k in b, AssertionError(
+                f"{path} Mismatching keys: {','.join(a.keys())} vs {','.join(b.keys())}"
+            )
+        for k in a:
+            deep_dict_equal(a[k], b[k], path + "." + k)
+    elif isinstance(a, list):
+        assert len(a) == len(b), AssertionError(
+            f"{path} Mismatching length: {len(a)} vs {len(b)}"
+        )
+        for x, y in zip(a, b):
+            deep_dict_equal(x, y, path + ".*")
+    assert a == b, f"{path}: Mismatching values {a} vs {b}"
+
+
 def mismatch(item, keys):
     keys = list(keys)
     ret = f"Key '{item}' is not one of {list(keys)}.\n"

@@ -48,7 +48,7 @@ def maxerror(values):
 @c.reduction("the standard deviation x2")
 def stdx2(values):
     values = c.transform.number(values)
-    return c.TargetedNumber(np.std(values)*2 if len(values) else 0, 0)
+    return c.TargetedNumber(np.std(values) * 2 if len(values) else 0, 0)
 
 
 @c.reduction("the standard deviation x2")
@@ -95,7 +95,7 @@ def gm(values):
     values = c.transform.number(values)
     value = 1.0
     for v in values:
-        if v<0:
+        if v < 0:
             raise c.NotComputable("Cannot accept negative result when computing gm")
         value *= v
     if values:
