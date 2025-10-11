@@ -204,7 +204,9 @@ ones by an error of 0.25 in the default case - though certain
 [filters](filters.md) control the threshold. Therefore, checkmarks
 do not necessarily indicate fairness, but just smaller magnitudes of
 bias. However, those small biases may also be the ones most prohibitive 
-in the deployment context of the evaluated AI systems.
+in the deployment context of the evaluated AI systems. Pass `filaname=None`
+to export the produced html as text instead of generating a file or showing
+it.
 
 ```python
 report.show(fb.export.Html(legend=False), depth=2)
@@ -216,10 +218,34 @@ report.show(fb.export.Html(legend=False), depth=2)
 ## HtmlTable
 
 This is an equivalent to the ConsoleTable environment that
-again converts the generated tables to a static HTML page.
-Below is an example outcome of `report.show(fb.export.HtmlTable)`.
+converts the generated tables to a static HTML page.
+Below is an example outcome of using the environment. Accepts a `legend=True` 
+argument to show more information. Pass `filaname=None`
+to export the produced html as text instead of generating a file 
+or showing it. Pass `transpose=True` or `transpose=False` to set 
+a definitive table roation (exchanging colums with rows) 
+instead of an automatically selected one.
+
+```report.show(fb.export.HtmlTable)```
 
 ![html_table.png](html_table.png)
+
+## HtmlBars
+
+I similar to *HtmlTable* but instead shows table entries as
+bar plots that can be compared. Accepts a `legend=True` 
+argument to show more information. Pass `filaname=None`
+to export the produced html as text instead of generating a file 
+or showing it. Finally, change the default
+`cell_width_px=80` to a different value to set table column widths to
+that.
+
+
+```python
+report.show(env=fb.export.HtmlBars, depth=2)
+```
+
+![html_bars.png](html_bars.png)
 
 ## PlotlyHeatMap
 

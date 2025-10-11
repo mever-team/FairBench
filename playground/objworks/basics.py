@@ -13,4 +13,4 @@ report.show(env=fb.export.ConsoleTable(sideways=False))
 report.filter(fb.investigate.BL(0.1)).show()
 
 
-report.show(env=fb.export.HtmlBars, depth=4)
+report.show(env=fb.export.HtmlBars, depth=2)
