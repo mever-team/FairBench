@@ -63,8 +63,8 @@ replaced when injected in the fairness analysis by uniformly random combinations
 of sensitive attribute values.
 
 !!! Warning
-    These sensitive attributes and their values were not rigorously
-    gathered and only serve demonstrative purposes.
+    The following attributes and their values serve only demonstrative purposes 
+    and must not be considered necessarily relevant or representative.
 
 
 ```python
