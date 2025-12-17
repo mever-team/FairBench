@@ -257,3 +257,32 @@ def f1(predictions, labels, sensitive=None):
             quantities.an(n),
         ],
     )
+
+
+
+@c.measure("the geometric mean of tpr and tnr - accounts for class imbalance")
+def gmi(predictions, labels, sensitive=None):
+    predictions = np.array(predictions)
+    labels = np.array(labels)
+    sensitive = np.ones_like(predictions) if sensitive is None else np.array(sensitive)
+
+    tp = (predictions * sensitive * labels).sum()
+    tn = ((1 - predictions) * sensitive * (1 - labels)).sum()
+    p = (labels * sensitive).sum()
+    n = ((1 - labels) * sensitive).sum()
+    fn = p - tp
+    fp = n - tn
+
+    precision = 0 if (tp + fp) == 0 else tp / (tp + fp)
+    recall = 0 if (tp + fn) == 0 else tp / (tp + fn)
+    value = precision*recall
+
+    return c.Value(
+        c.TargetedNumber(value, 1),
+        depends=[
+            quantities.tp(tp),
+            quantities.tn(tn),
+            quantities.ap(p),
+            quantities.an(n),
+        ],
+    )

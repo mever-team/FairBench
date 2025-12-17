@@ -12,6 +12,7 @@ all_measures = [
     blocks.measures.tnr,
     blocks.measures.ppv,
     blocks.measures.f1,
+    blocks.measures.gmi,
     blocks.measures.tar,
     blocks.measures.trr,
     blocks.measures.lift,

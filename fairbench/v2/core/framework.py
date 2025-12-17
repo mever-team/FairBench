@@ -38,7 +38,7 @@ def measure(description, unit=True, debug=False, eps=1e-9):
                 or isinstance(value.value, int)
             ), f"{descriptor} computed {type(value.value)} instead of float, int, Number, or TargetedNumber"
             if unit and 1 < float(value) < 1 + eps:  # take care of rounding errors
-                value = 1.0
+                value.value = 1.0
             assert not unit or (
                 0 <= float(value) <= 1
             ), f"{descriptor} computed {float(value)} that is not in [0,1]"

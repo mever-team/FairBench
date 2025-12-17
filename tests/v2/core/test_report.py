@@ -104,6 +104,7 @@ def test_pairwise():
     report.min.acc.show()
     report.min.acc.help()
     report.acc.min.show()
+    report.gmi.min.show()
 
     report.acc.min.testeq(
         fb.quick.pairwise_acc_min(
