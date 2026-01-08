@@ -3,6 +3,7 @@ import json
 import os
 import warnings
 
+
 class LLMDatasetGenerator:
     def __init__(self):
         self.attrs = list()
@@ -34,13 +35,15 @@ def simplequestions(
     n=1000,
     overwrite=False,
 ):
-    warnings.warn("""
+    warnings.warn(
+        """
     DISCLAIMER: You are using FairBench for LLM assessment.
     Prompts and prompt templates may reflect biases, for example by being deliberately engineered to attempt to induce 
     more biased answers than normal. This is done so that discrepancies between groups, or between biased and unbiased 
     behavior, can be uncovered by qualitative and quantitative assessment. This warning is shown to promote responsible
     usage.
-    """)
+    """
+    )
     if os.path.exists(cache) and not overwrite:
         with open(cache, "r") as file:
             dataset = json.load(file)

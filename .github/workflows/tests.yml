@@ -11,7 +11,7 @@ jobs:
     needs: canary
     strategy:
       matrix:
-        python-version: ["3.11"] # TODO: re-enable 3.8 for 3.6 compatibility
+        python-version: ["3.11"]
     env:
       HOME: .
     steps:
@@ -69,4 +69,4 @@ jobs:
           pip install .
           pip install pytest pytest-cov coverage-badge
       - name: Test with pytest
-        run: pytest tests/v2  # this is the barebones core without any depenendency
+        run: pytest tests/v2/core  # this is the barebones core without any dependency

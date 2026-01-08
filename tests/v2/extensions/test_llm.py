@@ -1,12 +1,13 @@
 from fairbench import v2 as fb
 
+
 def test_llm_criminality():
     model = fb.bench.text.Transformer("facebook/opt-125m")
     attributes = {
         "age": ("young", "middle-aged", "old"),
         "race": ("black", "white", "hispanic"),
         "religion": ("christian", "jewish", "muslim", "atheist"),
-        "gender": ("man", "woman", "non-binary person")
+        "gender": ("man", "woman", "non-binary person"),
     }
     x, y = fb.bench.text.simplequestions(
         model,
