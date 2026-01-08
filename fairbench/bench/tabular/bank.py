@@ -18,7 +18,7 @@ def bank(classifier=None, scaler=None, predict="predict", seed=None, test_size=0
     if scaler is None:
         scaler = MinMaxScaler().fit_transform
     data = read_csv(
-        "https://archive.ics.uci.edu/static/public/222/bank+marketing.zip/bank/bank.csv",
+        "https://archive.ics.uci.edu/static/public/222/bank+marketing.zip/bank/bank-full.csv",
         root=cache(),
         delimiter=";",
         header=0,

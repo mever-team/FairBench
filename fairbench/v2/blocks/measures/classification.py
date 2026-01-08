@@ -259,7 +259,6 @@ def f1(predictions, labels, sensitive=None):
     )
 
 
-
 @c.measure("the geometric mean of tpr and tnr - accounts for class imbalance")
 def gmi(predictions, labels, sensitive=None):
     predictions = np.array(predictions)
@@ -275,7 +274,7 @@ def gmi(predictions, labels, sensitive=None):
 
     precision = 0 if (tp + fp) == 0 else tp / (tp + fp)
     recall = 0 if (tp + fn) == 0 else tp / (tp + fn)
-    value = precision*recall
+    value = precision * recall
 
     return c.Value(
         c.TargetedNumber(value, 1),

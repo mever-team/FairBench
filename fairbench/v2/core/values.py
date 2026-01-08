@@ -337,8 +337,8 @@ class Value:
                 return True
         return False
 
-    def rebase(self, dep: Descriptor|str):
-        if isinstance(dep,str):
+    def rebase(self, dep: Descriptor | str):
+        if isinstance(dep, str):
             dep = Descriptor(dep, self.descriptor.role)
         return Value(self.value, dep, list(self.depends.values()))
 
