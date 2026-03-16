@@ -430,7 +430,7 @@ class Html:
             <title>FairBench</title>
             <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-            <script src="https://d3js.org/d3.v7.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
         </head>
         <body>
             <div {'class="container"' if not self.horizontal else ""}>

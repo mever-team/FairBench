@@ -44,7 +44,8 @@ This is a comprehensive AI fairness exploration framework developed by the
 <a href="https://mammoth-ai.eu/">MAMMOth</a> project. 
 Visit the overview, read the 
 documentation, or try lightweight features in your browser below. 
-Consider starring or submit issues in [GitHub](https://github.com/mever-team/FairBench).
+Consider starring or submit issues in 
+<a href="https://github.com/mever-team/FairBench">GitHub</a>.
 <br><br>
 
 

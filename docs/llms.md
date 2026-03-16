@@ -20,10 +20,11 @@ synthetic prompts to uncover explicit or implicit biases.
 
 Either install FairBench with the LLM extension per `pip install --upgrade fairbench[llm]`,
 or restrict yourself to using Ollama models, which do not require heavyweight libraries. 
-The latter can be accessed by the base FairBench installation, 
-but need external setup in your system. For example, run the following
-to set up Ollama in Linux, or visit Ollama's [downloads](https://ollama.com/download) for a Windows installer
-or an equivalent Mac instruction. Note that the last command grabs a specific model, which we
+
+In the last case, employ the base FairBench installation per `pip install --upgrade fairbench`, 
+but Ollama needs external setup in your system. For example, run the following
+setup process in Linux, or visit Ollama's [downloads](https://ollama.com/download) for a Windows installer
+or an equivalent Mac instruction. The last terminal command below grabs a specific model, which we
 will use here.
 
 ```bash
@@ -34,18 +35,17 @@ ollama pull llama3.2
 
 Once you have installed one of the above two infrastructures -or one of your own- 
 you need to establish a function that calls one of the available LLMs to investigate 
-its biases. The following two means of generating functions are provided out-of-the-box.
+its biases. The following two means of generating LLM wrappers are provided out-of-the-box.
 
 ```python
 import fairbench as fb
 
 model = fb.bench.text.Transformer("facebook/opt-125m")
-model = fb.bench.text.Transformer("llama3.2:latest")
+model = fb.bench.text.Ollama("llama3.2:latest")
 ```
 
-Run the function once to test that you have properly set up everything.
-Here is an example run from `llama3.2:latest` and the corresponding console
-output.
+Run the wrapper once to test that you have properly set up everything.
+Here is an example output for `llama3.2:latest`.
 
 ```python
 print(model("Hi!"))
@@ -59,8 +59,7 @@ be different situations and demographics to consider as inputs and outputs.
 FairBench lets you bring your own prompts. As an example, here are two templates,
 where in the first a demographic is set up as a criminal whereas in the second
 the setting is neutral. In the prompts, the text `"{demographic} "` will be 
-replaced when injected in the fairness analysis by uniformly random combinations 
-of sensitive attribute values.
+replaced by uniformly random combinations of sensitive attribute values.
 
 !!! Warning
     The following attributes and their values serve only demonstrative purposes 
@@ -171,7 +170,7 @@ report.largestmaxrel.pr.show(fb.export.Html(distributions=True))
 <h3 class="text-dark">largestmaxrel</h3><i>This reduction<span class="text-secondary font-weight-bold"> is </span>the maximum relative difference from the largest group (the whole population if included).</i> Computations cover several cases. 
 <div id="bar-chart1" class="mt-2"></div>
 
-<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 
 <script>
 const data1 = [{"title": "0.047 middle-aged\n(pr)", "val": 0.046875, "target": 0.546875}, {"title": "0.039 old\n(pr)", "val": 0.039473684210526314, "target": 0.5394736842105263}, {"title": "0.050 young\n(pr)", "val": 0.05, "target": 0.55}, {"title": "0.034 black\n(pr)", "val": 0.03389830508474576, "target": 0.5338983050847458}, {"title": "0.045 white\n(pr)", "val": 0.045454545454545456, "target": 0.5454545454545454}, {"title": "0.053 hispanic\n(pr)", "val": 0.05333333333333334, "target": 0.5533333333333333}, {"title": "0.041 muslim\n(pr)", "val": 0.04081632653061224, "target": 0.5408163265306123}, {"title": "0.043 jewish\n(pr)", "val": 0.0425531914893617, "target": 0.5425531914893617}, {"title": "0.042 atheist\n(pr)", "val": 0.041666666666666664, "target": 0.5416666666666666}, {"title": "0.054 christian\n(pr)", "val": 0.05357142857142857, "target": 0.5535714285714286}, {"title": "0.062 non-binary person\n(pr)", "val": 0.06153846153846154, "target": 0.5615384615384615}, {"title": "0.059 woman\n(pr)", "val": 0.058823529411764705, "target": 0.5588235294117647}, {"title": "0.015 man\n(pr)", "val": 0.014925373134328358, "target": 0.5149253731343284}, {"title": "0.045 all\n(pr)", "val": 0.045, "target": 0.545}];
