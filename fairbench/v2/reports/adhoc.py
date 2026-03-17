@@ -4,7 +4,6 @@ from fairbench.v2.core import Sensitive, Descriptor
 from fairbench.v1 import core as deprecated
 import numpy as np
 
-
 all_measures = [
     blocks.measures.acc,
     blocks.measures.pr,

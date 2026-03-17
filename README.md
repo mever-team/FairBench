@@ -11,8 +11,8 @@
 ## Who is this for?
 
 - **ML engineers and data scientists** building or evaluating models in Python.
-- **Bias auditors and compliance teams** needing standardized, traceable fairness reports.
 - **Researchers** studying AI bias across data modalities (tabular, vision, LLMs, etc).
+- **Bias auditors and compliance teams** needing standardized, traceable fairness reports, and system comparison across different datasets, parameters, and over time.
 - **Policymakers and analysts** who want reproducible evidence for decision‑making. Consider using the low‑code MAI‑BIAS toolkit for a higher level perspective.
 
 ## About

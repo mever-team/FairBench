@@ -1,7 +1,6 @@
 from fairbench.v1.core import comparator, parallel_primitive, astensor, merge
 import eagerpy as ep
 
-
 """
 This module provides helper methods to concatenate tensors stored within Forks of tensor or Forks of dicts of tensors
 and use the final output in one report at the end.

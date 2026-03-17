@@ -1,6 +1,5 @@
 import fairbench.v1 as fb
 
-
 test, y, scores = fb.bench.tabular.adult(predict="probabilities")
 yhat = scores > 0.5
 sensitive = fb.Fork(fb.categories @ test[8], fb.categories @ test[9])

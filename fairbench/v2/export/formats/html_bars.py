@@ -233,8 +233,7 @@ class HtmlBars(Html):
             header_cells = "".join(
                 f"<th style='width:{self.cell_width_px}px;'>{x}</th>" for x in x_labels
             )
-            html_sections.append(
-                f"""
+            html_sections.append(f"""
             <div style="margin:20px;">
                 <h2 style="font-family:sans-serif;">{title}</h2>
                 <table style="border-collapse:collapse;font-family:sans-serif;">
@@ -242,8 +241,7 @@ class HtmlBars(Html):
                     {''.join(rows_html)}
                 </table>
             </div>
-            """
-            )
+            """)
 
         self.bar_contents = [f"<html><body>{''.join(html_sections)}</body></html>"]
 

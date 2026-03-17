@@ -2,7 +2,6 @@ from fairbench import v2 as fb
 import fairbench as fb1
 import numpy as np
 
-
 comparison = fb.Progress("settings")
 for test_size in np.arange(0.1, 1, 0.1):
     x, y, yhat = fb1.bench.tabular.bank(test_size=test_size)
