@@ -7,33 +7,46 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md) 
 
+
+## Who is this for?
+
+- **ML engineers and data scientists** building or evaluating models in Python.
+- **Bias auditors and compliance teams** needing standardized, traceable fairness reports.
+- **Researchers** studying AI bias across data modalities (tabular, vision, LLMs, etc).
+- **Policymakers and analysts** who want reproducible evidence for decision‑making. Consider using the low‑code MAI‑BIAS toolkit for a higher level perspective.
+
+## About
+
 FairBench can be imported in Python AI projects to
 offer standardized exploration of more than 300 
-fairness concerns. It produces reports that can be viewed in various formats 
-(e.g., in the terminal, in the browser) as part of continuous 
+fairness concerns. In particular, it produces reports that 
+can be viewed in various formats 
+(e.g., in the terminal, in the browser) as part of ongoing 
 reporting by developers, auditors, and eventually policymakers
 with a certain degree of technical background.
 
-Fairness exploration is not limited to one or a few measure at a time,
-though single evaluations are still possible in line with other
+Fairness exploration is not limited to one or a few measures at a time,
+though single-measure computations are still available, in line with other
 industrial frameworks. Instead, FairBench includes traceable computations
-that keep track of intermediate quantities. Furthermore, reporting on
-single metrics retrieves caveats and recommendations extracted through the
-help of social scientists. 
+that keep track of intermediate quantities. Furthermore, when reporting focuses
+single metrics that may miss the bigger picture, it is
+accompanied by caveats and recommendations extracted through the help of 
+social scientists. 
 
-FairBench is independent  of data modality, for example by 
+FairBench is independent of data modality, for example by 
 supporting -among others- regression and multiclass outputs 
 from most popular computational frameworks. It can also be used to 
 uncover LLM biases.
 
-The library can be installed in your environment and called directly 
-from your code. BUt it also
+If you have some coding experience with Python stacks like
+Pandas and NumPy, the library can be installed in your environment 
+and called directly from your code. But it also
 supports many fairness analysis functionalities
-in the low-code environment of the
+for immediate use by non-technical people in the low-code environment of the
 [MAI-BIAS toolkit](https://mammoth-eu.github.io/mammoth-commons/index.html).
 
+## Highlights
 
-A comprehensive AI fairness exploration framework. <br>
 🧱 Build measures from simpler blocks<br>
 📈 Fairness reports and stamps <br>
 ⚖️ Multivalue multiattribute <br>
@@ -51,6 +64,11 @@ stable (currently 3.12).*
 
 ## Quick measure
 
+💡 Non‑technical users can run the same 
+analysis through the MAI‑BIAS toolkit without writing code.
+See the higher-level toolkit summary in the first
+example [here](https://mammoth-eu.github.io/mammoth-commons/examples.html).
+
 ```python
 import fairbench as fb
 
@@ -65,8 +83,13 @@ abroca.roc.show()
 
 ![docs/simplest.png](docs/simplest.png)
 
-
 ## Full report
+
+💡 Non‑technical users can run the same 
+analysis through the MAI‑BIAS toolkit without writing code.
+See the higher-level toolkit summary in the second
+example [here](https://mammoth-eu.github.io/mammoth-commons/examples.html).
+
 
 ```python
 import fairbench as fb
