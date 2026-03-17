@@ -1,10 +1,37 @@
 # FairBench
 
+[![MAI_BIAS toolkit](https://img.shields.io/badge/MAI_BIAS-fairness_tools-blue?logo=github)](https://mammoth-eu.github.io/mammoth-commons/index.html)
 ![build](https://github.com/mever-team/FairBench/actions/workflows/tests.yml/badge.svg)
 ![coverage](coverage.svg)
 [![Documentation Status](https://readthedocs.org/projects/fairbench/badge/?version=latest)](https://fairbench.readthedocs.io/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md) 
+
+FairBench can be imported in Python AI projects to
+offer standardized exploration of more than 300 
+fairness concerns. It produces reports that can be viewed in various formats 
+(e.g., in the terminal, in the browser) as part of continuous 
+reporting by developers, auditors, and eventually policymakers
+with a certain degree of technical background.
+
+Fairness exploration is not limited to one or a few measure at a time,
+though single evaluations are still possible in line with other
+industrial frameworks. Instead, FairBench includes traceable computations
+that keep track of intermediate quantities. Furthermore, reporting on
+single metrics retrieves caveats and recommendations extracted through the
+help of social scientists. 
+
+FairBench is independent  of data modality, for example by 
+supporting -among others- regression and multiclass outputs 
+from most popular computational frameworks. It can also be used to 
+uncover LLM biases.
+
+The library can be installed in your environment and called directly 
+from your code. BUt it also
+supports many fairness analysis functionalities
+in the low-code environment of the
+[MAI-BIAS toolkit](https://mammoth-eu.github.io/mammoth-commons/index.html).
+
 
 A comprehensive AI fairness exploration framework. <br>
 🧱 Build measures from simpler blocks<br>
