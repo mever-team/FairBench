@@ -7,7 +7,7 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md) 
 
-🛠️ This software is part of MAI-BIAS; a low-code toolkit for
+This software is part of MAI-BIAS; a low-code toolkit for
 fairness analysis and mitigation, with an accompanying suite of coding
 tools. Our ecosystem operates in multidimensional and multi-attribute 
 settings (safeguarding multiple races, genders, etc), and across multiple 
