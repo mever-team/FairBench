@@ -1,6 +1,6 @@
 # FairBench
 
-[![MAI_BIAS toolkit](https://img.shields.io/badge/MAI_BIAS-fairness_tools-blue?logo=github)](https://mammoth-eu.github.io/mammoth-commons/index.html)
+[![MAI_BIAS toolkit](https://img.shields.io/badge/MAI_BIAS-⚖️_AI_fairness_tool-white)](https://mammoth-eu.github.io/mammoth-commons/index.html)
 ![build](https://github.com/mever-team/FairBench/actions/workflows/tests.yml/badge.svg)
 ![coverage](coverage.svg)
 [![Documentation Status](https://readthedocs.org/projects/fairbench/badge/?version=latest)](https://fairbench.readthedocs.io/)
@@ -14,14 +14,14 @@ settings (safeguarding multiple races, genders, etc), and across multiple
 data modalities (like tabular data, images, text, graphs). Learn more 
 [here](https://mammoth-eu.github.io/mammoth-commons/index.html).
 
-## Who is this for?
+## 👥 Who is this for?
 
 - **ML engineers and data scientists** building or evaluating models in Python.
 - **Researchers** studying AI bias across data modalities (tabular, vision, LLMs, etc).
 - **Bias auditors and compliance teams** needing standardized, traceable fairness reports, and system comparison across different datasets, parameters, and over time.
 - **Policymakers and analysts** who want reproducible evidence for decision‑making. Consider using the low‑code MAI‑BIAS toolkit for a higher level perspective.
 
-## About
+## ✨ About
 
 FairBench can be imported in Python AI projects to
 offer standardized exploration of more than 300 
@@ -52,7 +52,7 @@ supports many fairness analysis functionalities
 for immediate use by non-technical people in the low-code environment of the
 [MAI-BIAS toolkit](https://mammoth-eu.github.io/mammoth-commons/index.html).
 
-## :rocket: Highlights
+## 🚀 Highlights
 
 🧱 Build measures from simpler blocks<br>
 📈 Fairness reports and stamps <br>
@@ -65,15 +65,15 @@ but compatibility delays of third-party ML libraries usually
 mean that only the language's previous release is tested and
 stable (currently 3.12).*
 
-## Material
+## 🔗 Material
 
 - [Documentation](https://fairbench.readthedocs.io/): quickstart, how to use FairBench, and test it in your browser
-- [Discord](https://discord.gg/WwQWFSjSWZ)
+- [Discord](https://discord.gg/WwQWFSjSWZ) server invite. 
 - [Benchmarks](benchmarks/README.md)
 
-## Quick measure
+## ⚡ Quick measure
 
-💡 Non‑technical users can run the same 
+Non‑technical users can run the same 
 analysis through the MAI‑BIAS toolkit without writing code.
 See the higher-level toolkit summary in the first
 example [here](https://mammoth-eu.github.io/mammoth-commons/examples.html).
@@ -92,13 +92,12 @@ abroca.roc.show()
 
 ![docs/simplest.png](docs/simplest.png)
 
-## Full report
+## ⚡ Full report
 
-💡 Non‑technical users can run the same 
+Non‑technical users can run the same 
 analysis through the MAI‑BIAS toolkit without writing code.
 See the higher-level toolkit summary in the second
 example [here](https://mammoth-eu.github.io/mammoth-commons/examples.html).
-
 
 ```python
 import fairbench as fb
@@ -113,7 +112,8 @@ report.filter(fb.investigate.Stamps).show(env=fb.export.Html(horizontal=True), d
 
 ![docs/stamps.png](docs/stamps.png)
 
-## Attributions
+
+## 📜 Attributions
 
 ```
 @inproceedings{krasanakis2024towards,
