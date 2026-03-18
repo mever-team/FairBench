@@ -7,6 +7,12 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md) 
 
+:mammoth: This software is part of MAI-BIAS; a low-code toolkit for
+fairness analysis and mitigation, with an accompanying suite of coding
+tools. Our ecosystem operates in multidimensional and multi-attribute 
+settings (safeguarding multiple races, genders, etc), and across multiple 
+data modalities (like tabular data, images, text, graphs). Learn more 
+[here](https://mammoth-eu.github.io/mammoth-commons/index.html).
 
 ## Who is this for?
 
@@ -19,24 +25,25 @@
 
 FairBench can be imported in Python AI projects to
 offer standardized exploration of more than 300 
-fairness concerns. In particular, it produces reports that 
-can be viewed in various formats 
+fairness metrics. It also produces reports that organize
+many of those metrics, and which can be viewed in various formats 
 (e.g., in the terminal, in the browser) as part of ongoing 
 reporting by developers, auditors, and eventually policymakers
 with a certain degree of technical background.
 
 Fairness exploration is not limited to one or a few measures at a time,
 though single-measure computations are still available, in line with other
-industrial frameworks. Instead, FairBench includes traceable computations
-that keep track of intermediate quantities. Furthermore, when reporting focuses
-single metrics that may miss the bigger picture, it is
+industrial frameworks. Instead, FairBench computations are traceable in that 
+they let users explore intermediate quantities leading to problematic values. 
+When reporting focuses on one metric that may miss the bigger picture, it is
 accompanied by caveats and recommendations extracted through the help of 
 social scientists. 
 
-FairBench is independent of data modality, for example by 
-supporting -among others- regression and multiclass outputs 
-from most popular computational frameworks. It can also be used to 
-uncover LLM biases.
+FairBench is independent of data modality and downstream task.
+For example, it supports -among others- regression and multiclass outputs 
+from most popular computational framework, and contains out-of-the-box
+experiments for tabular, image, and graph data. 
+It can also be used in uncovering LLM biases.
 
 If you have some coding experience with Python stacks like
 Pandas and NumPy, the library can be installed in your environment 
@@ -45,7 +52,7 @@ supports many fairness analysis functionalities
 for immediate use by non-technical people in the low-code environment of the
 [MAI-BIAS toolkit](https://mammoth-eu.github.io/mammoth-commons/index.html).
 
-## Highlights
+## :rocket: Highlights
 
 🧱 Build measures from simpler blocks<br>
 📈 Fairness reports and stamps <br>
@@ -58,13 +65,15 @@ but compatibility delays of third-party ML libraries usually
 mean that only the language's previous release is tested and
 stable (currently 3.12).*
 
-## [Documentation](https://fairbench.readthedocs.io/)
+## Material
 
-## [Discord](https://discord.gg/WwQWFSjSWZ)
+- [Documentation](https://fairbench.readthedocs.io/): quickstart, how to use FairBench, and test it in your browser
+- [Discord](https://discord.gg/WwQWFSjSWZ)
+- [Benchmarks](benchmarks/README.md)
 
 ## Quick measure
 
-💡 Non‑technical users can run the same 
+:mammoth: Non‑technical users can run the same 
 analysis through the MAI‑BIAS toolkit without writing code.
 See the higher-level toolkit summary in the first
 example [here](https://mammoth-eu.github.io/mammoth-commons/examples.html).
@@ -85,7 +94,7 @@ abroca.roc.show()
 
 ## Full report
 
-💡 Non‑technical users can run the same 
+:mammoth: Non‑technical users can run the same 
 analysis through the MAI‑BIAS toolkit without writing code.
 See the higher-level toolkit summary in the second
 example [here](https://mammoth-eu.github.io/mammoth-commons/examples.html).
@@ -104,19 +113,14 @@ report.filter(fb.investigate.Stamps).show(env=fb.export.Html(horizontal=True), d
 
 ![docs/stamps.png](docs/stamps.png)
 
-
-## [Benchmarks](benchmarks/README.md)
-
 ## Attributions
 
 ```
-@article{krasanakis2024standardizing,
-      title={Towards Standardizing AI Bias Exploration}, 
-      author={Emmanouil Krasanakis and Symeon Papadopoulos},
-      year={2024},
-      eprint={2405.19022},
-      archivePrefix={arXiv},
-      primaryClass={cs.LG}
+@inproceedings{krasanakis2024towards,
+  title={Towards Standardizing AI Bias Exploration},
+  author={Krasanakis, Emmanouil and Papadopoulos, Symeon},
+  booktitle={Workshop on AI bias: Measurements, Mitigation, Explanation Strategies (AIMMES)},
+  year={2024}
 }
 ```
 
