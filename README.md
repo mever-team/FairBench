@@ -7,7 +7,8 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md) 
 
-:mammoth: This software is part of MAI-BIAS; a low-code toolkit for
+<img src="https://github.com/mammoth-eu/mammoth-commons/blob/dev/mai_bias/icons/mai_bias.png?raw=true" style="height:1em"> 
+This software is part of MAI-BIAS; a low-code toolkit for
 fairness analysis and mitigation, with an accompanying suite of coding
 tools. Our ecosystem operates in multidimensional and multi-attribute 
 settings (safeguarding multiple races, genders, etc), and across multiple 
@@ -73,7 +74,8 @@ stable (currently 3.12).*
 
 ## Quick measure
 
-:mammoth: Non‑technical users can run the same 
+<img src="https://github.com/mammoth-eu/mammoth-commons/blob/dev/mai_bias/icons/mai_bias.png?raw=true" style="height:1em"> 
+Non‑technical users can run the same 
 analysis through the MAI‑BIAS toolkit without writing code.
 See the higher-level toolkit summary in the first
 example [here](https://mammoth-eu.github.io/mammoth-commons/examples.html).
@@ -94,7 +96,8 @@ abroca.roc.show()
 
 ## Full report
 
-:mammoth: Non‑technical users can run the same 
+<img src="https://github.com/mammoth-eu/mammoth-commons/blob/dev/mai_bias/icons/mai_bias.png?raw=true" style="height:1em"> 
+Non‑technical users can run the same 
 analysis through the MAI‑BIAS toolkit without writing code.
 See the higher-level toolkit summary in the second
 example [here](https://mammoth-eu.github.io/mammoth-commons/examples.html).
