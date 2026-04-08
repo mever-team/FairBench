@@ -38,7 +38,7 @@ def test_celeba():
 """
 
 
-def test_watebirds():
+"""def test_watebirds():
     y, yhat, sens = fb.bench.vision.waterbirds(classifier="badd", predict="predict")
     badd_report = fb.biasreport(
         predictions=yhat, labels=y, sensitive=fb.Fork(fb.categories @ sens)
@@ -49,3 +49,4 @@ def test_watebirds():
     )
     report = fb.Fork(mavias=mavias_report, badd=badd_report)
     fb.text_visualize(report.accuracy)
+"""

@@ -29,6 +29,14 @@ class WaterbirdsDataset(Dataset):
         img_data_dir = os.path.join(root, "images", split)
 
         if not os.path.isdir(os.path.join(root, "images", "test")):
+            # READ THIS IF YOU ARE DEBUGGING
+            # ------------------------------
+            # IF you reached this point through a stack trace, you are probably
+            # trying to experiment with the Waterbird datasets
+            # Unfortunately, those are no longer available under the
+            # original location in which it was released by its creators.
+            # This code is left because we may discover those datasets in the
+            # future.
             download_waterbirds(root)
         self.places = {}
         with open(os.path.join(root, "metadata.csv")) as meta_file:

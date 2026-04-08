@@ -10,7 +10,7 @@ y = fb.Dimensions(fb.categories @ y)
 
 report = fb.reports.pairwise(predictions=yhat, labels=y, sensitive=sensitive)
 report.show(env=fb.export.ConsoleTable(sideways=False))
-report.filter(fb.investigate.BL(0.1)).show()
+# report.filter(fb.investigate.DeviationsOver(0.2)).show()
 
 
-report.show(env=fb.export.HtmlBars, depth=2)
+# report.filter(fb.investigate.DeviationsOver(0.2)).show(env=fb.export.HtmlBars, depth=2)
