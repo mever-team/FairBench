@@ -75,8 +75,8 @@ stable (currently 3.12).*
 
 Non‑technical users can run the same 
 analysis through the MAI‑BIAS toolkit without writing code.
-See the higher-level toolkit summary in the first
-example [here](https://mammoth-eu.github.io/mammoth-commons/examples.html).
+See the higher-level toolkit [workflow](https://mammoth-eu.github.io/mammoth-commons/examples/model.html)
+and [example results](https://mammoth-eu.github.io/mammoth-commons/examples/share.html).
 
 ```python
 import fairbench as fb
@@ -96,8 +96,8 @@ abroca.roc.show()
 
 Non‑technical users can run the same 
 analysis through the MAI‑BIAS toolkit without writing code.
-See the higher-level toolkit summary in the second
-example [here](https://mammoth-eu.github.io/mammoth-commons/examples.html).
+See the higher-level toolkit [workflow](https://mammoth-eu.github.io/mammoth-commons/examples/model.html)
+and [example results](https://mammoth-eu.github.io/mammoth-commons/examples/share.html).
 
 ```python
 import fairbench as fb
