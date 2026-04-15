@@ -90,8 +90,8 @@ computations. Use the programmatic dot notation,
 where more `depth` can be added to viewed values
 to further expand intermediate computations and search
 for the root causes of discrimination. 
-Below is an example, but there are also
-many dynamic visualization options [here](documentation/interactive.md).
+Below is an example, but there are 
+more visualization options [here](material/visualization.md).
 
 In the example, we focus on only the minimum accuracy to keep the outcome simple,
 but visualization environments
@@ -123,7 +123,7 @@ report.min.acc.show(env=fb.export.Console)
 ## 5. Simplify reports 
 
 FairBench provides filters that enhance the evaluation.
-For example, they can remove report entries that do not violate certain
+For example, they can remove report entries that do not violate a given
 threshold, leaving only problematic values behind.
 
 One of the available filters, which is presented
