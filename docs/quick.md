@@ -518,7 +518,7 @@ abroca.show(env=fb.export.Html)
 ```
 
 <iframe
-  src="preview_abroca.html"
+  src="/preview_abroca.html"
   style="width: 125%;height: 500px;border: none;transform: scale(0.8); transform-origin: top left;overflow: auto"
 ></iframe>
 
