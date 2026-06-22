@@ -3,7 +3,8 @@ x, y, yhat = fb.bench.tabular.compas(test_size=0.5, predict="probabilities")
 
 sensitive = fb.Dimensions(fb.categories@ x["race"])
 abroca = fb.quick.pairwise_maxbarea_auc(scores=yhat, labels=y, sensitive=sensitive)
+abroca.show(env=fb.export.Html)
 
-from ansiprint import AnsiTee
-with AnsiTee.activate("ansi.html"):
-    print(fb.quick.help())
+# from ansiprint import AnsiTee
+# with AnsiTee.activate("ansi.html"):
+#     print(fb.quick.help())

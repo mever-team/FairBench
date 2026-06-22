@@ -67,8 +67,10 @@ rates of all groups; this is the differential fairness
 extension to the well-known prule measure originally
 coined for binary sensitive attributes (see below).
 
-The task type and applicable measures are determined
-by the report's arguments. 
+!!! info 
+    The task type and applicable measures are determined
+    by the report's arguments. 
+
 See the comprehensive list of all 
 [measures and reductions](material/api.md), 
 but you can find out what the abbreviations refer

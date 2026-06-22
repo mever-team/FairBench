@@ -89,9 +89,10 @@ accuracies (e.g. 0.4 and 0.5 accuracies have relative difference
 of `0.1/max(0.4,0.5)=0.2`) and reports the maximum of those
 differences.
 
-See the comprehensive list of all 
-[measures and reductions](material/api.md).
-If the measure name is invalid, available options will be explained.
+!!! info
+    See a comprehensive list of all 
+    [measures and reductions](material/api.md).
+    If the measure name is invalid, available options will be explained.
 
 To call the constructed measure, provide 
 relevant to the base measure keyword among 
@@ -116,7 +117,7 @@ print(abroca.float())
 ```
 
 The above measure is also known as *ABROCA* in the literature, but FairBench standardizes their naming scheme.
-See the library's growing list of more than 300 valid buildable measures by calling:
+Print FairBench's growing list of more than 300 valid measures by calling:
 `fb.quick.help()`.
 
 <pre style="font-family:monospace;background:#222222;color:#c0c0c0;padding:1em;overflow-x:auto;font-size:12px;max-height: 200px;overflow-y:auto">
@@ -516,7 +517,10 @@ browser.
 abroca.show(env=fb.export.Html)
 ```
 
-![Screenshot showing ABROCA, caveats and recommendations, and ROC curves.](onevalue.png)
+<iframe
+  src="preview_abroca.html"
+  style="width: 125%;height: 500px;border: none;transform: scale(0.8); transform-origin: top left;overflow: auto"
+></iframe>
 
 !!! danger
     The green checkmark indicates whether the 
