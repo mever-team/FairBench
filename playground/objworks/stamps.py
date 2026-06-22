@@ -13,8 +13,7 @@ report = fb.reports.pairwise(
     labels={"true": y, "false": 1 - y},
 )
 
-print(report.filter(fb.investigate.Stamps)) # summary print
+print(report.filter(fb.investigate.Stamps))  # summary print
 report.filter(fb.investigate.Stamps).show(
     env=fb.export.Html, depth=2
-) # show stamps as html
-
+)  # show stamps as html

@@ -274,7 +274,7 @@ def gmi(predictions, labels, sensitive=None):
 
     precision = 0 if (tp + fp) == 0 else tp / (tp + fp)
     recall = 0 if (tp + fn) == 0 else tp / (tp + fn)
-    value = (precision * recall)**0.5
+    value = (precision * recall) ** 0.5
 
     return c.Value(
         c.TargetedNumber(value, 1),

@@ -107,6 +107,7 @@ def test_conflate():
     report.largestmaxrel.acc.show(env=fb.export.ConsoleTable())
     report.help()
 
+
 def test_pairwise():
     x, y, yhat = fb.bench.tabular.bank()
     sensitive = fb.Dimensions(

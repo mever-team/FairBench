@@ -70,6 +70,7 @@ conflate_descriptor = Descriptor(
     "analysis for pair of sensitive attributes",
 )
 
+
 def pairwise(
     sensitive: Sensitive | deprecated.Fork, measures=None, reductions=None, **kwargs
 ):
@@ -102,8 +103,10 @@ def vsall(
         sensitive=sensitive, measures=measures, reductions=reductions, **kwargs
     )
 
+
 def conflate(
-    sensitive: Sensitive | deprecated.Fork, measures=None, reductions=None, **kwargs):
+    sensitive: Sensitive | deprecated.Fork, measures=None, reductions=None, **kwargs
+):
 
     if measures is None:
         measures = all_measures
@@ -116,13 +119,17 @@ def conflate(
         sensitive = Sensitive({k: v.numpy() for k, v in sensitive.branches().items()})
     branches = sensitive.branches
     from fairbench import Progress
+
     progress = Progress(conflate_descriptor.details)
     for branch1 in branches:
         branch1_progress = Progress(conflate_descriptor.details)
         for branch2 in branches:
-            if branch1==branch2:
+            if branch1 == branch2:
                 continue
-            sensitive = Sensitive({branch1: branches[branch1], branch2: branches[branch2]}, conflate_descriptor)
+            sensitive = Sensitive(
+                {branch1: branches[branch1], branch2: branches[branch2]},
+                conflate_descriptor,
+            )
             conflate_report = report(
                 sensitive=sensitive, measures=measures, reductions=reductions, **kwargs
             )
