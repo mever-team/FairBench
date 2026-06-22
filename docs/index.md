@@ -44,16 +44,15 @@
 This is a comprehensive AI fairness exploration framework developed by the
 <a href="https://mammoth-ai.eu/">MAMMOth</a> project. 
 
-<b>Why are you here?</b>
+<h3>Why are you here?</h3>
+⚡ Although principled exploration by generating full fairness reports is encouraged, see how to quickly compute a fairness metric in <a href="quick.html">quickstart</a>.</li>
+<br>🤖 You may want to just investigate LLM fairness. In this case, jump to <a href="llms.html">assessing LLMs</a>.</li>
+<br>📚 Otherwise, visit other tutorials in the overview, or read the documentation.</li>
+<br>⭐ Consider starring or submitting issues on <a href="https://github.com/mever-team/FairBench">GitHub</a>.</li>
 
-<ul style="list-style: none; padding-left: 0;">
-  <li>⚡ Although principled exploration by generating full fairness reports is encouraged, see how to quickly compute a fairness metric in <a href="quick.html">quickstart</a>.</li>
-  <li>🤖 You may want to just investigate LLM fairness. In this case, jump to <a href="llms.html">assessing LLMs</a>.</li>
-  <li>📚 Otherwise, visit other tutorials in the overview, or read the documentation.</li>
-  <li>⭐ Consider starring or submitting issues on <a href="https://github.com/mever-team/FairBench">GitHub</a>.</li>
-</ul>
 
-<b>Try it in your browser</b>
+
+<h3>Try it in your browser</h3>
 
 <button id="run" onclick="evaluatePython()"><span class="icon-green">&#9654;</span> Run</button>
 <button id="restart" onclick="restartPython()"><span class="icon-blue">&#x1F504;</span> Clear</button>
