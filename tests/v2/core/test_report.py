@@ -62,7 +62,7 @@ def test_simple_report():
     report.show(v2.export.ConsoleTable)
 
 
-def test_vsany():
+def test_vsall():
     x, y, yhat = fb.bench.tabular.bank(predict="probabilities")
     sensitive = fb.Dimensions(
         fb.categories @ x["marital"], fb.categories @ x["education"]
@@ -88,6 +88,24 @@ def test_vsany():
         ).float()
     )
 
+
+def test_conflate():
+    x, y, yhat = fb.bench.tabular.bank(predict="probabilities")
+    sensitive = fb.Dimensions(
+        fb.categories @ x["marital"], fb.categories @ x["education"]
+    )
+    sensitive = sensitive.intersectional().strict()
+
+    report = fb.reports.conflate(
+        sensitive=sensitive,
+        predictions=yhat > 0.5,
+        labels=y,
+        scores=yhat,
+        targets=y,
+    )
+
+    report.largestmaxrel.acc.show(env=fb.export.ConsoleTable())
+    report.help()
 
 def test_pairwise():
     x, y, yhat = fb.bench.tabular.bank()

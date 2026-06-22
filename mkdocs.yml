@@ -1,7 +1,7 @@
 site_name: FairBench
 site_author: Emmanouil (Manios) Krasanakis
 repo_url: https://github.com/mever-team/FairBench
-copyright: Copyright &copy; 2024 Emmanouil Krasanakis
+copyright: Copyright &copy; 2024-2026 CERTH
 
 nav:
     - Home: 'index.md'

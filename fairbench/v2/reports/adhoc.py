@@ -1,6 +1,6 @@
 from fairbench.v2.core import report
 from fairbench.v2 import blocks as blocks
-from fairbench.v2.core import Sensitive, Descriptor
+from fairbench.v2.core import Sensitive, Descriptor, Progress
 from fairbench.v1 import core as deprecated
 import numpy as np
 
@@ -64,6 +64,11 @@ vsall_descriptor = Descriptor(
     "analysis that includes the whole population ('all') to compare against",
 )
 
+conflate_descriptor = Descriptor(
+    "conflate",
+    "analysis",
+    "analysis for pair of sensitive attributes",
+)
 
 def pairwise(
     sensitive: Sensitive | deprecated.Fork, measures=None, reductions=None, **kwargs
@@ -96,3 +101,31 @@ def vsall(
     return report(
         sensitive=sensitive, measures=measures, reductions=reductions, **kwargs
     )
+
+def conflate(
+    sensitive: Sensitive | deprecated.Fork, measures=None, reductions=None, **kwargs):
+
+    if measures is None:
+        measures = all_measures
+    if reductions is None:
+        reductions = reductions_vs_any
+    # prepare the sensitive attribute, because we are going to add one more branch here
+    if isinstance(sensitive, dict):
+        sensitive = deprecated.Fork(sensitive)
+    if isinstance(sensitive, deprecated.Fork):
+        sensitive = Sensitive({k: v.numpy() for k, v in sensitive.branches().items()})
+    branches = sensitive.branches
+    from fairbench import Progress
+    progress = Progress(conflate_descriptor.details)
+    for branch1 in branches:
+        branch1_progress = Progress(conflate_descriptor.details)
+        for branch2 in branches:
+            if branch1==branch2:
+                continue
+            sensitive = Sensitive({branch1: branches[branch1], branch2: branches[branch2]}, conflate_descriptor)
+            conflate_report = report(
+                sensitive=sensitive, measures=measures, reductions=reductions, **kwargs
+            )
+            branch1_progress.instance(branch2, conflate_report)
+        progress.instance(branch1, branch1_progress.build())
+    return progress.build()
