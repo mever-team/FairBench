@@ -37,21 +37,27 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/codemirror.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/codemirror.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/mode/python/python.min.js"></script>
+</head>
 
 <h1 style="margin-bottom: 0px;">FairBench</h1>
 
 This is a comprehensive AI fairness exploration framework developed by the
 <a href="https://mammoth-ai.eu/">MAMMOth</a> project. 
-Visit the overview, read the 
-documentation, or try lightweight features in your browser below. 
-Consider starring or submit issues in 
-<a href="https://github.com/mever-team/FairBench">GitHub</a>.
-<br><br>
 
+<b>Why are you here?</b>
+
+<ul style="list-style: none; padding-left: 0;">
+  <li>⚡ Although principled exploration by generating full fairness reports is encouraged, see how to quickly compute a fairness metric in <a href="quick.html">quickstart</a>.</li>
+  <li>🤖 You may want to just investigate LLM fairness. In this case, jump to <a href="llms.html">assessing LLMs</a>.</li>
+  <li>📚 Otherwise, visit other tutorials in the overview, or read the documentation.</li>
+  <li>⭐ Consider starring or submitting issues on <a href="https://github.com/mever-team/FairBench">GitHub</a>.</li>
+</ul>
+
+<b>Try it in your browser</b>
 
 <button id="run" onclick="evaluatePython()"><span class="icon-green">&#9654;</span> Run</button>
 <button id="restart" onclick="restartPython()"><span class="icon-blue">&#x1F504;</span> Clear</button>
-<a href="https://pyodide.org/en/stable/">Powered by pyodyne</a>
+<a href="https://pyodide.org/en/stable/">powered by pyodide</a>
 
 <textarea class="code-block" id="code" rows="40"># some sensitive attribute with values M,F,O, binary target
 # labels y, and predicted ones yhat (see docs for multiclass)

@@ -6,8 +6,8 @@ Before starting, install FairBench with:
 pip install --upgrade FairBench
 ```
 
-This is only the lightweight version without any specifications,
-which suffices for assessment of any system - install extras are
+This is only the lightweight version,
+which suffices for assessment of any system. Install extras are
 available to run out-of-the-box benchmarks for vision data or LLMs.
 Here is a common workflow for computing a fairness measure.
 
@@ -94,9 +94,7 @@ print(abroca.float())
 ```
 
 !!! tip
-    See the growing list of all supported measures by calling `fb.quick.help()`.
-    This does not show invalid ones. For example, accuracy does not provide curves
-    to compare. More than 300 measures can already be computed.
+    See the growing list of more than 300 valid buildable measures by calling `fb.quick.help()`.
 
 
 ## 4. Go into details
@@ -120,16 +118,11 @@ abroca.show(env=fb.export.Html)
 !!! info
     FairBench takes a responsible stance of reminding its users about
     caveats and recommendation to avoid extensive fairness epistemization.
-    Looking at more values in the case of this example was
-    sorely needed, because we did not have much area between curves 
-    (had little bias) because our system was bad.
 
 !!! danger
     The green checkmark helps visually indicate whether the 
     measure's value was big or small, but acceptable thresholds should 
-    always rely on domain knowledge or stakeholder opinions. When many measures
-    are computed, symbols and colors help you grasp at a glance which values 
-    could be more problematic, which is what you would start scrutinizing first. 
+    always rely on domain knowledge or stakeholder opinions. 
     Strategies on applying your own thresholds are available 
     as report filters [here](material/filters.md).
     
