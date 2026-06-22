@@ -78,7 +78,7 @@ report.help()
 
 This is the outcome of `show`:
 
-<pre style="font-family:monospace;background:#222222;color:#c0c0c0;padding:1em">                                                                                                                                       
+<pre style="font-family:monospace;background:#222222;color:#c0c0c0;padding:1em;overflow-x:auto;font-size:12px">                                                                                                                                       
                                            min          max     maxerror        wmean         mean           gm        pnorm       maxrel      maxdiff         gini        stdx2
 acc                                      <span style="color:#5a9e6f">0.959</span>                     <span style="color:#5a9e6f">0.041</span>        <span style="color:#5a9e6f">0.968</span>        <span style="color:#5a9e6f">0.978</span>        <span style="color:#5a9e6f">0.978</span>            <span style="color:#c75f5f">3</span>        <span style="color:#5a9e6f">0.041</span>        <span style="color:#5a9e6f">0.041</span>        <span style="color:#5a9e6f">0.008</span>        <span style="color:#5a9e6f">0.027</span>
 pr                                       <span style="color:#b8956a">0.241</span>        <span style="color:#b8956a">0.667</span>                     <span style="color:#b8956a">0.475</span>        <span style="color:#b8956a">0.442</span>        <span style="color:#b8956a">0.424</span>            <span style="color:#b8956a">1</span>        <span style="color:#b8956a">0.638</span>        <span style="color:#b8956a">0.425</span>        <span style="color:#5a9e6f">0.157</span>        <span style="color:#b8956a">0.250</span>
@@ -96,7 +96,7 @@ kappa                                    <span style="color:#5a9e6f">0.901</span
 
 This is the outcome of `help`:
 
-<pre style="font-family:monospace;background:#222222;color:#c0c0c0;padding:1em">
+<pre style="font-family:monospace;background:#222222;color:#c0c0c0;padding:1em;overflow-x:auto;font-size:12px">
 <span style="color:#5a9e6f">##### FairBench help #####</span>
 Access the following fields of the selected value to explore results:
 - <span style="color:#5f82c7">value.min                </span> This reduction<span style="color:#7fbf8f"> is </span>the minimum.
@@ -168,7 +168,7 @@ report.min.acc.show(env=fb.export.Console)
 
 This is the console output:
 
-<pre style="font-family:monospace;background:#222222;color:#c0c0c0;padding:1em">
+<pre style="font-family:monospace;background:#222222;color:#c0c0c0;padding:1em;overflow-x:auto;font-size:12px">
 <span style="color:#5f82c7">##### acc #####</span>
 |This measure<span style="color:#7fbf8f"> is </span>the minimum<span style="color:#7fbf8f"> of </span>the accuracy.
 |Value:<span style="color:#5a9e6f"> 0.929 min acc</span>

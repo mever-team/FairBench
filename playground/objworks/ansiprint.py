@@ -89,7 +89,7 @@ class AnsiTee:
         self._file = open(path, mode, encoding=encoding)
         self._file.write(
             "<!DOCTYPE html><html><body>"
-            '<pre style="font-family:monospace;background:#222222;color:#c0c0c0;padding:1em">\n'
+            '<pre style="font-family:monospace;background:#222222;color:#c0c0c0;padding:1em;overflow-x:auto;font-size:12px">\n'
         )
 
     # ------------------------------------------------------------------ #
