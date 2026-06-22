@@ -9,7 +9,8 @@ yhat = fb.Dimensions(fb.categories @ yhat)
 y = fb.Dimensions(fb.categories @ y)
 
 report = fb.reports.conflate(predictions=yhat, labels=y, sensitive=sensitive)
-report.acc["True"].show(env=fb.export.HtmlTable())
+report.show()
+report.acc.largestmaxrel["True"].show(env=fb.export.HtmlTable)
 # report.filter(fb.investigate.DeviationsOver(0.2)).show()
 
 

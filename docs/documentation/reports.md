@@ -50,11 +50,12 @@ Out-of-the box, you can use one of the following
 report generation methods, obtained from FairBench's 
 `reports`module:
 
-| Report   | Description                                                                    |
-|----------|--------------------------------------------------------------------------------|
-| pairwise | Compares groups pairwise when needed.                                          |
-| vsall    | Adds the whole population as an 'all' group and compares other groups to this. |
-| report   | Creates a report with manually declared metrics and reduction strategies.      |
+| Report   | Description                                                                                                                                                                                                            |
+|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| pairwise | Compares groups pairwise when needed.                                                                                                                                                                                  |
+| vsall    | Adds the whole population as an 'all' group and compares other groups to this.                                                                                                                                         |
+| report   | Creates a report with manually declared metrics and reduction strategies.                                                                                                                                              |
+| conflate | Creates a conflation matrix (a generalization of the confusion matrix whose entries are pairwise reports) between each subgroup pair. Values of these comparisons are not aggregated but instead retained as they are. |
 
 
 ## Usage
@@ -281,3 +282,44 @@ set of numeric values will be shown regardless of the detail level.
 All visualization environments can work with any set depth, though
 beware that large depths may create imprtactically many details;
 you might want to specialize like below.
+
+## Focusing on subsets of reports
+
+You can focus on specific subsets of reports by using the dot
+or getitem notations. For example, obtain all values related
+to accuracy per `report.acc` or `report["acc"]`. More on
+report exploration can be found [here](exploration.md), but this
+functionality is mentioned here because the results are
+also reports. Though of smaller scope, of course.
+
+Conflate reports, in particular, can grow
+are too long to parse with a glance, and 
+meant to both specialize somewhat,
+and visualize in matrix form with
+the following pattern. Note that  the example 
+also focuses on the "positive" 
+class corresponding to prediction label `True`.
+Everything can be omitted from the `.acc.largestmaxrel["True"]` 
+specialization, which is equivalent to `["acc"]["largestmaxrel"]["True"]`,
+depending on what should be analyzed.
+
+```python
+import fairbench as fb
+
+x, y, yhat = fb.bench.tabular.compas(test_size=0.5)
+
+sensitive = fb.Dimensions(fb.categories @ x["sex"], fb.categories @ x["race"])
+sensitive = sensitive.intersectional().strict()
+
+yhat = fb.Dimensions(fb.categories @ yhat)
+y = fb.Dimensions(fb.categories @ y)
+
+report = fb.reports.conflate(predictions=yhat, labels=y, sensitive=sensitive)
+report.acc.largestmaxrel["True"].show(env=fb.export.HtmlTable)
+```
+
+!!! info
+    Conflate reports are a more granular but also exceptionally
+    harder to parse version of pairwise reports. They are 
+    nonetheless included in preparation for compatibility with
+    the prEN 18283 Bias standard. 
