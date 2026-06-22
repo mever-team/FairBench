@@ -66,7 +66,7 @@ and *multilabels* arguments.
 
 Out-of-the box, you can use one of the following
 report generation methods, obtained from FairBench's 
-`reports`module:
+`reports` module:
 
 | Report   | Description                                                                                                                                                                                                            |
 |----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

@@ -11,6 +11,8 @@ flac.py
 **/*.log
 temp.html
 home
+playground/objworks/ansi.html
+playground/objworks/ansiprint.html
 
 # =================== PYCHARM ===================
 # idea
