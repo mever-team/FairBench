@@ -119,6 +119,8 @@ def test_pairwise():
         sensitive=sensitive,
         predictions=yhat,
         labels=y,
+        multipredictions=yhat * 2,
+        multilables=y * 2,
     )
     report.min.acc.show()
     report.min.acc.help()
@@ -202,9 +204,7 @@ def test_progress():
 
     comparison = comparison.build()
     comparison = fb.core.Value.from_dict(comparison.to_dict())  # hard test
-
     comparison = fb.reduction.mean(comparison.min.explain)
-
     comparison = fb.core.Value.from_dict(comparison.to_dict())  # hard test
     comparison.details.show()
 
@@ -225,7 +225,6 @@ def test_multiclass():
         scores=yhat,
         targets=y,
     )
-
     report.acc.show(fb.export.ConsoleTable)
 
 
@@ -246,7 +245,6 @@ def test_attachment_to_measures():
         targets=y,
         attach_branches_to_measures=True,
     )
-
     report.accFalse.show(fb.export.ConsoleTable)
 
 

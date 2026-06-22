@@ -107,6 +107,22 @@ def gm(values):
     )
 
 
+@c.reduction("the p-norm (default L2)")
+def pnorm(values, p=2):
+    targets = [
+        value.value.target
+        for value in values
+        if value.value and isinstance(value.value, c.TargetedNumber)
+    ]
+    values = c.transform.number(values)
+    value = 0.0 if not values else float(sum(v**p for v in values) ** (1.0 / p))
+    return (
+        c.TargetedNumber(value, target=targets[0])
+        if len(targets) and len(set(targets)) == 1
+        else value
+    )
+
+
 @c.reduction("the weighted average")
 def wmean(values, weight_by=None):
     targets = [

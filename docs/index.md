@@ -39,17 +39,19 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/mode/python/python.min.js"></script>
 </head>
 
-<h1 style="margin-bottom: 0px;">FairBench</h1>
+<h1 style="margin-bottom: 0px;">FairBench</h1><br><br>
 
-This is a comprehensive AI fairness exploration framework developed by the
-<a href="https://mammoth-ai.eu/">MAMMOth</a> project. 
+A comprehensive AI fairness exploration framework. Part of the
+<a href="https://mammoth-eu.github.io/mammoth-commons/">MAI-BIAS</a> 
+ecosystem. 
 
 <br><br>
-<h3>Why are you here?</h3>
-⚡ Although principled exploration by generating full fairness reports is encouraged, see how to quickly compute a fairness metric in <a href="quick.html">quickstart</a>.</li>
-<br>🤖 You may want to just investigate LLM fairness. In this case, jump to <a href="llms.html">assessing LLMs</a>.</li>
-<br>📚 For exploring the library, visit other tutorials in the overview, or read the documentation.</li>
-<br>⭐ Consider starring or submitting issues on <a href="https://github.com/mever-team/FairBench">GitHub</a>.</li>
+<h3>What's your task?</h3>
+⚡ To quickly compute a fairness metric: jump to [quickstart](quick.md)
+<br>🤖 To investigate LLM fairness: jump to [assessing LLMs](llms.md)
+<br>📚 To exploring the library: go through the overview in order, 
+and then read the documentation. Consider starring or submitting issues 
+at <a href="https://github.com/mever-team/FairBench">GitHub</a>.
 
 
 <br><br>

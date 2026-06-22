@@ -107,6 +107,8 @@ class QuickMeasures:
             "scores": scores,
             "targets": target,
             "predictions": scores > 0.5,
+            "multiplabels": np.round(target * 3),
+            "multipredictions": np.round(scores * 3),
             "labels": target > 0.5,
             "order": target,
             "sensitive": fb.Dimensions(fb.fuzzy @ sensitive),

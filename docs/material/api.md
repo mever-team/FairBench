@@ -38,35 +38,36 @@ These are raw quantities that are contained in measures or reductions.
 
 These are measures of algorithmic performance.
 
-| Name     | Type & role            | Details                                                        |
-|----------|------------------------|----------------------------------------------------------------|
-| pr       | classification measure | the positive rate                                              |
-| acc      | classification measure | the accuracy                                                   |
-| tpr      | classification measure | the true positive rate                                         |
-| tnr      | classification measure | the true negative rate                                         |
-| ppv      | classification measure | the positive predictive value (precision)                      |
-| f1       | classification measure | the F1 score                                                   |
-| tar      | classification measure | the true acceptance rate                                       |
-| trr      | classification measure | the true rejection rate                                        |
-| lift     | classification measure | the lift over random                                           |
-| mcc      | classification measure | the Matthews correlation coefficient                           |
-| kappa    | classification measure | the Cohen's kappa                                              |
-| avgscore | recommendation measure | the average score                                              |
-| auc      | recommendation measure | the area under curve of the receiver operating characteristics |
-| ndcg     | recommendation measure | the normalized discounted cumulative gain                      |
-| topndcg  | recommendation measure | the NDCG at top recommendations                                |
-| tophr    | recommendation measure | the hit ratio of top recommendations                           |
-| toprec   | recommendation measure | the precision of top recommendations                           |
-| topf1    | recommendation measure | the F1 score of top recommendations                            |
-| nmrr     | recommendation measure | the normalized mean reciprocal rank                            |
-| nentropy | recommendation measure | the normalized entropy                                         |
-| mabs     | regression measure     | mean absolute error                                            |
-| rmse     | regression measure     | root mean square error                                         |
-| r2       | regression measure     | coefficient of determination                                   |
-| pinball  | regression measure     | pinball deviation                                              |
-| spearman | ranking measure        | Spearman’s rank correlation                                    |
-| rbo      | ranking measure        | the rank-biased overlap                                        |
-| ndrl     | ranking measure        | the normalized discounted ranking loss                         |
+| Name     | Type & role            | Details                                                         |
+|----------|------------------------|-----------------------------------------------------------------|
+| pr       | classification measure | the positive rate                                               |
+| acc      | classification measure | the accuracy                                                    |
+| tpr      | classification measure | the true positive rate                                          |
+| tnr      | classification measure | the true negative rate                                          |
+| gmi      | classification measure | the geometric mean between true positive and true negative rate |
+| ppv      | classification measure | the positive predictive value (precision)                       |
+| f1       | classification measure | the F1 score                                                    |
+| tar      | classification measure | the true acceptance rate                                        |
+| trr      | classification measure | the true rejection rate                                         |
+| lift     | classification measure | the lift over random                                            |
+| mcc      | classification measure | the Matthews correlation coefficient                            |
+| kappa    | classification measure | the Cohen's kappa                                               |
+| avgscore | recommendation measure | the average score                                               |
+| auc      | recommendation measure | the area under curve of the receiver operating characteristics  |
+| ndcg     | recommendation measure | the normalized discounted cumulative gain                       |
+| topndcg  | recommendation measure | the NDCG at top recommendations                                 |
+| tophr    | recommendation measure | the hit ratio of top recommendations                            |
+| toprec   | recommendation measure | the precision of top recommendations                            |
+| topf1    | recommendation measure | the F1 score of top recommendations                             |
+| nmrr     | recommendation measure | the normalized mean reciprocal rank                             |
+| nentropy | recommendation measure | the normalized entropy                                          |
+| mabs     | regression measure     | mean absolute error                                             |
+| rmse     | regression measure     | root mean square error                                          |
+| r2       | regression measure     | coefficient of determination                                    |
+| pinball  | regression measure     | pinball deviation                                               |
+| spearman | ranking measure        | Spearman’s rank correlation                                     |
+| rbo      | ranking measure        | the rank-biased overlap                                         |
+| ndrl     | ranking measure        | the normalized discounted ranking loss                          |
 
 
 ## Reductions

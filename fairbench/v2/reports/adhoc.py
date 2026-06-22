@@ -5,6 +5,13 @@ from fairbench.v1 import core as deprecated
 import numpy as np
 
 all_measures = [
+    blocks.measures.wmacc,
+    blocks.measures.amacc,
+    blocks.measures.gmacc,
+    blocks.measures.amppv,
+    blocks.measures.gmppv,
+    blocks.measures.amtpr,
+    blocks.measures.gmtpr,
     blocks.measures.acc,
     blocks.measures.pr,
     blocks.measures.tpr,
@@ -42,6 +49,7 @@ reductions_pairwise = [
     blocks.reduction.wmean,
     blocks.reduction.mean,
     blocks.reduction.gm,
+    blocks.reduction.pnorm,
     blocks.reduction.maxbarea,
     blocks.reduction.maxrel,
     blocks.reduction.maxdiff,
