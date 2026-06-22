@@ -1,0 +1,363 @@
+
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>FairBench</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+        </head>
+        <body>
+            <div >
+                <h1 class="text-dark">fairness modelcard</h1><i>This<span class="text-secondary font-weight-bold"> is </span>a modelcard<span class="text-secondary font-weight-bold"> that </span>contains popular fairness stamps.</i><br>These are obtained from analysis that compares several groups.<br>Stamps contain caveats and recommendation that should be considered during practical adoption. They are only a part of the full analysis that has been conducted, so consider also viewing the full generated report to find more prospective biases.<br><br><br>Computations cover several cases.<br><div style="width: 400px; float: left;" class="card m-3"><h3 class="mt-0 text-white bg-dark p-3 rounded">worst accuracy</h3>
+                <div class="card-body">
+                <i>This stamp<span class="text-secondary font-weight-bold"> is </span>the minimum<span class="text-secondary font-weight-bold"> of </span>the accuracy<span class="text-secondary font-weight-bold"> of </span>analysis<span class="text-secondary font-weight-bold"> that </span>compares several groups.</i><div class="mt-3 alert" style="background-color: white; padding:0px;"><span style="color:black; background:#ff6961; display: inline-block; border-radius: 8px;border: 1px solid black; padding: 2px 6px; padding-bottom: 10px;margin-right: 8px; font-weight: bold; font-size: 2em; text-align: center; vertical-align: middle; width: 1.5em; height: 1.5em; box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);" title="Far from ideal">X</span><span style='font-size: 1.3em; vertical-align: middle;'> <b>0.000</b> min acc</span></div>.<br><hr><h5 class="mt-3 text-dark"><b>Details</b></h5>This is the minimum benefit the system brings to any group.<br><hr><h5 class="mt-3 text-dark"><b>Caveats and recommendations</b></h5> • The worst case is a lower bound but not an estimation of overall performance.<br> • There may be different distributions of benefits that could be protected.<br> • Ensure continuous monitoring and re-evaluation as group dynamics and external factors evolve.<br> • Ensure that high worst accuracy translates to meaningful benefits across all groups in the real-world context.<br> • Seek input from affected groups to understand the impact of errors and to inform remediation strategies.<br><hr><h5 class="mt-3 text-dark"><b>Distribution</b></h5><details><summary>Obtained from 12 values</summary>
+<div id="bar-chart1" class="mt-2"></div>
+                <script>
+                    const data1 = [{"title": "0.985 Female&Caucasian\n(acc)", "val": 0.9852941176470589, "target": 1.0}, {"title": "0.000 Female&Asian\n(acc)", "val": 0.0, "target": 1.0}, {"title": "0.977 Female&African-American\n(acc)", "val": 0.977491961414791, "target": 1.0}, {"title": "0.943 Female&Hispanic\n(acc)", "val": 0.9433962264150944, "target": 1.0}, {"title": "1Female&Native American\n(acc)", "val": 1.0, "target": 1.0}, {"title": "0.970 Female&Other\n(acc)", "val": 0.9696969696969697, "target": 1.0}, {"title": "0.972 Male&Caucasian\n(acc)", "val": 0.9721627408993576, "target": 1.0}, {"title": "0.824 Male&Asian\n(acc)", "val": 0.8235294117647058, "target": 1.0}, {"title": "0.961 Male&African-American\n(acc)", "val": 0.9609271523178808, "target": 1.0}, {"title": "0.965 Male&Hispanic\n(acc)", "val": 0.9651162790697675, "target": 1.0}, {"title": "0.857 Male&Native American\n(acc)", "val": 0.8571428571428571, "target": 1.0}, {"title": "0.961 Male&Other\n(acc)", "val": 0.961038961038961, "target": 1.0}];
+                    const margin1 = { top: 0, right: 50, bottom: 30, left: 10 };
+                    const width1 = 400 - margin1.left - margin1.right;
+                    const barHeight1 = 30;
+                    const height1 = data1.length * barHeight1+30;
+
+                    const svg1 = d3.select("#bar-chart1")
+                                      .append("svg")
+                                      .attr("width", width1 + margin1.left + margin1.right)
+                                      .attr("height", height1 + margin1.top + margin1.bottom)
+                                      .append("g")
+                                      .attr("transform", `translate(${margin1.left}, ${margin1.top})`);
+
+                    const y1 = d3.scaleBand()
+                        .domain(data1.map(d => d.title))
+                        .range([0, height1])
+                        .padding(0.2);
+
+                    const x1 = d3.scaleLinear().domain([0, 1.0])
+                        .nice()
+                        .range([0, width1]);
+                        
+                    const colorScale1 = d3.scaleLinear()
+                    .domain([0, 0.5, 1])
+                    .range(["#77dd77", "#ffb347", "#ff6961"]);
+
+                    const formatNumber1 = d3.format(".3f"); // 3 decimal places
+
+                    // Draw bars
+                    svg1.selectAll(".bar-val")
+                        .data(data1)
+                        .enter()
+                        .append("rect")
+                        .attr("class", "bar-val")
+                        .attr("y", d => y1(d.title))
+                        .attr("x", 0)
+                        .attr("height", y1.bandwidth())
+                        .attr("width", d => x1(d.val))
+                        .attr("fill", d => colorScale1(Math.abs(d.val - d.target)));
+
+                    // Add the label (title) right outside the bar
+                    svg1.selectAll(".bar-label")
+                        .data(data1)
+                        .enter()
+                        .append("text")
+                        .attr("class", "bar-label")
+                        .attr("x", d => 5) // 5px padding inside the bar
+                        .attr("y", d => y1(d.title) + y1.bandwidth() / 2)
+                        .attr("dy", ".35em")
+                        .text(d => d.title)
+                        .attr("fill", "black")
+                        .attr("font-size", "12px")
+                        .attr("text-anchor", "start");
+
+                    // Axes
+                    svg1.append("g")
+                        .call(d3.axisLeft(y1).tickFormat("")); // no labels on y axis
+
+                    svg1.append("g")
+                        .attr("transform", `translate(0, ${height1})`)
+                        .call(d3.axisBottom(x1).tickFormat(d => (d / 1.0).toFixed(1)));
+                </script>
+            
+</details>
+</div></div><div style="width: 400px; float: left;" class="card m-3"><h3 class="mt-0 text-white bg-dark p-3 rounded">standard deviation</h3>
+                <div class="card-body">
+                <i>This stamp<span class="text-secondary font-weight-bold"> is </span>the standard deviation x2<span class="text-secondary font-weight-bold"> of </span>the accuracy<span class="text-secondary font-weight-bold"> of </span>analysis<span class="text-secondary font-weight-bold"> that </span>compares several groups.</i><div class="mt-3 alert" style="background-color: white; padding:0px;"><span style="color:black; background:#ffb347; display: inline-block; border-radius: 8px;border: 1px solid black; padding: 2px 6px; padding-bottom: 10px;margin-right: 8px; font-weight: bold; font-size: 2em; text-align: center; vertical-align: middle; width: 1.5em; height: 1.5em; box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);" title="Not ideal / ideal value unknown">?</span><span style='font-size: 1.3em; vertical-align: middle;'> <b>0.533</b> stdx2 acc</span></div>.<br><hr><h5 class="mt-3 text-dark"><b>Details</b></h5>This reflects imbalances in the distribution of correctness across groups, where correctness is measured with accuracy. The computed standard deviation is doubled, because this way the assessment value becomes 1 in the worst case, and remains 0 for perfect bias mitigation at equal accuracies.<br><hr><h5 class="mt-3 text-dark"><b>Caveats and recommendations</b></h5> • Measuring only standard deviation may not always be an appropriate fairness consideration, and may obscure other important fairness concerns or create new disparities.<br> • Always consider trade-offs with overall or minimum accuracy, as the easiest way to "optimize" for this measure would be to degrade accuracy for all groups to the lowest level among groups.<br> • Ensure continuous monitoring and re-evaluation as group dynamics and external factors evolve.<br><hr><h5 class="mt-3 text-dark"><b>Distribution</b></h5><details><summary>Obtained from 12 values</summary>
+<div id="bar-chart2" class="mt-2"></div>
+                <script>
+                    const data2 = [{"title": "0.985 Female&Caucasian\n(acc)", "val": 0.9852941176470589, "target": 1.0}, {"title": "0.000 Female&Asian\n(acc)", "val": 0.0, "target": 1.0}, {"title": "0.977 Female&African-American\n(acc)", "val": 0.977491961414791, "target": 1.0}, {"title": "0.943 Female&Hispanic\n(acc)", "val": 0.9433962264150944, "target": 1.0}, {"title": "1Female&Native American\n(acc)", "val": 1.0, "target": 1.0}, {"title": "0.970 Female&Other\n(acc)", "val": 0.9696969696969697, "target": 1.0}, {"title": "0.972 Male&Caucasian\n(acc)", "val": 0.9721627408993576, "target": 1.0}, {"title": "0.824 Male&Asian\n(acc)", "val": 0.8235294117647058, "target": 1.0}, {"title": "0.961 Male&African-American\n(acc)", "val": 0.9609271523178808, "target": 1.0}, {"title": "0.965 Male&Hispanic\n(acc)", "val": 0.9651162790697675, "target": 1.0}, {"title": "0.857 Male&Native American\n(acc)", "val": 0.8571428571428571, "target": 1.0}, {"title": "0.961 Male&Other\n(acc)", "val": 0.961038961038961, "target": 1.0}];
+                    const margin2 = { top: 0, right: 50, bottom: 30, left: 10 };
+                    const width2 = 400 - margin2.left - margin2.right;
+                    const barHeight2 = 30;
+                    const height2 = data2.length * barHeight2+30;
+
+                    const svg2 = d3.select("#bar-chart2")
+                                      .append("svg")
+                                      .attr("width", width2 + margin2.left + margin2.right)
+                                      .attr("height", height2 + margin2.top + margin2.bottom)
+                                      .append("g")
+                                      .attr("transform", `translate(${margin2.left}, ${margin2.top})`);
+
+                    const y2 = d3.scaleBand()
+                        .domain(data2.map(d => d.title))
+                        .range([0, height2])
+                        .padding(0.2);
+
+                    const x2 = d3.scaleLinear().domain([0, 1.0])
+                        .nice()
+                        .range([0, width2]);
+                        
+                    const colorScale2 = d3.scaleLinear()
+                    .domain([0, 0.5, 1])
+                    .range(["#77dd77", "#ffb347", "#ff6961"]);
+
+                    const formatNumber2 = d3.format(".3f"); // 3 decimal places
+
+                    // Draw bars
+                    svg2.selectAll(".bar-val")
+                        .data(data2)
+                        .enter()
+                        .append("rect")
+                        .attr("class", "bar-val")
+                        .attr("y", d => y2(d.title))
+                        .attr("x", 0)
+                        .attr("height", y2.bandwidth())
+                        .attr("width", d => x2(d.val))
+                        .attr("fill", d => colorScale2(Math.abs(d.val - d.target)));
+
+                    // Add the label (title) right outside the bar
+                    svg2.selectAll(".bar-label")
+                        .data(data2)
+                        .enter()
+                        .append("text")
+                        .attr("class", "bar-label")
+                        .attr("x", d => 5) // 5px padding inside the bar
+                        .attr("y", d => y2(d.title) + y2.bandwidth() / 2)
+                        .attr("dy", ".35em")
+                        .text(d => d.title)
+                        .attr("fill", "black")
+                        .attr("font-size", "12px")
+                        .attr("text-anchor", "start");
+
+                    // Axes
+                    svg2.append("g")
+                        .call(d3.axisLeft(y2).tickFormat("")); // no labels on y axis
+
+                    svg2.append("g")
+                        .attr("transform", `translate(0, ${height2})`)
+                        .call(d3.axisBottom(x2).tickFormat(d => (d / 1.0).toFixed(1)));
+                </script>
+            
+</details>
+</div></div><div style="width: 400px; float: left;" class="card m-3"><h3 class="mt-0 text-white bg-dark p-3 rounded">differential fairness</h3>
+                <div class="card-body">
+                <i>This stamp<span class="text-secondary font-weight-bold"> is </span>the maximum relative difference<span class="text-secondary font-weight-bold"> of </span>the accuracy<span class="text-secondary font-weight-bold"> of </span>analysis<span class="text-secondary font-weight-bold"> that </span>compares several groups.</i><div class="mt-3 alert" style="background-color: white; padding:0px;"><span style="color:black; background:#ff6961; display: inline-block; border-radius: 8px;border: 1px solid black; padding: 2px 6px; padding-bottom: 10px;margin-right: 8px; font-weight: bold; font-size: 2em; text-align: center; vertical-align: middle; width: 1.5em; height: 1.5em; box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);" title="Far from ideal">X</span><span style='font-size: 1.3em; vertical-align: middle;'> <b>1.000</b> maxrel acc</span></div>.<br><hr><h5 class="mt-3 text-dark"><b>Details</b></h5>The worst deviation of accuracy ratios from 1 is reported, so that value of 1 indicates disparate impact, and value of 0 disparate impact mitigation.<br><hr><h5 class="mt-3 text-dark"><b>Caveats and recommendations</b></h5> • Disparate impact may not always be an appropriate fairness consideration, and may obscure other important fairness concerns or create new disparities.<br> • Always consider trade-offs with overall or minimum accuracy, as the easiest way to "optimize" for this measure would be to degrade accuracy for all groups to the lowest level among groups.<br> • Ensure continuous monitoring and re-evaluation as group dynamics and external factors evolve.<br><hr><h5 class="mt-3 text-dark"><b>Distribution</b></h5><details><summary>Obtained from 12 values</summary>
+<div id="bar-chart3" class="mt-2"></div>
+                <script>
+                    const data3 = [{"title": "0.985 Female&Caucasian\n(acc)", "val": 0.9852941176470589, "target": 1.0}, {"title": "0.000 Female&Asian\n(acc)", "val": 0.0, "target": 1.0}, {"title": "0.977 Female&African-American\n(acc)", "val": 0.977491961414791, "target": 1.0}, {"title": "0.943 Female&Hispanic\n(acc)", "val": 0.9433962264150944, "target": 1.0}, {"title": "1Female&Native American\n(acc)", "val": 1.0, "target": 1.0}, {"title": "0.970 Female&Other\n(acc)", "val": 0.9696969696969697, "target": 1.0}, {"title": "0.972 Male&Caucasian\n(acc)", "val": 0.9721627408993576, "target": 1.0}, {"title": "0.824 Male&Asian\n(acc)", "val": 0.8235294117647058, "target": 1.0}, {"title": "0.961 Male&African-American\n(acc)", "val": 0.9609271523178808, "target": 1.0}, {"title": "0.965 Male&Hispanic\n(acc)", "val": 0.9651162790697675, "target": 1.0}, {"title": "0.857 Male&Native American\n(acc)", "val": 0.8571428571428571, "target": 1.0}, {"title": "0.961 Male&Other\n(acc)", "val": 0.961038961038961, "target": 1.0}];
+                    const margin3 = { top: 0, right: 50, bottom: 30, left: 10 };
+                    const width3 = 400 - margin3.left - margin3.right;
+                    const barHeight3 = 30;
+                    const height3 = data3.length * barHeight3+30;
+
+                    const svg3 = d3.select("#bar-chart3")
+                                      .append("svg")
+                                      .attr("width", width3 + margin3.left + margin3.right)
+                                      .attr("height", height3 + margin3.top + margin3.bottom)
+                                      .append("g")
+                                      .attr("transform", `translate(${margin3.left}, ${margin3.top})`);
+
+                    const y3 = d3.scaleBand()
+                        .domain(data3.map(d => d.title))
+                        .range([0, height3])
+                        .padding(0.2);
+
+                    const x3 = d3.scaleLinear().domain([0, 1.0])
+                        .nice()
+                        .range([0, width3]);
+                        
+                    const colorScale3 = d3.scaleLinear()
+                    .domain([0, 0.5, 1])
+                    .range(["#77dd77", "#ffb347", "#ff6961"]);
+
+                    const formatNumber3 = d3.format(".3f"); // 3 decimal places
+
+                    // Draw bars
+                    svg3.selectAll(".bar-val")
+                        .data(data3)
+                        .enter()
+                        .append("rect")
+                        .attr("class", "bar-val")
+                        .attr("y", d => y3(d.title))
+                        .attr("x", 0)
+                        .attr("height", y3.bandwidth())
+                        .attr("width", d => x3(d.val))
+                        .attr("fill", d => colorScale3(Math.abs(d.val - d.target)));
+
+                    // Add the label (title) right outside the bar
+                    svg3.selectAll(".bar-label")
+                        .data(data3)
+                        .enter()
+                        .append("text")
+                        .attr("class", "bar-label")
+                        .attr("x", d => 5) // 5px padding inside the bar
+                        .attr("y", d => y3(d.title) + y3.bandwidth() / 2)
+                        .attr("dy", ".35em")
+                        .text(d => d.title)
+                        .attr("fill", "black")
+                        .attr("font-size", "12px")
+                        .attr("text-anchor", "start");
+
+                    // Axes
+                    svg3.append("g")
+                        .call(d3.axisLeft(y3).tickFormat("")); // no labels on y axis
+
+                    svg3.append("g")
+                        .attr("transform", `translate(0, ${height3})`)
+                        .call(d3.axisBottom(x3).tickFormat(d => (d / 1.0).toFixed(1)));
+                </script>
+            
+</details>
+</div></div><div style="width: 400px; float: left;" class="card m-3"><h3 class="mt-0 text-white bg-dark p-3 rounded">max |Δfpr|</h3>
+                <div class="card-body">
+                <i>This stamp<span class="text-secondary font-weight-bold"> is </span>the maximum difference<span class="text-secondary font-weight-bold"> of </span>the true negative rate/specificity<span class="text-secondary font-weight-bold"> of </span>analysis<span class="text-secondary font-weight-bold"> that </span>compares several groups.</i><div class="mt-3 alert" style="background-color: white; padding:0px;"><span style="color:black; background:#ff6961; display: inline-block; border-radius: 8px;border: 1px solid black; padding: 2px 6px; padding-bottom: 10px;margin-right: 8px; font-weight: bold; font-size: 2em; text-align: center; vertical-align: middle; width: 1.5em; height: 1.5em; box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);" title="Far from ideal">X</span><span style='font-size: 1.3em; vertical-align: middle;'> <b>1.000</b> maxdiff tnr</span></div>.<br><hr><h5 class="mt-3 text-dark"><b>Details</b></h5>The false positive rate differences are computed via the equivalent true negative rate differences. The maximum difference between pairs of groups is reported, so that value of 1 indicates disparate mistreatment, and value of 0 disparate mistreatment mitigation.<br><hr><h5 class="mt-3 text-dark"><b>Caveats and recommendations</b></h5> • Disparate mistreatment may not always be an appropriate fairness consideration, and may obscure other important fairness concerns or create new disparities.<br> • Consider input from affected stakeholders to determine whether |Δfpr| is an appropriate fairness measure.<br> • Ensure continuous monitoring and re-evaluation as group dynamics and external factors evolve.<br> • Variations in FPR could be influenced by factors unrelated to the fairness of the system, such as data quality or representation.<br> • Mitigating |Δfpr| tends to amplify |Δfnr|, and conversely.<br> • Seek input from affected groups to understand the impact of errors and to inform remediation strategies.<br><hr><h5 class="mt-3 text-dark"><b>Distribution</b></h5><details><summary>Obtained from 12 values</summary>
+<div id="bar-chart4" class="mt-2"></div>
+                <script>
+                    const data4 = [{"title": "0.977 Female&Caucasian\n(tnr)", "val": 0.9771428571428571, "target": 1.0}, {"title": "0.000 Female&Asian\n(tnr)", "val": 0.0, "target": 1.0}, {"title": "0.965 Female&African-American\n(tnr)", "val": 0.9651741293532339, "target": 1.0}, {"title": "0.917 Female&Hispanic\n(tnr)", "val": 0.9166666666666666, "target": 1.0}, {"title": "1Female&Native American\n(tnr)", "val": 1.0, "target": 1.0}, {"title": "0.960 Female&Other\n(tnr)", "val": 0.96, "target": 1.0}, {"title": "0.953 Male&Caucasian\n(tnr)", "val": 0.9530685920577617, "target": 1.0}, {"title": "1Male&Asian\n(tnr)", "val": 1.0, "target": 1.0}, {"title": "0.913 Male&African-American\n(tnr)", "val": 0.9134897360703812, "target": 1.0}, {"title": "0.946 Male&Hispanic\n(tnr)", "val": 0.9464285714285714, "target": 1.0}, {"title": "0.750 Male&Native American\n(tnr)", "val": 0.75, "target": 1.0}, {"title": "0.938 Male&Other\n(tnr)", "val": 0.9375, "target": 1.0}];
+                    const margin4 = { top: 0, right: 50, bottom: 30, left: 10 };
+                    const width4 = 400 - margin4.left - margin4.right;
+                    const barHeight4 = 30;
+                    const height4 = data4.length * barHeight4+30;
+
+                    const svg4 = d3.select("#bar-chart4")
+                                      .append("svg")
+                                      .attr("width", width4 + margin4.left + margin4.right)
+                                      .attr("height", height4 + margin4.top + margin4.bottom)
+                                      .append("g")
+                                      .attr("transform", `translate(${margin4.left}, ${margin4.top})`);
+
+                    const y4 = d3.scaleBand()
+                        .domain(data4.map(d => d.title))
+                        .range([0, height4])
+                        .padding(0.2);
+
+                    const x4 = d3.scaleLinear().domain([0, 1.0])
+                        .nice()
+                        .range([0, width4]);
+                        
+                    const colorScale4 = d3.scaleLinear()
+                    .domain([0, 0.5, 1])
+                    .range(["#77dd77", "#ffb347", "#ff6961"]);
+
+                    const formatNumber4 = d3.format(".3f"); // 3 decimal places
+
+                    // Draw bars
+                    svg4.selectAll(".bar-val")
+                        .data(data4)
+                        .enter()
+                        .append("rect")
+                        .attr("class", "bar-val")
+                        .attr("y", d => y4(d.title))
+                        .attr("x", 0)
+                        .attr("height", y4.bandwidth())
+                        .attr("width", d => x4(d.val))
+                        .attr("fill", d => colorScale4(Math.abs(d.val - d.target)));
+
+                    // Add the label (title) right outside the bar
+                    svg4.selectAll(".bar-label")
+                        .data(data4)
+                        .enter()
+                        .append("text")
+                        .attr("class", "bar-label")
+                        .attr("x", d => 5) // 5px padding inside the bar
+                        .attr("y", d => y4(d.title) + y4.bandwidth() / 2)
+                        .attr("dy", ".35em")
+                        .text(d => d.title)
+                        .attr("fill", "black")
+                        .attr("font-size", "12px")
+                        .attr("text-anchor", "start");
+
+                    // Axes
+                    svg4.append("g")
+                        .call(d3.axisLeft(y4).tickFormat("")); // no labels on y axis
+
+                    svg4.append("g")
+                        .attr("transform", `translate(0, ${height4})`)
+                        .call(d3.axisBottom(x4).tickFormat(d => (d / 1.0).toFixed(1)));
+                </script>
+            
+</details>
+</div></div><div style="width: 400px; float: left;" class="card m-3"><h3 class="mt-0 text-white bg-dark p-3 rounded">max |Δfnr|</h3>
+                <div class="card-body">
+                <i>This stamp<span class="text-secondary font-weight-bold"> is </span>the maximum difference<span class="text-secondary font-weight-bold"> of </span>the true positive rate/recall/sensitivity/hit rate<span class="text-secondary font-weight-bold"> of </span>analysis<span class="text-secondary font-weight-bold"> that </span>compares several groups.</i><div class="mt-3 alert" style="background-color: white; padding:0px;"><span style="color:black; background:#ff6961; display: inline-block; border-radius: 8px;border: 1px solid black; padding: 2px 6px; padding-bottom: 10px;margin-right: 8px; font-weight: bold; font-size: 2em; text-align: center; vertical-align: middle; width: 1.5em; height: 1.5em; box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);" title="Far from ideal">X</span><span style='font-size: 1.3em; vertical-align: middle;'> <b>1.000</b> maxdiff tpr</span></div>.<br><hr><h5 class="mt-3 text-dark"><b>Details</b></h5>The false negative rate differences are computed via the equivalent true positive rate differences. The maximum difference between pairs of groups is reported, so that value of 1 indicates disparate mistreatment, and value of 0 disparate mistreatment mitigation.<br><hr><h5 class="mt-3 text-dark"><b>Caveats and recommendations</b></h5> • Disparate mistreatment may not always be an appropriate fairness consideration, and may obscure other important fairness concerns or create new disparities.<br> • Consider input from affected stakeholders to determine whether |Δfnr| is an appropriate fairness measure.<br> • Ensure continuous monitoring and re-evaluation as group dynamics and external factors evolve.<br> • Variations in FPR could be influenced by factors unrelated to the fairness of the system, such as data quality or representation.<br> • Mitigating |Δfpr| tends to amplify |Δfnr|, and conversely.<br> • Seek input from affected groups to understand the impact of errors and to inform remediation strategies.<br><hr><h5 class="mt-3 text-dark"><b>Distribution</b></h5><details><summary>Obtained from 12 values</summary>
+<div id="bar-chart5" class="mt-2"></div>
+                <script>
+                    const data5 = [{"title": "1Female&Caucasian\n(tpr)", "val": 1.0, "target": 1.0}, {"title": "0.000 Female&Asian\n(tpr)", "val": 0.0, "target": 1.0}, {"title": "1Female&African-American\n(tpr)", "val": 1.0, "target": 1.0}, {"title": "1Female&Hispanic\n(tpr)", "val": 1.0, "target": 1.0}, {"title": "0.000 Female&Native American\n(tpr)", "val": 0.0, "target": 1.0}, {"title": "1Female&Other\n(tpr)", "val": 1.0, "target": 1.0}, {"title": "1Male&Caucasian\n(tpr)", "val": 1.0, "target": 1.0}, {"title": "0.571 Male&Asian\n(tpr)", "val": 0.5714285714285714, "target": 1.0}, {"title": "1Male&African-American\n(tpr)", "val": 1.0, "target": 1.0}, {"title": "1Male&Hispanic\n(tpr)", "val": 1.0, "target": 1.0}, {"title": "1Male&Native American\n(tpr)", "val": 1.0, "target": 1.0}, {"title": "1Male&Other\n(tpr)", "val": 1.0, "target": 1.0}];
+                    const margin5 = { top: 0, right: 50, bottom: 30, left: 10 };
+                    const width5 = 400 - margin5.left - margin5.right;
+                    const barHeight5 = 30;
+                    const height5 = data5.length * barHeight5+30;
+
+                    const svg5 = d3.select("#bar-chart5")
+                                      .append("svg")
+                                      .attr("width", width5 + margin5.left + margin5.right)
+                                      .attr("height", height5 + margin5.top + margin5.bottom)
+                                      .append("g")
+                                      .attr("transform", `translate(${margin5.left}, ${margin5.top})`);
+
+                    const y5 = d3.scaleBand()
+                        .domain(data5.map(d => d.title))
+                        .range([0, height5])
+                        .padding(0.2);
+
+                    const x5 = d3.scaleLinear().domain([0, 1.0])
+                        .nice()
+                        .range([0, width5]);
+                        
+                    const colorScale5 = d3.scaleLinear()
+                    .domain([0, 0.5, 1])
+                    .range(["#77dd77", "#ffb347", "#ff6961"]);
+
+                    const formatNumber5 = d3.format(".3f"); // 3 decimal places
+
+                    // Draw bars
+                    svg5.selectAll(".bar-val")
+                        .data(data5)
+                        .enter()
+                        .append("rect")
+                        .attr("class", "bar-val")
+                        .attr("y", d => y5(d.title))
+                        .attr("x", 0)
+                        .attr("height", y5.bandwidth())
+                        .attr("width", d => x5(d.val))
+                        .attr("fill", d => colorScale5(Math.abs(d.val - d.target)));
+
+                    // Add the label (title) right outside the bar
+                    svg5.selectAll(".bar-label")
+                        .data(data5)
+                        .enter()
+                        .append("text")
+                        .attr("class", "bar-label")
+                        .attr("x", d => 5) // 5px padding inside the bar
+                        .attr("y", d => y5(d.title) + y5.bandwidth() / 2)
+                        .attr("dy", ".35em")
+                        .text(d => d.title)
+                        .attr("fill", "black")
+                        .attr("font-size", "12px")
+                        .attr("text-anchor", "start");
+
+                    // Axes
+                    svg5.append("g")
+                        .call(d3.axisLeft(y5).tickFormat("")); // no labels on y axis
+
+                    svg5.append("g")
+                        .attr("transform", `translate(0, ${height5})`)
+                        .call(d3.axisBottom(x5).tickFormat(d => (d / 1.0).toFixed(1)));
+                </script>
+            
+</details>
+</div></div><br><br>
+            </div>
+        </body>
+        </html>
+        

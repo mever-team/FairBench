@@ -13,6 +13,8 @@ report.min.acc.show(env=fb.export.Console)
 
 report.show(env=fb.export.ConsoleTable)
 report.help()
+report = report.filter(fb.investigate.Stamps)
+report.show(env=fb.export.Html(horizontal=True), depth=1)
 # report.filter(fb.investigate.DeviationsOver(0.2)).show()
 
 

@@ -235,7 +235,13 @@ report = report.filter(fb.investigate.Stamps)
 report.show(env=fb.export.Html(horizontal=True), depth=1)
 ```
 
-![stamps](stamps.png)
+The following page opens in the browser, 
+and you can explore it here too:
+
+<iframe
+  src="/preview_stamps.html"
+  style="border: 1px solid black; width: 144%;height: 700px;border: none;margin-bottom:-100px;transform-origin: top left;overflow: auto"
+></iframe>
 
 
 !!! danger

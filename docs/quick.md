@@ -526,8 +526,7 @@ and you can explore it here too:
 ></iframe>
 
 !!! danger
-    The green checkmark indicates whether the 
-    measure's value was big or small, but acceptable thresholds should 
+    The green checkmark indicates that the 
+    measure's value was "small". But acceptable thresholds should 
     always rely on domain knowledge or stakeholder opinions. 
-    How to applying your own thresholds is described in 
-    [report filters](material/filters.md).
+    Find how to apply your own thresholds in [report filters](material/filters.md).
