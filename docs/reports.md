@@ -58,7 +58,15 @@ according to a wide range of base performance measures.
 Reports can be viewed under various visualization environments.
 
 The comparisons for each measure (row) are reduced to one value
-with reduction strategies (columns).
+with reduction strategies (columns). For example, the value at
+column `min` and row `acc` indicates the minimum accuracy 
+across all sensitive groups. Similarly, the value at column maximum
+relative difference `maxrel` and row positive rate `pr`
+indicate the maximum relative difference between the positive
+rates of all groups; this is the differential fairness
+extension to the well-known prule measure originally
+coined for binary sensitive attributes (see below).
+
 The task type and applicable measures are determined
 by the report's arguments. 
 See the comprehensive list of all 
@@ -216,7 +224,9 @@ the generated HTML representation of reports. The generated document
 requires an internet connection to properly view, as it depends
 on [bootstrap](https://getbootstrap.com/) for theming. 
 It is equivalent to the `Console` environment of previous examples.
-The provided depth controls the level of details (default is zero).
+The provided depth controls the level of detail. Default depth
+is zero, which automatically selects the shallowest meaningful
+level of detail.
 
 ```python
 report = report.filter(fb.investigate.Stamps)
