@@ -9,23 +9,23 @@ import re
 
 # Maps ANSI color codes to CSS color names
 _ANSI_FG = {
-    30: "#4a4a4a",   # black → dark gray (pure black is invisible on dark bg)
-    31: "#c75f5f",   # red
-    32: "#5a9e6f",   # green
-    33: "#b8956a",   # yellow → muted amber
-    34: "#5f82c7",   # blue
-    35: "#9e6aad",   # magenta
-    36: "#4f9ea8",   # cyan
-    37: "#c0c0c0",   # white → light gray
+    30: "#4a4a4a",  # black → dark gray (pure black is invisible on dark bg)
+    31: "#c75f5f",  # red
+    32: "#5a9e6f",  # green
+    33: "#b8956a",  # yellow → muted amber
+    34: "#5f82c7",  # blue
+    35: "#9e6aad",  # magenta
+    36: "#4f9ea8",  # cyan
+    37: "#c0c0c0",  # white → light gray
     # Bright variants
-    90: "#707070",   # bright black (dark gray)
-    91: "#d47f7f",   # bright red
-    92: "#7fbf8f",   # bright green
-    93: "#c8aa7a",   # bright yellow
-    94: "#7f9fd4",   # bright blue
-    95: "#b47fc4",   # bright magenta
-    96: "#7fc0ca",   # bright cyan
-    97: "#dcdcdc",   # bright white
+    90: "#707070",  # bright black (dark gray)
+    91: "#d47f7f",  # bright red
+    92: "#7fbf8f",  # bright green
+    93: "#c8aa7a",  # bright yellow
+    94: "#7f9fd4",  # bright blue
+    95: "#b47fc4",  # bright magenta
+    96: "#7fc0ca",  # bright cyan
+    97: "#dcdcdc",  # bright white
 }
 
 _ANSI_PATTERN = re.compile(r"\x1b\[([0-9;]*)m")
@@ -39,7 +39,7 @@ def _ansi_to_html(text: str) -> str:
 
     for m in _ANSI_PATTERN.finditer(text):
         # Emit everything before this escape sequence verbatim
-        result.append(text[pos:m.start()])
+        result.append(text[pos : m.start()])
         pos = m.end()
 
         codes = [int(c) for c in m.group(1).split(";") if c] if m.group(1) else [0]

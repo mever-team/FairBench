@@ -522,7 +522,7 @@ and you can explore it here too:
 
 <iframe
   src="/preview_abroca.html"
-  style="border: 1px solid black; width: 144%;height: 700px;border: none;margin-bottom:-100px;transform-origin: top left;overflow: auto"
+  style="border: 1px solid black; width: 144%;height: 700px;border: none;margin-bottom:-100px;transform:scale(0.7);transform-origin: top left;overflow: auto"
 ></iframe>
 
 !!! danger
