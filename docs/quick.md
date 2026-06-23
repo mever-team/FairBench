@@ -7,7 +7,7 @@ pip install --upgrade FairBench
 ```
 
 This can assess any system. Install extras are
-available to also run computer vision, graph, and LLMs benchmarks.
+available to optionally run computer vision, graph, and LLMs benchmarks.
 This tutorial shows a common workflow for computing one fairness measure.
 
 !!! info
@@ -74,19 +74,21 @@ Hispanic                       [0 0 0 ... 1 0 0]
 
 FairBench builds standardized fairness/bias measures from simpler 
 building blocks. Three building blocks are combined:
+
 1. Which **measure** is considered favorable predictive outcomes for each group, such as high positive rate `pr` for hiring systems, high true positive rate `tpr` for criminal convictions, and`accuracy` for loan approvals.
 2. The mechanism for determining which population groups to compare, namely where they should be compared `pairwise` or each group against the total population `vsall`.
 3. The **reduction** strategy that summarizes all comparisons to one value, such as the minimum `min` across all groups, the maximum difference between groups `maxdiff`, and maximum relative difference `maxrel`.
 
 Build a measure name by separating your choices 
 with underscores (the order does not matter)
-and access it from `fb.quick`. Here is an example of
-a measure function: `fb.quick.pairwise_maxrel_acc`. Read this
-as "the maximum relative accuracy difference when comparing
+and access it from `fb.quick`. 
+
+**Example**: `fb.quick.pairwise_maxrel_acc`. Read this
+bias measure as "the maximum relative accuracy difference when comparing
 groups pairwise". Basically, it would compute the accuracy 
 for each group, get the relative difference between all group
 accuracies (e.g. 0.4 and 0.5 accuracies have relative difference 
-of `0.1/max(0.4,0.5)=0.2`) and reports the maximum of those
+of 0.1/max(0.4,0.5)=0.2), and report the maximum of those
 differences.
 
 !!! info

@@ -7,14 +7,16 @@ pip install --upgrade fairbench
 ```
 
 This can assess any system. Install extras are
-available to also run computer vision, graph, and LLMs benchmarks.
+available to optionally run computer vision, graph, and LLMs benchmarks.
+This tutorial show how to bootstrap fairness analysis
+for a new AI system using FairBench. The recommended workflow is
+the following, of which creating extensive fairness reports is
+the first step:
 
-This tutorial covers the following recommended workflow for using 
-FairBench:
-1. identify prospective fairness concerns to discuss with stakeholders
-2. decide which of the concerns matter after drawing a broad enough
-picture
-3. keep track of important concerns with standalone measures covered in the [quickstart](quick.md).
+1. Identify prospective fairness concerns to discuss with stakeholders.
+2. Decide which of the concerns matter after drawing a broad enough
+picture (human-in-the-loop, consult with stakeholders).
+3. Keep track of important concerns with standalone measures covered in the [quickstart](quick.md).
 
 ![workflow visualization](fairbench.drawio.png)
 
@@ -54,7 +56,7 @@ sensitive = sensitive.strict()  # no fully ovrelapping intersections (e.g., remo
 print(sensitive)
 ```
 
-The sensitive dimensions look like this:
+Sensitive dimensions look like this:
 
 <pre style="font-family:monospace;background:#222222;color:#c0c0c0;padding:1em;overflow-x:auto;font-size:12px">
 Male&Native American           [0 0 0 ... 0 0 0]
@@ -202,23 +204,43 @@ Access the following fields of the selected value to explore results:
 
 ## 4. Go into details
 
+Almost every computation, including standalone measures,
+is a FairBench report that keeps track of internal values.
+Thus, starting from a top-level view, one can delve deeper
+into report details by specializing and -as covered in the
+next section- filtering results. The outcome is 
+sub-reports. The final report is visualized 
+in various comprehensive formats, in either the
+console or in the browser.
+
+![workflow visualization](farbench_reporting.drawio.png)
+
+
 Explore reports by focusing on any of their contributing
 computations. Use the programmatic dot notation,
-where more `depth` can be added to viewed values
 to further expand intermediate computations and search
 for the root causes of discrimination. You can 
 focus on any of the factors shown via `report.help()`,
-and even chain multiple specializations. Use dictionary
-access notation if the dot notation would be invalid
-(e.g., when the specialization includes spaces or special
-characters). 
+and even chain multiple specializations. 
 
-Below is an example, but there are 
-[more visualization options](material/visualization.md).
+Fallback to 
+dictionary access notation if the dot notation would be invalid
+(e.g., when the specialization includes spaces or special
+characters). For example, `report.acc.min` is equivalent to
+`report["acc"]["min"]` and gets a sub-report for the minimum
+accuracy (one value). This is not the end, however, and
+can be specialized further like below. 
+You can also skip levels of the hierarchy, for example
+by writing `report.tp` to retrieve the true positive values that
+have contributed to all computations.
+
+Next is an example with console output, though there are 
+[more visualization environments](material/visualization.md).
 In the example, we focus on the minimum accuracy to keep the 
-outcome simple, but all visualization environments
-work with full reports, or even 
-[collections of reports](documentation/progress.md).
+outcome simple. All visualization environments
+work with reports, or even 
+[collections of reports](documentation/progress.md),
+which are also reports. 
 
 ```python
 report.min.acc.show(env=fb.export.Console)
