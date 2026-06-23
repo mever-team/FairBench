@@ -19,22 +19,52 @@ The builder pattern and these options are covered in this document.
 
 ## Gather instances
 
-Here is how you can add report/value instances to progress and build
-a report that contains all of them:
+Below is how to add report instances to a `Progress`
+builder. The example generates different reports for
+different binary classification decision thresholds,
+and a report is generated for each threshold. The
+`instance` method is then used to register reports
+so that one super-report can be built with the
+`build` method. As a first step, the example
+visualizes the focus on the maximum difference of
+accuracies.
 
 ```python
 import fairbench as fb
+import numpy as np
 
-settings = fb.Progress("settings")
-for name, experiment in experiments.items():
-    y, yhat, sensitive = experiment()
-    sensitive = fb.Dimensions(fb.categories @ sensitive)
-    report = fb.reports.pairwise(predictions=yhat, labels=y, sensitive=sensitive)
-    settings.instance(name, report)
-comparison = settings.build()
+x, y, yhat = fb.bench.tabular.bank(predict="probabilities")
+sensitive = fb.Dimensions(fb.categories @ x["marital"])
 
-comparison.show(fb.export.ConsoleTable)
+comparison = fb.Progress("thresholds")
+for threshold in np.arange(0.1, 0.91, 0.1):
+    report = fb.reports.pairwise(sensitive=sensitive, predictions=yhat>threshold, labels=y)
+    comparison.instance(f"Threshold {threshold:.1f}", report)
+comparison = comparison.build()
+comparison.maxdiff.acc.show(env=fb.export.Html)
 ```
+
+<iframe
+  src="/preview_progress_acc.html"
+  style="border: 1px solid black; width: 144%;height: 700px;border: none;margin-bottom:-100px;transform:scale(0.7);transform-origin: top left;overflow: auto"
+></iframe>
+
+## Transposing the view
+
+A particularly handy transformation for reports is the act of applying
+`.explain` on them, which -if possible- exchanges the top two
+organization layers. Applying it below lets us to split the maximum differences
+across all reports across measures.
+
+```python
+comparison.maxdiff.explain.show(env=fb.export.Html, depth=0)
+```
+
+<iframe
+  src="/preview_progress_explain.html"
+  style="border: 1px solid black; width: 144%;height: 700px;border: none;margin-bottom:-100px;transform:scale(0.7);transform-origin: top left;overflow: auto"
+></iframe>
+
 
 ## Persistence
 

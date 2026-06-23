@@ -379,7 +379,7 @@ class Value:
                 result["depends"].append(dep.serialize(depth, details))
         return result"""
 
-    def reshape(self, item: Descriptor):
+    def reshape(self, item: Descriptor | str):
         if isinstance(item, str):
             if item in self.depends:
                 item = self.depends[item]

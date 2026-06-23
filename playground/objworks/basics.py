@@ -8,10 +8,7 @@ sensitive = sensitive.intersectional().strict()
 # yhat = fb.Dimensions(fb.categories @ yhat)
 # y = fb.Dimensions(fb.categories @ y)
 
-from ansiprint import AnsiTee
-
-with AnsiTee.activate("ansi.html"):
-    print(sensitive.sum())
+print(sensitive.sum())
 
 report = fb.reports.pairwise(predictions=yhat, labels=y, sensitive=sensitive)
 report.min.acc.show(env=fb.export.Console)

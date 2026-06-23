@@ -1,47 +1,38 @@
-from fairbench import v2 as fb
-import fairbench as deprecated
+import fairbench as fb
+import numpy as np
 
-x, y, yhat = deprecated.bench.tabular.bank()
+x, y, yhat = fb.bench.tabular.bank(predict="probabilities")
+sensitive = fb.Dimensions(fb.categories @ x["marital"])
+print(sensitive)
 
-cats = deprecated.categories @ x["marital"]
-cats = {k: v.numpy() for k, v in cats.items()}
-
-sensitive = fb.Sensitive(cats)
-report1 = fb.reports.pairwise(sensitive=sensitive, predictions=yhat, labels=y)
-yhat = 1 - yhat
-report2 = fb.reports.pairwise(sensitive=sensitive, predictions=yhat, labels=y)
-
-comparison = fb.Progress("time")
-comparison.instance("Day 1", report1)
-comparison.instance("Day 2", report2)
-comparison.instance("Day 3", report1)
-comparison.instance("Day 4", report1)
-comparison.instance("Day 5", report2)
-comparison.instance("Day 6", report1)
+comparison = fb.Progress("thresholds")
+for threshold in np.arange(0.1, 0.91, 0.1):
+    report = fb.reports.pairwise(sensitive=sensitive, predictions=yhat>threshold, labels=y)
+    comparison.instance(f"Threshold {threshold:.1f}", report)
 comparison = comparison.build()
+#comparison.maxdiff.acc.show(env=fb.export.Html, depth=0)
+comparison.maxdiff.explain.show(env=fb.export.Html, depth=0)
 
-
-# comparison.show(depth=10)
-
-# comparison = fb.reduction.mean(comparison.acc.explain)
-comparison = comparison.filter(fb.reduction.mean).filter()
-dict = comparison.to_dict()
-comparison = fb.core.Value.from_dict(dict)
-
-comparison.show()
-
-
-"""
-print(comparison)
-
-value = (comparison
-          |fb.reduction.minimum
-          |fb.measures.pr)
-
-print(value)
-
-for v in value.flatten():
-    print(v)
-"""
+#
+# # comparison = fb.reduction.mean(comparison.acc.explain)
+# comparison = comparison.filter(fb.reduction.mean).filter()
+# dict = comparison.to_dict()
+# comparison = fb.core.Value.from_dict(dict)
+#
+# comparison.show()
+#
+#
+# """
+# print(comparison)
+#
+# value = (comparison
+#           |fb.reduction.minimum
+#           |fb.measures.pr)
+#
+# print(value)
+#
+# for v in value.flatten():
+#     print(v)
+# """
 
 # print(json.dumps((report_over_time|pr|minimum).serialize(), indent="  "))
