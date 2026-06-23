@@ -14,8 +14,12 @@ from fairbench.v1 import categories, fuzzy
 
 def Dimensions(*args, **kwargs):
     from fairbench.v1 import Fork, tobackend, Categorical
+
     args = [Categorical(arg) if isinstance(arg, dict) else arg for arg in args]
-    kwargs = {k: Categorical(arg) if isinstance(arg, dict) else arg for k, arg in kwargs.items()}
+    kwargs = {
+        k: Categorical(arg) if isinstance(arg, dict) else arg
+        for k, arg in kwargs.items()
+    }
 
     ret = Fork(*args, **kwargs)
     ret._branches = {

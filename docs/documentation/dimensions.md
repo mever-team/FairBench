@@ -30,8 +30,7 @@ sensitive = sensitive.intersectional()
 print(sensitive)
 ```
 
-The outcome is the following. Note that, note that
-the `intersectional` transformation
+The outcome is the following. The `intersectional` transformation
 has enriched the original dimensions *White, Black, etc.* to also 
 account for attribute value intersections, 
 like *Male&White, Male&Black, etc.*
@@ -186,7 +185,7 @@ print(sensitive)
 
 This yields the following:
 
-<body><pre style="font-family:monospace;background:#222222;color:#c0c0c0;padding:1em;overflow-x:auto;font-size:12px">
+<pre style="font-family:monospace;background:#222222;color:#c0c0c0;padding:1em;overflow-x:auto;font-size:12px">
 Woman                          [0 1 0 1 0]
 Man                            [1 0 1 0 0]
 Nonbin                         [0 0 0 0 1]

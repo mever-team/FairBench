@@ -9,6 +9,7 @@ sensitive = sensitive.intersectional().strict()
 # y = fb.Dimensions(fb.categories @ y)
 
 from ansiprint import AnsiTee
+
 with AnsiTee.activate("ansi.html"):
     print(sensitive.sum())
 

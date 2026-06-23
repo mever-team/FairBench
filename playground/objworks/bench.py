@@ -14,6 +14,7 @@ for name, experiment in experiments.items():
 comparison = settings.build()
 
 from ansiprint import AnsiTee
+
 with AnsiTee.activate("ansi.html"):
     comparison.show(fb.export.ConsoleTable)
 #
