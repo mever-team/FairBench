@@ -217,22 +217,23 @@ console or in the browser.
 
 
 Explore reports by focusing on any of their contributing
-computations. Use the programmatic dot notation,
-to further expand intermediate computations and search
-for the root causes of discrimination. You can 
-focus on any of the factors shown via `report.help()`,
-and even chain multiple specializations. 
-
-Fallback to 
+computations. Use the programmatic dot notation to do this.
+`report.help()` shows what you can specialize on. You can
+even chain multiple specializations! Fallback to 
 dictionary access notation if the dot notation would be invalid
 (e.g., when the specialization includes spaces or special
-characters). For example, `report.acc.min` is equivalent to
-`report["acc"]["min"]` and gets a sub-report for the minimum
-accuracy (one value). This is not the end, however, and
+characters). 
+
+**Example:** `report.acc.min` is equivalent to
+`report["acc"]["min"]` and retrieves a first sub-report 
+for the accuracy, and then a sub-sub-report for the minimum
+accuracy. Tha latter happens to be a measure value.
+This is not the end, however, and the sub-sub-report
 can be specialized further like below. 
 You can also skip levels of the hierarchy, for example
 by writing `report.tp` to retrieve the true positive values that
-have contributed to all computations.
+have contributed to all computations (there could be many 
+repetitions of those).
 
 Next is an example with console output, though there are 
 [more visualization environments](material/visualization.md).
@@ -278,32 +279,34 @@ This is the console output:
 
 ## 5. Simplify reports 
 
-FairBench provides filters that enhance the evaluation.
-For example, they can remove report entries that do not violate a given
+FairBench provides filters that enhance report outcomes.
+For example, they can remove entries that do not violate a given
 threshold, leaving only problematic values behind.
 
-One of the available filters, which is presented
+A particularly noteworthy filter, which is presented
 below, are fairness stamps. These refer to a few 
-common types of fairness evaluation and are accompanied
-by caveats and recommendations. The collection of available
-stamps is called a fairness modelcard. Filtering through
-reports yields new ones that can be manipulated (e.g., viewed) 
-normally.
+types of fairness evaluation that are prevalent in 
+the literature. However, they are accompanied
+by caveats and recommendations that turns them into a
+fairness modelcard. 
 
-The `Html` environment that is used below
-can save and/or open in the browser
+Filtering through reports yields new ones that can be manipulated
+and viewed normally. Below, the `Html` environment is used
+to save and/or open a report in the browser
 the generated HTML representation of reports. The generated document
 requires an internet connection to properly view, as it depends
-on [bootstrap](https://getbootstrap.com/) for theming. 
-It is equivalent to the `Console` environment of previous examples.
-The provided depth controls the level of detail. Default depth
-is zero, which automatically selects the shallowest meaningful
-level of detail.
+on [bootstrap](https://getbootstrap.com/) for theming. Html-based environments are
+counterparts to console options.
 
 ```python
 report = report.filter(fb.investigate.Stamps)
 report.show(env=fb.export.Html(horizontal=True), depth=1)
 ```
+
+!!! info
+    The provided `depth` parameter controls the level of detail. Default depth
+    is zero, which automatically selects the shallowest meaningful
+    level of detail.
 
 The following page opens in the browser, 
 and you can explore it here too:
