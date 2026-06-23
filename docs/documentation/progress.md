@@ -26,8 +26,11 @@ and a report is generated for each threshold. The
 `instance` method is then used to register reports
 so that one super-report can be built with the
 `build` method. As a first step, the example
-visualizes the focus on the maximum difference of
-accuracies.
+visualizes the maximum measure differences between demographic
+group. Like normal, this specialization preserves
+the structural organization of the report, namely 
+that first the repost is split per threshold and only 
+afterwards per measure.
 
 ```python
 import fairbench as fb
@@ -41,18 +44,18 @@ for threshold in np.arange(0.1, 0.91, 0.1):
     report = fb.reports.pairwise(sensitive=sensitive, predictions=yhat>threshold, labels=y)
     comparison.instance(f"Threshold {threshold:.1f}", report)
 comparison = comparison.build()
-comparison.maxdiff.acc.show(env=fb.export.Html)
+comparison.maxdiff.show(env=fb.export.Html)
 ```
 
 <iframe
-  src="/preview_progress_acc.html"
+  src="/preview_progress_diffs.html"
   style="border: 1px solid black; width: 144%;height: 700px;border: none;margin-bottom:-100px;transform:scale(0.7);transform-origin: top left;overflow: auto"
 ></iframe>
 
 ## Transposing the view
 
-A particularly handy transformation for reports is the act of applying
-`.explain` on them, which -if possible- exchanges the top two
+A particularly handy transformation for reports consistes of applying
+`.explain` on them, which exchanges the top two
 organization layers. Applying it below lets us to split the maximum differences
 across all reports across measures.
 
