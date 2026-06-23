@@ -8,8 +8,8 @@ pip install --upgrade FairBench
 
 This can assess any system. Install extras are
 available to optionally run computer vision, graph, and LLMs benchmarks.
-This tutorial shows a common workflow for computing one fairness measure.
-The recommended workflow for identifying which measures to compute
+This tutorial shows how to compute one fairness measure.
+The recommended workflow for identifying what to measure
 is the following:
 
 1. Identify prospective fairness concerns to discuss with stakeholders via [reports](reports.md).
@@ -123,8 +123,11 @@ print(abroca.float())
 ```
 
 The above measure is also known as *ABROCA* in the literature, but FairBench standardizes their naming scheme.
-Print FairBench's growing list of more than 300 valid measures by calling:
-`fb.quick.help()`.
+Print FairBench's growing list of more than 300 valid measures like so:
+
+```python
+fb.quick.help()
+```
 
 <pre style="font-family:monospace;background:#222222;color:#c0c0c0;padding:1em;overflow-x:auto;font-size:12px;max-height: 200px;overflow-y:auto">
 Showing all fairness measures that can be computed.

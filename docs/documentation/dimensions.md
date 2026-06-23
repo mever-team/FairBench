@@ -49,18 +49,12 @@ Female&Black                   [0 0 0 1 0]
 </pre>
 
 
-!!! info
-    FairBench can unpack a wide range of data types as dimension values.
-    These types include lists, arrays, and tensors of popular machine learning frameworks.
-
-
 ## Explicit dimensions
-For values that are non-dictionaries,
-keywords like `men`, `women`, and `nonbinary` are dimension names. 
+Keywords like *men*, *women*, and *nonbinary* below,
+followed by non-dictionary values, declare dimension names. 
 Dimension values will usually be lists,
 numpy arrays or deep learning tensors. 
-Provide any number of dimensions
-with any names. 
+Provide any number of dimensions.
 
 ```python
 import fairbench as fb
@@ -75,7 +69,7 @@ sensitive = fb.Dimensions(
 Access dimension vectors 
 as either members of the `Dimensions` object
 or as dictionary entries. Those vectors are
-stored as [eagery](https://github.com/jonasrauber/eagerpy) 
+stored as [eagerpy](https://github.com/jonasrauber/eagerpy) 
 tensors. Use eagerpy methods on `Dimensions` 
 to obtain a transformation with different values for each
 dimension. Mainly, this is useful for summing attribute
@@ -84,11 +78,9 @@ group sizes.
 
 ```
 print(sensitive.nonbinary.numpy())
-print(sensitive["nonbinary"].numpy())) # does the same
+print(sensitive["nonbinary"].numpy()) # does the same
 print(sensitive.sum())
 ```
-
-This yields the following output:
 
 <pre style="font-family:monospace;background:#222222;color:#c0c0c0;padding:1em;overflow-x:auto;font-size:12px">
 NumPyTensor(array([0, 0, 0, 0, 1]))
@@ -153,8 +145,6 @@ sensitive = fb.Dimensions(
 )
 ```
 
-This yields the following output:
-
 <pre style="font-family:monospace;background:#222222;color:#c0c0c0;padding:1em;overflow-x:auto;font-size:12px">
 gender1                        [0 0 1 1 0]
 gender0                        [1 1 0 0 0]
@@ -167,7 +157,6 @@ isold0                         [1 0 1 0 1]
 
 FairBench offers helper operators toconvert iterable
 data into dictionaries that can be passed to `Dimensions`.
-
 The most common pattern is analyzing categorical 
 values found in iterables with the
 `fb.categories@` operator.
@@ -182,8 +171,6 @@ import fairbench as fb
 sensitive = fb.Dimensions(fb.categories@["Man", "Woman", "Man", "Woman", "Nonbin"])
 print(sensitive)
 ```
-
-This yields the following:
 
 <pre style="font-family:monospace;background:#222222;color:#c0c0c0;padding:1em;overflow-x:auto;font-size:12px">
 Woman                          [0 1 0 1 0]
@@ -222,9 +209,6 @@ sensitive = fb.Dimensions(age=fb.fuzzy@ age)
 print(sensitive)
 ```
 
-This prints the following. This particular fuzzy expansion creates
-two complementary numbers.
-
 <pre style="font-family:monospace;background:#222222;color:#c0c0c0;padding:1em;overflow-x:auto;font-size:12px">
 agelarge 60.000                [0.         0.04761905 0.02380952 0.57142857 0.28571429 1.
  0.         0.76190476 0.52380952]
@@ -248,7 +232,7 @@ certain groups may intersect. For example,
 some blacks may also be women.
 To consider intersectional definitions of fairness, 
 create all dimension combinations with at least one 
-data sample by using the intersectional method
+data sample by calling the `intersectional` method
 of dimensions.
 
 ```python

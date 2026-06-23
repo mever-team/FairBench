@@ -5,18 +5,26 @@ Reports perform multi-faceted analyses of AI system outcomes
 that typically quantify biases and fairness. Intermediate
 computations are retained so that you can specialize
 to viewing sub-reports or computation internals.
-
 Furthermore, filters can be applied to augment
 the organization or apply rules (e.g., thresholding 
 criteria) to report outcomes. The end-result
 is shown using various visualization environments.
 
+To sum up, reports are structures that you can iterate
+on and explore. This way, you can move from summary
+values to computational details. Everything computed
+by FairBench is a report, be it one measure value, 
+the report types
+described in this document, or even 
+[collections of reports](progress.md) for comparing
+datasets and algorithms across variations and time.
+
 ![working with reports](../farbench_reporting.drawio.png)
 
 !!! tip
     A more to-the-point tutorial than this documentation can be found
-    [here](../reports.md). Here we we focus on describing details
-    of the interface.
+    in the [full report overview](../reports.md). Here we we focus 
+    on filling details of the programmatic interface.
 
 ## Report types
 
@@ -42,6 +50,8 @@ sensitive dimensions `sensitive` that separate between
 *men* and *women*. The `show` method is used
 to print the report to the console in a simple yet verbose
 format. This is the default visualization environment.
+Other [visualizations](../material/visualization.md)
+look very different and can be customized.
 
 ```python
 import fairbench as fb
@@ -55,10 +65,6 @@ report = fb.reports.pairwise(
 report.show()
 ```
 
-This has the following outcome. Notice that descriptions
-are provided for non-terminal values. 
-Other [visualizations](../material/visualization.md) can
-look very different and also be customized.
 <pre style="height:700px;overflow-y:auto;font-family:monospace;background:#222222;color:#c0c0c0;padding:1em;overflow-x:auto;font-size:12px">
 
 <span style="color:#5f82c7">##### multidim #####</span>

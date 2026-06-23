@@ -56,8 +56,6 @@ sensitive = sensitive.strict()  # no fully ovrelapping intersections (e.g., remo
 print(sensitive)
 ```
 
-Sensitive dimensions look like this:
-
 <pre style="font-family:monospace;background:#222222;color:#c0c0c0;padding:1em;overflow-x:auto;font-size:12px">
 Male&Native American           [0 0 0 ... 0 0 0]
 Male&Other                     [0 1 0 ... 0 0 0]
@@ -109,34 +107,18 @@ Reports can be viewed under various visualization environments.
 
 The comparisons for each measure (row) are reduced to one value
 with reduction strategies (columns). For example, the value at
-column `min` and row `acc` indicates the minimum accuracy 
+column *min* and row *acc* indicates the minimum accuracy 
 across all sensitive groups. Similarly, the value at column maximum
-relative difference `maxrel` and row positive rate `pr`
+relative difference *maxrel* and row positive rate *pr*
 indicate the maximum relative difference between the positive
 rates of all groups; this is the differential fairness
 extension to the well-known prule measure originally
 coined for binary sensitive attributes (see below).
 
-!!! info 
-    The task type and applicable measures are determined
-    by the report's arguments. 
-
-See the comprehensive list of all 
-[measures and reductions](material/api.md), 
-but you can find out what the abbreviations refer
-to by either using a visualization environment
-that prints such information (see next section)
-or simply calling `report.help()` to view lengthier
-descriptions of all factors contributing to
-the generated report.
-
 ```python
 report = fb.reports.pairwise(predictions=yhat, labels=y, sensitive=sensitive)
 report.show(env=fb.export.ConsoleTable)  
-report.help()
 ```
-
-This is the outcome of `show`:
 
 <pre style="font-family:monospace;background:#222222;color:#c0c0c0;padding:1em;overflow-x:auto;font-size:12px">                                                                                                                                       
                                            min          max     maxerror        wmean         mean           gm        pnorm       maxrel      maxdiff         gini        stdx2
@@ -154,7 +136,23 @@ mcc                                      <span style="color:#5a9e6f">0.905</span
 kappa                                    <span style="color:#5a9e6f">0.901</span>                     <span style="color:#5a9e6f">0.099</span>        <span style="color:#5a9e6f">0.933</span>        <span style="color:#5a9e6f">0.952</span>        <span style="color:#5a9e6f">0.951</span>            <span style="color:#c75f5f">3</span>        <span style="color:#5a9e6f">0.099</span>        <span style="color:#5a9e6f">0.099</span>        <span style="color:#5a9e6f">0.018</span>        <span style="color:#5a9e6f">0.061</span>
 </pre>
 
-This is the outcome of `help`:
+!!! info 
+    The task type and applicable measures are determined
+    by the report's arguments. There exist other report types too! 
+    Read more in the [report documentation](documentation/reports.md).
+
+See the comprehensive list of all 
+[measures and reductions](material/api.md), 
+but you can find out what the abbreviations refer
+to by either using a visualization environment
+that prints such information (see next section)
+or simply calling `report.help()` to view lengthier
+descriptions of all factors contributing to
+the generated report.
+
+```python
+report.help()
+```
 
 <pre style="font-family:monospace;background:#222222;color:#c0c0c0;padding:1em;overflow-x:auto;font-size:12px">
 <span style="color:#5a9e6f">##### FairBench help #####</span>
@@ -201,9 +199,6 @@ Access the following fields of the selected value to explore results:
 - <span style="color:#5f82c7">value.gini               </span> This reduction<span style="color:#7fbf8f"> is </span>the gini coefficient.
 - <span style="color:#5f82c7">value.stdx2              </span> This reduction<span style="color:#7fbf8f"> is </span>the standard deviation x2.
 </pre>
-
-!!! tip
-    There exist other report types too! Read more details in the [report documentation](documentation/reports.md).
 
 ## 4. Go into details
 

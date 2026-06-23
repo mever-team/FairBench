@@ -2,12 +2,20 @@
 
 A mechanism provided by FairBench to gather
 fairness reports and aggregate them into one larger assessment
-is the `Progress` class. This offers a builder pattern in which new reports are registered
-sqeuentially, and at any point an amalgamation can be extracted.
-The same mechanism can be used for reports that show the evolution
+is the `Progress` class. This implements
+a builder pattern in which new reports are registered
+sequentially, and at any point an amalgamated report can be extracted.
+The same pattern can be used for reports that show the evolution
 of datasets and algorithms over time 
 (both tracked progress and reports can be serialized to and from Json,
 which allows for persistence if needed).
+
+Gathering reports together allows for joint exploration,
+visualization, and even reductions like obtaining the average
+and standard deviation of all values across experiment settings. 
+The builder pattern and these options are covered in this document.
+
+![progress builder](../fairbench_progress.drawio.png)
 
 ## Gather instances
 
