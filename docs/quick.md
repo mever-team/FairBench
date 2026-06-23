@@ -36,11 +36,6 @@ import fairbench as fb
 x, y, yhat = fb.bench.tabular.compas(test_size=0.5, predict="probabilities")
 ```
 
-**FairBench also supports other types of predictive tasks, such as 
-(multiclass) classification and ranking. Supported data formats
-for system outputs include include lists or other iterables, 
-numpy arrays**, and pytorch/tensorflow/jax tensors.
-
 ## 2. Sensitive attributes
 
 Pack sensitive attributes found across test samples
@@ -110,13 +105,13 @@ relevant keyword among
 *predictions*, *multipredictions*, *scores*, 
 *labels*, *multilabels*, *order*, *target*, as described 
 [here](documentation/reports.md), and the *sensitive* 
-dimensions construct above. 
-
-Next is an example that shows how to compute the surface area 
-between the ROC curves of AUC computations. This assesses the fairness
-of recommender systems. A small area indicates that the 
-curves are very similar between groups even when considering 
-the two most dissimilar. 
+dimensions construct above.
+Next for comparing the surface area 
+between the ROC curves involved in AUC computations (the curves
+can be re-obtained because FairBench keeps track of intermediate
+computations). Curve comparison assesses the fairness
+of recommender systems, where a small area difference 
+indicates that the curves are similar between groups.
 
 ```python
 abroca = fb.quick.pairwise_maxbarea_auc(scores=yhat, labels=y, sensitive=sensitive)

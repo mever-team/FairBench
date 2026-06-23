@@ -119,7 +119,7 @@ def conflate(
     if measures is None:
         measures = all_measures
     if reductions is None:
-        reductions = reductions_vs_any
+        reductions = reductions_pairwise
     # prepare the sensitive attribute, because we are going to add one more branch here
     if isinstance(sensitive, dict):
         sensitive = deprecated.Fork(sensitive)

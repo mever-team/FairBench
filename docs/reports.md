@@ -202,6 +202,9 @@ Access the following fields of the selected value to explore results:
 - <span style="color:#5f82c7">value.stdx2              </span> This reduction<span style="color:#7fbf8f"> is </span>the standard deviation x2.
 </pre>
 
+!!! tip
+    There exist other report types too! Read more details in the [report documentation](documentation/reports.md).
+
 ## 4. Go into details
 
 Almost every computation, including standalone measures,
@@ -213,7 +216,7 @@ sub-reports. The final report is visualized
 in various comprehensive formats, in either the
 console or in the browser.
 
-![workflow visualization](farbench_reporting.drawio.png)
+![working with reports](farbench_reporting.drawio.png)
 
 
 Explore reports by focusing on any of their contributing

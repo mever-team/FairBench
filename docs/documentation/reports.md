@@ -1,92 +1,47 @@
 # Reports
 
-Reports perform multi-faceted analyses of system outcomes
+Reports perform multi-faceted analyses of AI system outcomes
 (e.g., predictions, recommendations, regression scores)
-to quantify biases and fairness. Computations are retained
-in the final report. Mainly, report outcomes can be filtered
-to augment their values with various strategies,
-and shown using various visualization environments.
-They can also be serialized and deserialized.
+that typically quantify biases and fairness. Intermediate
+computations are retained so that you can specialize
+to viewing sub-reports or computation internals.
 
-## Arguments
+Furthermore, filters can be applied to augment
+the organization or apply rules (e.g., thresholding 
+criteria) to report outcomes. The end-result
+is shown using various visualization environments.
 
-You can generate reports by providing some
-of the optional arguments below to some
-of the report generation methods.
-Base performance measures to compute
-are automatically selected based on available information.
-
-Sensitive attributes contain multiple
-[dimensions](dimensions)
-that treat multi-value attributes or multiple
-sensitive attribute values interchangeably.
-
-Normally, you can separate multiclass analysis
-into analyzing each class separately by decomposing
-target and predicted values into separate dimensions.
-
-```python
-predictions = fb.Dimensions(fb.categories@yhat)
-labels = fb.Dimensions(fb.categories@y)
-```
-
-But you can also obtain macro-analysis that
-considers various intra-class averages of measures
-like accuracy, tpr, and ppv by passing discrete
-predictions and labels via the *multipredictions*
-and *multilabels* arguments.
-
-| Argument         | Role                | Values                                                                |
-|------------------|---------------------|-----------------------------------------------------------------------|
-| predictions      | system output       | binary array                                                          |
-| multipredictions | system output       | discrete array                                                        |
-| scores           | system output       | array with elements in [0,1]                                          |
-| targets          | prediction target   | array with elements in [0,1]                                          | 
-| order            | order target        | array whose element order should be replicated (e.g., may have ranks) |      
-| labels           | prediction target   | binary array                                                          |     
-| multilabels      | prediction target   | discrete array                                                        | 
-| sensitive        | sensitive attribute | fork of arrays with elements in [0,1] (either binary or fuzzy)        |
-
-!!! info
-    In multiclass settings, all keyword
-    arguments other than the sensitive attribute
-    must have dimensions corresponding to the classes.
+![working with reports](../farbench_reporting.drawio.png)
 
 !!! tip
-    Typically, you would want to assess a system of only one kind,
-    such as with:
-
-    - *multipredictions,multilabels,sensitive* for macro-averaged multiclass classification
-    - *predictions,labels,sensitive* for classification
-    - *scores,labels,sensitive* for recommendation
-    - *scores,targets,sensitive* for regression
-    - *scores,order,sensitive* for ranking
+    A more to-the-point tutorial than this documentation can be found
+    [here](../reports.md). Here we we focus on describing details
+    of the interface.
 
 ## Report types
 
-Out-of-the box, you can use one of the following
-report generation methods, obtained from FairBench's 
-`reports` module:
+Out-of-the box, use one of the following
+report generation methods:
 
-| Report   | Description                                                                                                                                                                                                            |
-|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| pairwise | Compares groups pairwise when needed.                                                                                                                                                                                  |
-| vsall    | Adds the whole population as an 'all' group and compares other groups to this.                                                                                                                                         |
-| report   | Creates a report with manually declared metrics and reduction strategies.                                                                                                                                              |
-| conflate | Creates a conflation matrix (a generalization of the confusion matrix whose entries are pairwise reports) between each subgroup pair. Values of these comparisons are not aggregated but instead retained as they are. |
+| Report        | Description                                                                                                                                                                                                            |
+|---------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `fb.pairwise` | Compares groups pairwise when needed.                                                                                                                                                                                  |
+| `fb.vsall`    | Adds the whole population as an 'all' group and, when possible, defaults to measures that compare other groups to 'all'.                                                                                               |
+| `fb.conflate` | Creates a conflation matrix (a generalization of the confusion matrix whose entries are pairwise reports) between each subgroup pair. Values of these comparisons are not aggregated but instead retained as they are. |
 
+Glimpse below example usage if the first report type 
+for a binary classification task. Report types are interoperable;
+the other two can be called by just substituting their name
+in the same workflow. Of course, with different results.
 
-## Usage
-
-As an example, create a simple report
-based on binary predictions, binary
+Arguments, specialization,
+and visualization are discussed afterwards in this document.
+The example task contains binary predictions, binary
 ideal predictions and multiclass
-sensitive attribute `sensitive`. The
-sensitive attribute is declared to be a fork with two branches
-*men,women*, each of which is a binary
-feature value. Finally, use the `show` method
-to visualize the report using the console,
-which is the default visualization engine.
+sensitive dimensions `sensitive` that separate between
+*men* and *women*. The `show` method is used
+to print the report to the console in a simple yet verbose
+format. This is the default visualization environment.
 
 ```python
 import fairbench as fb
@@ -100,191 +55,345 @@ report = fb.reports.pairwise(
 report.show()
 ```
 
-Below is the visualization's outcome. Notice that descriptions
+This has the following outcome. Notice that descriptions
 are provided for non-terminal values. 
+Other [visualizations](../material/visualization.md) can
+look very different and also be customized.
+<pre style="height:700px;overflow-y:auto;font-family:monospace;background:#222222;color:#c0c0c0;padding:1em;overflow-x:auto;font-size:12px">
 
-<div style="overflow-y: scroll;height: 380px; margin-bottom: 30px;">
-
-```
-##### multidim #####
-|This is analysis that compares several groups.
+<span style="color:#5f82c7">##### multidim #####</span>
+|This<span style="color:#7fbf8f"> is </span>analysis<span style="color:#7fbf8f"> that </span>compares several groups.
+|
 |Computations cover several cases.
 
- ***** min *****
- |This reduction is the minimum.
+ <span style="color:#5f82c7">***** min *****</span>
+ |This reduction<span style="color:#7fbf8f"> is </span>the minimum.
  |Computations cover several cases.
  
    (0.0, 0.5)
-   ▎          █      
-   ▎          █      
-   ▎ █  █     █     █
-   ▎ █  █     █     █
-   ▎ █  █     █     █
-   ▎▬*▬▬-▬▬+▬▬x▬▬o▬▬□
-           (6.0, 0.0)
+   ▎          <span style="color:#7f9fd4">█                        
+   </span>▎ <span style="color:#d47f7f">█  </span><span style="color:#7fbf8f">█     </span><span style="color:#7f9fd4">█              </span><span style="color:#d47f7f">█         
+   </span>▎ <span style="color:#d47f7f">█  </span><span style="color:#7fbf8f">█     </span><span style="color:#7f9fd4">█              </span><span style="color:#d47f7f">█         
+   </span>▎ <span style="color:#d47f7f">*  <span style="color:#7fbf8f">-  <span style="color:#c8aa7a">+  <span style="color:#7f9fd4">x  <span style="color:#b47fc4">o  <span style="color:#7fc0ca">□  <span style="color:#c8aa7a">◇  <span style="color:#7fc0ca">#  <span style="color:#d47f7f">@  <span style="color:#7fbf8f">%  <span style="color:#7f9fd4">&  <span style="color:#b47fc4">|
+   </span></span></span></span></span></span></span></span></span></span></span></span>▎                                   
+   ▎▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬<span style="color:#7f9fd4">▆</span>▬▬<span style="color:#b47fc4">▆</span>
+            (12.0, -0.5000000000000001)
    
-    * min acc                           0.333 
-    - min pr                            0.333 
-    + min tpr                           0 
-    x min tnr                           0.500 
-    o min tar                           0 
-    □ min trr                           0.333 
+    <span style="color:#d47f7f">* </span>acc                               0.333 min acc
+    <span style="color:#7fbf8f">- </span>pr                                0.333 min pr
+    <span style="color:#c8aa7a">+ </span>tpr                               0 min tpr
+    <span style="color:#7f9fd4">x </span>tnr                               0.500 min tnr
+    <span style="color:#b47fc4">o </span>ppv                               0 min ppv
+    <span style="color:#7fc0ca">□ </span>f1                                0 min f1
+    <span style="color:#c8aa7a">◇ </span>gmi                               0 min gmi
+    <span style="color:#7fc0ca"># </span>tar                               0 min tar
+    <span style="color:#d47f7f">@ </span>trr                               0.333 min trr
+    <span style="color:#7fbf8f">% </span>lift                              0 min lift
+    <span style="color:#7f9fd4">& </span>mcc                               -0.500 min mcc
+    <span style="color:#b47fc4">| </span>kappa                             -0.500 min kappa
  
- ***** max *****
- |This reduction is the maximum.
+ <span style="color:#5f82c7">***** max *****</span>
+ |This reduction<span style="color:#7fbf8f"> is </span>the maximum.
  |Computations cover several cases.
  
-   (0.0, 0.5)
-   ▎ █  █  █
-   ▎ █  █  █
-   ▎ █  █  █
-   ▎ █  █  █
-   ▎ █  █  █
-   ▎▬*▬▬-▬▬+
-   (3.0, 0.0)
+   (0.0, 2.0)
+   ▎          <span style="color:#7f9fd4">█
+   </span>▎          <span style="color:#7f9fd4">█
+   </span>▎          <span style="color:#7f9fd4">█
+   </span>▎          <span style="color:#7f9fd4">█
+   </span>▎ <span style="color:#d47f7f">▄  </span><span style="color:#7fbf8f">▄  </span><span style="color:#c8aa7a">▄  </span><span style="color:#7f9fd4">█
+   </span>▎▬<span style="color:#d47f7f">*</span>▬▬<span style="color:#7fbf8f">-</span>▬▬<span style="color:#c8aa7a">+</span>▬▬<span style="color:#7f9fd4">x</span>
+     (4.0, 0.0)
    
-    * max pr                            0.500 
-    - max tar                           0.500 
-    + max trr                           0.500 
+    <span style="color:#d47f7f">* </span>pr                                0.500 max pr
+    <span style="color:#7fbf8f">- </span>tar                               0.500 max tar
+    <span style="color:#c8aa7a">+ </span>trr                               0.500 max trr
+    <span style="color:#7f9fd4">x </span>lift                              2 max lift
  
- ***** maxerror *****
- |This reduction is the maximum deviation from the ideal value.
+ <span style="color:#5f82c7">***** maxerror *****</span>
+ |This reduction<span style="color:#7fbf8f"> is </span>the maximum deviation from the ideal value.
+ |Computations cover several cases.
+ 
+   (0.0, 1.5)
+   ▎                   <span style="color:#c8aa7a">█  </span><span style="color:#7fc0ca">█
+   </span>▎                   <span style="color:#c8aa7a">█  </span><span style="color:#7fc0ca">█
+   </span>▎    <span style="color:#7fbf8f">█     </span><span style="color:#7f9fd4">█  </span><span style="color:#b47fc4">█  </span><span style="color:#7fc0ca">█  </span><span style="color:#c8aa7a">█  </span><span style="color:#7fc0ca">█
+   </span>▎ <span style="color:#d47f7f">▄  </span><span style="color:#7fbf8f">█     </span><span style="color:#7f9fd4">█  </span><span style="color:#b47fc4">█  </span><span style="color:#7fc0ca">█  </span><span style="color:#c8aa7a">█  </span><span style="color:#7fc0ca">█
+   </span>▎ <span style="color:#d47f7f">█  </span><span style="color:#7fbf8f">█  </span><span style="color:#c8aa7a">█  </span><span style="color:#7f9fd4">█  </span><span style="color:#b47fc4">█  </span><span style="color:#7fc0ca">█  </span><span style="color:#c8aa7a">█  </span><span style="color:#7fc0ca">█
+   </span>▎▬<span style="color:#d47f7f">*</span>▬▬<span style="color:#7fbf8f">-</span>▬▬<span style="color:#c8aa7a">+</span>▬▬<span style="color:#7f9fd4">x</span>▬▬<span style="color:#b47fc4">o</span>▬▬<span style="color:#7fc0ca">□</span>▬▬<span style="color:#c8aa7a">◇</span>▬▬<span style="color:#7fc0ca">#</span>
+                 (8.0, 0.0)
+   
+    <span style="color:#d47f7f">* </span>acc                               0.667 maxerror acc
+    <span style="color:#7fbf8f">- </span>tpr                               1 maxerror tpr
+    <span style="color:#c8aa7a">+ </span>tnr                               0.500 maxerror tnr
+    <span style="color:#7f9fd4">x </span>ppv                               1 maxerror ppv
+    <span style="color:#b47fc4">o </span>f1                                1 maxerror f1
+    <span style="color:#7fc0ca">□ </span>gmi                               1 maxerror gmi
+    <span style="color:#c8aa7a">◇ </span>mcc                               1 maxerror mcc
+    <span style="color:#7fc0ca"># </span>kappa                             1 maxerror kappa
+ 
+ <span style="color:#5f82c7">***** wmean *****</span>
+ |This reduction<span style="color:#7fbf8f"> is </span>the weighted average.
+ |Computations cover several cases.
+ 
+   (0.0, 0.8)
+   ▎                      <span style="color:#7fc0ca">█   
+   </span>▎          <span style="color:#7f9fd4">█           </span><span style="color:#7fc0ca">█   
+   </span>▎ <span style="color:#d47f7f">▄        </span><span style="color:#7f9fd4">█           </span><span style="color:#7fc0ca">█   
+   </span>▎ <span style="color:#d47f7f">█  </span><span style="color:#7fbf8f">█  </span><span style="color:#c8aa7a">█  </span><span style="color:#7f9fd4">█  </span><span style="color:#b47fc4">█     </span><span style="color:#c8aa7a">█  </span><span style="color:#7fc0ca">█   
+   </span>▎ <span style="color:#d47f7f">█  </span><span style="color:#7fbf8f">█  </span><span style="color:#c8aa7a">█  </span><span style="color:#7f9fd4">█  </span><span style="color:#b47fc4">█  </span><span style="color:#7fc0ca">▄  </span><span style="color:#c8aa7a">█  </span><span style="color:#7fc0ca">█   
+   </span>▎▬<span style="color:#d47f7f">*</span>▬▬<span style="color:#7fbf8f">-</span>▬▬<span style="color:#c8aa7a">+</span>▬▬<span style="color:#7f9fd4">x</span>▬▬<span style="color:#b47fc4">o</span>▬▬<span style="color:#7fc0ca">□</span>▬▬<span style="color:#c8aa7a">◇</span>▬▬<span style="color:#7fc0ca">#</span>▬▬<span style="color:#d47f7f">@</span>
+                    (9.0, 0.0)
+   
+    <span style="color:#d47f7f">* </span>acc                               0.600 wmean acc
+    <span style="color:#7fbf8f">- </span>pr                                0.400 wmean pr
+    <span style="color:#c8aa7a">+ </span>tpr                               0.400 wmean tpr
+    <span style="color:#7f9fd4">x </span>tnr                               0.700 wmean tnr
+    <span style="color:#b47fc4">o </span>ppv                               0.400 wmean ppv
+    <span style="color:#7fc0ca">□ </span>tar                               0.200 wmean tar
+    <span style="color:#c8aa7a">◇ </span>trr                               0.400 wmean trr
+    <span style="color:#7fc0ca"># </span>lift                              0.800 wmean lift
+    <span style="color:#d47f7f">@ </span>kappa                             0.100 wmean kappa
+ 
+ <span style="color:#5f82c7">***** mean *****</span>
+ |This reduction<span style="color:#7fbf8f"> is </span>the average.
  |Computations cover several cases.
  
    (0.0, 1.0)
-   ▎    █   
-   ▎    █   
-   ▎ █  █   
-   ▎ █  █  █
-   ▎ █  █  █
-   ▎▬*▬▬-▬▬+
-   (3.0, 0.0)
+   ▎                            <span style="color:#7fbf8f">█      
+   </span>▎                            <span style="color:#7fbf8f">█      
+   </span>▎ <span style="color:#d47f7f">█        </span><span style="color:#7f9fd4">▄                 </span><span style="color:#7fbf8f">█      
+   </span>▎ <span style="color:#d47f7f">█  </span><span style="color:#7fbf8f">▄  </span><span style="color:#c8aa7a">█  </span><span style="color:#7f9fd4">█  </span><span style="color:#b47fc4">█  </span><span style="color:#7fc0ca">█  </span><span style="color:#c8aa7a">█     </span><span style="color:#d47f7f">▄  </span><span style="color:#7fbf8f">█      
+   </span>▎ <span style="color:#d47f7f">█  </span><span style="color:#7fbf8f">█  </span><span style="color:#c8aa7a">█  </span><span style="color:#7f9fd4">█  </span><span style="color:#b47fc4">█  </span><span style="color:#7fc0ca">█  </span><span style="color:#c8aa7a">█  </span><span style="color:#7fc0ca">▄  </span><span style="color:#d47f7f">█  </span><span style="color:#7fbf8f">█  </span><span style="color:#7f9fd4">▄  </span><span style="color:#b47fc4">▂
+   </span>▎▬<span style="color:#d47f7f">*</span>▬▬<span style="color:#7fbf8f">-</span>▬▬<span style="color:#c8aa7a">+</span>▬▬<span style="color:#7f9fd4">x</span>▬▬<span style="color:#b47fc4">o</span>▬▬<span style="color:#7fc0ca">□</span>▬▬<span style="color:#c8aa7a">◇</span>▬▬<span style="color:#7fc0ca">#</span>▬▬<span style="color:#d47f7f">@</span>▬▬<span style="color:#7fbf8f">%</span>▬▬<span style="color:#7f9fd4">&</span>▬▬<span style="color:#b47fc4">|</span>
+                            (12.0, 0.0)
    
-    * maxerror acc                      0.667 
-    - maxerror tpr                      1 
-    + maxerror tnr                      0.500 
+    <span style="color:#d47f7f">* </span>acc                               0.667 mean acc
+    <span style="color:#7fbf8f">- </span>pr                                0.417 mean pr
+    <span style="color:#c8aa7a">+ </span>tpr                               0.500 mean tpr
+    <span style="color:#7f9fd4">x </span>tnr                               0.750 mean tnr
+    <span style="color:#b47fc4">o </span>ppv                               0.500 mean ppv
+    <span style="color:#7fc0ca">□ </span>f1                                0.500 mean f1
+    <span style="color:#c8aa7a">◇ </span>gmi                               0.500 mean gmi
+    <span style="color:#7fc0ca"># </span>tar                               0.250 mean tar
+    <span style="color:#d47f7f">@ </span>trr                               0.417 mean trr
+    <span style="color:#7fbf8f">% </span>lift                              1 mean lift
+    <span style="color:#7f9fd4">& </span>mcc                               0.250 mean mcc
+    <span style="color:#b47fc4">| </span>kappa                             0.250 mean kappa
  
- ***** wmean *****
- |This reduction is the weighted average.
+ <span style="color:#5f82c7">***** gm *****</span>
+ |This reduction<span style="color:#7fbf8f"> is </span>the geometric mean.
  |Computations cover several cases.
  
-   (0.0, 0.7)
-   ▎          █      
-   ▎ █        █      
-   ▎ █        █      
-   ▎ █  ▂  ▂  █     ▂
-   ▎ █  █  █  █  ▄  █
-   ▎▬*▬▬-▬▬+▬▬x▬▬o▬▬□
-           (6.0, 0.0)
+   (0.0, 0.7071067811865476)
+   ▎          <span style="color:#7f9fd4">█                  
+   </span>▎ <span style="color:#d47f7f">▆        </span><span style="color:#7f9fd4">█                  
+   </span>▎ <span style="color:#d47f7f">█        </span><span style="color:#7f9fd4">█                  
+   </span>▎ <span style="color:#d47f7f">█  </span><span style="color:#7fbf8f">▂     </span><span style="color:#7f9fd4">█              </span><span style="color:#d47f7f">▂   
+   </span>▎ <span style="color:#d47f7f">█  </span><span style="color:#7fbf8f">█     </span><span style="color:#7f9fd4">█              </span><span style="color:#d47f7f">█   
+   </span>▎▬<span style="color:#d47f7f">*</span>▬▬<span style="color:#7fbf8f">-</span>▬▬<span style="color:#c8aa7a">+</span>▬▬<span style="color:#7f9fd4">x</span>▬▬<span style="color:#b47fc4">o</span>▬▬<span style="color:#7fc0ca">□</span>▬▬<span style="color:#c8aa7a">◇</span>▬▬<span style="color:#7fc0ca">#</span>▬▬<span style="color:#d47f7f">@</span>▬▬<span style="color:#7fbf8f">%</span>
+                      (10.0, 0.0)
    
-    * wmean acc                         0.600 
-    - wmean pr                          0.400 
-    + wmean tpr                         0.400 
-    x wmean tnr                         0.700 
-    o wmean tar                         0.200 
-    □ wmean trr                         0.400 
+    <span style="color:#d47f7f">* </span>acc                               0.577 gm acc
+    <span style="color:#7fbf8f">- </span>pr                                0.408 gm pr
+    <span style="color:#c8aa7a">+ </span>tpr                               0 gm tpr
+    <span style="color:#7f9fd4">x </span>tnr                               0.707 gm tnr
+    <span style="color:#b47fc4">o </span>ppv                               0 gm ppv
+    <span style="color:#7fc0ca">□ </span>f1                                0 gm f1
+    <span style="color:#c8aa7a">◇ </span>gmi                               0 gm gmi
+    <span style="color:#7fc0ca"># </span>tar                               0 gm tar
+    <span style="color:#d47f7f">@ </span>trr                               0.408 gm trr
+    <span style="color:#7fbf8f">% </span>lift                              0 gm lift
  
- ***** mean *****
- |This reduction is the average.
+ <span style="color:#5f82c7">***** pnorm *****</span>
+ |This reduction<span style="color:#7fbf8f"> is </span>the p-norm (default L2).
  |Computations cover several cases.
  
-   (0.0, 0.75)
-   ▎          █      
-   ▎ ▂        █      
-   ▎ █     █  █      
-   ▎ █  ▂  █  █     ▂
-   ▎ █  █  █  █  █  █
-   ▎▬*▬▬-▬▬+▬▬x▬▬o▬▬□
-           (6.0, 0.0)
+   (0.0, 2.0)
+   ▎                            <span style="color:#7fbf8f">█      
+   </span>▎                            <span style="color:#7fbf8f">█      
+   </span>▎                            <span style="color:#7fbf8f">█      
+   </span>▎ <span style="color:#d47f7f">█     </span><span style="color:#c8aa7a">█  </span><span style="color:#7f9fd4">▂  </span><span style="color:#b47fc4">█  </span><span style="color:#7fc0ca">█  </span><span style="color:#c8aa7a">█        </span><span style="color:#7fbf8f">█  </span><span style="color:#7f9fd4">▂  </span><span style="color:#b47fc4">▂
+   </span>▎ <span style="color:#d47f7f">█  </span><span style="color:#7fbf8f">▆  </span><span style="color:#c8aa7a">█  </span><span style="color:#7f9fd4">█  </span><span style="color:#b47fc4">█  </span><span style="color:#7fc0ca">█  </span><span style="color:#c8aa7a">█  </span><span style="color:#7fc0ca">▄  </span><span style="color:#d47f7f">▆  </span><span style="color:#7fbf8f">█  </span><span style="color:#7f9fd4">█  </span><span style="color:#b47fc4">█
+   </span>▎▬<span style="color:#d47f7f">*</span>▬▬<span style="color:#7fbf8f">-</span>▬▬<span style="color:#c8aa7a">+</span>▬▬<span style="color:#7f9fd4">x</span>▬▬<span style="color:#b47fc4">o</span>▬▬<span style="color:#7fc0ca">□</span>▬▬<span style="color:#c8aa7a">◇</span>▬▬<span style="color:#7fc0ca">#</span>▬▬<span style="color:#d47f7f">@</span>▬▬<span style="color:#7fbf8f">%</span>▬▬<span style="color:#7f9fd4">&</span>▬▬<span style="color:#b47fc4">|</span>
+                            (12.0, 0.0)
    
-    * mean acc                          0.667 
-    - mean pr                           0.417 
-    + mean tpr                          0.500 
-    x mean tnr                          0.750 
-    o mean tar                          0.250 
-    □ mean trr                          0.417 
+    <span style="color:#d47f7f">* </span>acc                               1 pnorm acc
+    <span style="color:#7fbf8f">- </span>pr                                0.601 pnorm pr
+    <span style="color:#c8aa7a">+ </span>tpr                               1 pnorm tpr
+    <span style="color:#7f9fd4">x </span>tnr                               1 pnorm tnr
+    <span style="color:#b47fc4">o </span>ppv                               1 pnorm ppv
+    <span style="color:#7fc0ca">□ </span>f1                                1 pnorm f1
+    <span style="color:#c8aa7a">◇ </span>gmi                               1 pnorm gmi
+    <span style="color:#7fc0ca"># </span>tar                               0.500 pnorm tar
+    <span style="color:#d47f7f">@ </span>trr                               0.601 pnorm trr
+    <span style="color:#7fbf8f">% </span>lift                              2 pnorm lift
+    <span style="color:#7f9fd4">& </span>mcc                               1 pnorm mcc
+    <span style="color:#b47fc4">| </span>kappa                             1 pnorm kappa
  
- ***** maxrel *****
- |This reduction is the maximum relative difference.
- |Computations cover several cases.
- 
-   (0.0, 0.6666666666666667)
-   ▎ █               
-   ▎ █               
-   ▎ █        ▂      
-   ▎ █  █     █     █
-   ▎ █  █     █     █
-   ▎▬*▬▬-▬▬+▬▬x▬▬o▬▬□
-           (6.0, 0.0)
-   
-    * maxrel acc                        0.667 
-    - maxrel pr                         0.333 
-    + maxrel tpr                        0 
-    x maxrel tnr                        0.500 
-    o maxrel tar                        0 
-    □ maxrel trr                        0.333 
- 
- ***** maxdiff *****
- |This reduction is the maximum difference.
+ <span style="color:#5f82c7">***** maxrel *****</span>
+ |This reduction<span style="color:#7fbf8f"> is </span>the maximum relative difference.
  |Computations cover several cases.
  
    (0.0, 1.0)
-   ▎       █         
-   ▎       █         
-   ▎ █     █         
-   ▎ █     █  █  █   
-   ▎ █     █  █  █   
-   ▎▬*▬▬-▬▬+▬▬x▬▬o▬▬□
-           (6.0, 0.0)
+   ▎       <span style="color:#c8aa7a">█     </span><span style="color:#b47fc4">█  </span><span style="color:#7fc0ca">█  </span><span style="color:#c8aa7a">█  </span><span style="color:#7fc0ca">█     </span><span style="color:#7fbf8f">█      
+   </span>▎       <span style="color:#c8aa7a">█     </span><span style="color:#b47fc4">█  </span><span style="color:#7fc0ca">█  </span><span style="color:#c8aa7a">█  </span><span style="color:#7fc0ca">█     </span><span style="color:#7fbf8f">█      
+   </span>▎ <span style="color:#d47f7f">█     </span><span style="color:#c8aa7a">█     </span><span style="color:#b47fc4">█  </span><span style="color:#7fc0ca">█  </span><span style="color:#c8aa7a">█  </span><span style="color:#7fc0ca">█     </span><span style="color:#7fbf8f">█      
+   </span>▎ <span style="color:#d47f7f">█     </span><span style="color:#c8aa7a">█  </span><span style="color:#7f9fd4">█  </span><span style="color:#b47fc4">█  </span><span style="color:#7fc0ca">█  </span><span style="color:#c8aa7a">█  </span><span style="color:#7fc0ca">█     </span><span style="color:#7fbf8f">█  </span><span style="color:#7f9fd4">█  </span><span style="color:#b47fc4">▆
+   </span>▎ <span style="color:#d47f7f">█  </span><span style="color:#7fbf8f">█  </span><span style="color:#c8aa7a">█  </span><span style="color:#7f9fd4">█  </span><span style="color:#b47fc4">█  </span><span style="color:#7fc0ca">█  </span><span style="color:#c8aa7a">█  </span><span style="color:#7fc0ca">█  </span><span style="color:#d47f7f">█  </span><span style="color:#7fbf8f">█  </span><span style="color:#7f9fd4">█  </span><span style="color:#b47fc4">█
+   </span>▎▬<span style="color:#d47f7f">*</span>▬▬<span style="color:#7fbf8f">-</span>▬▬<span style="color:#c8aa7a">+</span>▬▬<span style="color:#7f9fd4">x</span>▬▬<span style="color:#b47fc4">o</span>▬▬<span style="color:#7fc0ca">□</span>▬▬<span style="color:#c8aa7a">◇</span>▬▬<span style="color:#7fc0ca">#</span>▬▬<span style="color:#d47f7f">@</span>▬▬<span style="color:#7fbf8f">%</span>▬▬<span style="color:#7f9fd4">&</span>▬▬<span style="color:#b47fc4">|</span>
+                            (12.0, 0.0)
    
-    * maxdiff acc                       0.667 
-    - maxdiff pr                        0.167 
-    + maxdiff tpr                       1 
-    x maxdiff tnr                       0.500 
-    o maxdiff tar                       0.500 
-    □ maxdiff trr                       0.167 
+    <span style="color:#d47f7f">* </span>acc                               0.667 maxrel acc
+    <span style="color:#7fbf8f">- </span>pr                                0.333 maxrel pr
+    <span style="color:#c8aa7a">+ </span>tpr                               1 maxrel tpr
+    <span style="color:#7f9fd4">x </span>tnr                               0.500 maxrel tnr
+    <span style="color:#b47fc4">o </span>ppv                               1 maxrel ppv
+    <span style="color:#7fc0ca">□ </span>f1                                1 maxrel f1
+    <span style="color:#c8aa7a">◇ </span>gmi                               1 maxrel gmi
+    <span style="color:#7fc0ca"># </span>tar                               1 maxrel tar
+    <span style="color:#d47f7f">@ </span>trr                               0.333 maxrel trr
+    <span style="color:#7fbf8f">% </span>lift                              1 maxrel lift
+    <span style="color:#7f9fd4">& </span>mcc                               0.500 maxrel mcc
+    <span style="color:#b47fc4">| </span>kappa                             0.500 maxrel kappa
  
- ***** gini *****
- |This reduction is the gini coefficient.
+ <span style="color:#5f82c7">***** maxdiff *****</span>
+ |This reduction<span style="color:#7fbf8f"> is </span>the maximum difference.
  |Computations cover several cases.
  
-   (0.0, 0.5)
-   ▎       █     █   
-   ▎       █     █   
-   ▎       █     █   
-   ▎ █     █     █   
-   ▎ █  █  █  █  █  █
-   ▎▬*▬▬-▬▬+▬▬x▬▬o▬▬□
-           (6.0, 0.0)
+   (0.0, 2.0)
+   ▎                            <span style="color:#7fbf8f">█      
+   </span>▎                            <span style="color:#7fbf8f">█      
+   </span>▎                            <span style="color:#7fbf8f">█  </span><span style="color:#7f9fd4">▄  </span><span style="color:#b47fc4">▄
+   </span>▎       <span style="color:#c8aa7a">█     </span><span style="color:#b47fc4">█  </span><span style="color:#7fc0ca">█  </span><span style="color:#c8aa7a">█        </span><span style="color:#7fbf8f">█  </span><span style="color:#7f9fd4">█  </span><span style="color:#b47fc4">█
+   </span>▎ <span style="color:#d47f7f">█     </span><span style="color:#c8aa7a">█  </span><span style="color:#7f9fd4">▄  </span><span style="color:#b47fc4">█  </span><span style="color:#7fc0ca">█  </span><span style="color:#c8aa7a">█  </span><span style="color:#7fc0ca">▄     </span><span style="color:#7fbf8f">█  </span><span style="color:#7f9fd4">█  </span><span style="color:#b47fc4">█
+   </span>▎▬<span style="color:#d47f7f">*</span>▬▬<span style="color:#7fbf8f">-</span>▬▬<span style="color:#c8aa7a">+</span>▬▬<span style="color:#7f9fd4">x</span>▬▬<span style="color:#b47fc4">o</span>▬▬<span style="color:#7fc0ca">□</span>▬▬<span style="color:#c8aa7a">◇</span>▬▬<span style="color:#7fc0ca">#</span>▬▬<span style="color:#d47f7f">@</span>▬▬<span style="color:#7fbf8f">%</span>▬▬<span style="color:#7f9fd4">&</span>▬▬<span style="color:#b47fc4">|</span>
+                            (12.0, 0.0)
    
-    * gini acc                          0.250 
-    - gini pr                           0.100 
-    + gini tpr                          0.500 
-    x gini tnr                          0.167 
-    o gini tar                          0.500 
-    □ gini trr                          0.100 
+    <span style="color:#d47f7f">* </span>acc                               0.667 maxdiff acc
+    <span style="color:#7fbf8f">- </span>pr                                0.167 maxdiff pr
+    <span style="color:#c8aa7a">+ </span>tpr                               1 maxdiff tpr
+    <span style="color:#7f9fd4">x </span>tnr                               0.500 maxdiff tnr
+    <span style="color:#b47fc4">o </span>ppv                               1 maxdiff ppv
+    <span style="color:#7fc0ca">□ </span>f1                                1 maxdiff f1
+    <span style="color:#c8aa7a">◇ </span>gmi                               1 maxdiff gmi
+    <span style="color:#7fc0ca"># </span>tar                               0.500 maxdiff tar
+    <span style="color:#d47f7f">@ </span>trr                               0.167 maxdiff trr
+    <span style="color:#7fbf8f">% </span>lift                              2 maxdiff lift
+    <span style="color:#7f9fd4">& </span>mcc                               1 maxdiff mcc
+    <span style="color:#b47fc4">| </span>kappa                             1 maxdiff kappa
  
- ***** std *****
- |This reduction is the standard deviation.
+ <span style="color:#5f82c7">***** gini *****</span>
+ |This reduction<span style="color:#7fbf8f"> is </span>the gini coefficient.
  |Computations cover several cases.
  
-   (0.0, 0.5)
-   ▎       █         
-   ▎       █         
-   ▎ █     █         
-   ▎ █     █  █  █   
-   ▎ █     █  █  █   
-   ▎▬*▬▬-▬▬+▬▬x▬▬o▬▬□
-           (6.0, 0.0)
+   (0.0, 1.5000000000000004)
+   ▎                                  <span style="color:#b47fc4">█
+   </span>▎                               <span style="color:#7f9fd4">▆  </span><span style="color:#b47fc4">█
+   </span>▎                               <span style="color:#7f9fd4">█  </span><span style="color:#b47fc4">█
+   </span>▎                               <span style="color:#7f9fd4">█  </span><span style="color:#b47fc4">█
+   </span>▎       <span style="color:#c8aa7a">▆     </span><span style="color:#b47fc4">▆  </span><span style="color:#7fc0ca">▆  </span><span style="color:#c8aa7a">▆  </span><span style="color:#7fc0ca">▆     </span><span style="color:#7fbf8f">▆  </span><span style="color:#7f9fd4">█  </span><span style="color:#b47fc4">█
+   </span>▎▬<span style="color:#d47f7f">*</span>▬▬<span style="color:#7fbf8f">-</span>▬▬<span style="color:#c8aa7a">+</span>▬▬<span style="color:#7f9fd4">x</span>▬▬<span style="color:#b47fc4">o</span>▬▬<span style="color:#7fc0ca">□</span>▬▬<span style="color:#c8aa7a">◇</span>▬▬<span style="color:#7fc0ca">#</span>▬▬<span style="color:#d47f7f">@</span>▬▬<span style="color:#7fbf8f">%</span>▬▬<span style="color:#7f9fd4">&</span>▬▬<span style="color:#b47fc4">|</span>
+                            (12.0, 0.0)
    
-    * std acc                           0.333 
-    - std pr                            0.083 
-    + std tpr                           0.500 
-    x std tnr                           0.250 
-    o std tar                           0.250 
-    □ std trr                           0.083 
+    <span style="color:#d47f7f">* </span>acc                               0.250 gini acc
+    <span style="color:#7fbf8f">- </span>pr                                0.100 gini pr
+    <span style="color:#c8aa7a">+ </span>tpr                               0.500 gini tpr
+    <span style="color:#7f9fd4">x </span>tnr                               0.167 gini tnr
+    <span style="color:#b47fc4">o </span>ppv                               0.500 gini ppv
+    <span style="color:#7fc0ca">□ </span>f1                                0.500 gini f1
+    <span style="color:#c8aa7a">◇ </span>gmi                               0.500 gini gmi
+    <span style="color:#7fc0ca"># </span>tar                               0.500 gini tar
+    <span style="color:#d47f7f">@ </span>trr                               0.100 gini trr
+    <span style="color:#7fbf8f">% </span>lift                              0.500 gini lift
+    <span style="color:#7f9fd4">& </span>mcc                               1 gini mcc
+    <span style="color:#b47fc4">| </span>kappa                             1 gini kappa
+ 
+ <span style="color:#5f82c7">***** stdx2 *****</span>
+ |This reduction<span style="color:#7fbf8f"> is </span>the standard deviation x2.
+ |Computations cover several cases.
+ 
+   (0.0, 2.0)
+   ▎                            <span style="color:#7fbf8f">█      
+   </span>▎                            <span style="color:#7fbf8f">█      
+   </span>▎                            <span style="color:#7fbf8f">█  </span><span style="color:#7f9fd4">▄  </span><span style="color:#b47fc4">▄
+   </span>▎       <span style="color:#c8aa7a">█     </span><span style="color:#b47fc4">█  </span><span style="color:#7fc0ca">█  </span><span style="color:#c8aa7a">█        </span><span style="color:#7fbf8f">█  </span><span style="color:#7f9fd4">█  </span><span style="color:#b47fc4">█
+   </span>▎ <span style="color:#d47f7f">█     </span><span style="color:#c8aa7a">█  </span><span style="color:#7f9fd4">▄  </span><span style="color:#b47fc4">█  </span><span style="color:#7fc0ca">█  </span><span style="color:#c8aa7a">█  </span><span style="color:#7fc0ca">▄     </span><span style="color:#7fbf8f">█  </span><span style="color:#7f9fd4">█  </span><span style="color:#b47fc4">█
+   </span>▎▬<span style="color:#d47f7f">*</span>▬▬<span style="color:#7fbf8f">-</span>▬▬<span style="color:#c8aa7a">+</span>▬▬<span style="color:#7f9fd4">x</span>▬▬<span style="color:#b47fc4">o</span>▬▬<span style="color:#7fc0ca">□</span>▬▬<span style="color:#c8aa7a">◇</span>▬▬<span style="color:#7fc0ca">#</span>▬▬<span style="color:#d47f7f">@</span>▬▬<span style="color:#7fbf8f">%</span>▬▬<span style="color:#7f9fd4">&</span>▬▬<span style="color:#b47fc4">|</span>
+                            (12.0, 0.0)
+   
+    <span style="color:#d47f7f">* </span>acc                               0.667 stdx2 acc
+    <span style="color:#7fbf8f">- </span>pr                                0.167 stdx2 pr
+    <span style="color:#c8aa7a">+ </span>tpr                               1 stdx2 tpr
+    <span style="color:#7f9fd4">x </span>tnr                               0.500 stdx2 tnr
+    <span style="color:#b47fc4">o </span>ppv                               1 stdx2 ppv
+    <span style="color:#7fc0ca">□ </span>f1                                1 stdx2 f1
+    <span style="color:#c8aa7a">◇ </span>gmi                               1 stdx2 gmi
+    <span style="color:#7fc0ca"># </span>tar                               0.500 stdx2 tar
+    <span style="color:#d47f7f">@ </span>trr                               0.167 stdx2 trr
+    <span style="color:#7fbf8f">% </span>lift                              2 stdx2 lift
+    <span style="color:#7f9fd4">& </span>mcc                               1 stdx2 mcc
+    <span style="color:#b47fc4">| </span>kappa                             1 stdx2 kappa
+</pre>
+
+
+
+## Arguments
+
+Reports automatically contain by default all available measures. However,
+their results only contain measure that could be computed given appropriate
+keyword arguments. For example, if you provide predicted labels but not output scores, the
+report will not show regression or recommendation measures.
+Base performance measures accept some combinations of the arguments bellow; those arguments
+are thus what can be provided to reports to call those base measures.
+
+| Argument         | Role                | Values                                                                |
+|------------------|---------------------|-----------------------------------------------------------------------|
+| predictions      | system output       | binary array                                                          |
+| multipredictions | system output       | discrete array                                                        |
+| scores           | system output       | array with elements in [0,1]                                          |
+| targets          | prediction target   | array with elements in [0,1]                                          | 
+| order            | order target        | array whose element order should be replicated (e.g., may have ranks) |      
+| labels           | prediction target   | binary array                                                          |     
+| multilabels      | prediction target   | discrete array                                                        | 
+| sensitive        | sensitive attribute | fork of arrays with elements in [0,1] (either binary or fuzzy)        |
+
+
+The following argument combinations are accepted for different predictive tasks. 
+You can have more than one combination in the same report. For example, compute both 
+binary classification and scoring measures in one go by providing *predictions,scores,labels,sensitive*.
+
+- *multipredictions,multilabels,sensitive* for macro-averaged **multiclass classification**
+- *predictions,labels,sensitive* for **classification** (can also be used in multiclass settings - see below)
+- *scores,labels,sensitive* for **recommendation**
+- *scores,targets,sensitive* for **regression**
+- *scores,order,sensitive* for **ranking**
+
+## More on multiclass
+
+Sensitive attributes contain multiple
+[dimensions](dimensions)
+that treat multi-value attributes or multiple
+sensitive attribute values interchangeably.
+
+Normally, you can separate multiclass analysis
+into analyzing each class separately by decomposing
+target and predicted values into separate dimensions.
+In these settings, all keyword arguments other than the 
+sensitive attribute must have dimensions corresponding to the classes.
+
+```python
+predictions = fb.Dimensions(fb.categories@yhat)
+labels = fb.Dimensions(fb.categories@y)
 ```
-</div>
+
+But you can also obtain macro-analysis that
+considers various intra-class averages of measures
+like accuracy, tpr, and ppv by passing discrete
+predictions and labels via the *multipredictions*
+and *multilabels* arguments.
+
+
 
 ## Visualization
 
