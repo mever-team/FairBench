@@ -5,8 +5,8 @@ Use FairBench to assess the fairness of Large Language Models
 either well-controlled synthetic prompts or given natural
 language processing datasets. Synthetic prompt generation and
 LLM interaction is directly supported by the library and focused 
-on this document. If an LLM's inputs and outputs are in the form
-of a datset, fallback to a [full report](reports.md). 
+on this document. If an LLM's inputs and desired output pairs 
+are provided as a daset, fallback to creating a [full report](reports.md). 
 Instead, here we describe how to start from
 prompt templates and sensitive attributes and injecting combination
 of sensitive attribute values to the template.

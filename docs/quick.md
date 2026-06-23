@@ -1,21 +1,20 @@
 # Quickstart
 
-Before starting, install FairBench with:
+Before starting, install FairBench with the following command.
+This can assess any system. Install extras are
+available to optionally run computer vision, graph, and LLMs benchmarks.
 
 ```shell
 pip install --upgrade FairBench
 ```
 
-This can assess any system. Install extras are
-available to optionally run computer vision, graph, and LLMs benchmarks.
-This tutorial shows how to compute one fairness measure.
 The recommended workflow for identifying what to measure
-is the following:
-
-1. Identify prospective fairness concerns to discuss with stakeholders via [reports](reports.md).
-2. Decide which of the concerns matter after drawing a broad enough
-picture (human-in-the-loop, consult with stakeholders).
-3. Keep track of important concerns with standalone measures covered in this tutorial.
+starts by identifying prospective fairness concerns 
+via [reports](reports.md). Then,
+decide which of the concerns matter after drawing a broad enough
+picture (human-in-the-loop, consult with stakeholders). Finally,
+keep track of important concerns with standalone measures 
+covered in this tutorial.
 
 ![workflow visualization](fairbench.drawio.png)
 

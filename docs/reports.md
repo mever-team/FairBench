@@ -1,22 +1,20 @@
 # Full reports
 
-Before starting, install FairBench with:
+Before starting, install FairBench with the following command.
+This can assess any system. Install extras are
+available to optionally run computer vision, graph, and LLMs benchmarks.
 
 ```shell
 pip install --upgrade fairbench
 ```
 
-This can assess any system. Install extras are
-available to optionally run computer vision, graph, and LLMs benchmarks.
-This tutorial show how to bootstrap fairness analysis
-for a new AI system using FairBench. The recommended workflow is
-the following, of which creating extensive fairness reports is
-the first step:
-
-1. Identify prospective fairness concerns to discuss with stakeholders.
-2. Decide which of the concerns matter after drawing a broad enough
-picture (human-in-the-loop, consult with stakeholders).
-3. Keep track of important concerns with standalone measures covered in the [quickstart](quick.md).
+This tutorial shows how to bootstrap fairness analysis
+for a new AI system using FairBench. In particular,
+the recommended workflow is to first identify prospective 
+fairness concerns, and then 
+decide which of those matter (human-in-the-loop, consult with stakeholders).
+Afterwards, keep track of important concerns with standalone measures 
+covered in the [quickstart](quick.md).
 
 ![workflow visualization](fairbench.drawio.png)
 
