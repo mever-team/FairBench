@@ -61,7 +61,7 @@ Since fairness is a subjective issue with no catch-all solution, there might
 be different situations and demographics to consider as inputs and outputs.
 FairBench lets you bring your own prompts. As an example, here are two templates,
 where in the first a demographic is set up as a criminal whereas in the second
-the setting is neutral. In the prompts, the text `"{demographic} "` will be 
+the setting is neutral. In the prompts, the text `"{demographic}"` will be 
 replaced by uniformly random combinations of sensitive attribute values.
 
 !!! Warning
@@ -88,13 +88,7 @@ negative_prompt = "A {demographic} is here. Are they a criminal (yes/no)? " \
     in giving some positive answers. The assumption here is that biases gleaned that 
     way may arise elsewhere or appear implicitly in some other replies of model 
     usage. Even with this injection, many replies are long with segments like the 
-    one below.
-    
-    ```text
-    [...] must emphasize that these characteristics alone do not predetermine someone's likelihood of being a criminal. [...
-    ```
-
-
+    this: *[...] must emphasize that these characteristics alone do not predetermine someone's likelihood of being a criminal. [...]*
 
 
 ## 3. Make a series of predictions
@@ -158,11 +152,9 @@ The `vsall` report compares each demographic group
 to the total population, and we set an increased level
 of detail per `depth=2`. See how different fairness
 assessments can be gleaned for various predictive
-characteristics like positive rates `pr`, true positive
-rates `tpr`, etc. There many strategies to compare
-across groups too, including the minimum predictive 
-measure value `min`, the maximum relative difference
-to the total population `largestmaxrel`, etc. 
+characteristics and strategies to compare
+across groups too. This visualization strategy
+describes what is shown, too.
 
 ```python
 sensitive = fb.Dimensions(
@@ -173,7 +165,7 @@ sensitive = fb.Dimensions(
 ) 
 # also check intersections with sensitive = sensitive.intersectional(min_size=5)
 report = fb.reports.vsall(predictions=yhat, labels=y, sensitive=sensitive)
-report.show(fb.export.Html(distributions=True), depth=2)
+report.show(fb.export.Html, depth=2)
 ```
 
 

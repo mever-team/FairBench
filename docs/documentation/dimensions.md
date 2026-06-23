@@ -1,46 +1,57 @@
-from playground.v1.basics.test import sensitive
-
 # Dimensions
 
 `Dimensions` is a flexible data structures that stores 
 multidimensional values, such as
 sensitive attributes or predictions and labels for
 multiple classes. Each dimension holds its own
-value. For example, you might have a 
-dimension for each gender; those dimensions would be 
-binary arrays indicating the presence of the respective
+vector of values. 
+
+For example, you might have a 
+dimension for each gender or race, or intersection thereof.
+Each dimension vector holds fuzzy (in the range [0,1]) or 
+binary values indicating the presence of the respective
 attribute in data samples.
 
-As a common use case is to
+The most common use case is to
 define a multidimensional sensitive attribute 
-for intersectional fairness, like so:
+for intersectional fairness, like below. There,
+the `fb.categories@` operator unpacks genders and
+races from a discrete iterable into dictionaries
+of binary-valued vectors and then these are combined
+into one multidimensional object.
 
 ```python
 import fairbench as fb
 
 gender = ["Male", "Male", "Female", "Female", "Nonbinary"]  # any iterable
 race = ["Black", "White", "White", "Black", "White"]  # any iterable
-sensitive = fb.Dimensions(fb.categories @ gender, fb.categories @ race) 
+sensitive = fb.Dimensions(fb.categories@ gender, fb.categories@ race) 
 sensitive = sensitive.intersectional() 
 print(sensitive)
 ```
 
-```text
-Black: [1 0 0 1 0]
-White: [0 1 1 0 1]
-Female: [0 0 1 1 0]
-Female&Black: [0 0 0 1 0]
-Female&White: [0 0 1 0 0]
-Male: [1 1 0 0 0]
-Male&Black: [1 0 0 0 0]
-Male&White: [0 1 0 0 0]
-Nonbinary: [0 0 0 0 1]
-Nonbinary&White: [0 0 0 0 1]
-```
+The outcome is the following. Note that, note that
+the `intersectional` transformation
+has enriched the original dimensions *White, Black, etc.* to also 
+account for attribute value intersections, 
+like *Male&White, Male&Black, etc.*
+
+<pre style="font-family:monospace;background:#222222;color:#c0c0c0;padding:1em;overflow-x:auto;font-size:12px">
+White                          [0 1 1 0 1]
+Black                          [1 0 0 1 0]
+Male                           [1 1 0 0 0]
+Male&White                     [0 1 0 0 0]
+Male&Black                     [1 0 0 0 0]
+Nonbinary                      [0 0 0 0 1]
+Nonbinary&White                [0 0 0 0 1]
+Female                         [0 0 1 1 0]
+Female&White                   [0 0 1 0 0]
+Female&Black                   [0 0 0 1 0]
+</pre>
 
 
 !!! info
-    FairBench accepts a wide range of data types as dimension values.
+    FairBench can unpack a wide range of data types as dimension values.
     These types include lists, arrays, and tensors of popular machine learning frameworks.
 
 
@@ -50,9 +61,7 @@ keywords like `men`, `women`, and `nonbinary` are dimension names.
 Dimension values will usually be lists,
 numpy arrays or deep learning tensors. 
 Provide any number of dimensions
-with any names and access their values 
-as either members of the `Dimensions` object
-or dictionary values.
+with any names. 
 
 ```python
 import fairbench as fb
@@ -62,14 +71,33 @@ sensitive = fb.Dimensions(
     women=[0, 0, 1, 1, 0],
     nonbinary=[0, 0, 0, 0, 1]
 )
-print(sensitive.nonbinary)
-print(sensitive["nonbinary"]) # does the same
 ```
 
-```text
-[0, 0, 0, 0, 1]
-[0, 0, 0, 0, 1]
+Access dimension vectors 
+as either members of the `Dimensions` object
+or as dictionary entries. Those vectors are
+stored as [eagery](https://github.com/jonasrauber/eagerpy) 
+tensors. Use eagerpy methods on `Dimensions` 
+to obtain a transformation with different values for each
+dimension. Mainly, this is useful for summing attribute
+vector values to get a sense of corresponding demographic
+group sizes.
+
 ```
+print(sensitive.nonbinary.numpy())
+print(sensitive["nonbinary"].numpy())) # does the same
+print(sensitive.sum())
+```
+
+This yields the following output:
+
+<pre style="font-family:monospace;background:#222222;color:#c0c0c0;padding:1em;overflow-x:auto;font-size:12px">
+NumPyTensor(array([0, 0, 0, 0, 1]))
+NumPyTensor(array([0, 0, 0, 0, 1]))
+men                            2
+women                          2
+nonbinary                      1
+</pre>
 
 ## From dictionaries
 
@@ -88,20 +116,19 @@ sensitive = fb.Dimensions(
     men=[1, 1, 0, 0, 0], 
     women=[0, 0, 1, 1, 0]
 )
-print(sensitive.men)
-print(sensitive["men"])  # does the same
+print(sensitive.women.numpy()) # .numpy() is an eagerpy method
+print(sensitive["non-binary"].numpy())
 ```
 
-```text
-[1, 1, 0, 0, 0]
-[1, 1, 0, 0, 0]
-```
+<pre style="font-family:monospace;background:#222222;color:#c0c0c0;padding:1em;overflow-x:auto;font-size:12px">
+[0, 0, 1, 1, 0]
+[0, 0, 0, 0, 1]
+</pre>
 
-It is acceptable to have dimensions with different nature, 
-such as multiple sensitive attributes and attribute values.
-Treat each value of each dimension as a separate dimension.
+Freely mix dimensions of multiple sensitive attributes.
+That is, treat each value of each dimension as a separate dimension.
 For example, mix in gender and age sensitive attributes
-in the same `Dimensions` object.
+in the same `Dimensions` object like so.
 
 ```python
 import fairbench as fb
@@ -114,7 +141,7 @@ sensitive = fb.Dimensions(
 ```
 
 To add multiple sensitive attributes without worrying about 
-conflicting branch names, pass dictionaries as keyword 
+conflicting names, pass dictionaries as keyword 
 arguments. This prepends the keyword argument name to 
 all generated branch names.
 
@@ -127,19 +154,28 @@ sensitive = fb.Dimensions(
 )
 ```
 
+This yields the following output:
 
+<pre style="font-family:monospace;background:#222222;color:#c0c0c0;padding:1em;overflow-x:auto;font-size:12px">
+gender1                        [0 0 1 1 0]
+gender0                        [1 1 0 0 0]
+gender?                        [0 0 0 0 1]
+isold1                         [0 1 0 1 0]
+isold0                         [1 0 1 0 1]
+</pre>
 
 ## Unpack to dictionaries
 
-Here are helper operators that can convert iterable
-data into dictionaries to pass into `Dimensions`.
-Create multiple dimensions by analyzing categorical 
+FairBench offers helper operators toconvert iterable
+data into dictionaries that can be passed to `Dimensions`.
+
+The most common pattern is analyzing categorical 
 values found in iterables with the
-`categories@` operator.
+`fb.categories@` operator.
 For example, when applied on a list whose entries are among
 "Man". "Woman", "Nonbin"
-this operator creates three branches storing binary membership for each
-of those declared genders.
+this creates three dimensions storing binary membership for each
+of those genders.
 
 ```python
 import fairbench as fb
@@ -147,19 +183,18 @@ import fairbench as fb
 sensitive = fb.Dimensions(fb.categories@["Man", "Woman", "Man", "Woman", "Nonbin"])
 print(sensitive)
 ```
-```text
-genderMan: [1, 0, 1, 0, 0]
-genderWoman: [0, 1, 0, 1, 0]
-genderNonbin: [0, 0, 0, 0, 1]
-```
+
+This yields the following:
+
+<body><pre style="font-family:monospace;background:#222222;color:#c0c0c0;padding:1em;overflow-x:auto;font-size:12px">
+Woman                          [0 1 0 1 0]
+Man                            [1 0 1 0 0]
+Nonbin                         [0 0 0 0 1]
+</pre>
 
 Add the outcomes of multiple category analyses 
-to `Dimensions`; use named keyword arguments to prepend the 
-that name to dimensions names, or put all category analyses
-as positional arguments to just merge their branches.
-Any Python iterable can be analyzed into categories.
-This includes lists, pandas dataframe
-columns, categorical tensors, or numpy arrays.
+to `Dimensions` with the patterns
+already seen.
 
 ```python
 import fairbench as fb
@@ -167,27 +202,42 @@ import fairbench as fb
 gender = ...  # iterable (e.g., list) of gender attribute for each data sample
 race = ...  # iterable (e.g., list) of race attribute for each data sample
 sensitive = fb.Dimensions(
-    gender=fb.categories @ gender, 
-    race=fb.categories @ race
+    gender=fb.categories@ gender, 
+    race=fb.categories@ race
 ) 
 ```
 
-Use the `fuzzy@` operator to analyse numeric iterables into two fuzzy sensitive attributes;
-the first of those contains a normalization to the range [0,1] and the
-second its complement.
+!!! info
+    Any Python iterable can be analyzed into categories.
+    This includes lists, pandas dataframe
+    columns, categorical tensors, and numpy arrays.
+
+Use the `fuzzy@` operator to unpack numeric iterables into two 
+fuzzy sensitive attributes; the first of those contains a 
+normalization to the range [0,1] and the second its complement.
 
 ```python
 import fairbench as fb
-age = [18, 20, 19, 42, 30, 60, 18, 50, 40]
-sensitive = fb.Dimensions(gender=fb.fuzzy @ age)
+age = [18, 20, 19, 42, 30, 60, 18, 50, 40] # in years
+sensitive = fb.Dimensions(age=fb.fuzzy@ age)
 print(sensitive)
 ```
-```text
-genderlarge 60.000: [0.         0.04761905 0.02380952 0.57142857 0.28571429 1.
+
+This prints the following. This particular fuzzy expansion creates
+two complementary numbers.
+
+<pre style="font-family:monospace;background:#222222;color:#c0c0c0;padding:1em;overflow-x:auto;font-size:12px">
+agelarge 60.000                [0.         0.04761905 0.02380952 0.57142857 0.28571429 1.
  0.         0.76190476 0.52380952]
-gendersmall 18.000: [1.         0.95238095 0.97619048 0.42857143 0.71428571 0.
+agesmall 18.000                [1.         0.95238095 0.97619048 0.42857143 0.71428571 0.
  1.         0.23809524 0.47619048]
-```
+</pre>
+
+!!! info
+    All FairBench measures accept fuzzy-based weighting
+    of group membership by treating fuzzy numbers as the probability
+    of exhibiting value of 1 and outputting the average expected
+    value of computations.
 
 
 ## Intersectionality
@@ -236,16 +286,21 @@ sensitive = sensitive.intersectional(min_size=100).strict()
 print(sensitive)  # only a few large subgroups are retained
 ```
 
-```commandline
-maritaldivorced&educationsecondary [0 0 0 ... 0 0 0]
-maritalsingle&educationsecondary [0 1 0 ... 0 0 0]
-maritalsingle&educationtertiary [0 0 0 ... 0 0 0]
-maritalmarried&educationsecondary [1 0 0 ... 1 1 0]
-maritalmarried&educationprimary [0 0 1 ... 0 0 1]
+<pre style="font-family:monospace;background:#222222;color:#c0c0c0;padding:1em;overflow-x:auto;font-size:12px">
+maritalsingle&educationtertiary [0 0 1 ... 0 0 0]
+maritalsingle&educationprimary [0 0 0 ... 0 0 0]
+maritalsingle&educationsecondary [0 0 0 ... 0 0 0]
+maritalsingle&educationunknown [0 0 0 ... 0 0 0]
 maritalmarried&educationtertiary [0 0 0 ... 0 0 0]
-```
+maritalmarried&educationprimary [0 0 0 ... 1 0 1]
+maritalmarried&educationsecondary [0 1 0 ... 0 1 0]
+maritalmarried&educationunknown [0 0 0 ... 0 0 0]
+maritaldivorced&educationtertiary [0 0 0 ... 0 0 0]
+maritaldivorced&educationprimary [0 0 0 ... 0 0 0]
+maritaldivorced&educationsecondary [1 0 0 ... 0 0 0]
+</pre>
 
-!!! warning
+!!! danger
     Intersectional analysis already considers all subgroup
     combinations and not only pairwise ones. It therefore
     runs in time *O(m! n)* where *n* is the

@@ -53,6 +53,6 @@ sensitive = fb.Dimensions(
     fb.categories @ x["gender"],
 )
 report = fb.reports.vsall(predictions=yhat, labels=y, sensitive=sensitive)
-report.show(fb.export.Html(distributions=True), depth=2)
+report.show(fb.export.Html, depth=2)
 # report.show(env=fb.export.Html, depth=2)
 # report.acc.min.explain.show()
