@@ -3,7 +3,15 @@
 Use FairBench to assess the fairness of Large Language Models 
 (LLMs). Uncovering explicit or implicit biases can be done via
 either well-controlled synthetic prompts or given natural
-language processing datasets.
+language processing datasets. Synthetic prompt generation and
+LLM interaction is directly supported by the library and focused 
+on this document. If an LLM's inputs and outputs are in the form
+of a datset, fallback to a [full report](reports.md). 
+Instead, here we describe how to start from
+prompt templates and sensitive attributes and injecting combination
+of sensitive attribute values to the template.
+
+![synthetic prompt generation](llm.drawio.png)
 
 !!! warning 
     The prompts and prompt templates described in this documentation and implemented

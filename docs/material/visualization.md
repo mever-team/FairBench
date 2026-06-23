@@ -577,9 +577,6 @@ report.show(fb.export.HtmlTable)
   style="border: 1px solid black; width: 144%;height: 700px;border: none;margin-bottom:-100px;transform:scale(0.7);transform-origin: top left;overflow: auto"
 ></iframe>
 
-
-![html_table.png](html_table.png)
-
 ## HtmlBars
 
 I similar to *HtmlTable* but instead shows table entries as
