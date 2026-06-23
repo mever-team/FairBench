@@ -37,11 +37,10 @@ import fairbench as fb
 x, y, yhat = fb.bench.tabular.compas(test_size=0.5, predict="probabilities")
 ```
 
-!!! info
-    FairBench also supports other types of predictive tasks too, such as 
-    (multiclass) classification and ranking. Supported data formats
-    for system outputs include include lists or other iterables, 
-    numpy arrays, and pytorch/tensorflow/jax tensors.
+**FairBench also supports other types of predictive tasks, such as 
+(multiclass) classification and ranking. Supported data formats
+for system outputs include include lists or other iterables, 
+numpy arrays**, and pytorch/tensorflow/jax tensors.
 
 ## 2. Sensitive attributes
 
@@ -75,7 +74,7 @@ Hispanic                       [0 0 0 ... 1 0 0]
 
 !!! info
     The `fb.categories@` operator unpacks values into
-    dictionaries). You can have multiple such dictionaries
+    dictionaries. You can have multiple such dictionaries
     as positional arguments and even obtain their intersections. 
     See more in the documentation linked above.
 
@@ -92,8 +91,10 @@ Build a measure name by separating your choices
 with underscores (the order does not matter)
 and access it from `fb.quick`. 
 
-**Example**: `fb.quick.pairwise_maxrel_acc`. Read this
-bias measure as "the maximum relative accuracy difference when comparing
+![example visualized](anatomy.png)
+
+**Example**: `fb.quick.pairwise_maxrel_acc` reads
+as "the maximum relative accuracy difference when comparing
 groups pairwise". Basically, it would compute the accuracy 
 for each group, get the relative difference between all group
 accuracies (e.g. 0.4 and 0.5 accuracies have relative difference 
@@ -106,7 +107,7 @@ differences.
     If the measure name is invalid, available options will be explained.
 
 To call the constructed measure, provide 
-relevant to the base measure keyword among 
+relevant keyword among 
 *predictions*, *multipredictions*, *scores*, 
 *labels*, *multilabels*, *order*, *target*, as described 
 [here](documentation/reports.md), and the *sensitive* 
@@ -530,9 +531,9 @@ abroca.show(env=fb.export.Html)
 
 The following page opens in the browser, 
 and you can explore it here too. The system 
-awwma fair enough, but can you see if it's 
-well-performing? Hint: Open the the *obtained from* 
-dropdowns.
+seems fair enough, but can you check if it's 
+actually well-performing? Hint: Open the the 
+*obtained from* dropdowns.
 
 <iframe
   src="/preview_abroca.html"
