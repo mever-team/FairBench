@@ -21,6 +21,13 @@ data modalities (like tabular data, images, text, graphs). Learn more
 - **Bias auditors and compliance teams** needing standardized, traceable fairness reports, and system comparison across different datasets, parameters, and over time.
 - **Policymakers and analysts** who want reproducible evidence for decision‑making. Consider using the low‑code MAI‑BIAS toolkit for a higher level perspective.
 
+One prospective workflow for deployed real-world system is to use FairBench to identify prospective biases,
+gather stakeholder feedback on which of those biases are important, and then tracking standalone
+measures over time, with periodic re-evaluation of which are important. 
+
+![workflow visualization](docs/fairbench.drawio.png)
+
+
 ## ✨ About
 
 FairBench can be imported in Python AI projects to

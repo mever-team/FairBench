@@ -6,13 +6,18 @@ Before starting, install FairBench with:
 pip install --upgrade fairbench
 ```
 
-This is only the lightweight version without any specifications,
-which suffices for assessment of any system - install extras are
-needed if you want run out-of-the-box benchmarks for vision data or LLMs.
-A typical workflow using the library will help you identify prospective
-fairness concerns to discuss with stakeholders. Decide which of 
-the concerns matter after drawing a broad enough
-picture. Follow the steps below.
+This can assess any system. Install extras are
+available to also run computer vision, graph, and LLMs benchmarks.
+
+This tutorial covers the following recommended workflow for using 
+FairBench:
+1. identify prospective fairness concerns to discuss with stakeholders
+2. decide which of the concerns matter after drawing a broad enough
+picture
+3. keep track of important concerns with standalone measures covered in the [quickstart](quick.md).
+
+![workflow visualization](fairbench.drawio.png)
+
 
 ## 1. Prepare data
 
@@ -45,8 +50,51 @@ intersectional subgroups.
 ```python
 sensitive = fb.Dimensions(fb.categories @ test[8], fb.categories @ test[9])  # analyse the gender and race columns
 sensitive = sensitive.intersectional()  # automatically find non-empty intersections
-sensitive = sensitive.strict()  # keep only intersections that have no children
+sensitive = sensitive.strict()  # no fully ovrelapping intersections (e.g., remove Male if there is Male&Other)
+print(sensitive)
 ```
+
+The sensitive dimensions look like this:
+
+<pre style="font-family:monospace;background:#222222;color:#c0c0c0;padding:1em;overflow-x:auto;font-size:12px">
+Male&Native American           [0 0 0 ... 0 0 0]
+Male&Other                     [0 1 0 ... 0 0 0]
+Male&Caucasian                 [0 0 0 ... 1 0 0]
+Male&African-American          [1 0 0 ... 0 0 0]
+Male&Hispanic                  [0 0 1 ... 0 0 0]
+Female&Native American         [0 0 0 ... 0 0 0]
+Female&Other                   [0 0 0 ... 0 0 0]
+Female&Caucasian               [0 0 0 ... 0 0 1]
+Female&African-American        [0 0 0 ... 0 1 0]
+Female&Hispanic                [0 0 0 ... 0 0 0]
+</pre>
+
+One can apply numpy functions on each column, for example to
+retrieve the number of samples in each dimension. There is
+already a problematic intersection of only one data sample,
+for which results degrade to statistical noise.
+Small groups should be skipped 
+by instead retrieving `intersections(min_size=10)`, 
+but we do not do so here for the sake of brevity.
+Pay attention how this neglect affects subsequent
+assessments.
+
+```python
+print(sensitive.sum())
+```
+
+<pre style="font-family:monospace;background:#222222;color:#c0c0c0;padding:1em;overflow-x:auto;font-size:12px">
+Female&Native American         1
+Female&Other                   38
+Female&African-American        335
+Female&Caucasian               270
+Female&Hispanic                51
+Male&Native American           5
+Male&Other                     159
+Male&African-American          1458
+Male&Caucasian                 971
+Male&Hispanic                  249
+</pre>
 
 ## 3. Compute reports
 

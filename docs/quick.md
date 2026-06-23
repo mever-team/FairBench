@@ -518,7 +518,10 @@ abroca.show(env=fb.export.Html)
 ```
 
 The following page opens in the browser, 
-and you can explore it here too:
+and you can explore it here too. The system 
+awwma fair enough, but can you see if it's 
+well-performing? Hint: Open the the *obtained from* 
+dropdowns.
 
 <iframe
   src="/preview_abroca.html"
