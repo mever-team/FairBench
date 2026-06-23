@@ -48,7 +48,7 @@ comparison.maxdiff.show(env=fb.export.Html)
 ```
 
 <iframe
-  src="/preview_progress_diffs.html"
+  src="/documentation/preview_progress_diffs.html"
   style="border: 1px solid black; width: 144%;height: 700px;border: none;margin-bottom:-100px;transform:scale(0.7);transform-origin: top left;overflow: auto"
 ></iframe>
 
@@ -64,7 +64,7 @@ comparison.maxdiff.explain.show(env=fb.export.Html, depth=0)
 ```
 
 <iframe
-  src="/preview_progress_explain.html"
+  src="/documentation/preview_progress_explain.html"
   style="border: 1px solid black; width: 144%;height: 700px;border: none;margin-bottom:-100px;transform:scale(0.7);transform-origin: top left;overflow: auto"
 ></iframe>
 

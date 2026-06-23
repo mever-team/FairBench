@@ -12,12 +12,15 @@ print(sensitive.sum())
 
 report = fb.reports.pairwise(predictions=yhat, labels=y, sensitive=sensitive)
 report.min.acc.show(env=fb.export.Console)
-
-report.show(env=fb.export.ConsoleTable)
-report.help()
-report = report.filter(fb.investigate.Stamps)
-report.show(env=fb.export.Html(horizontal=True), depth=1)
-# report.filter(fb.investigate.DeviationsOver(0.2)).show()
-
+#
+# report.show(env=fb.export.ConsoleTable)
+# report.help()
+# report = report.filter(fb.investigate.Stamps)
+# report.show(env=fb.export.Html(horizontal=True), depth=1)
+# # report.filter(fb.investigate.DeviationsOver(0.2)).show()
+#
 
 # report.filter(fb.investigate.DeviationsOver(0.2)).show(env=fb.export.HtmlBars, depth=2)
+
+
+html_text = report.show(fb.export.HtmlTable)
