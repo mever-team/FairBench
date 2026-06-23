@@ -14,7 +14,7 @@ via [reports](reports.md). Then,
 decide which of the concerns matter after drawing a broad enough
 picture (human-in-the-loop, consult with stakeholders). Finally,
 keep track of important concerns with standalone measures 
-covered in this tutorial.
+covered in this tutorial (jump to the end to see what results look like).
 
 ![workflow visualization](fairbench.drawio.png)
 
@@ -111,6 +111,8 @@ can be re-obtained because FairBench keeps track of intermediate
 computations). Curve comparison assesses the fairness
 of recommender systems, where a small area difference 
 indicates that the curves are similar between groups.
+This bias measure is also known as *ABROCA* in the literature, 
+but FairBench standardizes the naming scheme of measures.
 
 ```python
 abroca = fb.quick.pairwise_maxbarea_auc(scores=yhat, labels=y, sensitive=sensitive)
@@ -121,8 +123,9 @@ print(abroca.float())
  0.024
 ```
 
-The above measure is also known as *ABROCA* in the literature, but FairBench standardizes their naming scheme.
-Print FairBench's growing list of more than 300 valid measures like so:
+Print FairBench's growing list of more than 300 valid measures like so.
+Use [reports](reports.md) to quickly compute and organize all applicable 
+measures.
 
 ```python
 fb.quick.help()
@@ -526,18 +529,22 @@ abroca.show(env=fb.export.Html)
 ```
 
 The following page opens in the browser, 
-and you can explore it here too. The system 
-seems fair enough, but can you check if it's 
-actually well-performing? Hint: Open the the 
-*obtained from* dropdowns.
+and you can explore it here too. 
+The green checkmark indicates that the 
+measure's value was "small". Find
+how to apply your own thresholds 
+in [report filters](material/filters.md).
+
+Furthermore, the investigated
+system seems fair enough, but can you check if it is
+actually well-performing? Because random noise may
+be fair but not necessarily practically useful.
+*Hint: Expand the 
+dropdowns at the end of the preview to see
+per-group AUC values and ROC curves.*
 
 <iframe
   src="/preview_abroca.html"
   style="border: 1px solid black; width: 144%;height: 700px;border: none;margin-bottom:-100px;transform:scale(0.7);transform-origin: top left;overflow: auto"
 ></iframe>
 
-!!! danger
-    The green checkmark indicates that the 
-    measure's value was "small". But acceptable thresholds should 
-    always rely on domain knowledge or stakeholder opinions. 
-    Find how to apply your own thresholds in [report filters](material/filters.md).
