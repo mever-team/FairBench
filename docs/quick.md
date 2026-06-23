@@ -9,20 +9,19 @@ pip install --upgrade FairBench
 This can assess any system. Install extras are
 available to optionally run computer vision, graph, and LLMs benchmarks.
 This tutorial shows a common workflow for computing one fairness measure.
-
 The recommended workflow for identifying which measures to compute
 is the following:
 
-1. Identify prospective fairness concerns to discuss with stakeholders via the [reports](reports.md).
+1. Identify prospective fairness concerns to discuss with stakeholders via [reports](reports.md).
 2. Decide which of the concerns matter after drawing a broad enough
 picture (human-in-the-loop, consult with stakeholders).
 3. Keep track of important concerns with standalone measures covered in this tutorial.
 
 ![workflow visualization](fairbench.drawio.png)
 
-!!! warning
-    Domain knowledge is often used to bypass
-    the first two steps above, but we caution against doing that.
+!!! danger
+    Domain knowledge is often used to immediately select measures, 
+    but we caution against that.
 
 ## 1. Prepare data
 

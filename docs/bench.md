@@ -4,41 +4,31 @@ Here we show how to run and compare algorithms. To give a taste of
 the library's ability to accommodate various kinds of data without
 changing anything, we assess computer vision systems.
 
-Before starting, install FairBench with any needed extra dependencies (extras).
-These install libraries required by models of the corresponding data types. 
-Tabular data benchmarks do not need any extras. To install with all extras run:
+Before starting, install FairBench with extras, that is,
+additional libraries that allow out-of-the-box experimentation
+of bias mitigation methods with known models. 
+To install with all extras run:
 
 ```shell
 pip install --upgrade fairbench[graph,llm,vision]
 ```
 
-!!! warning
-    Benchmarks using extras may download a lot of data (partially due to the
-    size of libraries like *torch*) and need sufficient resources to run. These
-    constraints are standard for the respective domains and are needed to run
-    experiments whose outcomes FairBench analyses.
-
 ## 1. Setup experiments
 
-There is little distinction between running different algorithms 
-or different data with the workflow shown next; each algorithm-data 
-pair is distinct. This simplification is not mandatory, but simpler to explore
-given that we aim to explore multiple types of bias assessment too.
-Automatically download and run datasets and models with
-FairBench, which is why we installed the extras installed above.
-Alternatively, create predictions with your own workflow
-and skip this step.
+Experiment on different algorithms and data with the workflow 
+shown next; each algorithm-data pair is distinct. Given
+that appropriate extras are there, automatically download and 
+run datasets and models with FairBench. Or use your own
+pipelines.
 
-Datasets are set up as callable methods under `bench` 
-modules; they run provided algorithms in
-a standardized way. 
-Datasets can also run with 
-your own models. In domains where large
-models are the norm, like Vision and LLMs, provided algorithms/models are assumed to be already trained.
+Datasets are set up as callable methods under `fairbench.bench` 
+modules; they run provided algorithms in a standardized way.
+In domains where large models are the norm, like Vision and LLMs, 
+algorithms/models are assumed to be already trained.
 
-Below is an example that runs two classifiers on the `utkface`
-vision dataset. You can aso set up experiments where you pass a torch
-model as a classifier instead of a string name.
+Below is an example that prepares two classifiers for assessment
+on the `utkface`computer vision dataset. You can aso pass your own 
+torch model instead of a model string name.
 
 ```python
 import fairbench as fb
