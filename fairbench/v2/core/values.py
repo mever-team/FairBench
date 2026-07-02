@@ -86,18 +86,20 @@ class Curve:
 
 
 class Number:
-    def __init__(self, value, units: str = ""):
+    def __init__(self, value, units: str = "", bound: float = 0.0):
         self.value = float(value)
         self.units = units
+        self.bound = float(bound)
 
     def __float__(self):
         return self.value
 
     def to_dict(self):
-        return {"value": self.value, "units": self.units}
+        return {"value": self.value, "units": self.units, "bound": self.bound}
 
     def __str__(self):
-        return f"{self.value:.3f} {self.units}"
+        bound_desc = f" (abs bound {self.bound:.3f})" if self.bound else ""
+        return f"{self.value:.3f} {self.units}{bound_desc}"
 
     @classmethod
     def from_dict(cls, data):
@@ -105,29 +107,38 @@ class Number:
             return Curve.from_dict(data)
         if "target" in data:
             return TargetedNumber.from_dict(data)
-        return cls(data["value"], data["units"])
+        return cls(data["value"], data["units"], data.get("bound", 0.0))
 
 
 class TargetedNumber:
-    def __init__(self, value, target, units: str = ""):
+    def __init__(self, value, target, units: str = "", bound: float | None = None):
         value = float(value)
         target = float(target)
         self.value = value
         self.units = units
         self.target = target
+        self.bound = target if bound is None else float(bound)
 
     def __float__(self):
         return self.value
 
     def __str__(self):
-        return f"{self.value:.3f} {self.units} (ideal value {self.target:.3f})"
+        bound_desc = f", abs bound {self.bound:.3f}" if self.bound else ""
+        return (
+            f"{self.value:.3f} {self.units} (ideal value {self.target:.3f}{bound_desc})"
+        )
 
     def to_dict(self):
-        return {"value": self.value, "target": self.target, "units": self.units}
+        return {
+            "value": self.value,
+            "target": self.target,
+            "units": self.units,
+            "bound": self.bound,
+        }
 
     @classmethod
     def from_dict(cls, data):
-        return cls(data["value"], data["target"], data["units"])
+        return cls(data["value"], data["target"], data["units"], data.get("bound", 0.0))
 
 
 class Descriptor:

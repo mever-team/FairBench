@@ -4,8 +4,9 @@ import numpy as np
 
 
 @c.measure("the Spearman correlation", unit=False)
-def spearman(scores, order, sensitive=None):
+def spearman(scores, order, sensitive=None, score_bound=None):
     scores = np.array(scores, dtype=np.float64)
+    scores = c.transform.transform_scores(scores, None, score_bound)[0]
     order = np.array(order, dtype=np.float64)
     sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
     scores = scores[sensitive > 0]
@@ -39,10 +40,11 @@ def spearman(scores, order, sensitive=None):
 
 
 @c.measure("the rank-biased overlap")
-def rbo(scores, order, sensitive=None, top_weightedness=1.0):
+def rbo(scores, order, sensitive=None, top_weightedness=1.0, score_bound=None):
     from fairbench.fallbacks.rbo import RankingSimilarity
 
     scores = np.array(scores, dtype=np.float64)
+    scores = c.transform.transform_scores(scores, None, score_bound)[0]
     order = np.array(order, dtype=np.float64)
     sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
     scores = scores[sensitive > 0]
@@ -65,8 +67,9 @@ def rbo(scores, order, sensitive=None, top_weightedness=1.0):
 
 
 @c.measure("the normalized discounted ranking loss", unit=False)
-def ndrl(scores, order, sensitive=None):
+def ndrl(scores, order, sensitive=None, score_bound=None):
     scores = np.array(scores, dtype=np.float64)
+    scores = c.transform.transform_scores(scores, None, score_bound)[0]
     order = np.array(order, dtype=np.float64)
     sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
 
@@ -109,8 +112,9 @@ def ndrl(scores, order, sensitive=None):
 
 
 @c.measure("the normalized discounted cumulative gain of all recommendations")
-def ndcg(scores, order, sensitive=None):
+def ndcg(scores, order, sensitive=None, score_bound=None):
     scores = np.array(scores, dtype=np.float64)
+    scores = c.transform.transform_scores(scores, None, score_bound)[0]
     order = np.array(order, dtype=np.float64)
     sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
     scores = scores[sensitive > 0]
@@ -135,8 +139,9 @@ def ndcg(scores, order, sensitive=None):
 
 
 @c.measure("the normalized discounted cumulative gain of top recommendations")
-def topndcg(scores, order, sensitive=None, top=3):
+def topndcg(scores, order, sensitive=None, top=3, score_bound=None):
     scores = np.array(scores, dtype=np.float64)
+    scores = c.transform.transform_scores(scores, None, score_bound)[0]
     order = np.array(order, dtype=np.float64)
     sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
     samples = sensitive.sum()

@@ -5,13 +5,16 @@ import numpy as np
 from fairbench.v2.core import TargetedNumber
 
 
-@c.measure("the average score")
-def avgscore(scores, sensitive=None, bins=20):
+@c.measure("the average score", unit=False)
+def avgscore(scores, sensitive=None, bins=20, score_bound=None):
     scores = np.array(scores, dtype=np.float64)
+    scores, _, bound = c.transform.transform_scores(scores, None, score_bound)
     sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
     positives = (scores * sensitive).sum()
     samples = sensitive.sum()
     value = 0 if samples == 0 else positives / samples
+    if bound is not None:
+        value = c.Number(value, bound=bound)
 
     scores = scores * sensitive
     hist, bin_edges = np.histogram(
@@ -37,11 +40,12 @@ def avgscore(scores, sensitive=None, bins=20):
 
 
 @c.measure("the area under curve of the receiver operating characteristics")
-def auc(scores, labels, sensitive=None):
+def auc(scores, labels, sensitive=None, score_bound=None):
     from fairbench.fallbacks import auc as _auc, roc_curve as _roc_curve
     import math
 
     scores = np.array(scores, dtype=np.float64)
+    scores = c.transform.transform_scores(scores, None, score_bound)[0]
     labels = np.array(labels, dtype=np.float64)
     sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
     samples = sensitive.sum()
@@ -75,8 +79,9 @@ def auc(scores, labels, sensitive=None):
 
 
 @c.measure("the hit ratio of top recommendations")
-def tophr(scores, labels, sensitive=None, top=3):
+def tophr(scores, labels, sensitive=None, top=3, score_bound=None):
     scores = np.array(scores, dtype=np.float64)
+    scores = c.transform.transform_scores(scores, None, score_bound)[0]
     labels = np.array(labels, dtype=np.float64)
     sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
 
@@ -104,8 +109,9 @@ def tophr(scores, labels, sensitive=None, top=3):
 
 
 @c.measure("the precision of top recommendations")
-def toprec(scores, labels, sensitive=None, top=3):
+def toprec(scores, labels, sensitive=None, top=3, score_bound=None):
     scores = np.array(scores, dtype=np.float64)
+    scores = c.transform.transform_scores(scores, None, score_bound)[0]
     labels = np.array(labels, dtype=np.float64)
     sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
 
@@ -135,8 +141,9 @@ def toprec(scores, labels, sensitive=None, top=3):
 
 
 @c.measure("the normalized mean reciprocal rank")
-def nmrr(scores, labels, sensitive=None):
+def nmrr(scores, labels, sensitive=None, score_bound=None):
     scores = np.array(scores, dtype=np.float64)
+    scores = c.transform.transform_scores(scores, None, score_bound)[0]
     labels = np.array(labels, dtype=np.float64)
     sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
 
@@ -168,8 +175,9 @@ def nmrr(scores, labels, sensitive=None):
 
 
 @c.measure("the normalized entropy of the score distribution")
-def nentropy(scores, sensitive=None, bins=20):
+def nentropy(scores, sensitive=None, bins=20, score_bound=None):
     scores = np.array(scores, dtype=np.float64)
+    scores = c.transform.transform_scores(scores, None, score_bound)[0]
     sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
     scores = scores[sensitive > 0]
 
@@ -207,8 +215,9 @@ def nentropy(scores, sensitive=None, bins=20):
 
 
 @c.measure("the coverage of recommendations")
-def coverage(scores, sensitive=None, top=3):
+def coverage(scores, sensitive=None, top=3, score_bound=None):
     scores = np.array(scores, dtype=np.float64)
+    scores = c.transform.transform_scores(scores, None, score_bound)[0]
     sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
 
     k = int(top)
@@ -234,8 +243,9 @@ def coverage(scores, sensitive=None, top=3):
 
 
 @c.measure("the F1 score of top recommendations")
-def topf1(scores, labels, sensitive=None, top=3):
+def topf1(scores, labels, sensitive=None, top=3, score_bound=None):
     scores = np.array(scores, dtype=np.float64)
+    scores = c.transform.transform_scores(scores, None, score_bound)[0]
     labels = np.array(labels, dtype=np.float64)
     sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
 
@@ -268,8 +278,9 @@ def topf1(scores, labels, sensitive=None, top=3):
 
 
 @c.measure("the average representation at top recommendations", unit=False)
-def avgrepr(scores, sensitive=None, top=3):
+def avgrepr(scores, sensitive=None, top=3, score_bound=None):
     scores = np.array(scores, dtype=np.float64)
+    scores = c.transform.transform_scores(scores, None, score_bound)[0]
     sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
 
     k = int(top)

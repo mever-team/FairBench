@@ -74,17 +74,14 @@ Hispanic                       [0 0 0 ... 1 0 0]
 ## 3. Build & compute a measure
 
 FairBench builds standardized fairness/bias measures from simpler 
-building blocks. Three building blocks are combined:
-
-1. Which **measure** is considered favorable predictive outcomes for each group, such as high positive rate `pr` for hiring systems, high true positive rate `tpr` for criminal convictions, and`accuracy` for loan approvals.
-2. The mechanism for determining which population groups to compare, namely where they should be compared `pairwise` or each group against the total population `vsall`.
-3. The **reduction** strategy that summarizes all comparisons to one value, such as the minimum `min` across all groups, the maximum difference between groups `maxdiff`, and maximum relative difference `maxrel`.
-
-Build a measure name by separating your choices 
+building blocks. Three building blocks are combined;
+build a standardized measure name by separating your choices 
 with underscores (the order does not matter)
 and access it from `fb.quick`. 
 
-![example visualized](anatomy.png)
+1. Which **measure** is considered favorable predictive outcomes for each group, such as high positive rate *pr* for hiring systems, high true positive rate *tpr* for criminal convictions, and accuracy *acc* for loan approvals.
+2. The mechanism for determining which population groups to compare, namely where they should be compared *pairwise* or each group against the total population *vsall*.
+3. The **reduction** strategy that summarizes all comparisons to one value, such as the minimum *min* across all groups, the maximum difference between groups *maxdiff*, and maximum relative difference *maxrel*.
 
 **Example**: `fb.quick.pairwise_maxrel_acc` reads
 as "the maximum relative accuracy difference when comparing
@@ -94,20 +91,22 @@ accuracies (e.g. 0.4 and 0.5 accuracies have relative difference
 of 0.1/max(0.4,0.5)=0.2), and report the maximum of those
 differences.
 
+![example visualized](anatomy.png)
+
 !!! info
     See a comprehensive list of all 
     [measures and reductions](material/api.md).
     If the measure name is invalid, available options will be explained.
 
-To call the constructed measure, provide 
-relevant keyword among 
+To call the constructed measure, provide
+[relevant keywords](documentation/reports.md) among 
 *predictions*, *multipredictions*, *scores*, 
-*labels*, *multilabels*, *order*, *target*, as described 
-[here](documentation/reports.md), and the *sensitive* 
+*labels*, *multilabels*, *order*, *target*, and the *sensitive* 
 dimensions construct above.
-Next for comparing the surface area 
-between the ROC curves involved in AUC computations (the curves
-can be re-obtained because FairBench keeps track of intermediate
+For instance, we next compare the surface area 
+between the ROC curves involved in AUC computations
+(curves can be retrieved from measure values 
+because FairBench tracks all intermediate
 computations). Curve comparison assesses the fairness
 of recommender systems, where a small area difference 
 indicates that the curves are similar between groups.

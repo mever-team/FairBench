@@ -6,6 +6,7 @@ direct_curves = True
 
 @c.reduction("the minimum")
 def min(values):
+    bound = np.max([value.value.bound for value in values if value.value])
     min_target = None
     for value in values:
         value = value.value
@@ -16,11 +17,16 @@ def min(values):
                 min_target = float(value.target)
     values = c.transform.number(values)
     ret = np.min(values) if len(values) else 0
-    return ret if min_target is None else c.TargetedNumber(ret, min_target)
+    return (
+        c.Number(ret, bound=bound)
+        if min_target is None
+        else c.TargetedNumber(ret, min_target, bound=bound)
+    )
 
 
 @c.reduction("the maximum")
 def max(values):
+    bound = np.max([value.value.bound for value in values if value.value])
     max_target = None
     for value in values:
         value = value.value
@@ -31,7 +37,11 @@ def max(values):
                 max_target = float(value.target)
     values = c.transform.number(values)
     ret = np.max(values) if len(values) else 0
-    return ret if max_target is None else c.TargetedNumber(ret, max_target)
+    return (
+        c.Number(ret, bound=bound)
+        if max_target is None
+        else c.TargetedNumber(ret, max_target, bound=bound)
+    )
 
 
 @c.reduction("the maximum deviation from the ideal value")
@@ -47,14 +57,16 @@ def maxerror(values):
 
 @c.reduction("the standard deviation x2")
 def stdx2(values):
+    bound = np.max([value.value.bound for value in values if value.value])
     values = c.transform.number(values)
-    return c.TargetedNumber(np.std(values) * 2 if len(values) else 0, 0)
+    return c.TargetedNumber(np.std(values) * 2 if len(values) else 0, 0, bound=bound)
 
 
-@c.reduction("the standard deviation x2")
+@c.reduction("the standard deviation")
 def std(values):
+    bound = np.max([value.value.bound for value in values if value.value])
     values = c.transform.number(values)
-    return c.TargetedNumber(np.std(values) if len(values) else 0, 0)
+    return c.TargetedNumber(np.std(values) if len(values) else 0, 0, bound=bound * 0.5)
 
 
 @c.reduction("the gini coefficient")
@@ -66,11 +78,12 @@ def gini(values):
     mean = sum(values) / n
     gini_sum = sum(abs(values[i] - values[j]) for i in range(n) for j in range(n))
     gini_coefficient = 0 if mean == 0 else gini_sum / (2 * n * n * mean)
-    return c.TargetedNumber(gini_coefficient, 0)
+    return c.TargetedNumber(gini_coefficient, 0, bound=1.0)
 
 
 @c.reduction("the average")
 def mean(values):
+    bound = np.max([value.value.bound for value in values if value.value])
     targets = [
         value.value.target
         for value in values
@@ -79,7 +92,7 @@ def mean(values):
     values = c.transform.number(values)
     value = np.mean(values) if len(values) else 0
     return (
-        c.TargetedNumber(value, target=targets[0])
+        c.TargetedNumber(value, target=targets[0], bound=bound)
         if len(targets) and len(set(targets)) == 1
         else value
     )
@@ -87,6 +100,7 @@ def mean(values):
 
 @c.reduction("the geometric mean")
 def gm(values):
+    bound = np.max([value.value.bound for value in values if value.value])
     targets = [
         value.value.target
         for value in values
@@ -101,7 +115,7 @@ def gm(values):
     if values:
         value **= 1.0 / len(values)
     return (
-        c.TargetedNumber(value, target=targets[0])
+        c.TargetedNumber(value, target=targets[0], bound=bound)
         if len(targets) and len(set(targets)) == 1
         else value
     )
@@ -109,6 +123,7 @@ def gm(values):
 
 @c.reduction("the p-norm (default L2)")
 def pnorm(values, p=2):
+    bound = np.max([value.value.bound for value in values if value.value])
     targets = [
         value.value.target
         for value in values
@@ -117,7 +132,7 @@ def pnorm(values, p=2):
     values = c.transform.number(values)
     value = 0.0 if not values else float(sum(v**p for v in values) ** (1.0 / p))
     return (
-        c.TargetedNumber(value, target=targets[0])
+        c.TargetedNumber(value, target=targets[0], bound=bound)
         if len(targets) and len(set(targets)) == 1
         else value
     )
@@ -125,6 +140,7 @@ def pnorm(values, p=2):
 
 @c.reduction("the weighted average")
 def wmean(values, weight_by=None):
+    bound = np.max([value.value.bound for value in values if value.value])
     targets = [
         value.value.target
         for value in values
@@ -142,8 +158,9 @@ def wmean(values, weight_by=None):
     weights = np.array(weights)
     weights_sum = weights.sum()
     value = np.sum(values * weights / weights_sum) if weights_sum else values
+
     return (
-        c.TargetedNumber(value, target=targets[0])
+        c.TargetedNumber(value, target=targets[0], bound=bound)
         if len(targets) and len(set(targets)) == 1
         else value
     )
@@ -151,8 +168,9 @@ def wmean(values, weight_by=None):
 
 @c.reduction("the maximum difference")
 def maxdiff(values):
+    bound = np.max([value.value.bound for value in values if value.value])
     values = c.transform.diff(values)
-    return c.TargetedNumber(np.max(values), 0)
+    return c.TargetedNumber(np.max(values), 0, bound=bound)
 
 
 @c.reduction("the maximum area between curves")
@@ -171,15 +189,16 @@ def maxbarea(values):
 @c.reduction("the maximum relative difference")
 def maxrel(values):
     values = c.transform.relative(values)
-    return c.TargetedNumber(np.max(values), 0)
+    return c.TargetedNumber(np.max(values), 0, bound=1.0)
 
 
 @c.reduction(
     "the maximum difference from the largest group (the whole population if included)"
 )
 def largestmaxdiff(values):
+    bound = np.max([value.value.bound for value in values if value.value])
     values = c.transform.diff(values)
-    return c.TargetedNumber(np.max(values), 0)
+    return c.TargetedNumber(np.max(values), 0, bound=bound)
 
 
 @c.reduction(

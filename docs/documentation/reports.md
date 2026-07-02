@@ -353,16 +353,16 @@ report will not show regression or recommendation measures.
 Base performance measures accept some combinations of the arguments bellow; those arguments
 are thus what can be provided to reports to call those base measures.
 
-| Argument         | Role                | Values                                                                |
-|------------------|---------------------|-----------------------------------------------------------------------|
-| predictions      | system output       | binary array                                                          |
-| multipredictions | system output       | discrete array                                                        |
-| scores           | system output       | array with elements in [0,1]                                          |
-| targets          | prediction target   | array with elements in [0,1]                                          | 
-| order            | order target        | array whose element order should be replicated (e.g., may have ranks) |      
-| labels           | prediction target   | binary array                                                          |     
-| multilabels      | prediction target   | discrete array                                                        | 
-| sensitive        | sensitive attribute | fork of arrays with elements in [0,1] (either binary or fuzzy)        |
+| Argument         | Role                | Values                                                                 |
+|------------------|---------------------|------------------------------------------------------------------------|
+| predictions      | system output       | binary array                                                           |
+| multipredictions | system output       | discrete array                                                         |
+| scores           | system output       | array with elements in [0,1]                                           |
+| targets          | prediction target   | array with elements in [0,1]                                           | 
+| order            | order target        | array whose element order should be replicated (e.g., may have ranks)  |      
+| labels           | prediction target   | binary array                                                           |     
+| multilabels      | prediction target   | discrete array                                                         | 
+| sensitive        | sensitive attribute | densitive `Dimensions` with elements in [0,1] (either binary or fuzzy) |
 
 
 The following argument combinations are accepted for different predictive tasks. 
@@ -374,6 +374,50 @@ binary classification and scoring measures in one go by providing *predictions,s
 - *scores,labels,sensitive* for **recommendation**
 - *scores,targets,sensitive* for **regression**
 - *scores,order,sensitive* for **ranking**
+
+## Auxiliary arguments
+
+Reports also accept auxiliary arguments that are passed on 
+automatically to applicable measures in place of original
+defaults. These could be left unused but, when used,
+adjust default behavior. Available options are listed below.
+
+
+| Argument    | Role                                                                                           | Values                                                                                                                                                                                                                                                                                                 | Default |
+|-------------|------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
+| top         | What to consider top-k samples based on scores by some recommendation measures.                | int                                                                                                                                                                                                                                                                                                    | 3       |
+| score_bound | The strategy with which to validate and potentially normalize *scores* and *targets* together. | "unit" to accept only score in the range [0,1], "normalize" to normalize positive scores to the range [0,1], "standarsize" to convert all scores to the range [0,1] with the minimum mapping to zero, "unbounded" to accept any positive or negative scores, a maximum float value for positive scores | "unit"  |
+
+
+For example, the following snippet finds the greatest value
+considers all *scores* and *targets* and standardizes them
+based on the total maximum (25.0) and minimum (8.1) so that
+the two lists remain comparable but in the unit range *[0,1]*.
+This is done by all regression measures. Without
+`score_bound="standardize"`, FairBench would default to 
+`"unit"` and thus create an error that
+scores are not in the unit range; this default helps
+safeguard against accidentally using class labels as scores
+or score targets without meaning to.
+
+```python
+import fairbench as fb
+
+scores  = [10.2, 15.5, 8.1, 20.0, 12.3, 9.8, 18.4, 11.1]
+targets = [10.0, 15.0, 9.0, 19.0, 11.0, 9.5, 25.0, 10.5]
+groups  = ["M", "M", "M", "M", "F", "F", "F", "F"]
+sensitive = fb.Dimensions(fb.categories @ groups)
+
+report = fb.reports.pairwise(
+    scores=scores, 
+    targets=targets, 
+    sensitive=sensitive, 
+    score_bound="standardize"
+)
+
+report.show(env=fb.export.Console(ansiplot=False))
+```
+
 
 ## More on multiclass
 

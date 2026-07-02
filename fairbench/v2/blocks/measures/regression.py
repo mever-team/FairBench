@@ -3,10 +3,11 @@ from fairbench.v2.blocks.quantities import quantities
 import numpy as np
 
 
-@c.measure("mean absolute error")
-def mabs(scores, targets, sensitive=None):
+@c.measure("mean absolute error", unit=False)
+def mabs(scores, targets, sensitive=None, score_bound=None):
     scores = np.array(scores, dtype=np.float64)
     targets = np.array(targets, dtype=np.float64)
+    scores, targets, _ = c.transform.transform_scores(scores, targets, score_bound)
     sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
     error = (np.abs(scores - targets) * sensitive).sum()
     samples = sensitive.sum()
@@ -19,10 +20,11 @@ def mabs(scores, targets, sensitive=None):
     )
 
 
-@c.measure("root mean square error")
-def rmse(scores, targets, sensitive=None):
+@c.measure("root mean square error", unit=False)
+def rmse(scores, targets, sensitive=None, score_bound=None):
     scores = np.array(scores, dtype=np.float64)
     targets = np.array(targets, dtype=np.float64)
+    scores, targets, _ = c.transform.transform_scores(scores, targets, score_bound)
     sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
     error = ((scores - targets) ** 2 * sensitive).sum()
     samples = sensitive.sum()
@@ -36,9 +38,10 @@ def rmse(scores, targets, sensitive=None):
 
 
 @c.measure("mean square error")
-def mse(scores, targets, sensitive=None):
+def mse(scores, targets, sensitive=None, score_bound=None):
     scores = np.array(scores, dtype=np.float64)
     targets = np.array(targets, dtype=np.float64)
+    scores, targets, _ = c.transform.transform_scores(scores, targets, score_bound)
     sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
     error = ((scores - targets) ** 2 * sensitive).sum()
     samples = sensitive.sum()
@@ -55,9 +58,10 @@ def mse(scores, targets, sensitive=None):
     "r2 coefficient of determination (values much smaller than zero indicate terrible models)",
     unit=False,
 )
-def r2(scores, targets, sensitive=None, deg_freedom=0):
+def r2(scores, targets, sensitive=None, deg_freedom=0, score_bound=None):
     scores = np.array(scores, dtype=np.float64)
     targets = np.array(targets, dtype=np.float64)
+    scores, targets, _ = c.transform.transform_scores(scores, targets, score_bound)
     sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
     num_sensitive = sensitive.sum()
 
@@ -76,7 +80,7 @@ def r2(scores, targets, sensitive=None, deg_freedom=0):
             value = r2_value
 
     return c.Value(
-        c.TargetedNumber(value, 1),
+        c.TargetedNumber(value, 1, bound=0.0),  # disable the bound for this value
         depends=[
             quantities.samples(num_sensitive),
             quantities.freedom(deg_freedom),

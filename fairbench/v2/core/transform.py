@@ -3,6 +3,78 @@ from fairbench.v2.core import Value, NotComputable, Curve, DataError
 import numpy as np
 
 
+def transform_scores(
+    scores: np.ndarray, targets: np.ndarray | None, score_bound: str | float | None
+) -> tuple[np.ndarray, np.ndarray | None, float | None]:
+    if score_bound == "unit" or score_bound is None:
+        max_score = max(scores.max(), targets.max() if targets is not None else 0.0)
+        min_score = min(scores.min(), targets.min() if targets is not None else 0.0)
+        assert (
+            min_score >= 0.0,
+        ), f"The 'unit' (default) strategy for processing scores encountered minimum score value less than 0: {min_score}\nIf negative scores should be allowed, consider passing 'score_bound=\"unbounded\"' to allow negative scores."
+        assert (
+            max_score <= 1.0
+        ), f'The \'unit\' (default) strategy for processing scores encountered maximum score value greater than 1: {max_score}\nConsider passing a \'score_bound=...\' argument, with acceptable values a float, "unbounded", "normalized" to normalize scores by dividing with the maximum absolute value, or "auto" to consider the maximum value of all scores.'
+        return scores, targets, 1.0
+    if isinstance(score_bound, float) or isinstance(score_bound, int):
+        score_bound = float(score_bound)
+        max_score = max(
+            np.abs(scores).max(), np.abs(targets).max() if targets is not None else 0.0
+        )
+        min_score = min(scores.min(), targets.min() if targets is not None else 0.0)
+        assert (
+            min_score >= 0.0,
+        ), f"The value-based bounding for processing scores encountered minimum score value less than 0: {min_score}\nIf negative scores should be allowed, consider passing 'score_bound=\"unbounded\"' or 'score_bound=\"standardized\"' to allow negative scores."
+        assert (
+            max_score
+        ), f'The score bound of {score_bound} encountered too large maximum absolute score value: {max_score}\nConsider passing a \'score_bound=...\' argument, with acceptable values a float, "unbounded", "normalized", "standardized" to normalize scores by dividing with the maximum absolute value, or "auto" to consider the maximum value of all scores.'
+        return scores, targets, score_bound
+    if score_bound == "unbounded":
+        return scores, targets, None
+    if score_bound == "auto":
+        min_score = min(scores.min(), targets.min() if targets is not None else 0.0)
+        assert (
+            min_score >= 0.0,
+        ), f"The 'auto' strategy for processing scores encountered minimum score value less than 0: {min_score}\nIf negative scores should be allowed, consider passing 'score_bound=\"unbounded\"' or 'score_bound=\"standardized\"'  to allow negative scores."
+        return (
+            scores,
+            targets,
+            float(
+                max(
+                    np.abs(scores).max(),
+                    np.abs(targets).max() if targets is not None else 0.0,
+                )
+            ),
+        )
+    if score_bound == "normalized":
+        min_score = min(scores.min(), targets.min() if targets is not None else 0.0)
+        assert (
+            min_score >= 0.0,
+        ), f"The 'normalize' strategy for processing scores encountered minimum score value less than 0: {min_score}\nIf negative scores should be allowed, consider passing 'score_bound=\"unbounded\"' or 'score_bound=\"standardized\"' to allow negative scores."
+        max_score = max(
+            np.abs(scores).max(), np.abs(targets).max() if targets is not None else 0.0
+        )
+        if max_score:
+            scores = scores / max_score
+            if targets is not None:
+                targets = targets / max_score
+        return scores, targets, 1.0
+    if score_bound == "standardized":
+        min_score = min(scores.min(), targets.min() if targets is not None else 0.0)
+        max_score = max(
+            np.abs(scores).max(), np.abs(targets).max() if targets is not None else 0.0
+        )
+        if max_score:
+            max_score -= min_score
+            scores = (scores - min_score) / max_score
+            if targets is not None:
+                targets = (targets - min_score) / max_score
+        return scores, targets, 1.0
+    raise AssertionError(
+        f"The score bound provided was '{score_bound}' but only 'unit', 'unbounded', 'normalized', 'standardized', or a float number value are supported"
+    )
+
+
 def number(values: Iterable[Value]) -> list[float]:
     return [float(value) for value in values]
 

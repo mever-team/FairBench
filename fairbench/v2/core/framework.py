@@ -37,18 +37,26 @@ def measure(description, unit=True, debug=False, eps=1e-9):
                 or isinstance(value.value, float)
                 or isinstance(value.value, int)
             ), f"{descriptor} computed {type(value.value)} instead of float, int, Number, or TargetedNumber"
-            if unit and 1 < float(value) < 1 + eps:  # take care of rounding errors
+            if (
+                unit and 1.0 < float(value) < 1.0 + eps
+            ):  # take care of some rounding errors
                 value.value = 1.0
             assert not unit or (
                 0 <= float(value) <= 1
             ), f"{descriptor} computed {float(value)} that is not in [0,1]"
             if isinstance(value.value, float) or isinstance(value.value, int):
-                value.value = Number(value.value)
+                value.value = Number(value.value, bound=1.0 if unit else 0.0)
             if isinstance(value.value, Number) or isinstance(
                 value.value, TargetedNumber
             ):
                 if not value.value.units:
                     value.value.units = func.__name__
+            if (
+                value.value is not None and value.value.bound
+            ):  # TODO: take care of rounding errors here maybe too
+                assert (
+                    -value.value.bound <= float(value) <= value.value.bound
+                ), f"{descriptor} computed {float(value)} that is not in [-{value.value.bound},{value.value.bound}]"
             return value.rebase(descriptor)
 
         wrapper.descriptor = descriptor
