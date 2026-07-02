@@ -1,11 +1,10 @@
-# Dimensions
+# Dimensions (creation patterns)
 
 `Dimensions` is a flexible data structures that stores 
 multidimensional values, such as
 sensitive attributes or predictions and labels for
 multiple classes. Each dimension holds its own
-vector of values. 
-
+vector of values.
 For example, you might have a 
 dimension for each gender or race, or intersection thereof.
 Each dimension vector holds fuzzy (in the range [0,1]) or 
@@ -19,6 +18,10 @@ the `fb.categories@` operator unpacks genders and
 races from a discrete iterable into dictionaries
 of binary-valued vectors and then these are combined
 into one multidimensional object.
+The `intersectional` transformation
+lets the original dimensions *White, Black, etc.* 
+account for attribute value intersections too, 
+like *Male&White, Male&Black, etc.*
 
 ```python
 import fairbench as fb
@@ -29,11 +32,6 @@ sensitive = fb.Dimensions(fb.categories@ gender, fb.categories@ race)
 sensitive = sensitive.intersectional() 
 print(sensitive)
 ```
-
-The outcome is the following. The `intersectional` transformation
-has enriched the original dimensions *White, Black, etc.* to also 
-account for attribute value intersections, 
-like *Male&White, Male&Black, etc.*
 
 <pre style="font-family:monospace;background:#222222;color:#c0c0c0;padding:1em;overflow-x:auto;font-size:12px">
 White                          [0 1 1 0 1]
@@ -155,7 +153,7 @@ isold0                         [1 0 1 0 1]
 
 ## Unpack to dictionaries
 
-FairBench offers helper operators toconvert iterable
+FairBench offers helper operators that convert iterable
 data into dictionaries that can be passed to `Dimensions`.
 The most common pattern is analyzing categorical 
 values found in iterables with the
@@ -180,7 +178,10 @@ Nonbin                         [0 0 0 0 1]
 
 Add the outcomes of multiple category analyses 
 to `Dimensions` with the patterns
-already seen.
+already seen. 
+Any Python iterable can be analyzed into categories.
+This includes lists, pandas dataframe
+columns, categorical tensors, and numpy arrays.
 
 ```python
 import fairbench as fb
@@ -192,11 +193,6 @@ sensitive = fb.Dimensions(
     race=fb.categories@ race
 ) 
 ```
-
-!!! info
-    Any Python iterable can be analyzed into categories.
-    This includes lists, pandas dataframe
-    columns, categorical tensors, and numpy arrays.
 
 Use the `fuzzy@` operator to unpack numeric iterables into two 
 fuzzy sensitive attributes; the first of those contains a 

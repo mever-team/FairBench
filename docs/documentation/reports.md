@@ -386,17 +386,20 @@ adjust default behavior. Available options are listed below.
 | Argument    | Role                                                                                           | Values                                                                                                                                                                                                                                                                                                 | Default |
 |-------------|------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
 | top         | What to consider top-k samples based on scores by some recommendation measures.                | int                                                                                                                                                                                                                                                                                                    | 3       |
-| score_bound | The strategy with which to validate and potentially normalize *scores* and *targets* together. | "unit" to accept only score in the range [0,1], "normalize" to normalize positive scores to the range [0,1], "standarsize" to convert all scores to the range [0,1] with the minimum mapping to zero, "unbounded" to accept any positive or negative scores, a maximum float value for positive scores | "unit"  |
+| score_bound | The strategy with which to validate and potentially normalize *scores* and *targets* together. | "unit" to accept only score in the range [0,1], "normalize" to normalize positive scores to the range [0,1], "standardize" to convert all scores to the range [0,1] with the minimum mapping to zero, "unbounded" to accept any positive or negative scores, a maximum float value for positive scores | "unit"  |
 
 
-For example, the following snippet finds the greatest value
+For example, the following snippet 
 considers all *scores* and *targets* and standardizes them
-based on the total maximum (25.0) and minimum (8.1) so that
-the two lists remain comparable but in the unit range *[0,1]*.
-This is done by all regression measures. Without
-`score_bound="standardize"`, FairBench would default to 
-`"unit"` and thus create an error that
-scores are not in the unit range; this default helps
+based on their overall maximum (25.0) and minimum (8.1) value
+so that the two lists remain comparable 
+but in the unit range *[0,1]*; standardization
+transformation is *(value-minimum)/(maximum-minimum)*
+This is done by all regression measures, as they are
+all made to process scores with the `score_bound` argument. 
+Without this argument, FairBench would default to 
+`"unit"` and thus create an error in the snippet about
+scores not being in the unit range. This default helps
 safeguard against accidentally using class labels as scores
 or score targets without meaning to.
 
@@ -422,31 +425,47 @@ report.show(env=fb.export.Console(ansiplot=False))
 ## More on multiclass
 
 Sensitive attributes contain multiple
-[dimensions](dimensions)
+[dimensions](dimensions.md)
 that treat multi-value attributes or multiple
 sensitive attribute values interchangeably.
+This is the same mechanism used to organize
+sensitive attribute dimensions, only this time
+we organize data per prediction label instead
+of sensitive attribute value.
 
-Normally, you can separate multiclass analysis
+That is, one can separate multiclass analysis
 into analyzing each class separately by decomposing
 target and predicted values into separate dimensions.
 In these settings, all keyword arguments other than the 
-sensitive attribute must have dimensions corresponding to the classes.
+sensitive attribute must have dimensions corresponding 
+to the classes.
 
 ```python
 predictions = fb.Dimensions(fb.categories@yhat)
 labels = fb.Dimensions(fb.categories@y)
 ```
 
-But you can also obtain macro-analysis that
+In addition to the above mechanism,
+you can also obtain macro-analysis that
 considers various intra-class averages of measures
 like accuracy, tpr, and ppv by passing discrete
 predictions and labels via the *multipredictions*
-and *multilabels* arguments.
+and *multilabels* arguments. Which of the two
+mechanisms is suited to your analysis depends 
+on your setup; macro-analysis is easier to set
+up but coarser.
 
+## What to do with reports?
 
+You can visualize reports through various means  
+(in the console, as html, etc.) or explore them to
+generate sub-reports that contain a subset of values
+or tracked intermediate computations. 
+These options are covered in subsequent
+documentation in greater detail, but a broad overview
+is presented here.
 
-## Visualization
-
+**Visualization.** 
 The above example uses the `show` method to print to the console.
 The same method can create various types of exports.
 For example, view the report's outcome in the browser by using a different visualization
@@ -460,8 +479,7 @@ All visualization environments can work with any set depth, though
 beware that large depths may create imprtactically many details;
 you might want to specialize like below.
 
-## Focusing on subsets of reports
-
+**Explore reports.**
 You can focus on specific subsets of reports by using the dot
 or getitem notations. For example, obtain all values related
 to accuracy per `report.acc` or `report["acc"]`. More on
@@ -469,7 +487,7 @@ report exploration can be found [here](exploration.md), but this
 functionality is mentioned here because the results are
 also reports. Though of smaller scope, of course.
 
-Conflate reports, in particular, can grow
+Conflate reports, in particular,
 are too long to parse with a glance, and 
 meant to both specialize somewhat,
 and visualize in matrix form with
@@ -496,7 +514,124 @@ report.acc.largestmaxrel["True"].show(env=fb.export.HtmlTable)
 ```
 
 !!! info
-    Conflate reports are a more granular but also exceptionally
-    harder to parse version of pairwise reports. They are 
-    nonetheless included in preparation for compatibility with
-    the prEN 18283 Bias standard. 
+    Conflate reports are a more granular version 
+    of pairwise reports. They may be harder to parse for
+    many sensitive attribute intersections, but are 
+    nonetheless included in preparation for compatibility 
+    with the prEN 18283 Bias standard. 
+
+
+## Custom reports
+
+Control what is being computed by reports
+by providing lists of base *measures* and *reductions*
+to apply to those as report arguments. By default,
+all measures are provided, as well as all reductions
+that make sense for the report type. Note that providing
+specific measures only means that they are considered
+for computation, but results are obtained only if the
+appropriate arguments are provided to reports.
+
+The example below shows a small yet popular subset
+of measures and reduction strategies. Computing as many 
+combinations as possible, which is the default, is
+ideal in gaining a broad picture of imbalances. But
+more restricted reports like this may be of interest
+for a perfunctory first taste of examined system.
+
+```python
+import fairbench as fb
+
+sensitive = fb.Dimensions(men=[1, 1, 0, 0, 0], women=[0, 0, 1, 1, 1])
+report = fb.reports.pairwise(
+    predictions=[1, 0, 1, 0, 0], 
+    labels=[1, 0, 0, 1, 0], 
+    sensitive=sensitive,
+    measures=[fb.measures.pr, fb.measures.acc, fb.measures.tpr, fb.measures.tnr],
+    reductions=[fb.reduction.min, fb.reduction.maxrel, fb.reduction.maxdiff]
+)
+report.show(env=fb.export.ConsoleTable)
+```
+
+<pre style="font-family:monospace;background:#222222;color:#c0c0c0;padding:1em;overflow-x:auto;font-size:12px">
+                                                                        
+                                    <span style="color:#5f82c7"></span>                                    
+                                           min       maxrel      maxdiff
+pr                                       <span style="color:#b8956a">0.333</span>        <span style="color:#b8956a">0.333</span>        <span style="color:#5a9e6f">0.167</span>
+acc                                      <span style="color:#b8956a">0.333</span>        <span style="color:#b8956a">0.667</span>        <span style="color:#b8956a">0.667</span>
+tpr                                          <span style="color:#c75f5f">0</span>            <span style="color:#c75f5f">1</span>            <span style="color:#c75f5f">1</span>
+tnr                                      <span style="color:#b8956a">0.500</span>        <span style="color:#b8956a">0.500</span>        <span style="color:#b8956a">0.500</span>
+                                                                        
+
+</pre>
+
+Once stakeholder feedback is obtained, specific measure and
+reduction combinations can be declared as important. In this
+case, you will no longer need to construct reports via this
+mechanism; instead, 
+you can build [standalone measures](../quick.md) and
+combine them into a report of custom entries similarly to the
+following excerpt. 
+
+In the example, we first see the ability to modify
+FairBench-computed `.value` fields, which can be either
+a *Number* or, if the ideal (e.g., fully fair) value 
+is known, *TargetedNumber*. We can also call the `.rebase(name)`
+function to grant a custom name to computation results.
+Finally, reports and all computation outcomes
+are merely instances of `fb.core.Value`,
+whose *value* field can be passed as an argument,
+set as above, or not provided to indicate a collection of
+values. These values accept a `fb.core.Descriptor` (the *rebase*
+function just creates a copy with renamed descriptor) and
+a list of dependent computation outcomes.
+
+```python
+import fairbench as fb
+
+def custom_report(sensitive, predictions, labels):
+    prule = fb.quick.pairwise_maxrel_pr(sensitive=sensitive, predictions=predictions, labels=labels).rebase("prule")
+    prule.value = fb.core.TargetedNumber(1-float(prule), target=1.0)
+    return fb.core.Value(
+        descriptor=fb.core.Descriptor(name="custom report", role="assessment"),
+        depends=[
+            fb.quick.pairwise_wmean_acc(sensitive=sensitive, predictions=predictions, labels=labels).rebase("acc"),
+            fb.quick.pairwise_min_acc(sensitive=sensitive, predictions=predictions, labels=labels).rebase("min acc"),
+            prule,
+            fb.quick.pairwise_maxdiff_tpr(sensitive=sensitive, predictions=predictions, labels=labels).rebase("|Δtpr|"),
+            fb.quick.pairwise_maxdiff_tnr(sensitive=sensitive, predictions=predictions, labels=labels).rebase("|Δtnr|"),
+        ]
+    )
+```
+
+One-dimensional reports like the above 
+can be combined with the same mechanism as the one used to 
+generate [collections of reports](progress.md),
+so as to compare different experiment settings, like 
+different algorithms or datasets. Notice that all 
+provided string descriptions are name elements
+of the final results.
+
+```python
+sensitive = fb.Dimensions(men=[1, 1, 0, 0, 0], women=[0, 0, 1, 1, 1])
+labels=[1, 0, 0, 1, 0]
+predictionsA=[1, 0, 1, 0, 0]
+predictionsB=[1, 0, 1, 0, 1]
+
+# gather comparisons
+comparisons = fb.Progress("comparisons")
+comparisons["system A"] = custom_report(sensitive, predictionsA, labels)
+comparisons["system B"] = custom_report(sensitive, predictionsB, labels)
+
+# build and show the result
+comparisons.build().show(env=fb.export.ConsoleTable(transpose=True))
+```
+
+<pre style="font-family:monospace;background:#222222;color:#c0c0c0;padding:1em;overflow-x:auto;font-size:12px">
+                                                                                                  
+                                    <span style="color:#5f82c7">comparisons</span>                                                   
+                                           acc      min acc        prule       |Δtpr|       |Δtnr|
+system A custom report                   <span style="color:#b8956a">0.600</span>        <span style="color:#b8956a">0.333</span>        <span style="color:#b8956a">0.667</span>            <span style="color:#c75f5f">1</span>        <span style="color:#b8956a">0.500</span>
+system B custom report                   <span style="color:#b8956a">0.400</span>            <span style="color:#c75f5f">0</span>        <span style="color:#b8956a">0.750</span>            <span style="color:#c75f5f">1</span>            <span style="color:#c75f5f">1</span>
+</pre>
+

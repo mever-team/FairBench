@@ -14,9 +14,15 @@ via [reports](reports.md). Then,
 decide which of the concerns matter after drawing a broad enough
 picture (human-in-the-loop, consult with stakeholders). Finally,
 keep track of important concerns with standalone measures 
-covered in this tutorial (jump to the end to see what results look like).
+covered in this tutorial 
+(jump to the end to see what results look like).
 
 ![workflow visualization](fairbench.drawio.png)
+
+!!! tip
+    Find how to combine standalone measures of this tutorial
+    to compare algorithms and datasets by also visiting
+    the above-linked report documentation (near the end).
 
 !!! danger
     Domain knowledge is often used to immediately select measures, 
