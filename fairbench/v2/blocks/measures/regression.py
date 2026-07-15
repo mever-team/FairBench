@@ -37,7 +37,7 @@ def rmse(scores, targets, sensitive=None, score_bound=None):
     )
 
 
-@c.measure("mean square error")
+@c.measure("mean square error", unit=False)
 def mse(scores, targets, sensitive=None, score_bound=None):
     scores = np.array(scores, dtype=np.float64)
     targets = np.array(targets, dtype=np.float64)
@@ -89,9 +89,10 @@ def r2(scores, targets, sensitive=None, deg_freedom=0, score_bound=None):
 
 
 @c.measure("pinball deviation", unit=False)
-def pinball(scores, targets, sensitive=None, slope: float = 0.5):
+def pinball(scores, targets, sensitive=None, slope: float = 0.5, score_bound=None):
     scores = np.array(scores, dtype=np.float64)
     targets = np.array(targets, dtype=np.float64)
+    scores, targets, _ = c.transform.transform_scores(scores, targets, score_bound)
     sensitive = np.ones_like(scores) if sensitive is None else np.array(sensitive)
 
     num_sensitive = sensitive.sum()

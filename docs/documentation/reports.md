@@ -524,7 +524,7 @@ report.acc.largestmaxrel["True"].show(env=fb.export.HtmlTable)
 ## Custom reports
 
 Control what is being computed by reports
-by providing lists of base *measures* and *reductions*
+by passing lists of base *measures* and *reductions*
 to apply to those as report arguments. By default,
 all measures are provided, as well as all reductions
 that make sense for the report type. Note that providing

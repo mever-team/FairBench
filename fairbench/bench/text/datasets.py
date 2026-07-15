@@ -2,6 +2,7 @@ import random
 import json
 import os
 import warnings
+import hashlib
 
 
 class LLMDatasetGenerator:
@@ -86,3 +87,42 @@ def simplequestions(
         json.dump(dataset, file, indent=2)
 
     return dataset, dataset["reply"]
+
+
+def questiongrid(
+    model,
+    attributes: dict | LLMDatasetGenerator,
+    query_prototypes: list,
+    answer_search: str,
+    cache_prefix: str,
+    n=1000,
+    overwrite=False,
+):
+    all_x = dict()
+    all_y = list()
+    all_yhat = list()
+    length = 0
+    for desired, query_prototype in query_prototypes:
+        import fairbench as fb
+
+        x, reply = simplequestions(
+            model,
+            attributes=attributes,
+            query_prototype=query_prototype,
+            cache=fb.bench.cache(
+                cache_prefix
+                + str(n)
+                + hashlib.md5(query_prototype.encode()).hexdigest()
+                + ".json"
+            ),
+            n=n,
+            overwrite=overwrite,
+        )
+        all_y += [desired for _ in reply]
+        all_yhat += [answer_search(out) for out in reply]
+        for k, v in x.items():
+            if k not in all_x:
+                all_x[k] = [0.0] * length
+            all_x[k] += v
+        length += len(reply)
+    return all_x, all_y, all_yhat
