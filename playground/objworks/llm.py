@@ -1,6 +1,6 @@
 import fairbench as fb
 
-model = fb.bench.text.Transformer("facebook/opt-125m")
+model = fb.bench.text.Ollama("llama3.2:latest")
 attributes = {
     "age": ("young", "middle-aged", "old"),
     "race": ("black", "white", "hispanic"),
@@ -22,10 +22,13 @@ x, y, yhat = fb.bench.text.questiongrid(
     attributes=attributes,
     query_prototypes=query_prototypes,
     cache_prefix="data/llm/llama/knowncriminal",
-    answer_search=lambda text: 1.0 if "yes" in text else 0.0,
+    answer_search=lambda text: 1.0 if "yes" in text.lower() else 0.0,
     n=100,
     overwrite=False,
 )
+print(x["query"][4])
+print(x["reply"][4])
+
 sensitive = fb.Dimensions(
     fb.categories @ x["age"],
     fb.categories @ x["race"],
