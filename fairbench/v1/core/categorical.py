@@ -1,5 +1,3 @@
-from sklearn.externals.array_api_extra._lib import _at
-
 from fairbench.v1.core.compute import tobackend, istensor
 from fairbench.v1.core.fork import Fork
 from typing import Iterable, Mapping
