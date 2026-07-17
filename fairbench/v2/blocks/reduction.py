@@ -130,7 +130,11 @@ def pnorm(values, p=2):
         if value.value and isinstance(value.value, c.TargetedNumber)
     ]
     values = c.transform.number(values)
-    value = 0.0 if not values else float(sum(v**p for v in values) ** (1.0 / p))
+    value = (
+        0.0
+        if not values
+        else float((sum(v**p for v in values)) / len(values) ** (1.0 / p))
+    )
     return (
         c.TargetedNumber(value, target=targets[0], bound=bound)
         if len(targets) and len(set(targets)) == 1

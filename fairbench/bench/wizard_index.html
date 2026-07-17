@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fairbench Pipeline</title>
+<style>
+:root {
+  --bg: #f7f7f7;
+  --panel: #ffffff;
+  --border: #e3e3e3;
+
+  --text: #181818;
+  --muted: #6f6f6f;
+
+  --accent: #111111;
+  --accent-soft: #f3f3f3;
+
+  /* Very subtle semantic colors */
+  --ok: #5b7660;          /* muted sage */
+  --ok-soft: #f4f8f5;
+
+  --error: #8b6666;       /* muted rose */
+  --error-soft: #faf5f5;
+
+  --pill: #f3f3f3;
+  --pill-text: #5d6670;   /* muted slate */
+
+  --shadow:
+    0 1px 2px rgba(0,0,0,.04),
+    0 10px 24px rgba(0,0,0,.06);
+
+  --radius: 14px;
+}
+
+* {box-sizing: border-box;}
+.config-card.locked {opacity: .55;}
+.config-card.locked button {cursor: not-allowed;}
+body {
+  margin: 0;
+  padding: 36px;
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+}
+.pipeline {
+  max-width: 1400px;
+  margin: auto;
+}
+h1 {
+  margin: 0 0 28px;
+  font-size: 28px;
+  font-weight: 650;
+}
+.spinner {
+    display: inline-block;
+    width: 13px;
+    height: 13px;
+    margin-right: 8px;
+    border: 2px solid rgba(255,255,255,.45);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+    vertical-align: -2px;
+}
+
+@keyframes spin { to {transform: rotate(360deg);} }
+.config-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.config-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 240px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 22px;
+}
+
+.config-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.config-title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.status-pill {
+  background: var(--error-soft);
+  color: var(--error);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 9px;
+  border-radius: 999px;
+}
+.pill-success {
+  background: var(--ok-soft);
+  color: var(--ok);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 9px;
+  border-radius: 999px;
+}
+
+.config-body {flex: 1;}
+.summary-line {margin-bottom: 10px;}
+.summary-label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: .04em;
+  color: var(--muted);
+  margin-bottom: 3px;
+}
+.summary-value {
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.summary-list {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: .18s;
+}
+
+button:hover { transform: translateY(-1px); }
+
+button.primary {
+  background: var(--accent);
+  color: white;
+}
+
+button.secondary {
+  background: white;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+button:disabled {
+  opacity: .5;
+  cursor: default;
+  transform: none;
+}
+
+.viz-card {
+  background: white;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  padding: 20px;
+}
+
+.viz-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.viz-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+iframe {
+  width: 100%;
+  height: 720px;
+  border: 0px solid var(--border);
+  border-radius: 10px;
+  background: white;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,.35);
+  z-index: 1000;
+}
+
+.modal.open {
+  display: flex;
+}
+
+.modal-content {
+  width: 720px;
+  max-width: 92vw;
+  max-height: 88vh;
+  overflow-y: auto;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 25px 80px rgba(0,0,0,.25);
+  padding: 28px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.modal-title {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.close-btn {
+  background: none;
+  color: var(--muted);
+  font-size: 22px;
+  padding: 0;
+  width: 34px;
+  height: 34px;
+}
+
+.close-btn:hover {color: black;}
+.field {margin-bottom: 18px;}
+.field label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+input[type=text], input[type=number], select {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: white;
+  font-size: 14px;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.slider-row input[type=range] {
+  flex: 1;
+}
+
+.slider-value {
+  width: 40px;
+  text-align: right;
+  font-weight: 600;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.checkbox-row input {width: auto;}
+.attr-list {display: flex;flex-wrap: wrap;gap: 8px;}
+.attr-chip {
+  padding: 7px 13px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #fafafa;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 13px;
+  transition: .15s;
+}
+.attr-chip:hover {border-color: var(--accent);}
+.attr-chip.selected {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.error {
+  color: #d64545;
+  font-size: 13px;
+  margin-top: 14px;
+}
+
+
+@media (max-width: 1050px) {
+  .config-grid {grid-template-columns: 1fr;}
+  iframe {height: 600px;}
+}
+@media (max-width: 700px) {
+  body {padding: 18px;}
+  .modal-content {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    border-radius: 0;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="pipeline">
+    <h1>FairBench Demo</h1>
+    <div class="config-grid">
+        <div class="config-card" data-step="benchmark">
+            <div class="config-header">
+                <div class="config-title">1. Benchmark</div>
+                <div class="status-pill" id="bench-status">Not configured</div>
+            </div>
+            <div class="config-body" id="bench-summary">
+                <div class="summary-line">
+                    <span class="summary-label">Experiment setup to analyze.</span>
+                    <div class="summary-value">...</div>
+                </div>
+            </div>
+            <div class="card-footer"><button class="primary" onclick="openModal('benchmark')"> Edit</button></div>
+        </div>
+
+        <div class="config-card" data-step="sensitive">
+            <div class="config-header">
+                <div class="config-title">2. Sensitive attributes</div>
+                <div class="status-pill" id="sensitive-status">Not configured</div>
+            </div>
+            <div class="config-body" id="sensitive-summary">
+                <div class="summary-line">
+                    <span class="summary-label">Which demographic characteristics separate the population into groups that should not be discriminated?</span>
+                    <div class="summary-value">...</div>
+                </div>
+            </div>
+            <div class="card-footer"><button class="primary" onclick="openModal('sensitive')">Edit </button></div>
+        </div>
+
+        <div class="config-card" data-step="report">
+            <div class="config-header">
+                <div class="config-title">3. Fairness report</div>
+                <div class="status-pill" id="report-status"> Not configured</div>
+            </div>
+            <div class="config-body" id="report-summary">
+                <div class="summary-line">
+                    <span class="summary-label">What kind of report should FairBench generate, and how it should be formatted.</span>
+                    <div class="summary-value">...</div>
+                </div>
+            </div>
+            <div class="card-footer"><button class="primary" onclick="openModal('report')">Edit</button></div>
+        </div>
+    </div>
+    <div class="viz-card" id="viz-wrap" style="display:none"><iframe id="viz-frame"></iframe></div>
+</div>
+
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title" id="modal-title"></div>
+            <button class="close-btn" onclick="closeModal()">×</button>
+        </div>
+        <div id="modal-body"></div>
+        <div class="error" id="modal-error"></div>
+        <div class="modal-footer">
+            <button class="secondary" onclick="closeModal()">Cancel</button>
+            <button class="primary" id="modal-save">Save</button>
+        </div>
+    </div>
+</div>
+
+<template id="benchmark-template">
+    <div class="field">
+        <label>Benchmark</label>
+        <select id="bench-select"></select>
+    </div>
+    <div id="bench-params"></div>
+</template>
+<template id="sensitive-template">
+    <div class="field">
+        <label>Sensitive attributes</label>
+        <div class="attr-list" id="attr-list"></div>
+    </div>
+    <div class="field">
+        <label>discrete_threshold</label>
+        <input id="discrete-threshold" type="number" value="10">
+    </div>
+    <div class="checkbox-row">
+        <input id="intersectional-check" type="checkbox">
+        <label> Intersectional</label>
+    </div>
+    <div class="field" id="min-size-row" style="display:none">
+        <label>Minimum group size</label>
+        <input id="min-size" type="number" value="5">
+    </div>
+    <div class="checkbox-row">
+        <input id="strict-check"  type="checkbox">
+        <label>Strict mode</label>
+    </div>
+</template>
+<template id="report-template">
+    <div class="field">
+        <label>Report</label>
+        <select id="report-select"></select>
+    </div>
+    <div id="report-params"> </div>
+    <div class="field">
+        <label>Visualization</label>
+        <select id="visualization-select"></select>
+    </div>
+    <div class="field">
+        <label>Depth</label>
+        <div class="slider-row">
+            <input id="depth-slider" type="range" min="0" max="4" value="0">
+            <span class="slider-value" id="depth-value">0</span>
+        </div>
+    </div>
+</template>
+
+<script>
+let pipelineState = {
+    benchmark: false,
+    sensitive: false,
+    report: false
+};
+function setStepAvailability(step, enabled) {
+    const button = document.querySelector(`.config-card[data-step="${step}"] button`);
+    const card = document.querySelector(`.config-card[data-step="${step}"]`);
+    if (!button || !card)  return;
+    button.disabled = !enabled;
+    card.classList.toggle("locked", !enabled);
+}
+
+let schemas = null;
+let selectedAttrs = new Set();
+let currentModal = null;
+
+async function api(path, opts = {}) {
+    const res = await fetch(path, opts);
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Request failed");
+    return data;
+}
+
+function renderParamFields(container, schema, prefix) {
+    container.innerHTML = "";
+    for (const [name, spec] of Object.entries(schema)) {
+        const field = document.createElement("div");
+        field.className = "field";
+        const label = document.createElement("label");
+        label.textContent = spec.label || name;
+        field.appendChild(label);
+
+        let input;
+        if (spec.type === "bool") {
+            input = document.createElement("input");
+            input.type = "checkbox";
+            input.checked = !!spec.default;
+        } else if (
+            ["slider_float",
+             "slider_int",
+             "train_percent"]
+             .includes(spec.type)
+        ) {
+            const row = document.createElement("div");
+            row.className = "slider-row";
+            input = document.createElement("input");
+            input.type = "range";
+            input.min = spec.min ?? 0;
+            input.max = spec.max ?? 100;
+            input.step = spec.step ?? 1;
+            input.value = spec.default;
+            const value = document.createElement("span");
+            value.className = "slider-value";
+            const suffix = spec.type === "train_percent" ? "%" : "";
+            value.textContent = input.value + suffix;
+            input.oninput = () => value.textContent = input.value + suffix;
+            row.append(input, value);
+            field.appendChild(row);
+        } else {
+            input = document.createElement("input");
+            input.type = ["int", "float"].includes(spec.type)  ? "number" : "text";
+            if (spec.type === "float") input.step = "0.01";
+            input.value = spec.default ?? "";
+        }
+        if (input) {
+            input.id = `${prefix}-param-${name}`;
+            input.dataset.type = spec.type;
+            field.appendChild(input);
+        }
+        container.appendChild(field);
+    }
+}
+
+
+function collectParams(container, prefix) {
+    const out = {};
+    container
+        .querySelectorAll(`[id^="${prefix}-param-"]`)
+        .forEach(input => {
+            const key = input.id.replace(prefix + "-param-", "");
+            out[key] = input.dataset.type === "bool"? input.checked: input.value;
+        });
+    return out;
+}
+
+function openModal(type) {
+    currentModal = type;
+    const modal = document.getElementById("modal");
+    const body = document.getElementById("modal-body");
+    const title = document.getElementById("modal-title");
+    body.innerHTML = "";
+    document.getElementById("modal-error").textContent = "";
+    if (type === "benchmark") {
+        title.textContent = "Edit benchmark";
+        body.appendChild(document.getElementById("benchmark-template").content.cloneNode(true));
+        setupBenchmarkModal();
+    }
+    modal.classList.add("open");
+}
+
+function closeModal() {
+    document.getElementById("modal").classList.remove("open");
+    document.getElementById("modal-body").innerHTML = "";
+    currentModal = null;
+}
+
+function setupBenchmarkModal() {
+    const select = document.getElementById( "bench-select");
+    for (const [key, spec] of Object.entries(schemas.benches)) {
+        const opt = document.createElement("option");
+        opt.value = key;
+        opt.textContent = spec.label || key;
+        select.appendChild(opt);
+    }
+    renderParamFields(document.getElementById("bench-params"), schemas.benches[select.value].params, "bench");
+    select.onchange = () => renderParamFields(
+        document.getElementById("bench-params"),
+        schemas.benches[select.value].params,
+        "bench"
+    );
+    document .getElementById("modal-save").onclick = saveBenchmark;
+}
+
+async function saveBenchmark() {
+    const error = document.getElementById("modal-error");
+    error.textContent = "";
+    try {
+        resetStep("sensitive");
+        resetStep("report");
+        setModalLoading(true);
+        const bench = document.getElementById("bench-select" ).value;
+        const params = collectParams(document.getElementById("bench-params"), "bench");
+        const result =
+            await api(
+                "/api/bench/run",
+                {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({bench, params})
+                }
+            );
+        updateBenchmarkSummary(bench, result.summary);
+        pipelineState.benchmark = true;
+        setStepAvailability("sensitive", true);
+        closeModal();
+        document.getElementById("sensitive-status").textContent = "Ready";
+        const attrs = await api("/api/attrs");
+        selectedAttrs = new Set();
+        const list = document.getElementById("attr-list");
+        if (list) list.innerHTML = "";
+        attrs.attrs.forEach(a => {
+            const chip = document.createElement("div");
+            chip.className = "attr-chip";
+            chip.textContent = a;
+            chip.onclick = () => {
+                if (selectedAttrs.has(a)) {
+                    selectedAttrs.delete(a);
+                    chip.classList.remove("selected");
+                } else {
+                    selectedAttrs.add(a);
+                    chip.classList.add("selected");
+                }
+            };
+            if (list) list.appendChild(chip);
+        });
+    }
+    catch(e) { error.textContent = e.message; }
+    finally { setModalLoading(false);}
+}
+
+
+
+function updateBenchmarkSummary(name, summary) {
+    document.getElementById("bench-summary").innerHTML = `
+        <div class="summary-line">
+            <span class="summary-label">Experiment setup to analyze.</span>
+            <div class="summary-value">${name}</div>
+        </div>
+        <ul class="summary-list">
+            <li>data attributes: ${summary.x_keys}</li>
+            <li>number of samples: ${summary.len_y}</li>
+        </ul>
+    `;
+    document.getElementById("bench-status").textContent = "Configured";
+    document.getElementById("bench-status").className = "pill-success"
+}
+
+function setupSensitiveModal() {
+    const list = document.getElementById("attr-list");
+    list.innerHTML = "";
+    selectedAttrs.forEach(a => {
+        const chip = document.createElement("div");
+        chip.className = "attr-chip selected";
+        chip.textContent = a;
+        chip.onclick = () => {
+            selectedAttrs.delete(a);
+            chip.classList.remove("selected");
+        };
+        list.appendChild(chip);
+    });
+
+    api("/api/attrs")
+        .then(data => {
+            data.attrs.forEach(a => {
+                if (selectedAttrs.has(a)) return;
+                const chip = document.createElement("div");
+                chip.className = "attr-chip";
+                chip.textContent = a;
+                chip.onclick = () => {
+                    if (selectedAttrs.has(a)) {
+                        selectedAttrs.delete(a);
+                        chip.classList.remove("selected");
+                    } else {
+                        selectedAttrs.add(a);
+                        chip.classList.add("selected");
+                    }
+                };
+                list.appendChild(chip);
+            });
+        });
+
+
+    const intersectional = document.getElementById("intersectional-check");
+    const minRow = document.getElementById("min-size-row");
+    intersectional.onchange = () => minRow.style.display = intersectional.checked? "block": "none";
+    document.getElementById("modal-save").onclick = saveSensitive;
+}
+
+function openSensitiveModal() {
+    currentModal = "sensitive";
+    document.getElementById("modal-title").textContent = "Edit sensitive attributes";
+    const body = document.getElementById("modal-body");
+    body.innerHTML = "";
+    body.appendChild(document.getElementById("sensitive-template").content.cloneNode(true));
+    document.getElementById("modal").classList.add("open");
+    setupSensitiveModal();
+}
+
+async function saveSensitive() {
+    setModalLoading(true);
+    const error = document.getElementById("modal-error");
+    error.textContent = "";
+    try {
+        setModalLoading(true);
+        resetStep("report");
+        const intersectional = document.getElementById( "intersectional-check").checked;
+        const strict = document.getElementById("strict-check").checked;
+        const min_size =Number(document.getElementById("min-size").value || 0);
+        const discrete_threshold = Number(document.getElementById("discrete-threshold").value || 10);
+        const result =
+            await api(
+                "/api/sensitive/run",
+                {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({
+                        attrs:[...selectedAttrs],
+                        intersectional,
+                        strict,
+                        min_size,
+                        discrete_threshold
+                    })
+                }
+            );
+        updateSensitiveSummary(result.summary);
+        pipelineState.sensitive = true;
+        setStepAvailability("report", true);
+        closeModal();
+    }
+    catch(e) {error.textContent = e.message;}
+    finally {setModalLoading(false);}
+}
+
+function updateSensitiveSummary(summary) {
+    document.getElementById("sensitive-summary").innerHTML = `
+        <div class="summary-line">
+            <span class="summary-label">Which demographic characteristics separate the population into groups that should not be discriminated?</span>
+            <div class="summary-value">${[...selectedAttrs].join(", ")|| "None"}</div>
+        </div>
+        <ul class="summary-list">
+            <li>groups:${summary.num_groups} </li>
+            <li>intersectional:${summary.intersectional? "yes" : "no"}</li>
+        </ul>
+    `;
+    document.getElementById("sensitive-status").textContent = "Configured";
+    document.getElementById("sensitive-status").className = "pill-success"
+}
+
+function openReportModal() {
+    currentModal = "report";
+    document.getElementById("modal-title").textContent = "Edit fairness report";
+    const body = document.getElementById("modal-body");
+    body.innerHTML = "";
+    body.appendChild(document.getElementById("report-template").content.cloneNode(true));
+    document.getElementById("modal").classList.add("open");
+    setupReportModal();
+}
+
+function setupReportModal() {
+    const report = document.getElementById("report-select");
+    Object.entries(schemas.reports).forEach(([key, spec]) => {
+        const option = document.createElement("option");
+        option.value = key;
+        option.textContent =spec.label || key;
+        report.appendChild(option);
+    });
+    renderParamFields(document.getElementById("report-params"), schemas.reports[report.value].params, "report");
+    report.onchange = () => renderParamFields(document.getElementById("report-params"), schemas.reports[report.value].params, "report");
+    const vis = document.getElementById("visualization-select");
+    Object.entries(schemas.visualizations).forEach(([key, spec]) => {
+        const option = document.createElement("option");
+        option.value = key;
+        option.textContent = spec.label || key;
+        vis.appendChild(option);
+    });
+    document.getElementById("depth-slider").oninput = e => document.getElementById("depth-value").textContent = e.target.value;
+    document.getElementById("modal-save").onclick = saveReport;
+}
+
+function resetStep(step) {
+    pipelineState[step] = false;
+    document.getElementById(`${step}-status`).textContent = "Not configured";
+    document.getElementById(`${step}-status`).className = "status-pill";
+    if (step === "sensitive") {
+        document.getElementById("sensitive-summary").innerHTML = `
+            <div class="summary-line">
+                <span class="summary-label">
+                    Which demographic characteristics separate the population into groups that should not be discriminated?
+                </span>
+                <div class="summary-value">...</div>
+            </div>
+        `;
+        setStepAvailability("report", false);
+    }
+    if (step === "report") {
+        document.getElementById("report-summary").innerHTML = `
+            <div class="summary-line">
+                <span class="summary-label">What kind of report should FairBench generate, and how it should be formatted.</span>
+                <div class="summary-value">...</div>
+            </div>
+        `;
+        document.getElementById("viz-wrap").style.display = "none";
+        document.getElementById("viz-frame").src = "";
+    }
+}
+
+async function saveReport() {
+    const error = document.getElementById("modal-error");
+    error.textContent = "";
+    try {
+        setModalLoading(true);
+        const report =document.getElementById("report-select").value;
+        const params = collectParams(document.getElementById("report-params"),"report");
+        const depth = Number(document.getElementById("depth-slider").value);
+        const visualization = document.getElementById("visualization-select").value;
+        await api(
+            "/api/report/run",
+            {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({report, params, depth, visualization })
+            }
+        );
+        updateReportSummary(report, visualization, depth);
+        closeModal();
+        document.getElementById("viz-wrap").style.display = "block";
+        document.getElementById("viz-frame").src = "/api/visualization?" + Date.now();
+    }
+    catch(e) { error.textContent = e.message; }
+    finally { setModalLoading(false); }
+}
+
+function updateReportSummary(report, visualization, depth) {
+    document.getElementById("report-summary").innerHTML = `
+        <div class="summary-line">
+            <span class="summary-label">What kind of report should FairBench generate, and how it should be formatted.</span>
+            <div class="summary-value">${report}</div>
+        </div>
+        <ul class="summary-list">
+            <li>visualization: ${visualization}</li>
+            <li> depth: ${depth}</li>
+        </ul>
+    `;
+    document.getElementById("report-status").textContent = "Configured";
+    document.getElementById("report-status").className = "pill-success"
+}
+
+
+const oldOpenModal = openModal;
+openModal = function(type) {
+    if (type === "sensitive" && !pipelineState.benchmark) return;
+    if (type === "report" && !pipelineState.sensitive) return;
+    if (type === "benchmark") return oldOpenModal(type);
+    if (type === "sensitive") return openSensitiveModal();
+    if (type === "report") return openReportModal();
+};
+function setModalLoading(loading) {
+    const save = document.getElementById("modal-save");
+    const cancel = document.querySelector(".modal-footer .secondary");
+    if (!save) return;
+    if (loading) {
+        save.disabled = true;
+        save.innerHTML = `<span class="spinner"></span>Running...`;
+        if (cancel) {
+            cancel.disabled = true;
+            cancel.style.opacity = ".5";
+            cancel.style.cursor = "not-allowed";
+        }
+    } else {
+        save.disabled = false;
+        save.textContent = "Save";
+        if (cancel) {
+            cancel.disabled = false;
+            cancel.textContent = "Cancel";
+            cancel.style.opacity = "";
+            cancel.style.cursor = "";
+        }
+    }
+}
+
+async function init() {
+  schemas = await api("/api/schemas");
+  document.getElementById("modal").onclick = e => { if ( e.target.id === "modal") closeModal();};
+  document.getElementById("modal-save").disabled = false;
+  setStepAvailability("benchmark", true);
+  setStepAvailability("sensitive", false);
+  setStepAvailability("report", false);
+}
+
+init();
+</script>
+</body>
+</html>

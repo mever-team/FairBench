@@ -442,10 +442,14 @@ class Html:
         return bootstrap_html
 
     def show(self):
+        text = self._create_text()
         if self.filename is None:
-            return self._create_text()
+            return text
         with open(f"{self.filename}.html", "w", encoding="utf-8") as temp_file:
-            temp_file.write(self._create_text())
+            temp_file.write(text)
             temp_file_path = temp_file.name
         if self.view:
-            webbrowser.open(f"{temp_file_path}")
+            from fairbench.fallbacks.jupyter import display_or_open_html
+
+            display_or_open_html(temp_file_path, text)
+        return None

@@ -1,3 +1,5 @@
+from sklearn.externals.array_api_extra._lib import _at
+
 from fairbench.v1.core.compute import tobackend, istensor
 from fairbench.v1.core.fork import Fork
 from typing import Iterable, Mapping
@@ -110,3 +112,23 @@ def fuzzy(x):
         return x * 0
     x = (x - minx) / (maxx - minx)
     return {f"large {float(maxx):.3f}": x, f"small {float(minx):.3f}": 1 - x}
+
+
+def autotype(discrete_threshold=10):
+    @Transform
+    def _autounpack(x):
+        assert isinstance(x, Iterable)
+        if isinstance(x, Mapping):
+            return Categorical(x)
+        x = [value for value in x]
+        is_number = True
+        for value in x:
+            try:
+                float(value)
+            except:
+                is_number = False
+        if is_number and len(set(x)) > discrete_threshold:
+            return fuzzy @ x
+        return categories @ x
+
+    return _autounpack
