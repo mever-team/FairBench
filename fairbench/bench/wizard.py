@@ -94,6 +94,7 @@ STATE = {
     "html": None,
 }
 
+
 def resolve(root, dotted_path):
     obj = root
     for part in dotted_path.split("."):
@@ -126,6 +127,7 @@ def build_params(schema, submitted):
         elif "default" in spec:
             out[name] = coerce(spec["default"], spec["type"])
     return out
+
 
 def run_bench(body):
     bench_key = body.get("bench")
@@ -206,6 +208,7 @@ def run_sensitive(body):
         },
     }
 
+
 def run_report(body):
     if STATE["sensitive"] is None:
         raise ValueError("Run the sensitive attribute step first")
@@ -254,13 +257,18 @@ def run_report(body):
         }
     }
 
+
 def get_schemas():
     return {
-        "benches": {bench: {k: v for k,v in BENCH_REGISTRY[bench].items() if not callable(v)} for bench in BENCH_REGISTRY},
+        "benches": {
+            bench: {k: v for k, v in BENCH_REGISTRY[bench].items() if not callable(v)}
+            for bench in BENCH_REGISTRY
+        },
         "reports": REPORT_REGISTRY,
         "filters": FILTER_REGISTRY,
         "visualizations": {k: {"label": v["label"]} for k, v in VIS_REGISTRY.items()},
     }
+
 
 ROUTES_GET = {
     "/api/schemas": lambda: get_schemas(),
