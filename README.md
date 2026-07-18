@@ -79,6 +79,24 @@ stable (currently 3.12).*
 - [Discord](https://discord.gg/WwQWFSjSWZ) server invite. 
 - [Benchmarks](benchmarks/README.md)
 
+
+## 🪄 UI for pipeline exploration
+
+Run a FairBench pipeline creation wizard like below, and access it
+locally from your browser in the address http://0.0.0.0:8000 . 
+This can help quickly find your way around the library for performing certain 
+simple tasks, as is immediately shows the output of combining certain
+options and their code equivalent. 
+[Read these docs](https://fairbench.readthedocs.io/reports/) 
+ob how to programmatically add your own experiment setups to the the pipeline. 
+
+```shell
+python -m fairbench.bench.wizard
+```
+
+![pipeline wizard](docs/wizard.png)
+
+
 ## ⚡ Quick measure
 
 Non‑technical users can run the same 
