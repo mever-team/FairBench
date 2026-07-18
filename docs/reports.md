@@ -21,7 +21,7 @@ covered in the [quickstart](quick.md).
 Most steps described in this tutorial can be explored via a browser interface.
 This can be started via the following command, and even customized to include
 experiment setups of your own. The interface can also export FairBench code
-for running the same pipeline yourself, without needing to wade through the
+for running the same pipeline programmatically, without needing to wade through the
 documentation.
 
 ```shell
