@@ -18,6 +18,44 @@ covered in the [quickstart](quick.md).
 
 ![workflow visualization](fairbench.drawio.png)
 
+Most steps described in this tutorial can be explored via a browser interface.
+This can be started via the following command, and even customized to include
+experiment setups of your own. The interface can also export FairBench code
+for running the same pipeline yourself, without needing to wade through the
+documentation.
+
+```shell
+python -m fairbench.bench.wizard
+```
+
+
+![pipeline wizard](wizard.png)
+
+<details>
+<summary>How ro run the pipeline creator with custom setups.</summary>
+
+Given a function that runs your experiment setup, 
+manually start a wizard that contains custom experiment setups
+like below. Setups declared this way 
+are processed through the whole pipeline. Of the
+outputs, `y` and `yhat` should duck-type iterables and `x` a dictionary
+of categorical or numerical columns.
+
+```python
+import fairbench as fb
+from fairbench.bench.wizard import BENCH_REGISTRY
+
+BENCH_REGISTRY["custom"] = {
+    "label": "Custom experiment (declared programmatically)",
+    "func": lambda: fb.bench.tabular.compas(),
+}
+
+if __name__ == "__main__":
+    fb.bench.serve_wizard(port=8000)
+```
+
+</details>
+
 
 ## 1. Prepare data
 
