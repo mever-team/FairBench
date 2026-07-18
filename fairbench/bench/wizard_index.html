@@ -51,11 +51,28 @@ body {
   max-width: 1400px;
   margin: auto;
 }
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+  gap: 16px;
+}
 h1 {
-  margin: 0 0 28px;
+  margin: 0;
   font-size: 28px;
   font-weight: 650;
 }
+.code-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  border: 1px solid var(--border);
+  color: var(--text);
+  white-space: nowrap;
+}
+.code-btn:disabled {opacity: .45; cursor: not-allowed; transform: none;}
 .spinner {
     display: inline-block;
     width: 13px;
@@ -225,6 +242,10 @@ iframe {
   padding: 28px;
 }
 
+.modal-content.wide {
+  width: 860px;
+}
+
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -291,6 +312,9 @@ input:focus, select:focus {
   align-items: center;
   gap: 10px;
   margin-bottom: 12px;
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 600;
 }
 
 .checkbox-row input {width: auto;}
@@ -326,6 +350,31 @@ input:focus, select:focus {
   margin-top: 14px;
 }
 
+.code-block {
+  background: #161616;
+  color: #e7e7e7;
+  border-radius: 10px;
+  padding: 18px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12.5px;
+  line-height: 1.6;
+  white-space: pre;
+  overflow-x: auto;
+}
+.code-block .tok-kw   {color: #ff7ab2; font-weight: 600;}
+.code-block .tok-str  {color: #9dd67a;}
+.code-block .tok-num  {color: #d7a7ff;}
+.code-block .tok-com  {color: #7a7a7a; font-style: italic;}
+.code-block .tok-fn   {color: #7fc6ff;}
+.code-block .tok-mod  {color: #ffd479;}
+.code-block .tok-bool {color: #ff9d5c;}
+
+.code-note {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 12px;
+}
+
 
 @media (max-width: 1050px) {
   .config-grid {grid-template-columns: 1fr;}
@@ -340,13 +389,17 @@ input:focus, select:focus {
     max-height: none;
     border-radius: 0;
   }
+  .page-header {flex-wrap: wrap;}
 }
 </style>
 </head>
 <body>
 
 <div class="pipeline">
-    <h1>FairBench Demo</h1>
+    <div class="page-header">
+        <h1>FairBench pipeline creator</h1>
+        <button class="secondary code-btn" id="code-export-btn" onclick="openCodeModal()" disabled>Python code</button>
+    </div>
     <div class="config-grid">
         <div class="config-card" data-step="benchmark">
             <div class="config-header">
@@ -394,14 +447,14 @@ input:focus, select:focus {
 </div>
 
 <div class="modal" id="modal">
-    <div class="modal-content">
+    <div class="modal-content" id="modal-content">
         <div class="modal-header">
             <div class="modal-title" id="modal-title"></div>
             <button class="close-btn" onclick="closeModal()">×</button>
         </div>
         <div id="modal-body"></div>
         <div class="error" id="modal-error"></div>
-        <div class="modal-footer">
+        <div class="modal-footer" id="modal-footer">
             <button class="secondary" onclick="closeModal()">Cancel</button>
             <button class="primary" id="modal-save">Save</button>
         </div>
@@ -417,24 +470,24 @@ input:focus, select:focus {
 </template>
 <template id="sensitive-template">
     <div class="field">
-        <label>Sensitive attributes</label>
+        <label>Select from available attributes</label>
         <div class="attr-list" id="attr-list"></div>
     </div>
     <div class="field">
-        <label>discrete_threshold</label>
+        <label>Discrete threshold; if numerical attributes have less than these distinct values (e.g., only 0 and 1) they are considered categorical.</label>
         <input id="discrete-threshold" type="number" value="10">
     </div>
     <div class="checkbox-row">
         <input id="intersectional-check" type="checkbox">
-        <label> Intersectional</label>
+        <label> Intersectional analysis that considers also sensitive attribute groups intersections.</label>
     </div>
     <div class="field" id="min-size-row" style="display:none">
-        <label>Minimum group size</label>
+        <label>Minimum group size, where groups with fewer members are ignored.</label>
         <input id="min-size" type="number" value="5">
     </div>
     <div class="checkbox-row">
         <input id="strict-check"  type="checkbox">
-        <label>Strict mode</label>
+        <label>Strict mode that skips groups whose subgroups are also analyzed.</label>
     </div>
 </template>
 <template id="report-template">
@@ -444,11 +497,16 @@ input:focus, select:focus {
     </div>
     <div id="report-params"> </div>
     <div class="field">
+        <label>Filter</label>
+        <select id="filter-select"></select>
+    </div>
+    <div id="filter-params"></div>
+    <div class="field">
         <label>Visualization</label>
         <select id="visualization-select"></select>
     </div>
     <div class="field">
-        <label>Depth</label>
+        <label>Detail depth in visualization</label>
         <div class="slider-row">
             <input id="depth-slider" type="range" min="0" max="4" value="0">
             <span class="slider-value" id="depth-value">0</span>
@@ -462,6 +520,15 @@ let pipelineState = {
     sensitive: false,
     report: false
 };
+
+// Raw configuration captured at each save step, used to generate equivalent
+// FairBench python code once the whole pipeline has run.
+let codeState = {
+    bench: null,      // {key, label, params}
+    sensitive: null,  // {attrs, intersectional, strict, min_size, discrete_threshold}
+    report: null       // {key, label, params, visualization, depth}
+};
+
 function setStepAvailability(step, enabled) {
     const button = document.querySelector(`.config-card[data-step="${step}"] button`);
     const card = document.querySelector(`.config-card[data-step="${step}"]`);
@@ -480,8 +547,7 @@ async function api(path, opts = {}) {
     if (!res.ok) throw new Error(data.error || "Request failed");
     return data;
 }
-
-function renderParamFields(container, schema, prefix) {
+function renderParamFields(container, schema, prefix, values = {}) {
     container.innerHTML = "";
     for (const [name, spec] of Object.entries(schema)) {
         const field = document.createElement("div");
@@ -489,18 +555,14 @@ function renderParamFields(container, schema, prefix) {
         const label = document.createElement("label");
         label.textContent = spec.label || name;
         field.appendChild(label);
-
+        const savedValue = values[name] !== undefined ? values[name] : spec.default;
         let input;
         if (spec.type === "bool") {
             input = document.createElement("input");
             input.type = "checkbox";
-            input.checked = !!spec.default;
-        } else if (
-            ["slider_float",
-             "slider_int",
-             "train_percent"]
-             .includes(spec.type)
-        ) {
+            input.checked = !!savedValue;
+        }
+        else if (["slider_float", "slider_int", "train_percent"].includes(spec.type)) {
             const row = document.createElement("div");
             row.className = "slider-row";
             input = document.createElement("input");
@@ -508,29 +570,30 @@ function renderParamFields(container, schema, prefix) {
             input.min = spec.min ?? 0;
             input.max = spec.max ?? 100;
             input.step = spec.step ?? 1;
-            input.value = spec.default;
+            input.value = savedValue;
             const value = document.createElement("span");
             value.className = "slider-value";
-            const suffix = spec.type === "train_percent" ? "%" : "";
+            const suffix = spec.type === "train_percent"? "%": "";
             value.textContent = input.value + suffix;
-            input.oninput = () => value.textContent = input.value + suffix;
+            input.oninput = () =>  value.textContent = input.value + suffix;
             row.append(input, value);
             field.appendChild(row);
-        } else {
+        }
+        else {
             input = document.createElement("input");
-            input.type = ["int", "float"].includes(spec.type)  ? "number" : "text";
+            input.type = ["int", "float"].includes(spec.type)? "number": "text";
             if (spec.type === "float") input.step = "0.01";
-            input.value = spec.default ?? "";
+            input.value = savedValue ?? "";
         }
         if (input) {
             input.id = `${prefix}-param-${name}`;
             input.dataset.type = spec.type;
-            field.appendChild(input);
+            if (!["slider_float", "slider_int", "train_percent"].includes(spec.type))
+                field.appendChild(input);
         }
         container.appendChild(field);
     }
 }
-
 
 function collectParams(container, prefix) {
     const out = {};
@@ -543,9 +606,20 @@ function collectParams(container, prefix) {
     return out;
 }
 
+function resetModalFooter() {
+    const footer = document.getElementById("modal-footer");
+    footer.style.display = "flex";
+    footer.innerHTML = `
+        <button class="secondary" onclick="closeModal()">Cancel</button>
+        <button class="primary" id="modal-save">Save</button>
+    `;
+}
+
 function openModal(type) {
     currentModal = type;
     const modal = document.getElementById("modal");
+    document.getElementById("modal-content").classList.remove("wide");
+    resetModalFooter();
     const body = document.getElementById("modal-body");
     const title = document.getElementById("modal-title");
     body.innerHTML = "";
@@ -600,6 +674,14 @@ async function saveBenchmark() {
                 }
             );
         updateBenchmarkSummary(bench, result.summary);
+        codeState.bench = {
+            key: bench,
+            label: (schemas.benches[bench] && schemas.benches[bench].label) || bench,
+            params
+        };
+        codeState.sensitive = null;
+        codeState.report = null;
+        refreshCodeButton();
         pipelineState.benchmark = true;
         setStepAvailability("sensitive", true);
         closeModal();
@@ -646,48 +728,44 @@ function updateBenchmarkSummary(name, summary) {
 }
 
 function setupSensitiveModal() {
+    const state = codeState.sensitive;
     const list = document.getElementById("attr-list");
     list.innerHTML = "";
-    selectedAttrs.forEach(a => {
-        const chip = document.createElement("div");
-        chip.className = "attr-chip selected";
-        chip.textContent = a;
-        chip.onclick = () => {
-            selectedAttrs.delete(a);
-            chip.classList.remove("selected");
-        };
-        list.appendChild(chip);
-    });
-
-    api("/api/attrs")
-        .then(data => {
-            data.attrs.forEach(a => {
-                if (selectedAttrs.has(a)) return;
-                const chip = document.createElement("div");
-                chip.className = "attr-chip";
-                chip.textContent = a;
-                chip.onclick = () => {
-                    if (selectedAttrs.has(a)) {
-                        selectedAttrs.delete(a);
-                        chip.classList.remove("selected");
-                    } else {
-                        selectedAttrs.add(a);
-                        chip.classList.add("selected");
-                    }
-                };
-                list.appendChild(chip);
-            });
+    api("/api/attrs").then(data => {
+        data.attrs.forEach(a => {
+            const chip = document.createElement("div");
+            chip.className = "attr-chip";
+            chip.textContent = a;
+            if (selectedAttrs.has(a)) chip.classList.add("selected");
+            chip.onclick = () => {
+                if (selectedAttrs.has(a)) {
+                    selectedAttrs.delete(a);
+                    chip.classList.remove("selected");
+                } else {
+                    selectedAttrs.add(a);
+                    chip.classList.add("selected");
+                }
+            };
+            list.appendChild(chip);
         });
-
-
+    });
+    if (state) {
+        document.getElementById("intersectional-check").checked = state.intersectional;
+        document.getElementById("strict-check").checked = state.strict;
+        document.getElementById("min-size").value = state.min_size;
+        document.getElementById("discrete-threshold").value = state.discrete_threshold;
+    }
     const intersectional = document.getElementById("intersectional-check");
     const minRow = document.getElementById("min-size-row");
-    intersectional.onchange = () => minRow.style.display = intersectional.checked? "block": "none";
+    minRow.style.display = intersectional.checked ? "block" : "none";
+    intersectional.onchange = () => { minRow.style.display = intersectional.checked ? "block" : "none";};
     document.getElementById("modal-save").onclick = saveSensitive;
 }
 
 function openSensitiveModal() {
     currentModal = "sensitive";
+    document.getElementById("modal-content").classList.remove("wide");
+    resetModalFooter();
     document.getElementById("modal-title").textContent = "Edit sensitive attributes";
     const body = document.getElementById("modal-body");
     body.innerHTML = "";
@@ -723,6 +801,15 @@ async function saveSensitive() {
                 }
             );
         updateSensitiveSummary(result.summary);
+        codeState.sensitive = {
+            attrs: [...selectedAttrs],
+            intersectional,
+            strict,
+            min_size,
+            discrete_threshold
+        };
+        codeState.report = null;
+        refreshCodeButton();
         pipelineState.sensitive = true;
         setStepAvailability("report", true);
         closeModal();
@@ -748,6 +835,8 @@ function updateSensitiveSummary(summary) {
 
 function openReportModal() {
     currentModal = "report";
+    document.getElementById("modal-content").classList.remove("wide");
+    resetModalFooter();
     document.getElementById("modal-title").textContent = "Edit fairness report";
     const body = document.getElementById("modal-body");
     body.innerHTML = "";
@@ -757,15 +846,21 @@ function openReportModal() {
 }
 
 function setupReportModal() {
+    const saved = codeState.report;
     const report = document.getElementById("report-select");
     Object.entries(schemas.reports).forEach(([key, spec]) => {
         const option = document.createElement("option");
         option.value = key;
-        option.textContent =spec.label || key;
+        option.textContent = spec.label || key;
         report.appendChild(option);
     });
-    renderParamFields(document.getElementById("report-params"), schemas.reports[report.value].params, "report");
-    report.onchange = () => renderParamFields(document.getElementById("report-params"), schemas.reports[report.value].params, "report");
+    if (saved) report.value = saved.key;
+    renderParamFields(document.getElementById("report-params"), schemas.reports[report.value].params, "report", saved?.params || {});
+    report.onchange = () => renderParamFields(
+        document.getElementById("report-params"),
+        schemas.reports[report.value].params,
+        "report"
+    );
     const vis = document.getElementById("visualization-select");
     Object.entries(schemas.visualizations).forEach(([key, spec]) => {
         const option = document.createElement("option");
@@ -773,7 +868,26 @@ function setupReportModal() {
         option.textContent = spec.label || key;
         vis.appendChild(option);
     });
-    document.getElementById("depth-slider").oninput = e => document.getElementById("depth-value").textContent = e.target.value;
+    if (saved) vis.value = saved.visualization;
+    const filt = document.getElementById("filter-select");
+    Object.entries(schemas.filters).forEach(([key, spec]) => {
+        const option = document.createElement("option");
+        option.value = key;
+        option.textContent = spec.label || key;
+        filt.appendChild(option);
+    });
+    if (saved) filt.value = saved.filter;
+    renderParamFields(document.getElementById("filter-params"), schemas.filters[filt.value].params, "filter", saved?.filterParams || {});
+    filt.onchange = () => renderParamFields(
+        document.getElementById("filter-params"),
+        schemas.filters[filt.value].params,
+        "filter"
+    );
+    const depthSlider = document.getElementById("depth-slider");
+    const depthValue = document.getElementById("depth-value");
+    depthSlider.value = saved?.depth ?? 0;
+    depthValue.textContent = depthSlider.value;
+    depthSlider.oninput = e => depthValue.textContent = e.target.value;
     document.getElementById("modal-save").onclick = saveReport;
 }
 
@@ -802,6 +916,7 @@ function resetStep(step) {
         document.getElementById("viz-wrap").style.display = "none";
         document.getElementById("viz-frame").src = "";
     }
+    refreshCodeButton();
 }
 
 async function saveReport() {
@@ -813,15 +928,29 @@ async function saveReport() {
         const params = collectParams(document.getElementById("report-params"),"report");
         const depth = Number(document.getElementById("depth-slider").value);
         const visualization = document.getElementById("visualization-select").value;
+        const filter = document.getElementById("filter-select").value;
+        const filterParams = collectParams(document.getElementById("filter-params"), "filter");
         await api(
             "/api/report/run",
             {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({report, params, depth, visualization })
+                body: JSON.stringify({report, params, depth, visualization, filter, filter_params: filterParams})
             }
         );
-        updateReportSummary(report, visualization, depth);
+        updateReportSummary(report, visualization, depth, filter);
+        codeState.report = {
+            key: report,
+            label: (schemas.reports[report] && schemas.reports[report].label) || report,
+            params,
+            visualization,
+            visualizationLabel: (schemas.visualizations[visualization] && schemas.visualizations[visualization].label) || visualization,
+            filter,
+            filterLabel: (schemas.filters[filter] && schemas.filters[filter].label) || filter,
+            filterParams,
+            depth
+        };
+        refreshCodeButton();
         closeModal();
         document.getElementById("viz-wrap").style.display = "block";
         document.getElementById("viz-frame").src = "/api/visualization?" + Date.now();
@@ -830,13 +959,14 @@ async function saveReport() {
     finally { setModalLoading(false); }
 }
 
-function updateReportSummary(report, visualization, depth) {
+function updateReportSummary(report, visualization, depth, filter) {
     document.getElementById("report-summary").innerHTML = `
         <div class="summary-line">
             <span class="summary-label">What kind of report should FairBench generate, and how it should be formatted.</span>
             <div class="summary-value">${report}</div>
         </div>
         <ul class="summary-list">
+            <li>filter: ${filter}</li>
             <li>visualization: ${visualization}</li>
             <li> depth: ${depth}</li>
         </ul>
@@ -844,7 +974,6 @@ function updateReportSummary(report, visualization, depth) {
     document.getElementById("report-status").textContent = "Configured";
     document.getElementById("report-status").className = "pill-success"
 }
-
 
 const oldOpenModal = openModal;
 openModal = function(type) {
@@ -878,6 +1007,173 @@ function setModalLoading(loading) {
     }
 }
 
+// ---- Python code export -------------------------------------------------
+
+function refreshCodeButton() {
+    const btn = document.getElementById("code-export-btn");
+    if (!btn) return;
+    btn.disabled = !(codeState.bench && codeState.sensitive && codeState.report);
+}
+
+function pyLiteral(value, type) {
+    if (type === "bool") return value ? "True" : "False";
+    if (type === "int") return String(parseInt(value, 10) || 0);
+    if (type === "float" || type === "slider_float") return String(parseFloat(value));
+    if (type === "slider_int" || type === "train_percent") return String(parseInt(value, 10) || 0);
+    const s = String(value).replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+    return `"${s}"`;
+}
+
+function paramsToKwargs(params, schemaParams) {
+    return Object.entries(params)
+        .map(([name, value]) => {
+            if (name === "test_size" || name === "limit") {
+                // the app collects this as a 0-100 slider; FairBench expects a 0-1 fraction
+                const fraction = parseFloat(value) * 0.01;
+                return `test_size=${fraction}`;
+            }
+            return `${name}=${pyLiteral(value, schemaParams && schemaParams[name] && schemaParams[name].type)}`;
+        })
+        .join(", ");
+}
+
+function buildFairbenchCode() {
+    const { bench, sensitive, report } = codeState;
+    if (!bench || !sensitive || !report) return "";
+
+    const benchSchema = schemas.benches[bench.key] || {};
+    const reportSchema = schemas.reports[report.key] || {};
+
+    const lines = [];
+    lines.push("import fairbench as fb");
+    lines.push("");
+    lines.push("# 1. Benchmark: build the (x, y, yhat) triplet for analysis");
+    const benchKwargs = paramsToKwargs(bench.params, benchSchema.params);
+    lines.push(`x, y, yhat = fb.bench.${bench.key}(${benchKwargs})`);
+    lines.push("");
+
+    lines.push("# 2. Sensitive attributes");
+    if (sensitive.attrs.length === 0) {
+        lines.push("# No attributes were selected in the app.");
+        lines.push("sensitive = fb.Dimensions()");
+    } else {
+        lines.push("sensitive = fb.Dimensions(");
+        sensitive.attrs.forEach((a, i) => {
+            const comma = i < sensitive.attrs.length - 1 ? "," : "";
+            lines.push(`    fb.autotype(${sensitive.discrete_threshold}) @ x[${JSON.stringify(a)}]${comma}`);
+        });
+        lines.push(")");
+    }
+    if (sensitive.intersectional) {
+        lines.push(`sensitive = sensitive.intersectional(min_size=${sensitive.min_size})`);
+        if (sensitive.strict) lines.push("sensitive = sensitive.strict()");
+    }
+    lines.push("");
+
+    lines.push("# 3. Fairness report");
+    const reportParams = Object.assign({}, report.params);
+    const reportKwargs = paramsToKwargs(reportParams, reportSchema.params);
+    const reportArgs = ["predictions=yhat", "labels=y", "sensitive=sensitive"];
+    if (reportKwargs) reportArgs.push(reportKwargs);
+    lines.push(`report = fb.reports.${report.key}(${reportArgs.join(", ")})`);
+    if (report.filter && report.filter !== "none") {
+        const filterSchema = schemas.filters[report.filter] || {};
+        let filterKwargs = paramsToKwargs(report.filterParams || {}, filterSchema.params)
+        filterKwargs = `${filterKwargs}`
+        if(filterKwargs.length!==0) filterKwargs = "("+filterKwargs+")"
+        lines.push(`report = report.filter(fb.${filterSchema.path}${filterKwargs})`);
+    }
+    lines.push(`report.show(env=fb.export.${report.visualization.split(" ").map((w, i) => i === 0 ? w.charAt(0).toUpperCase() + w.slice(1) : w).join("")}, depth=${report.depth})`);
+
+    return lines.join("\n");
+}
+
+const PY_KEYWORDS = ["import", "as", "return", "if", "else", "for", "in", "def", "class"];
+
+function escapeHtml(s) {
+    return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+// Minimal hand-rolled python highlighter (no external libs): tokenizes line by
+// line so comments, strings, numbers, booleans, keywords and fb.* calls get
+// their own classes.
+function highlightPython(code) {
+    const lines = code.split("\n");
+    return lines.map(line => {
+        let out = "";
+        let i = 0;
+        while (i < line.length) {
+            const rest = line.slice(i);
+            let m;
+            if ((m = rest.match(/^#.*/))) {
+                out += `<span class="tok-com">${escapeHtml(m[0])}</span>`;
+                i += m[0].length;
+            } else if ((m = rest.match(/^"(?:[^"\\]|\\.)*"|^'(?:[^'\\]|\\.)*'/))) {
+                out += `<span class="tok-str">${escapeHtml(m[0])}</span>`;
+                i += m[0].length;
+            } else if ((m = rest.match(/^\b(True|False|None)\b/))) {
+                out += `<span class="tok-bool">${m[0]}</span>`;
+                i += m[0].length;
+            } else if ((m = rest.match(new RegExp("^\\b(" + PY_KEYWORDS.join("|") + ")\\b")))) {
+                out += `<span class="tok-kw">${m[0]}</span>`;
+                i += m[0].length;
+            } else if ((m = rest.match(/^\bfb\b/))) {
+                out += `<span class="tok-mod">fb</span>`;
+                i += m[0].length;
+            } else if ((m = rest.match(/^\b[A-Za-z_][A-Za-z0-9_]*(?=\()/))) {
+                out += `<span class="tok-fn">${escapeHtml(m[0])}</span>`;
+                i += m[0].length;
+            } else if ((m = rest.match(/^\b\d+\.?\d*\b/))) {
+                out += `<span class="tok-num">${m[0]}</span>`;
+                i += m[0].length;
+            } else {
+                out += escapeHtml(line[i]);
+                i += 1;
+            }
+        }
+        return out;
+    }).join("\n");
+}
+
+function openCodeModal() {
+    if (!(codeState.bench && codeState.sensitive && codeState.report)) return;
+    currentModal = "code";
+    document.getElementById("modal-content").classList.add("wide");
+    document.getElementById("modal-title").textContent = "Equivalent python code";
+    const body = document.getElementById("modal-body");
+    body.innerHTML = "";
+
+    const code = buildFairbenchCode();
+    const pre = document.createElement("div");
+    pre.className = "code-block";
+    pre.id = "code-block-content";
+    pre.innerHTML = highlightPython(code);
+    body.appendChild(pre);
+
+    const note = document.createElement("div");
+    note.className = "code-note";
+    note.textContent = "This is how to rerun the current analysis. Freely copy this code and edit it for use in new settings.";
+    body.appendChild(note);
+
+    document.getElementById("modal-error").textContent = "";
+    const footer = document.getElementById("modal-footer");
+    footer.style.display = "flex";
+    footer.innerHTML = `
+        <button class="secondary" onclick="closeModal()">Close</button>
+        <button class="primary" id="copy-code-btn">Copy</button>
+    `;
+    document.getElementById("copy-code-btn").onclick = () => {
+        navigator.clipboard.writeText(code).then(() => {
+            const b = document.getElementById("copy-code-btn");
+            const old = b.textContent;
+            b.textContent = "Copied!";
+            setTimeout(() => b.textContent = old, 1200);
+        });
+    };
+
+    document.getElementById("modal").classList.add("open");
+}
+
 async function init() {
   schemas = await api("/api/schemas");
   document.getElementById("modal").onclick = e => { if ( e.target.id === "modal") closeModal();};
@@ -885,6 +1181,7 @@ async function init() {
   setStepAvailability("benchmark", true);
   setStepAvailability("sensitive", false);
   setStepAvailability("report", false);
+  refreshCodeButton();
 }
 
 init();

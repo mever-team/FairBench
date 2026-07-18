@@ -47,6 +47,7 @@ VIS_REGISTRY = {
     },
     "html table": {
         "label": "as html table",
+        "code": "HtmlTable",
         "env": lambda: fb.export.HtmlTable(filename=None),
     },
     "html bars": {
@@ -55,9 +56,34 @@ VIS_REGISTRY = {
     },
 }
 
-# ---------------------------------------------------------------------------
-# Pipeline state (single-session, in-memory)
-# ---------------------------------------------------------------------------
+FILTER_REGISTRY = {
+    "none": {
+        "label": "no filtering",
+        "path": None,
+        "params": {},
+    },
+    "stamps": {
+        "label": "stamps: a model card with popular named measures and qualitative concerns",
+        "path": "investigate.Stamps",
+        "params": {},
+    },
+    "deviations": {
+        "label": "deviations: show only large deviations from ideal values",
+        "path": "investigate.DeviationsOver",
+        "params": {
+            "limit": {
+                "type": "train_percent",
+                "default": 20,
+                "label": "Numerical limit",
+            }
+        },
+    },
+    "isbias": {
+        "label": "biases: show only measures of bias (ideal value is zero)",
+        "path": "investigate.IsBias",
+        "params": {},
+    },
+}
 
 STATE = {
     "x": None,
@@ -67,7 +93,6 @@ STATE = {
     "report": None,
     "html": None,
 }
-
 
 def resolve(root, dotted_path):
     obj = root
@@ -102,25 +127,25 @@ def build_params(schema, submitted):
             out[name] = coerce(spec["default"], spec["type"])
     return out
 
-
 def run_bench(body):
     bench_key = body.get("bench")
     if bench_key not in BENCH_REGISTRY:
         raise ValueError(f"Unknown bench '{bench_key}'")
-    schema = BENCH_REGISTRY[bench_key]["params"]
+    bench_spec = BENCH_REGISTRY[bench_key]
+    schema = bench_spec.get("params", {})
     params = build_params(schema, body.get("params"))
-
-    func = resolve(fb.bench, bench_key)
+    if "func" in bench_spec:
+        func = bench_spec["func"]
+    else:
+        func = resolve(fb.bench, bench_key)
     x, y, yhat = func(**params)
-
     STATE["x"] = x
     STATE["y"] = y
     STATE["yhat"] = yhat
     STATE["sensitive"] = None
     STATE["report"] = None
     STATE["html"] = None
-
-    keys = [attr for attr in x]
+    keys = list(x)
     return {
         "summary": {
             "x_keys": len(keys),
@@ -181,7 +206,6 @@ def run_sensitive(body):
         },
     }
 
-
 def run_report(body):
     if STATE["sensitive"] is None:
         raise ValueError("Run the sensitive attribute step first")
@@ -197,6 +221,10 @@ def run_report(body):
     if vis_key not in VIS_REGISTRY:
         raise ValueError(f"Unknown visualization strategy '{vis_key}'")
 
+    filter_key = body.get("filter", "none")
+    if filter_key not in FILTER_REGISTRY:
+        raise ValueError(f"Unknown filter '{filter_key}'")
+
     func = resolve(fb.reports, report_key)
     report = func(
         predictions=STATE["yhat"],
@@ -204,23 +232,35 @@ def run_report(body):
         sensitive=STATE["sensitive"],
         **params,
     )
+
+    filter_spec = FILTER_REGISTRY[filter_key]
+    if filter_spec["path"]:
+        filter_params = build_params(filter_spec["params"], body.get("filter_params"))
+        filter_func = resolve(fb, filter_spec["path"])
+        report = report.filter(filter_func(**filter_params))
+
     STATE["report"] = report
 
-    # single visualization for the whole pipeline
     env = VIS_REGISTRY[vis_key]["env"]()
     html_text = report.show(env=env, depth=depth)
     STATE["html"] = html_text
 
-    return {"summary": {"report": report_key, "visualization": vis_key, "depth": depth}}
-
+    return {
+        "summary": {
+            "report": report_key,
+            "filter": filter_key,
+            "visualization": vis_key,
+            "depth": depth,
+        }
+    }
 
 def get_schemas():
     return {
-        "benches": BENCH_REGISTRY,
+        "benches": {bench: {k: v for k,v in BENCH_REGISTRY[bench].items() if not callable(v)} for bench in BENCH_REGISTRY},
         "reports": REPORT_REGISTRY,
+        "filters": FILTER_REGISTRY,
         "visualizations": {k: {"label": v["label"]} for k, v in VIS_REGISTRY.items()},
     }
-
 
 ROUTES_GET = {
     "/api/schemas": lambda: get_schemas(),
