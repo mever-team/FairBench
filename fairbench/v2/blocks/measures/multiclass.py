@@ -3,7 +3,9 @@ from fairbench.v2.blocks.quantities import quantities
 import numpy as np
 
 
-@c.measure("the multiclass accuracy")
+@c.measure(
+    "the multiclass accuracy (equivalent to weighted mean of per-class accuracies)"
+)
 def wmacc(multipredictions, multilabels, sensitive=None):
     multipredictions = np.array(
         multipredictions
@@ -39,6 +41,53 @@ def amacc(multipredictions, multilabels, sensitive=None):
         cls_acc = (correct * mask).sum() / cls_samples
         per_class_accs.append(cls_acc)
     value = 0 if len(per_class_accs) == 0 else float(np.mean(per_class_accs))
+    samples = sensitive.sum()
+    return c.Value(
+        c.TargetedNumber(value, 1),
+        depends=[quantities.samples(samples)],
+    )
+
+
+@c.measure(
+    "the diversity of predictions for each group (the fraction of all classes present)"
+)
+def coverage(multipredictions, multilabels, sensitive=None):
+    multipredictions = np.array(multipredictions)
+    multilabels = np.array(multilabels)
+    sensitive = (
+        np.ones(len(multipredictions)) if sensitive is None else np.array(sensitive)
+    )
+    mask = sensitive.astype(bool)
+    all_classes = set(multilabels.tolist()) | set(multipredictions.tolist())
+    covered = set(multipredictions[mask].tolist())
+    value = 0 if len(all_classes) == 0 else len(covered) / len(all_classes)
+    samples = sensitive.sum()
+    return c.Value(
+        c.TargetedNumber(value, 1),
+        depends=[quantities.samples(samples)],
+    )
+
+
+@c.measure("the output diversity entropy of predictions for each group")
+def ode(multipredictions, multilabels, sensitive=None):
+    multipredictions = np.array(multipredictions)
+    multilabels = np.array(multilabels)
+    sensitive = (
+        np.ones(len(multipredictions)) if sensitive is None else np.array(sensitive)
+    )
+    mask = sensitive.astype(bool)
+    all_classes = sorted(set(multilabels.tolist()) | set(multipredictions.tolist()))
+    group_preds = multipredictions[mask]
+    n = len(group_preds)
+    if n == 0 or len(all_classes) <= 1:
+        value = 0
+    else:
+        counts = np.array(
+            [(group_preds == cls).sum() for cls in all_classes], dtype=float
+        )
+        probs = counts[counts > 0] / n
+        h = -(probs * np.log(probs)).sum()
+        value = float(h / np.log(len(all_classes)))
     samples = sensitive.sum()
     return c.Value(
         c.TargetedNumber(value, 1),

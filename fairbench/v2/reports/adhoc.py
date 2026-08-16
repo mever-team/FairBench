@@ -12,6 +12,8 @@ all_measures = [
     blocks.measures.gmppv,
     blocks.measures.amtpr,
     blocks.measures.gmtpr,
+    blocks.measures.coverage,
+    blocks.measures.ode,
     blocks.measures.acc,
     blocks.measures.pr,
     blocks.measures.tpr,
@@ -44,7 +46,7 @@ all_measures = [
 
 reductions_pairwise = [
     blocks.reduction.min,
-    blocks.reduction.max,
+    # blocks.reduction.max,
     blocks.reduction.maxerror,
     blocks.reduction.wmean,
     blocks.reduction.mean,
@@ -60,7 +62,7 @@ reductions_pairwise = [
 # the following reductions should be applied only when the total population is also known
 reductions_vs_any = [
     blocks.reduction.min,
-    blocks.reduction.max,
+    # blocks.reduction.max,
     blocks.reduction.largestmaxrel,
     blocks.reduction.largestmaxdiff,
     blocks.reduction.largestmaxbarea,
