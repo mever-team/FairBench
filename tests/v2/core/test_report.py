@@ -283,7 +283,7 @@ def test_amplification():
 
     # AFTER "MITIGATION" (just more samples here)
     x, y, yhat = fb.bench.tabular.bank(test_size=0.5)
-    sensitive = fb.Dimensions(fb.categories @ x["sex"], fb.categories @ x["race"])
+    sensitive = fb.Dimensions(fb.categories @ x["marital"], fb.categories @ x["education"])
     sensitive = sensitive.intersectional().strict()
 
     # INVESTIGATE AMPLIFICATION
@@ -315,8 +315,11 @@ def test_report_deviation():
     sensitive = sensitive.intersectional().strict()
 
     # INVESTIGATE AMPLIFICATION
+    report = fb.reports.pairwise(
+        multipredictions=yhat, multilabels=y, sensitive=sensitive
+    )
     report = report.filter(
-        fb.investigate.IsBias, fb.investigate.Amplification(base=baseline_report)
+        fb.investigate.IsBias, fb.investigate.Amplification(base=baseline_report, force=True)
     )
     report.show(env=fb.export.Console(ansiplot=False), depth=2)
 
