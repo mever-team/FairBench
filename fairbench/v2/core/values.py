@@ -293,10 +293,17 @@ class Value:
     def single_entry(self):
         if self.value is not None:
             return self
+        assert len(self.depends) != 0, (
+            "You over-specialized or erroneously into extracting no values."
+            "\nDetails: it was not possible to retrieve any value for dimension "
+            f"dimension `{self.descriptor}` with alias `{self.descriptor.alias}`. Use `report.help()`"
+            "to see what you could have specialized for."
+        )
         assert len(self.depends) == 1, (
             "You need to specialize more (e.g., focus on the next mentioned dimension or candidates) to run the requested "
-            "operation.\nDetails: it was not possible to retrieve only one value from the following candidates under "
+            "operation.\nDetails: it was not possible to retrieve just one value from the following candidates under "
             f"dimension `{self.descriptor}` with alias `{self.descriptor.alias}`: {', '.join(self.depends.keys())}"
+            f" ({len(self.depends)} values)"
         )
         ret = next(iter(self.depends.values())).single_entry()
         item = ret.descriptor
@@ -568,13 +575,12 @@ class Value:
         item = Descriptor(
             name=item.name + f" {roles}s",
             role=item.role + f" view",
-            details=item.details
-            + f" across {roles}s"
-            + (
-                " (NOTE: replace `.details.show()` with '.show(depth=...)' to also see the resulting value)"
-                if self.value is not None
-                else ""
-            ),
+            details=item.details + f" across {roles}s",
+            # + (
+            #     " (NOTE: replace `.details.show()` with '.show(depth=...)' to also see the overall value)"
+            #     if self.value is not None
+            #     else ""
+            # ),
         )
         return item(depends=list(self.depends.values()))
 

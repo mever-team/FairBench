@@ -1,6 +1,29 @@
-from fairbench.v2.core import Sensitive, DataError, NotComputable, Descriptor
+from fairbench.v2.core import Sensitive, DataError, NotComputable, Descriptor, Value
 from fairbench.v1 import core as deprecated
 from typing import Iterable
+
+customreport = Descriptor(
+    "multidim", "analysis", "custom report that compares several groups."
+)
+
+
+def report_from_dims(branches: dict | deprecated.Fork, role="group"):
+    if isinstance(branches, deprecated.Fork):
+        branches = branches.branches()
+    assert not isinstance(branches, Value), "Values already in report format."
+    assert isinstance(
+        branches, dict
+    ), "Only dimensions or dictionary branches can directly be converted to a report format."
+    return Value(
+        descriptor=customreport,
+        depends=[
+            Value(
+                value=v,
+                descriptor=Descriptor(k, role, role, k),
+            )
+            for k, v in branches.items()
+        ],
+    )
 
 
 def report(

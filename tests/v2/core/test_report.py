@@ -253,7 +253,7 @@ def test_number_of_measures():
     num = len(items)
     print(str(num) + " measures can be computed.")
     fb.quick.help()
-    assert num > 300
+    assert num > 400
 
 
 def test_score_handling():
@@ -266,3 +266,68 @@ def test_score_handling():
             scores=y_pred, targets=y_true, sensitive=sensitive, score_bound=score_bound
         )
         report.show(env=fb.export.Console(ansiplot=False))
+
+
+def test_amplification():
+    # BASE REPORT
+    baseline_x, baseline_y, baseline_yhat = fb.bench.tabular.bank(test_size=0.2)
+    baseline_sensitive = fb.Dimensions(
+        fb.categories @ baseline_x["marital"], fb.categories @ baseline_x["education"]
+    )
+    baseline_sensitive = baseline_sensitive.intersectional().strict()
+    baseline_report = fb.reports.pairwise(
+        multipredictions=baseline_yhat,
+        multilabels=baseline_y,
+        sensitive=baseline_sensitive,
+    )
+
+    # AFTER "MITIGATION" (just more samples here)
+    x, y, yhat = fb.bench.tabular.bank(test_size=0.5)
+    sensitive = fb.Dimensions(fb.categories @ x["sex"], fb.categories @ x["race"])
+    sensitive = sensitive.intersectional().strict()
+
+    # INVESTIGATE AMPLIFICATION
+    report = fb.reports.pairwise(
+        multipredictions=yhat, multilabels=y, sensitive=sensitive
+    )
+    report = report.filter(fb.investigate.Amplification(base=baseline_report))
+    report.show(env=fb.export.Console(ansiplot=False), depth=2)
+
+
+def test_report_deviation():
+    # BASE REPORT
+    baseline_x, baseline_y, baseline_yhat = fb.bench.tabular.bank(test_size=0.2)
+    baseline_sensitive = fb.Dimensions(
+        fb.categories @ baseline_x["marital"], fb.categories @ baseline_x["education"]
+    )
+    baseline_sensitive = baseline_sensitive.intersectional().strict()
+    baseline_report = fb.reports.pairwise(
+        multipredictions=baseline_yhat,
+        multilabels=baseline_y,
+        sensitive=baseline_sensitive,
+    )
+
+    # AFTER "MITIGATION" (just more samples here)
+    x, y, yhat = fb.bench.tabular.bank(test_size=0.5)
+    sensitive = fb.Dimensions(fb.categories @ x["sex"], fb.categories @ x["race"])
+    sensitive = sensitive.intersectional().strict()
+
+    # INVESTIGATE AMPLIFICATION
+    report = report.filter(
+        fb.investigate.IsBias, fb.investigate.Amplification(base=baseline_report)
+    )
+    report.show(env=fb.export.Console(ansiplot=False), depth=2)
+
+
+def test_deviation_from_desired():
+    x, y, yhat = fb.bench.tabular.bank(test_size=0.5)
+    sensitive = fb.Dimensions(fb.categories @ x["sex"], fb.categories @ x["race"])
+    sensitive = sensitive.intersectional().strict()
+    base_report = fb.core.report_from_dims(sensitive.sum() / sensitive.shape[0])
+    report = fb.reports.pairwise(predictions=yhat, sensitive=sensitive).min.pr
+    report.details.filter(
+        fb.investigate.SetTargets(targets=base_report), fb.investigate.WorstCase
+    ).show()
+    report.details.filter(
+        fb.investigate.SetTargets(targets=base_report), fb.investigate.SkewIndex
+    ).show()

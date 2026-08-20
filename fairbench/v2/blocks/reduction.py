@@ -182,7 +182,7 @@ def maxbarea(values):
     try:
         dependencies = c.transform.single_role(values, role="curve")
     except AssertionError as e:
-        raise c.NotComputable(e)
+        raise c.NotComputable(str(e))
     values = c.transform.curve_diff(values)
     ret = c.TargetedNumber(np.max(values), 0)
     if direct_curves:

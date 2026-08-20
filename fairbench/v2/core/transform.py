@@ -10,7 +10,7 @@ def transform_scores(
         max_score = max(scores.max(), targets.max() if targets is not None else 0.0)
         min_score = min(scores.min(), targets.min() if targets is not None else 0.0)
         assert (
-            min_score >= 0.0,
+            min_score >= 0.0
         ), f"The 'unit' (default) strategy for processing scores encountered minimum score value less than 0: {min_score}\nIf negative scores should be allowed, consider passing 'score_bound=\"unbounded\"' to allow negative scores."
         assert (
             max_score <= 1.0
@@ -23,7 +23,7 @@ def transform_scores(
         )
         min_score = min(scores.min(), targets.min() if targets is not None else 0.0)
         assert (
-            min_score >= 0.0,
+            min_score >= 0.0
         ), f"The value-based bounding for processing scores encountered minimum score value less than 0: {min_score}\nIf negative scores should be allowed, consider passing 'score_bound=\"unbounded\"' or 'score_bound=\"standardized\"' to allow negative scores."
         assert (
             max_score
@@ -34,7 +34,7 @@ def transform_scores(
     if score_bound == "auto":
         min_score = min(scores.min(), targets.min() if targets is not None else 0.0)
         assert (
-            min_score >= 0.0,
+            min_score >= 0.0
         ), f"The 'auto' strategy for processing scores encountered minimum score value less than 0: {min_score}\nIf negative scores should be allowed, consider passing 'score_bound=\"unbounded\"' or 'score_bound=\"standardized\"'  to allow negative scores."
         return (
             scores,
@@ -49,7 +49,7 @@ def transform_scores(
     if score_bound == "normalized":
         min_score = min(scores.min(), targets.min() if targets is not None else 0.0)
         assert (
-            min_score >= 0.0,
+            min_score >= 0.0
         ), f"The 'normalize' strategy for processing scores encountered minimum score value less than 0: {min_score}\nIf negative scores should be allowed, consider passing 'score_bound=\"unbounded\"' or 'score_bound=\"standardized\"' to allow negative scores."
         max_score = max(
             np.abs(scores).max(), np.abs(targets).max() if targets is not None else 0.0

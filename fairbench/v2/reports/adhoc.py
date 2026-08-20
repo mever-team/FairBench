@@ -117,7 +117,7 @@ def vsall(
 def conflate(
     sensitive: Sensitive | deprecated.Fork, measures=None, reductions=None, **kwargs
 ):
-
+    """Compare each sensitive attribute intersection against the rest."""
     if measures is None:
         measures = all_measures
     if reductions is None:

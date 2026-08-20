@@ -2,11 +2,12 @@ from fairbench.v2.core import Value, TargetedNumber, Descriptor
 from fairbench.v2.investigate.investigator import Investigator
 
 
-class BiasAmplification(Investigator):
-    def __init__(self, base: Value):
+class Amplification(Investigator):
+    def __init__(self, base: Value, force=False):
         super().__init__(shallow=True)
         assert isinstance(base, Value)
         self.base = base
+        self.force = force
 
     def _walk(self, value: Value, base: Value) -> Value | None:
         assert isinstance(
@@ -15,38 +16,54 @@ class BiasAmplification(Investigator):
         number = value.value
         descriptor = value.descriptor
         base_descriptor = base.descriptor
-        assert base_descriptor == descriptor, (
-            "Mismatching reports to compute an amplification due to value: "
+        assert self.force or base_descriptor == descriptor or number is None, (
+            "Mismatching reports to compute an amplification due to incompatibility (use 'SetTargets(targets=..., force=True)' if you are sure):"
+            + "\n - "
             + repr(base_descriptor)
-            + " vs "
+            + "\n - "
             + repr(descriptor)
         )
 
         result_descriptor = Descriptor(
-            descriptor.name + " amplification",
-            descriptor.role + " amplification",
-            "amplification of " + descriptor.details,
-            "amplification of " + descriptor.alias,
+            descriptor.name + " comparison",
+            descriptor.role + " comparison",
+            "comparison of " + descriptor.details,
+            "comparison of " + descriptor.alias,
             preferred_units=(
-                descriptor.preferred_units + "/" + descriptor.preferred_units
-                if descriptor.preferred_units
-                else None
+                descriptor.preferred_units if descriptor.preferred_units else None
             ),
         )
         if number is None:
-            assert (
-                base.value is None
-            ), "Base report has value that is not existing in derived one: " + repr(
-                base_descriptor
+            assert base.value is None, (
+                "Base report has value that does not exist in the filtered one: "
+                + repr(base_descriptor)
+            )
+            assert self.force or len(value.depends) == len(base.depends), (
+                "Different number of dependencies when comparing:"
+                + "\n - "
+                + repr(base_descriptor)
+                + ",".join(repr(v) for v in value.depends)
+                + "\n - "
+                + repr(descriptor)
+                + ": "
+                + ",".join(repr(v) for v in base.depends)
             )
             depends = [
-                self._walk(dep_value, dep_base)
-                for dep_value, dep_base in zip(
-                    value.depends.values(), base.depends.values()
+                self._walk(
+                    dep_value,
+                    (
+                        base[dep_value.descriptor].single_entry()
+                        if dep_value.value is not None
+                        else base[dep_value.descriptor]
+                    ),
                 )
+                for dep_value in value.depends.values()
             ]
             depends = [dep for dep in depends if dep is not None]
             return result_descriptor(value=number, depends=depends)
+        assert (
+            self.force or base.value is not None
+        ), "Base report is missing value: " + repr(base_descriptor)
         assert base.value is not None, "Base report is missing value: " + repr(
             base_descriptor
         )
@@ -60,8 +77,8 @@ class BiasAmplification(Investigator):
         base_value = base.value.value
         if base_value == number.target:
             return None
-        if 0 != number.target:
-            return None
+        # if 0 != number.target:
+        #     return None
         number = TargetedNumber(
             abs(number.value - number.target) / abs(base_value - number.target),
             target=1,
