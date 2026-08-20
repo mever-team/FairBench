@@ -309,7 +309,9 @@ def test_report_deviation():
 
     # AFTER "MITIGATION" (just more samples here)
     x, y, yhat = fb.bench.tabular.bank(test_size=0.5)
-    sensitive = fb.Dimensions(fb.categories @ x["sex"], fb.categories @ x["race"])
+    sensitive = fb.Dimensions(
+        fb.categories @ x["marital"], fb.categories @ x["education"]
+    )
     sensitive = sensitive.intersectional().strict()
 
     # INVESTIGATE AMPLIFICATION
@@ -321,7 +323,9 @@ def test_report_deviation():
 
 def test_deviation_from_desired():
     x, y, yhat = fb.bench.tabular.bank(test_size=0.5)
-    sensitive = fb.Dimensions(fb.categories @ x["sex"], fb.categories @ x["race"])
+    sensitive = fb.Dimensions(
+        fb.categories @ x["marital"], fb.categories @ x["education"]
+    )
     sensitive = sensitive.intersectional().strict()
     base_report = fb.core.report_from_dims(sensitive.sum() / sensitive.shape[0])
     report = fb.reports.pairwise(predictions=yhat, sensitive=sensitive).min.pr
