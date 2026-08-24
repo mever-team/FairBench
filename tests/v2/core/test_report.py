@@ -26,6 +26,7 @@ def test_env():
     )
 
     assert str(report.to_dict()) == str(report.show(fb.export.ToDict))
+    assert str(report) == report.show(fb.export.ToString)
 
 
 def test_simple_report():
@@ -283,7 +284,9 @@ def test_amplification():
 
     # AFTER "MITIGATION" (just more samples here)
     x, y, yhat = fb.bench.tabular.bank(test_size=0.5)
-    sensitive = fb.Dimensions(fb.categories @ x["marital"], fb.categories @ x["education"])
+    sensitive = fb.Dimensions(
+        fb.categories @ x["marital"], fb.categories @ x["education"]
+    )
     sensitive = sensitive.intersectional().strict()
 
     # INVESTIGATE AMPLIFICATION
@@ -319,7 +322,8 @@ def test_report_deviation():
         multipredictions=yhat, multilabels=y, sensitive=sensitive
     )
     report = report.filter(
-        fb.investigate.IsBias, fb.investigate.Amplification(base=baseline_report, force=True)
+        fb.investigate.IsBias,
+        fb.investigate.Amplification(base=baseline_report, force=True),
     )
     report.show(env=fb.export.Console(ansiplot=False), depth=2)
 

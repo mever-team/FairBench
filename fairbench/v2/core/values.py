@@ -490,10 +490,7 @@ class Value:
         if callable(env):
             env = env()
         if env is not None and hasattr(env, "direct_show"):
-            assert (
-                depth == 0
-            ), f"You cannot specify a depth when showing with env class `{env.__class_.__name__}`"
-            return env.direct_show(self)
+            return env.direct_show(self, depth=depth)
 
         return fmt(self, env=env, depth=depth).show()
 
