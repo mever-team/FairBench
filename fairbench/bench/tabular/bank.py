@@ -23,7 +23,6 @@ def bank(classifier=None, scaler=None, predict="predict", seed=None, test_size=0
         delimiter=";",
         header=0,
     )
-    train, test = train_test_split(data, random_state=seed, test_size=test_size)
     numeric = ["age", "duration", "campaign", "pdays", "previous"]
     categorical = [
         "job",
@@ -35,6 +34,10 @@ def bank(classifier=None, scaler=None, predict="predict", seed=None, test_size=0
         "contact",
         "poutcome",
     ]
+    if isinstance(data, dict):
+        for category in categorical:
+            data[category].update_unique_values()
+    train, test = train_test_split(data, random_state=seed, test_size=test_size)
     x_train = features(train, numeric, categorical)
     y_train = (train["y"] == "yes").values
     x = features(test, numeric, categorical)

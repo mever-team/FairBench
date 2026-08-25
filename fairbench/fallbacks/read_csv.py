@@ -3,9 +3,13 @@ import numpy as np
 
 
 class FairBenchCSVColumn:
-    def __init__(self, data, name=None):
+    def __init__(self, data, name=None, unique_values=None):
         self._data = np.array(data)
         self.name = name
+        self.unique_values = unique_values
+
+    def update_unique_values(self):
+        self.unique_values = set(self._data)
 
     @property
     def values(self):
@@ -19,7 +23,7 @@ class FairBenchCSVColumn:
         return FairBenchCSVColumn(self._data == other)
 
     def __repr__(self):
-        return f"FairBenchCSVColumn(name={self.name}, values={self.values})"
+        return f"FairBenchCSVColumn(name={self.name}, values={self.values}, unique_values={unique_values})"
 
 
 class FairBenchCSV:
@@ -40,7 +44,7 @@ class FairBenchCSV:
 
 def get_dummies(col):
     """Creates a one-hot encoding for a FairBenchCSVColumn."""
-    unique_values = set(col.values)
+    unique_values = set(col.values) if col.unique_values is None else col.unique_values
     dummy_data = {f"{col.name}_{val}": [] for val in unique_values}
 
     for value in col.values:
@@ -164,6 +168,10 @@ def train_test_split(data, test_size=0.25, random_state=None):
         train_data[column_name] = [column._data[i] for i in train_indices]
         test_data[column_name] = [column._data[i] for i in test_indices]
 
-    return {k: FairBenchCSVColumn(v, name=k) for k, v in train_data.items()}, {
-        k: FairBenchCSVColumn(v, name=k) for k, v in test_data.items()
+    return {
+        k: FairBenchCSVColumn(v, name=k, unique_values=data[k].unique_values)
+        for k, v in train_data.items()
+    }, {
+        k: FairBenchCSVColumn(v, name=k, unique_values=data[k].unique_values)
+        for k, v in test_data.items()
     }

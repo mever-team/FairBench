@@ -23,7 +23,6 @@ def compas(classifier=None, scaler=None, predict="predict", seed=None, test_size
         delimiter=",",
         header=0,
     )
-    train, test = train_test_split(data, random_state=seed, test_size=test_size)
     numeric = [
         "age",
     ]
@@ -33,6 +32,10 @@ def compas(classifier=None, scaler=None, predict="predict", seed=None, test_size
         "race",
         "is_recid",
     ]
+    if isinstance(data, dict):
+        for category in categorical:
+            data[category].update_unique_values()
+    train, test = train_test_split(data, random_state=seed, test_size=test_size)
     x_train = features(train, numeric, categorical)
     y_train = (train["two_year_recid"] == 1).values
     x = features(test, numeric, categorical)
