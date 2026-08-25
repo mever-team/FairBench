@@ -11,12 +11,13 @@ pip install --upgrade fairbench
 fbwizard
 ```
 
-This will open the wizard in your browser. A showcase of the library via the
-wizard is presented below.
+This will open the wizard in your browser. Its functionalities are showcased
+below. But we encourage going through at least the quickstart sections of the
+documentation.
 
 <iframe
-    width="560"
-    height="315"
+    width="800"
+    height="400"
     src="https://www.youtube.com/embed/6tUxUJmMbJQ"
     title="FBWizard"
     frameborder="0"

@@ -67,10 +67,10 @@ for immediate use by non-technical people in the low-code environment of the
 🧪 Backtrack, filter,combine, and reorganize computations<br>
 🖥️ ML and LLM compatible: *numpy,pandas,torch,tensorflow,jax,transformers,ollama*
 
-*FairBench strives to be compatible with the latest Python release, 
-but compatibility delays of third-party ML libraries usually 
-mean that only the language's previous release is tested and
-stable (currently 3.12 and 3.14).*
+*FairBench strives to be compatible with all Python releases after 
+Python 3.9, but compatibility delays and rolling deprecation of third-party 
+ML libraries usually mean that only a set subset of releases are exhaustively
+tested (currently 3.11, 3.12, 3.13, 3.14).*
 
 
 ## 🔗 Material
