@@ -11,7 +11,7 @@ jobs:
     needs: canary
     strategy:
       matrix:
-        python-version: ["3.11"]
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
     env:
       HOME: .
     steps:
@@ -55,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.13"]
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
     env:
       HOME: .
     steps:

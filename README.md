@@ -70,7 +70,7 @@ for immediate use by non-technical people in the low-code environment of the
 *FairBench strives to be compatible with the latest Python release, 
 but compatibility delays of third-party ML libraries usually 
 mean that only the language's previous release is tested and
-stable (currently 3.12).*
+stable (currently 3.12 and 3.14).*
 
 
 ## 🔗 Material
@@ -91,7 +91,7 @@ corresponding pipeline as code that you can reuse.
 ob how to programmatically add your own experiment setups to the the pipeline. 
 
 ```shell
-python -m fairbench.bench.wizard
+fbwizard
 ```
 
 ![pipeline wizard](docs/wizard.png)

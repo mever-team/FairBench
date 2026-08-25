@@ -1,8 +1,10 @@
 import json
 import traceback
+import webbrowser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse
 from importlib.resources import files
+from threading import Timer
 import fairbench as fb
 
 BENCH_REGISTRY = {
@@ -356,7 +358,9 @@ class Handler(BaseHTTPRequestHandler):
 
 def serve_wizard(port=8000):
     server = ThreadingHTTPServer(("0.0.0.0", port), Handler)
-    print(f"Serving on http://0.0.0.0:{port}")
+    local_url = f"http://0.0.0.0:{port}"
+    print("Serving on " + local_url)
+    Timer(0.5, lambda: webbrowser.open(local_url)).start()
     server.serve_forever()
 
 

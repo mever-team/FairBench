@@ -1,4 +1,4 @@
-# Quickstart
+# Overview
 
 Before starting, install FairBench with the following command.
 This can assess any system. Install extras are

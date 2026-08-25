@@ -11,7 +11,8 @@ sensitive = sensitive.intersectional().strict()
 print(sensitive.sum())
 
 report = fb.reports.pairwise(predictions=yhat, labels=y, sensitive=sensitive)
-report.min.acc.show(env=fb.export.Console)
+print(report.pr.show(env=fb.export.ToString))
+# report.min.acc.show(env=fb.export.Console)
 #
 # report.show(env=fb.export.ConsoleTable)
 # report.help()
@@ -23,4 +24,4 @@ report.min.acc.show(env=fb.export.Console)
 # report.filter(fb.investigate.DeviationsOver(0.2)).show(env=fb.export.HtmlBars, depth=2)
 
 
-html_text = report.show(fb.export.HtmlTable)
+# html_text = report.show(fb.export.HtmlTable)

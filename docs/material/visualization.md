@@ -514,7 +514,7 @@ kappa                                    <span style="color:#b8956a">0.545</span
 This is an equivalent to the Console environment that converts
 presented text and quantities to a static HTML page. That page 
 displays evaluation cards one under the other, or next to each
-other as demonstrated in the [quickstart](../reports). 
+other as demonstrated in [reports](../reports). 
 Note that increasing the of the *show* method, for example to
 `depth=2`, adds a lof of useful information but may take some
 time to go through.
@@ -523,7 +523,8 @@ When instantiating the environment with non-default values,
 use the `filename` argument to set a file path for exporting results. 
 If this is *None*, the generated HTML text is returned from the
 *show* method instead. Pass `view=False` if you want to write to the file
-without showing anything. An example follows.
+without showing anything. An example follows; click on various details
+to expand them.
 
 ```python
 html_text = report.show(fb.export.Html(filename=None, horizontal_bars=False), depth=2) 
@@ -597,25 +598,52 @@ report.show(env=fb.export.HtmlBars, depth=2)
 ## PlotlyHeatMap
 
 !!! warning
-    Plotly is installed as part of the interactive extras.
+    Plotly must be installed as part of the interactive extras per `pip install fairbench[interactive]`.
 
 This is similar to the HtmlTable environment, with the 
 difference that Plotly is used for heatmap plotting of
 the values.
 
+## ToString
+
+When provided as an environment to the `show` method, it does
+not create any visual output but instead returns a printable
+string that is a concise representation of the report. This
+can be used to quickly peek at report contents, though it forgoes
+longer descriptions for the sake of conciseness.
+If you do not want to pass a depth argument, like in the following
+example, you can also directly print the report.
+
+
+```python
+print(report.pr.show(env=fb.export.ToString)) # equivalent: print(report.pr)
+```
+
+```text
+[measure] pr                            
+  [reduction] min                        0.256 min pr
+  [reduction] wmean                      0.484 wmean pr
+  [reduction] mean                       0.418 mean pr
+  [reduction] gm                         0.403 gm pr
+  [reduction] pnorm                      0.594 pnorm pr
+  [reduction] maxrel                     0.615 maxrel pr (ideal value 0.000, abs bound 1.000)
+  [reduction] maxdiff                    0.410 maxdiff pr (ideal value 0.000)
+  [reduction] gini                       0.148 gini pr (ideal value 0.000, abs bound 1.000)
+  [reduction] stdx2                      0.231 stdx2 pr (ideal value 0.000)
+``` 
 
 ## ToJson
 
 When provided as an environment to the `show` method, it does
 not create any visual output but instead returns a string
-that is a json damp of the report values. This can be used
-to reconstruct the report like so:
+that is a json dump of the report values. This can be used
+to serialize and later reconstruct a report like below.
 
 ```python
 import fairbench as fb
 import json
 
-# serialize a report
+# serialize a report (can save outcome to file)
 json_dump = report.show(env=fb.export.ToJson)
 # deserialize
 dicts_and_lists = json.loads(json_dump)

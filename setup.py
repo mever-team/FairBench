@@ -56,4 +56,9 @@ setuptools.setup(
         "graph": graph_requirements,
         "llm": llm_requirements,
     },
+    entry_points={
+        "console_scripts": [
+            "fbwizard=fairbench.bench.wizard:serve_wizard",
+        ],
+    },
 )

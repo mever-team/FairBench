@@ -5,7 +5,8 @@ copyright: Copyright &copy; 2024-2026 CERTH
 
 nav:
     - Home: 'index.md'
-    - Overview:
+    - Quickstart:
+        - 'wizard.md'
         - 'quick.md'
         - 'reports.md'
         - 'bench.md'
