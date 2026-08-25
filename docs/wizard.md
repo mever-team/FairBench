@@ -7,7 +7,7 @@ environment in Python 3.11 or later, install fairbench, and run the wizard
 like below:
 
 ```cmd
-pip install --upgrade fairbench
+pip install fairbench
 fbwizard
 ```
 

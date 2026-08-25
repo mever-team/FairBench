@@ -10,7 +10,7 @@ of bias mitigation methods with known models.
 To install with all extras run:
 
 ```shell
-pip install --upgrade fairbench[graph,llm,vision]
+pip install fairbench[graph,llm,vision]
 ```
 
 ## 1. Setup experiments

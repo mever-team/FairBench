@@ -91,6 +91,7 @@ corresponding pipeline as code that you can reuse.
 ob how to programmatically add your own experiment setups to the the pipeline. 
 
 ```shell
+pip install fairbench
 fbwizard
 ```
 

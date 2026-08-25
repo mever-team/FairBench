@@ -5,7 +5,7 @@ This can assess any system. Install extras are
 available to optionally run computer vision, graph, and LLMs benchmarks.
 
 ```shell
-pip install --upgrade fairbench
+pip install fairbench
 ```
 
 This tutorial shows how to bootstrap fairness analysis
@@ -14,7 +14,7 @@ the recommended workflow is to first identify prospective
 fairness concerns, and then 
 decide which of those matter (human-in-the-loop, consult with stakeholders).
 Afterwards, keep track of important concerns with standalone measures 
-covered in the [quickstart](quick.md).
+covered in the [overview](quick.md).
 
 ![workflow visualization](fairbench.drawio.png)
 

@@ -16,7 +16,7 @@ def Ollama(name):
             json={
                 "model": name,
                 "prompt": prompt,
-                "stream": False,  # <-- disable streaming explicitly
+                "stream": False,  # explicitly disable streaming
             },
         )
         data = response.json()

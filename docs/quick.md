@@ -5,7 +5,7 @@ This can assess any system. Install extras are
 available to optionally run computer vision, graph, and LLMs benchmarks.
 
 ```shell
-pip install --upgrade FairBench
+pip install FairBench
 ```
 
 The recommended workflow for identifying what to measure
