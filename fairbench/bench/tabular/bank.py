@@ -44,6 +44,11 @@ def bank(classifier=None, scaler=None, predict="predict", seed=None, test_size=0
     y = (test["y"] == "yes").values
     x_train = scaler(x_train)
     x = scaler(x)
+    assert predict in [
+        "data",
+        "predict",
+        "probabilities",
+    ], "Prediction target can only be one of 'data', 'predict', or 'probabilities'"
     if predict == "data":
         return x_train, y_train, x, y, train, test
     classifier = classifier(x_train, y_train)
@@ -51,6 +56,4 @@ def bank(classifier=None, scaler=None, predict="predict", seed=None, test_size=0
         yhat = classifier.predict(x)
     elif predict == "probabilities":
         yhat = classifier.predict_proba(x)[:, 0]
-    else:
-        raise NotImplementedError()
     return test, y, yhat

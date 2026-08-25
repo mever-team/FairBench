@@ -3,7 +3,7 @@ from fairbench.v2.investigate.investigator import Investigator
 
 
 class BL(Investigator):
-    def __init__(self, encounter, prune=True, shallow=True):
+    def __init__(self, encounter=0.06, prune=True, shallow=True):
         action = "keep" if prune else "colorize"
         super().__init__(shallow=shallow or action == "keep")
         assert (

@@ -39,3 +39,12 @@ def test_curve_visualization(monkeypatch):
             report = fb.multireport(scores=yhat, labels=y, sensitive=s)
             fb.visualize(report.min.auc.explain.explain)
             fb.text_visualize(report.min.auc.explain.explain)
+
+
+def test_data_loading():
+    for setting in (
+        fb.bench.tabular.adult,
+        fb.bench.tabular.bank,
+        fb.bench.tabular.compas,
+    ):
+        assert len(setting(predict="data")) == 6  # x_train, y_train, x, y, train, test

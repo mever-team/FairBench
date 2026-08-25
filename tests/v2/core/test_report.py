@@ -50,6 +50,14 @@ def test_simple_report():
         ],
     )
 
+    report.show(env=v2.export.Html(view=False, filename="temp"), depth=1)
+    report.show(env=v2.export.Html(view=False, filename="temp"), depth=1)
+    report.show(env=v2.export.HtmlTable(view=False, filename="temp"), depth=1)
+    report.show(env=v2.export.HtmlTable(view=False, filename="temp"), depth=1)
+    report.show(env=v2.export.HtmlBars(view=False, filename="temp"), depth=1)
+    report.filter(v2.investigate.BL).show(
+        env=v2.export.Html(view=False, filename="temp"), depth=1
+    )
     report.filter(v2.investigate.Stamps).show(
         env=v2.export.Html(view=False, filename="temp"), depth=1
     )

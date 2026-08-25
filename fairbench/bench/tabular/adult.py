@@ -52,6 +52,11 @@ def adult(
     x_train = np.nan_to_num(scaler(x_train), nan=0.0)
     x = np.nan_to_num(scaler(x), nan=0.0)
 
+    assert predict in [
+        "data",
+        "predict",
+        "probabilities",
+    ], "Prediction target can only be one of 'data', 'predict', or 'probabilities'"
     if predict == "data":
         return x_train, y_train, x, y, train, test
     classifier = classifier(x_train, y_train)
@@ -59,6 +64,4 @@ def adult(
         yhat = classifier.predict(x)
     elif predict == "probabilities":
         yhat = classifier.predict_proba(x)[:, 1]
-    else:
-        raise NotImplementedError()
     return test, y, yhat

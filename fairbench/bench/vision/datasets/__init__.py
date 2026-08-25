@@ -13,9 +13,7 @@ def get_vision_dataset(name):
     if isinstance(name, torch.nn.Module):
         return name
 
-    if name not in options:
-        raise RuntimeError(
-            f"The vision dataset {name} does not exist. Please choose one among {list(options.keys())}"
-        )
-
+    assert (
+        name in options
+    ), f"The vision dataset {name} does not exist. Please choose one among {list(options.keys())}"
     return options[name]

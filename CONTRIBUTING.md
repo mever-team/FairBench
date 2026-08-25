@@ -25,7 +25,7 @@ Follow these steps to add new features:
 
 Contributions to *fairbench/bench* should make sure to not import modules unless code is explicitly called.
 This lets the lightweight installation work without any extras. Base measures and comparison mechanisms can 
-be found under *fairbench/v2/blocks. Use existing implementations for reference, including decorators. Similarly,
+be found under *fairbench/v2/blocks*. Use existing implementations for reference, including decorators. Similarly,
 implement filters under the *fairbench/v2/investigate* directory.
 
 Visualization environments reside under *fairbench/v2/export*, where a common data conversion mechanism is
@@ -42,5 +42,5 @@ as it can be very tricky to recover from failures found in respective code segme
 
 - Edits to the *fairbench/v1* directory will not be accepted unless they are made on features that have
 not been completely phased out. Documentation does not cover this version of the interface anymore either.
-- Editing the *fairbench/v2/core* directory will be accepted only upon exceptional circumstances, as it
+- Editing the *fairbench/v2/core* directory will be accepted only upon exceptional circumstances, as
 its code is heavily opinionated on how to both be dynamic and let *errors be comprehensive*.
