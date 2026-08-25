@@ -54,6 +54,15 @@ def test_simple_report():
         env=v2.export.Html(view=False, filename="temp"), depth=1
     )
     report.filter(v2.investigate.Stamps).show(
+        env=v2.export.HtmlTable(view=False, filename="temp"), depth=1
+    )
+    report.filter(v2.investigate.Stamps).show(
+        env=v2.export.HtmlTable(view=False, filename="temp"), depth=1
+    )
+    report.filter(v2.investigate.Stamps).show(
+        env=v2.export.HtmlBars(view=False, filename="temp"), depth=1
+    )
+    report.filter(v2.investigate.Stamps).show(
         env=v2.export.Html(
             view=False, filename="temp", distributions=True, horizontal_bars=True
         ),
@@ -71,7 +80,7 @@ def test_vsall():
     sensitive = sensitive.intersectional().strict()
 
     report = fb.reports.vsall(
-        sensitive=sensitive,
+        sensitive=sensitive.branches(),  # the most out-of-the-blue input that makes sense: a dict
         predictions=yhat > 0.5,
         labels=y,
         scores=yhat,
@@ -98,7 +107,7 @@ def test_conflate():
     sensitive = sensitive.intersectional().strict()
 
     report = fb.reports.conflate(
-        sensitive=sensitive,
+        sensitive=sensitive.branches(),  # the most out-of-the-blue input that makes sense: a dict
         predictions=yhat > 0.5,
         labels=y,
         scores=yhat,
@@ -164,6 +173,25 @@ def test_investigators():
     ).filter(
         fb.investigate.DeviationsOver(0.2)
     ).filter(fb.investigate.IsBias).show()
+
+
+def test_worst():
+    x, y, yhat = fb.bench.tabular.bank()
+    sensitive = fb.Dimensions(
+        fb.categories @ x["marital"], fb.categories @ x["education"]
+    )
+    sensitive = sensitive.intersectional().strict()
+
+    serialized = (
+        fb.reports.pairwise(
+            sensitive=sensitive,
+            predictions=yhat,
+            labels=y,
+        )
+        .filter(fb.investigate.IsBias, fb.investigate.WorstCase)
+        .show(fb.export.ToString)
+    )
+    assert "worst bias" in serialized
 
 
 def test_stamp_investigation():
@@ -310,6 +338,11 @@ def test_report_deviation():
         sensitive=baseline_sensitive,
     )
 
+    # TEST WORST CASE OF BASELINE
+    baseline_report.filter(fb.investigate.IsBias, fb.investigate.WorstCase).show(
+        env=fb.export.Console(ansiplot=False)
+    )
+
     # AFTER "MITIGATION" (just more samples here)
     x, y, yhat = fb.bench.tabular.bank(test_size=0.5)
     sensitive = fb.Dimensions(
@@ -342,3 +375,24 @@ def test_deviation_from_desired():
     report.details.filter(
         fb.investigate.SetTargets(targets=base_report), fb.investigate.SkewIndex
     ).show()
+
+
+def test_help():
+    x, y, yhat = fb.bench.tabular.bank(predict="probabilities")
+    sensitive = fb.Dimensions(
+        fb.categories @ x["marital"], fb.categories @ x["education"]
+    )
+    sensitive = sensitive.intersectional().strict()
+
+    report = fb.reports.vsall(
+        sensitive=sensitive,
+        predictions=yhat > 0.5,
+        labels=y,
+        scores=yhat,
+        targets=y,
+    )
+    progress = fb.Progress("test progress")
+    progress["instance"] = report
+    fb.export.help(report)
+    fb.export.help(progress)
+    fb.export.help(fb.measures.gmi)

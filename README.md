@@ -88,7 +88,7 @@ Access it locally from your browser in the address http://0.0.0.0:8000
 and perform an analysis you want to replicate. Then, export the 
 corresponding pipeline as code that you can reuse.
 [Read these docs](https://fairbench.readthedocs.io/reports/) 
-ob how to programmatically add your own experiment setups to the the pipeline. 
+of how to programmatically add your own experiment setups to the the pipeline. 
 
 ```shell
 pip install fairbench

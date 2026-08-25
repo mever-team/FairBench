@@ -19,10 +19,10 @@ class Progress:
         self.descriptor = Descriptor(name, "progress", description)
         self.depends = list()
 
-    def __setitem__(self, name, report):
+    def __setitem__(self, name: str, report: Value):
         return self.instance(name, report)
 
-    def instance(self, name, report: Value):
+    def instance(self, name: str, report: Value):
         assert isinstance(name, str), "Progress instances should have string names"
         assert isinstance(report, Value), "Invalid progress instance"
         instance_descriptor = Descriptor(
