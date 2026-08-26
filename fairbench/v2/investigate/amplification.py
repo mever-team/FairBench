@@ -3,11 +3,12 @@ from fairbench.v2.investigate.investigator import Investigator
 
 
 class Amplification(Investigator):
-    def __init__(self, base: Value, force=False):
+    def __init__(self, base: Value, force=False, assume_zero_targets=False):
         super().__init__(shallow=True)
         assert isinstance(base, Value)
         self.base = base
         self.force = force
+        self.assume_zero_targets = assume_zero_targets
 
     def _walk(self, value: Value, base: Value) -> Value | None:
         assert isinstance(
@@ -67,23 +68,6 @@ class Amplification(Investigator):
         assert base.value is not None, "Base report is missing value: " + repr(
             base_descriptor
         )
-        if not isinstance(number, TargetedNumber):
-            return None
-        if not isinstance(base.value, TargetedNumber):
-            return None
-        assert number.target == base.target, "Mismatching targets for " + repr(
-            descriptor
-        )
-        base_value = base.value.value
-        if base_value == number.target:
-            return None
-        # if 0 != number.target:
-        #     return None
-        number = TargetedNumber(
-            abs(number.value - number.target) / abs(base_value - number.target),
-            target=1,
-            bound=(number.bound - number.target) / abs(base_value - number.target),
-        )
 
         result_descriptor = Descriptor(
             descriptor.name + " comparison",
@@ -103,6 +87,29 @@ class Amplification(Investigator):
             base_descriptor.alias + " baseline",
             prototype=base_descriptor,
             preferred_units=base_descriptor.preferred_units,
+        )
+        base_value = base.value.value
+        if not isinstance(number, TargetedNumber) or not isinstance(base.value, TargetedNumber):
+            if not self.assume_zero_targets: 
+                return None
+            number = TargetedNumber(
+                number.value / base_value,
+                target=1
+            )
+            return result_descriptor(
+                value=number, depends=[value, base.rebase(base_descriptor)]
+            )
+        assert number.target == base.target, "Mismatching targets for " + repr(
+            descriptor
+        )
+        if base_value == number.target:
+            return None
+        # if 0 != number.target:
+        #     return None
+        number = TargetedNumber(
+            abs(number.value - number.target) / abs(base_value - number.target),
+            target=1,
+            bound=(number.bound - number.target) / abs(base_value - number.target),
         )
 
         return result_descriptor(
