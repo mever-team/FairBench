@@ -164,8 +164,12 @@ def help(value: any, details=True):
         + "Use the full dict notation (e.g., value['branch'] instead of value.branch to avoid this."
     )
     ansi.print("#" * 5 + " FairBench help " + "#" * 5, ansi.green + ansi.bold)
-    print("Access the following fields of the selected value to explore results:")
-    for descriptor in value.keys():
+    value_keys = value.keys()
+    if value.descriptor.details:
+        print(console_details(value.descriptor))
+    if value_keys:
+        print("Access the following fields of the selected value to explore results:")
+    for descriptor in value_keys:
         descriptor = descriptor.prototype
         alias = descriptor.alias
         if (

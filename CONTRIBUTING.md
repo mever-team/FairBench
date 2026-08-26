@@ -17,9 +17,9 @@ Follow these steps to add new features:
 
 1. Fork the repository.
 2. Clone the fork in your local development environment.
-3. Install dependencies.
-4. Write tests for new code and push the changes in your fork. 
-5. Create a pull request from github's interface.
+3. Install dependencies from the corresponding *.txt* lists.
+4. Write tests for new code, apply `black .` linting, and push the changes in your fork. 
+5. Create a pull request from github's interface. You may want to mark that as draft.
 
 ## Codebase contributions
 
@@ -44,3 +44,92 @@ as it can be very tricky to recover from failures found in respective code segme
 not been completely phased out. Documentation does not cover this version of the interface anymore either.
 - Editing the *fairbench/v2/core* directory will be accepted only upon exceptional circumstances, as
 its code is heavily opinionated on how to both be dynamic and let *errors be comprehensive*.
+
+## Working with fairbench values
+
+FairBench explainable values consist of three parts: a value, a descriptor that contains
+measurement units, roles, and descriptions, and dependent values. The value itself can contain
+more information (see below) or even not be provided at all (also see below). Let us check the simplest case:
+
+```python
+import fairbench as fb
+
+value = fb.core.Value(0.5)
+print(value)
+```
+
+```text
+[any role] unknown                       0.500 
+```
+
+Add a descriptor for a demo measure "MM" (standing for 
+"My Measure") like below. Of the descriptor's keyword arguments,
+only the name and role are mandatory. The description appears
+only in some of the more verbose visualizations, or for
+descriptions obtained via the *help* function. 
+
+```python
+import fairbench as fb
+
+descriptor = fb.core.Descriptor("MM", role="measure", details="my measure")
+value = fb.core.Value(0.5, descriptor=descriptor)
+print(value)
+value.help()
+```
+
+```text
+[measure] MM                             0.500 
+##### FairBench help #####
+This is my measure.
+```
+
+Add dependent values like below.
+
+```python
+import fairbench as fb
+
+mm_descriptor = fb.core.Descriptor("MM", role="measure", details="my measure", preferred_units="mm")
+first_half = fb.core.Value(0.25, descriptor=fb.core.Descriptor("first half", role="base"))
+second_half = fb.core.Value(0.25, descriptor=fb.core.Descriptor("second half", role="base"))
+value = fb.core.Value(0.5, descriptor=descriptor, depends=[first_half, second_half])
+value.show()
+```
+
+```text
+##### MM #####
+|This is my measure.
+|Value: 0.500 
+
+  (0.0, 0.25)
+  ▎ █  █
+  ▎ █  █
+  ▎ █  █
+  ▎ █  █
+  ▎ █  █
+  ▎▬*▬▬-
+  (2.0, 0.0)
+  
+   * first half                          0.250 
+   - second half                         0.250 
+```
+
+Finally, it is important to add target values and units to numbers, to
+ensure that results remain legible and comparable.
+To do so, provide an `fb.core.Number` or `fb.core.TargetNumber` instead
+of a float or no value. Custom numbers are shown below, where
+the two accept the same arguments with the exception of *target* to
+indicate the ideal value a measure should obtain. The *bound* the maximum
+absolute value of the unit value (e.g., below bound 2 indicates that
+the value lies in the range [-2,2]).
+
+```python
+import fairbench as fb
+
+descriptor = fb.core.Descriptor("MM", role="measure", details="my measure")
+value = fb.core.Value(fb.core.TargetedNumber(0.5, target=1, bound=2, units="mm"), descriptor=descriptor)
+print(value)
+```
+
+```text
+[measure] MM                             0.500 mm (ideal value 1.000, abs bound 2.000)
+```

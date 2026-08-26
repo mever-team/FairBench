@@ -3,12 +3,12 @@ from fairbench.v2.investigate.investigator import Investigator
 
 
 class Amplification(Investigator):
-    def __init__(self, base: Value, force=False, assume_zero_targets=False):
+    def __init__(self, base: Value, force=False, default_to_zero_targets=False):
         super().__init__(shallow=True)
         assert isinstance(base, Value)
         self.base = base
         self.force = force
-        self.assume_zero_targets = assume_zero_targets
+        self.default_to_zero_targets = default_to_zero_targets
 
     def _walk(self, value: Value, base: Value) -> Value | None:
         assert isinstance(
@@ -88,30 +88,30 @@ class Amplification(Investigator):
             prototype=base_descriptor,
             preferred_units=base_descriptor.preferred_units,
         )
-        base_value = base.value.value
-        if not isinstance(number, TargetedNumber) or not isinstance(base.value, TargetedNumber):
-            if not self.assume_zero_targets: 
+        target_number = None
+        if target_number is None and isinstance(number, TargetedNumber):
+            target_number = number.target
+        if target_number is None and isinstance(base.value, TargetedNumber):
+            target_number = base.value.target
+        if target_number is None:
+            if not self.default_to_zero_targets:
                 return None
-            number = TargetedNumber(
-                number.value / base_value,
-                target=1
-            )
-            return result_descriptor(
-                value=number, depends=[value, base.rebase(base_descriptor)]
-            )
-        assert number.target == base.target, "Mismatching targets for " + repr(
-            descriptor
-        )
-        if base_value == number.target:
-            return None
-        # if 0 != number.target:
-        #     return None
-        number = TargetedNumber(
-            abs(number.value - number.target) / abs(base_value - number.target),
-            target=1,
-            bound=(number.bound - number.target) / abs(base_value - number.target),
-        )
+            target_number = 0.0
+        assert isinstance(target_number, float | int)
+        assert (
+            not isinstance(base.value, TargetedNumber)
+            or target_number == base.value.target
+        ), "Mismatching targets for " + repr(descriptor)
+        assert (
+            not isinstance(number, TargetedNumber) or target_number == number.target
+        ), "Mismatching targets for " + repr(descriptor)
 
+        number = TargetedNumber(
+            abs(number.value - target_number) / abs(base.value.value - target_number),
+            target=1,
+            bound=(number.bound - target_number)
+            / abs(base.value.value - target_number),
+        )
         return result_descriptor(
             value=number, depends=[value, base.rebase(base_descriptor)]
         )
