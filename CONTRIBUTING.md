@@ -17,7 +17,7 @@ Follow these steps to add new features:
 
 1. Fork the repository.
 2. Clone the fork in your local development environment.
-3. Install dependencies from the corresponding *.txt* lists.
+3. Install dependencies from the *.txt* lists. For example: `pip install -r requirements` installs the base library without the dependencies needed to run extras.
 4. Write tests for new code, apply `black .` linting, and push the changes in your fork. 
 5. Create a pull request from github's interface. You may want to mark that as draft.
 
@@ -26,7 +26,7 @@ Follow these steps to add new features:
 Contributions to *fairbench/bench* should make sure to not import modules unless code is explicitly called.
 This lets the lightweight installation work without any extras. Base measures and comparison mechanisms can 
 be found under *fairbench/v2/blocks*. Use existing implementations for reference, including decorators. Similarly,
-implement filters under the *fairbench/v2/investigate* directory.
+implement filters under the *fairbench/v2/investigate* directory. 
 
 Visualization environments reside under *fairbench/v2/export*, where a common data conversion mechanism is
 used to synchronize messages between reports and the environments by traversing the former and calling 
@@ -34,6 +34,8 @@ methods of the latter. All visualization mechanisms should implement the same fe
 compatible with each other. As an exception, serialization mechanisms are allowed to implement a `direct_show`
 method that skips the common ground. Notice that this makes them lose several text formatting semantics - which
 they would not be able to express anyway.
+
+:bulb: *It is easiest to contribute with building blocks, as filters and visualization engines require walking through values with a good grasp on how these are generated and manipulated (see below).*
 
 ## :warning: Risky contributions
 
@@ -47,8 +49,33 @@ its code is heavily opinionated on how to both be dynamic and let *errors be com
 
 ## Working with fairbench values
 
-FairBench explainable values consist of three parts: a value, a descriptor that contains
-measurement units, roles, and descriptions, and dependent values. The value itself can contain
+You may want to leverage FairBench's inherent value
+exploration and visualization model in your projects.In general, values consist of three parts: a value, a descriptor that contains
+measurement units, roles, and descriptions, and dependent values. Then, they can be visualized with all the standard
+mechanisms provided for reports. Here is a short example
+of generating values:
+
+```python
+import fairbench as fb
+
+descriptor = fb.core.Descriptor("MM", role="measure", details="my measure")
+value = fb.core.Value(
+  fb.core.TargetedNumber(0.5, target=1, bound=2, units="mm"), 
+  descriptor=descriptor
+)
+print(value)
+value.show(env=fb.export.Html) # shows the value and dependencies in the browser
+```
+
+```text
+[measure] MM                             0.500 mm (ideal value 1.000, abs bound 2.000)
+```
+
+
+<details>
+<summary>More on creating custom values.</summary>
+
+The value itself can contain
 more information (see below) or even not be provided at all (also see below). Let us check the simplest case:
 
 ```python
@@ -133,3 +160,5 @@ print(value)
 ```text
 [measure] MM                             0.500 mm (ideal value 1.000, abs bound 2.000)
 ```
+
+</details>
